@@ -120,7 +120,7 @@ errorHandler.wrap {
 &lt;p&gt;The implementation of the error handler is very slim, here&amp;rsquo;s the entire code:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;class ErrorHandler {
-    
+
     func wrap&amp;lt;ReturnType&amp;gt;(@noescape f: () throws -&amp;gt; ReturnType?) -&amp;gt; ReturnType? {
         do {
             return try f()
@@ -129,12 +129,12 @@ errorHandler.wrap {
             return nil
         }
     }
-    
+
     func logError(error: ErrorType) {
         let stackSymbols = NSThread.callStackSymbols()
         print(&amp;quot;Error: \(error) \n Stack Symbols: \(stackSymbols)&amp;quot;)
     }
-    
+
 }
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -253,7 +253,7 @@ errorHandler.wrap {
 
 &lt;pre&gt;&lt;code&gt;func badFunction() throws {
   throw B.FatalError
-} 
+}
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Along with a catch block to print the &lt;code&gt;_code&lt;/code&gt; and &lt;code&gt;_domain&lt;/code&gt; members of the error:&lt;/p&gt;
@@ -859,7 +859,7 @@ Host bitbucket.work
     self = [super init];
 
     if (self) {
-        _age = 3; // &amp;lt;- compile error 
+        _age = 3; // &amp;lt;- compile error
     }
 
     return self;
@@ -1135,7 +1135,7 @@ NSLog(@&amp;quot;ClassA1 _age: %d&amp;quot;, _age);
 
 &lt;p&gt;Don&amp;rsquo;t get me wrong, Email is a great tool and an evergreen in everyone&amp;rsquo;s communication stack. I use it, among many other things, to stay in touch with friends, receive food delivery confirmations and to consume newsletters. Emails are an essential part my everyday life.&lt;/p&gt;
 
-&lt;p&gt;{&lt;1&gt;}&lt;img src=&#34;http://puu.sh/7idbF.jpg&#34; alt=&#34;Pile of letters&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://puu.sh/7idbF.jpg&#34; alt=&#34;Pile of letters&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;When it comes to work I mostly face problems that can be better solved by domain specific software. I assign and receive tasks or track and report progress, for example. This is where I try to avoid Email as often as I can.&lt;/p&gt;
 
@@ -1192,13 +1192,13 @@ they&amp;rsquo;re tasks&lt;/p&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;You repeat the following steps for every Email:
-{&lt;2&gt;}&lt;img src=&#34;http://puu.sh/7iNvX.png&#34; alt=&#34;The ActiveInbox workflow&#34; /&gt;&lt;/p&gt;
+&lt;img src=&#34;http://puu.sh/7iNvX.png&#34; alt=&#34;The ActiveInbox workflow&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Using these principles you will avoid rereading Emails, will never again forget to respond to an Email and will be able to follow up on Emails that no one responded to.&lt;/p&gt;
 
 &lt;p&gt;Here&amp;rsquo;s an an anonymized example of my inbox as of today:&lt;/p&gt;
 
-&lt;p&gt;{&lt;3&gt;}&lt;img src=&#34;http://puu.sh/7iwjR.png&#34; alt=&#34;ActiveInbox in Gmail&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://puu.sh/7iwjR.png&#34; alt=&#34;ActiveInbox in Gmail&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As you can see I have an amount of Emails in my &amp;ldquo;overdue&amp;rdquo; section - I still fall behind schedule now and then.
 BUT I don&amp;rsquo;t have to waste any brain cycles on my inbox - all the information is visible at a glance whenever I need it.&lt;/p&gt;

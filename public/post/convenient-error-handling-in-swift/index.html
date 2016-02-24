@@ -199,7 +199,7 @@ errorHandler.wrap {
 <p>The implementation of the error handler is very slim, here&rsquo;s the entire code:</p>
 
 <pre><code>class ErrorHandler {
-    
+
     func wrap&lt;ReturnType&gt;(@noescape f: () throws -&gt; ReturnType?) -&gt; ReturnType? {
         do {
             return try f()
@@ -208,12 +208,12 @@ errorHandler.wrap {
             return nil
         }
     }
-    
+
     func logError(error: ErrorType) {
         let stackSymbols = NSThread.callStackSymbols()
         print(&quot;Error: \(error) \n Stack Symbols: \(stackSymbols)&quot;)
     }
-    
+
 }
 </code></pre>
 

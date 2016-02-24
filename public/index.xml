@@ -130,7 +130,7 @@ errorHandler.wrap {
 &lt;p&gt;The implementation of the error handler is very slim, here&amp;rsquo;s the entire code:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;class ErrorHandler {
-    
+
     func wrap&amp;lt;ReturnType&amp;gt;(@noescape f: () throws -&amp;gt; ReturnType?) -&amp;gt; ReturnType? {
         do {
             return try f()
@@ -139,12 +139,12 @@ errorHandler.wrap {
             return nil
         }
     }
-    
+
     func logError(error: ErrorType) {
         let stackSymbols = NSThread.callStackSymbols()
         print(&amp;quot;Error: \(error) \n Stack Symbols: \(stackSymbols)&amp;quot;)
     }
-    
+
 }
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -263,7 +263,7 @@ errorHandler.wrap {
 
 &lt;pre&gt;&lt;code&gt;func badFunction() throws {
   throw B.FatalError
-} 
+}
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Along with a catch block to print the &lt;code&gt;_code&lt;/code&gt; and &lt;code&gt;_domain&lt;/code&gt; members of the error:&lt;/p&gt;
@@ -869,7 +869,7 @@ Host bitbucket.work
     self = [super init];
 
     if (self) {
-        _age = 3; // &amp;lt;- compile error 
+        _age = 3; // &amp;lt;- compile error
     }
 
     return self;
