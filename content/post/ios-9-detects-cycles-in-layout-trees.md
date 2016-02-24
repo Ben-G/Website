@@ -9,7 +9,9 @@ A couple of months ago I was faced with an issue that was fairly hard to debug:
 <blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">Hackathons are a great place to see noteworthy issues. Yesterday&#39;s highlight: endless recursion in Storyboard <a href="https://twitter.com/LAHacks">@LAHacks</a></p>&mdash; Benjamin Encz (@benjaminencz) <a href="https://twitter.com/benjaminencz/status/584757451469127680">April 5, 2015</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-What I found out, after about 30 minutes of debugging, was the following: 
+<!--more-->
+
+What I found out, after about 30 minutes of debugging, was the following:
 
 ![](https://www.dropbox.com/s/kcjgm6sgftmxo5y/accessoryView.png?dl=1)
 
@@ -19,7 +21,7 @@ This however wasn't immediately obvious to me since the symptom was an exception
 
 ##Fixed in iOS 9
 
-Today I wanted to see if it is possible to reproduce the issue with Xcode 7 Beta 3. 
+Today I wanted to see if it is possible to reproduce the issue with Xcode 7 Beta 3.
 
 Indeed, I can still cause the crash. However, instead of causing a stack overflow the app now terminates because `CALayer` throws an exception:
 

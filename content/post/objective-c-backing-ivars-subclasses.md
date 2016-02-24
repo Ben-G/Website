@@ -8,6 +8,8 @@ Most Objective-C developers have a fairly good understanding of properties and i
 
 Today I want to discuss an interesting case that will force you to understand the details of the relationship between instance variables and properties. In case you already know these details, this remains an interesting example of how complicated Objective-C can be every once in a while.
 
+<!--more-->
+
 ##Our Scenario
 
 Let's assume we want to create a very simple **ClassA** with a property called `age` of type `NSInteger`:
@@ -17,7 +19,7 @@ Let's assume we want to create a very simple **ClassA** with a property called `
 	@property (assign, nonatomic) NSInteger age;
 
 	@end
- 
+
 And a **ClassB** that inherits from **ClassA**.
 
 We want to initialize the `age` from within the `init` method in *ClassA.m*. As per best practice [we don't want to access the property in the initializer method](http://stackoverflow.com/questions/5932677/initializing-a-property-dot-notation/5932733#5932733) but want to use the auto synthesized instance variable instead:
@@ -26,80 +28,80 @@ We want to initialize the `age` from within the `init` method in *ClassA.m*. As 
 
     - (instancetype)init {
         self = [super init];
-        
+
         if (self) {
             _age = 6;
         }
-        
+
         return self;
     }
-    
+
     @end
-    
+
 So far, so simple. Now let's assume that **Class B** wants to override the initializer (and again we want to avoid accessing a property!):
-	
+
     @implementation ClassB
 
     - (instancetype)init {
         self = [super init];
-        
+
         if (self) {
-            _age = 3; // <- compile error 
+            _age = 3; // <- compile error
         }
-        
+
         return self;
     }
-    
+
     @end
 
-Unfortunately this will result in a **compile error**. Bummer! 
+Unfortunately this will result in a **compile error**. Bummer!
 
-The instance variable `_age` is synthesized in *ClassA.m* and therefore is not visible in *ClassB.m*. 
+The instance variable `_age` is synthesized in *ClassA.m* and therefore is not visible in *ClassB.m*.
 
 How could we fix this?
 
-##Synthesize in ClassB.m ? 
+##Synthesize in ClassB.m ?
 
 This one of the solutions that I have seen around on the web. If `_age` is not available in *ClassB.m* because it is synthesized in *ClassA.m*, why don't we add a synthesize to *ClassB.m* to make `_age` visible there, too?
 
     @implementation ClassB1
-    
+
     // add synthesize statement to make _age visible
     @synthesize age = _age;
-    
+
     - (instancetype)init {
         self = [super init];
-        
+
         if (self) {
             _age = 3;
         }
-        
+
         return self;
     }
-    
+
     @end
-    
+
 Indeed, this will resolve the compile error! Just to be sure that this is a valid solution, let's add some simple tests:
 
     @implementation ClassB1
-    
+
     @synthesize age = _age;
-    
+
     - (instancetype)init {
         self = [super init];
-        
+
         if (self) {
             _age = 3;
-            
+
             NSLog(@"ClassB1 _age: %d", _age);
             NSLog(@"ClassB1 self.age: %d", self.age);
             NSLog(@"ClassB1 super.age: %d", super.age);
-    
+
         }
-        
+
         return self;
     }
-    
+
     @end
 
 And here is the trimmed console output after initializing `ClassB1`:
@@ -112,7 +114,7 @@ And here is the trimmed console output after initializing `ClassB1`:
 
 **Wow.** This is not the behaviour we want! We are overriding the `init` method and setting `_age` to "6" but when asking for the `age` on our super class we receive "3"?
 
-Why does this happen? By adding a `synthesize` statement to *ClassB1.m* we're creating an entirely **new** instance variable that happens to be called *_age* as well, but other than the name has nothing to do with the *_age* instance variable declared in *ClassA1.m*. The properties of *ClassA1* and *ClassB1* are now operating on different instance variables. 
+Why does this happen? By adding a `synthesize` statement to *ClassB1.m* we're creating an entirely **new** instance variable that happens to be called *_age* as well, but other than the name has nothing to do with the *_age* instance variable declared in *ClassA1.m*. The properties of *ClassA1* and *ClassB1* are now operating on different instance variables.
 
 **Still wonder why this is horrible?** Take a look at this little test in the `init` method of *ClassA1.m*:
 
@@ -132,37 +134,37 @@ The trimmed output:
 
 ##Declare in ClassA.h ?
 
-We now know that we cannot synthesize / declare the `_age` instance variable in *ClassB.m* because we will create a new instance variable instead of using the one of our super class *ClassA*. 
+We now know that we cannot synthesize / declare the `_age` instance variable in *ClassB.m* because we will create a new instance variable instead of using the one of our super class *ClassA*.
 
 In order to make the auto synthesized variable `_age` visible for *ClassB* we can explicitly declare the instance variable in *ClassA.h*:
 
     @interface ClassA2 : NSObject {
     	NSInteger _age;
     }
-    
+
     @property (assign, nonatomic) NSInteger age;
-    
+
     @end
 
 Now *ClassB* will know that `_age` exists by importing *ClassA.h*:
 
     @implementation ClassB2
-    
+
     - (instancetype)init {
         self = [super init];
-        
+
         if (self) {
             _age = 3;
-            
+
             NSLog(@"ClassB1 _age: %d", _age);
             NSLog(@"ClassB1 self.age: %d", self.age);
             NSLog(@"ClassB1 super.age: %d", super.age);
-            
+
         }
-        
+
         return self;
     }
-    
+
     @end
 
 That does the job - no compile errors! What about the logs? (Note: ClassA uses the same test `init` method as in the first approach).
@@ -185,25 +187,25 @@ Let's take a look at a third solution.
 
 ##Use a class extension in a separate header file!
 
-We now know that the `_age` instance variable needs to be part of the interface of *ClassA* in order for subclasses to be able to access it. 
+We now know that the `_age` instance variable needs to be part of the interface of *ClassA* in order for subclasses to be able to access it.
 
 A neat way in Objective-C to extract certain parts of the interface that are only relevant to subclasses is creating a [Class Extension](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/CustomizingExistingClasses/CustomizingExistingClasses.html) in a seperate header file.
 
 In solution number three the interface of *ClassA* is nice and clean:
 
     @interface ClassA3 : NSObject
-    
+
     @property (assign, nonatomic) NSInteger age;
-    
+
     @end
-    
+
 The `_age` instace variable is now declared in  a seperate header called *ClassA3_Protected.h*:
 
     @interface ClassA3 () {
         @protected
         NSInteger _age;
     }
-    
+
     @end
 
 Since instance variables in class extensions are *private* by default we need to explicitly declare the `_age` variable to be *protected*.
@@ -212,25 +214,25 @@ Now we can import this class extension into *ClassB3.m*  to get access to the `_
 
     #import "ClassB3.h"
     #import "ClassA3_Protected.h"
-    
+
     @implementation ClassB3
-    
+
     - (instancetype)init {
         self = [super init];
-        
+
         if (self) {
             _age = 3;
-            
+
             NSLog(@"ClassB3 _age: %d", _age);
             NSLog(@"ClassB3 self.age: %d", self.age);
             NSLog(@"ClassB3 super.age: %d", super.age);
-            
+
         }
         return self;
     }
-    
+
     @end
-    
+
 No compile errors and no unnecessary cluttered interface file! What about the logs? (Note: ClassA uses the same test `init` method as in the the two previous approaches):
 
 > ClassA2 self.age: 6

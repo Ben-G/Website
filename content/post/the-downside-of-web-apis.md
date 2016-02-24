@@ -6,6 +6,8 @@ title = "The downside of Web APIs"
 
 Web APIs have done a lot for the world of technology. Services that have formerly been isolated islands can now be connected through a few simple HTTP Requests. Posting to Facebook on every GitHub commit? Printing a Postcard as soon as a new Photo is uploaded to a Dropbox folder? Basically anything is possible through Web Services.
 
+<!--more-->
+
 Another great aspect of Web Services is that all the implementation details of these powerful platforms are hidden behind a well documented HTTP Interface allowing Developers to build products that integrate with multiple services in the matter of hours - without establishing old-school SQL Connections and writing complicated Database Queries.
 
 ## Now what are the downsides then?

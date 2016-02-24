@@ -8,6 +8,8 @@ Swift 2 introduced an error handling mechanism that includes [backwards compatib
 
 **This is great news, the new mechanism is a lot stricter.** Long gone are the days in which one could ignore errors by lavishly throwing `nil` at methods that expect a pointer to an `NSError` variable.
 
+<!--more-->
+
 #Does Every Error Deserve an Individual Catch?
 
 Swift will require you to provide an error handler when you call a method that `throws`, unless you resort to the `try?` or `try!` operator. Here's an example of `try!`:
@@ -26,20 +28,20 @@ With this approach all details of an error that occurred will be swallowed entir
 
 **But is it worth it writing a custom error handler for every error producing function you call? I don't think so.**
 
-Many kinds of errors deserve your full attention, you can write code to recover from them or, at the very least, notify the user about unexpected behavior with a meaningful error message. 
+Many kinds of errors deserve your full attention, you can write code to recover from them or, at the very least, notify the user about unexpected behavior with a meaningful error message.
 
 Other errors are less suitable for custom error handlers. You cannot recover from them with reasonable effort and they don't affect the user experience. The user will not want to be informed about them. Here are examples of errors that, in my opinion, fall into this category:
 
 - Caching a downloaded image on disk fails
 - Your app cannot connect to the ad service you are using
 
-Depending on the complexity of your app, there might be hundreds of such operations. 
+Depending on the complexity of your app, there might be hundreds of such operations.
 
 Even though you can't recover from these errors, you should definitely keep track of them through some sort of logging mechanism! How can this be done without writing many individual error handlers?
 
 #A Good Compromise?
 
-Can we strike a balance between convenience and due diligence? I believe so. In my latest side project I implemented a default error handler that deals with errors that, for one reason or another, don't deserve a custom error handler. 
+Can we strike a balance between convenience and due diligence? I believe so. In my latest side project I implemented a default error handler that deals with errors that, for one reason or another, don't deserve a custom error handler.
 
 This error handler doesn't swallow the error completely. Instead, it logs the errors using my analytics service. This behavior is useful for any type of error that might occur in my app. It's the largest common denominator of error handling.
 
@@ -79,7 +81,7 @@ The implementation of the error handler is very slim, here's the entire code:
 
 ```
 class ErrorHandler {
-    
+
     func wrap<ReturnType>(@noescape f: () throws -> ReturnType?) -> ReturnType? {
         do {
             return try f()
@@ -88,12 +90,12 @@ class ErrorHandler {
             return nil
         }
     }
-    
+
     func logError(error: ErrorType) {
         let stackSymbols = NSThread.callStackSymbols()
         print("Error: \(error) \n Stack Symbols: \(stackSymbols)")
     }
-    
+
 }
 ```
 
@@ -107,7 +109,7 @@ Good error handling is incredibly important for a good user experience - I wante
 
 I definitely encourage you and myself to handle as many errors as sensible individually - but I believe there's a large number of potential errors that are suitable for this generic error handling scheme.
 
-You can find the Source Code for this blog post [on GitHub](https://github.com/Ben-G/DefaultErrorHandlerSwift). 
+You can find the Source Code for this blog post [on GitHub](https://github.com/Ben-G/DefaultErrorHandlerSwift).
 
 How do you tackle error handling? I would love to hear from you!
 

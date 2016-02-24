@@ -9,6 +9,8 @@ While I still cannot fully understand how the release of a new programming langu
 
 Like most iOS Developers I immediately took a look at the new language. Most language details seem fairly straightforward - however, arithmetic expressions were the first small pitfall for me.
 
+<!--more-->
+
 If you for example try to run the following lines of code:
 
 {{< highlight swift >}}

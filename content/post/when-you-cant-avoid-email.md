@@ -6,7 +6,9 @@ title = "When You Can't Avoid Email"
 
 Don't get me wrong, Email is a great tool and an evergreen in everyone's communication stack. I use it, among many other things, to stay in touch with friends, receive food delivery confirmations and to consume newsletters. Emails are an essential part my everyday life.
 
-{<1>}![Pile of letters](http://puu.sh/7idbF.jpg)
+<!--more-->
+
+![Pile of letters](http://puu.sh/7idbF.jpg)
 
 When it comes to work I mostly face problems that can be better solved by domain specific software. I assign and receive tasks or track and report progress, for example. This is where I try to avoid Email as often as I can.
 
@@ -29,12 +31,12 @@ I started by identifying the biggest problems I was facing with my tradition Ema
 * Forgetting to respond to Emails
 * Wasting time browsing my Inbox / rereading Emails
 * Searching through my inbox to find potential unresolved tasks
- 
+
 So many people are facing these problems - there must be a tool out there, right?
 
 Task Management for your Inbox
 ----------------------
-At MakeGamesWithUs we use *Gmail*. I started looking for tools that would provide a simple integration of my Emails with *Asana*, a task management system. 
+At MakeGamesWithUs we use *Gmail*. I started looking for tools that would provide a simple integration of my Emails with *Asana*, a task management system.
 Unfortunately none of the existing Gmail<->Asana integrations looked simple enough to use. However, I found a great tool that provides task management directly in your Gmail inbox:  [ActiveInbox](http://www.activeinboxhq.com/).
 
 > Because emails aren't letters,
@@ -56,13 +58,13 @@ ActiveInbox works with these few core principles and features:
 * the ultimate goal is an empty inbox
 
 You repeat the following steps for every Email:
-{<2>}![The ActiveInbox workflow](http://puu.sh/7iNvX.png)
+![The ActiveInbox workflow](http://puu.sh/7iNvX.png)
 
 Using these principles you will avoid rereading Emails, will never again forget to respond to an Email and will be able to follow up on Emails that no one responded to.
 
 Here's an an anonymized example of my inbox as of today:
 
-{<3>}![ActiveInbox in Gmail](http://puu.sh/7iwjR.png)
+![ActiveInbox in Gmail](http://puu.sh/7iwjR.png)
 
 As you can see I have an amount of Emails in my "overdue" section - I still fall behind schedule now and then.
 BUT I don't have to waste any brain cycles on my inbox - all the information is visible at a glance whenever I need it.

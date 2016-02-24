@@ -14,9 +14,11 @@ For the impatient reader:
 - If an Objective-C method produces an `NSError` *and* returns a value the `catch` blocks is not invoked and the error cannot be retrieved
 - [GitHub project with examples](https://github.com/Ben-G/FunWithErrors)
 
+<!--more-->
+
 #Fun With Errors
 
-Recently I've spent some time looking into the new error handling mechanism in Swift in depth. I've especially focused on its interoperability with Objective-C which is documented fairly lightly as of now (Xcode 7 Beta 4). 
+Recently I've spent some time looking into the new error handling mechanism in Swift in depth. I've especially focused on its interoperability with Objective-C which is documented fairly lightly as of now (Xcode 7 Beta 4).
 
 It started with the following lines of code, in which I tried to experiment with creating a custom error type using a `struct` (instead of the canonical example in which we use an `enum`):
 
@@ -32,7 +34,7 @@ That was pretty surprising, given that the protocol definition for `ErrorType` i
 
 	protocol ErrorType {
 	}
-	
+
 ##Hidden Protocol Requirements
 
 The error message revealed two hidden protocol requirements:
@@ -45,7 +47,7 @@ This means the actual protocol definition for `ErrorType` looks like this:
 		var _domain: String
 		var _code: Int
 	}
-	
+
 When using an `enum` to define a custom `ErrorType` these fields are automatically generated and populated (this is discussed in WWDC 2015 Session 402, 08:20 min).
 
 These two fields, `domain` and `code`, are also provided by `NSError`, so I assume these fields are primarily used for compatibility with Objective-C.
@@ -57,12 +59,12 @@ Me too! So let's create this simple error type:
 	enum MyError: ErrorType {
 	  case BasicError, FatalError
 	}
-	
+
 And write a throwing function:
 
 	func badFunction() throws {
 	  throw B.FatalError
-	} 
+	}
 
 Along with a catch block to print the `_code` and `_domain` members of the error:
 
@@ -71,13 +73,13 @@ Along with a catch block to print the `_code` and `_domain` members of the error
     } catch let error as MyError {
       print("domain: \(error._domain) code:\(error._code)")
     } catch {
-      
+
     }
-    
+
 This is the result that you will see in the console:
 
 	domain: FunWithErrors.MyError code: 1
-	
+
 The `_domain` member matches the module name in which the custom `ErrorType` was defined and the `_code` matches the raw enum value (`BasicError` = 0, `FatalError` = 1).
 
 Nothing too exciting here, but an interesting look under the covers. Next, let's see how Objective-C's `NSError` works with Swift's error handling.
@@ -93,25 +95,25 @@ Let's build the simplest throwing Objective-C method following this rule in the 
 This is a simple Objective-C class that has a method that should throw:
 
 	@interface ErrorProducer : NSObject
-	
+
 	+ (void)doWithError:(NSError**)error;
-	
+
 	@end
-	
+
 However, when calling this method from Swift we need to provide an `NSErrorPointer` and the method does not throw:
 
 ![image](https://www.dropbox.com/s/zz8ev7j00vxz21k/doesntThrow.png?dl=1)
 
 For some reason the automatic translation promised by Swift is not working in this case.
 
-After mutating the method signature multiple times, I found out that the method is **only translated to Swift's error handling mechanism if it returns an Objective-C object or a boolean value**. 
+After mutating the method signature multiple times, I found out that the method is **only translated to Swift's error handling mechanism if it returns an Objective-C object or a boolean value**.
 
 ###Methods That Return Objective-C Objects or Boolean Values
 
 This method for example:
 
 	+ (NSString *)provideStringWithError:(NSError**)error;
-	
+
 Can be used from Swift as expected:
 
 ![image](https://www.dropbox.com/s/dqoauugwun16t4k/doesThrow.png?dl=1)
@@ -122,7 +124,7 @@ So let's provide a simple implementation for this method to see how we can catch
 	  if (error) {
 	    *error = [NSError errorWithDomain:@"FunWithErrors" code:0 userInfo:nil];
 	  }
-	  
+
 	  return @"";
 	}
 
@@ -133,7 +135,7 @@ And on the call side we provide a `do/catch` block:
 	} catch let error as NSError {
 	  print("domain: \(error.domain) code: \(error.code)")
 	}
-	
+
 If you run this code Swift code... **nothing will be printed to the console!** The catch block will never be reached.
 
 It seems that the return value of an empty string (`@""`) is indicating that the method returned successfully, even though an error was assigned to the error pointer.
@@ -144,7 +146,7 @@ If we change the implementation of the Objective-C method to return `nil`, the `
 	  if (error) {
 	    *error = [NSError errorWithDomain:@"FunWithErrors" code:0 userInfo:nil];
 	  }
-	  
+
 	  return nil;
 	}
 
@@ -155,7 +157,7 @@ There's one more interesting case I want to look at: It almost seems like the re
 	+ (NSString *)provideNilStringNoErrorWithError:(NSError**)error {
 	  return nil;
 	}
-	
+
 This indeed throws as well! Swift provides us with an instance of `_SwiftNativeNSError`, the `domain` of the produced error is `Foundation._GenericObjCError` and the `code` is 0.
 
 As was pointed out to me, the Cocoa documentation on error handling in Objective-C discusses this emphasis on the return value of a method that can error out:

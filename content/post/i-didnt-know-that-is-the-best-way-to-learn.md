@@ -6,11 +6,13 @@ title = "\"I didn't know that\" is the best way to learn"
 
 This is no original thought. Nevertheless I've been thinking about it often enough to make it worth spending a few minutes framing it in my own words.
 
-I'm currently working as a Software Engineer. According to Wikipedia that makes me a [Knowledge Worker](http://en.wikipedia.org/wiki/Knowledge_worker). 
+I'm currently working as a Software Engineer. According to Wikipedia that makes me a [Knowledge Worker](http://en.wikipedia.org/wiki/Knowledge_worker).
+
+<!--more-->
 
 > Knowledge workers are workers whose main capital is knowledge.
 
-Most Software Engineers that I've met in my short career know that knowledge is their main asset. Unfortunately this can have very negative side effects. 
+Most Software Engineers that I've met in my short career know that knowledge is their main asset. Unfortunately this can have very negative side effects.
 
 Being paid for having knowledge in a scientific field or a certain technology makes it very hard to say "I didn't know that". After all, if knowledge is your main asset how could you admit the lack thereof?
 
@@ -28,7 +30,7 @@ I think there are three potential reactions when being confronted with something
 * Nod, pretend you know about it and go read about it afterwards
 * Admit that you never heard about it and extract as much knowledge as possible from the conversation
 
-Don't get me wrong. Reading is great and I think we all should thrive to increase our knowledge in whichever field we are working in. But if you have the chance to learn something you are interested in from a person who knows about it at the small cost of a "I didn't know that" it wouldn't be smart to let that opportunity pass by. 
+Don't get me wrong. Reading is great and I think we all should thrive to increase our knowledge in whichever field we are working in. But if you have the chance to learn something you are interested in from a person who knows about it at the small cost of a "I didn't know that" it wouldn't be smart to let that opportunity pass by.
 
 Learning from other people is incredibly powerful and one the fastest ways to gain new knowledge. Smart people are happy to share their knowledge. You should ask as many questions as possible.
 

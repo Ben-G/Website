@@ -4,7 +4,9 @@ draft = false
 title = "Talk: Introduction to FRP on iOS"
 +++
 
-Back in April I gave a talk at [NSMeetup in San Francisco](http://www.meetup.com/nsmeetup/events/220950179/) on Functional Reactive Programming on iOS. 
+Back in April I gave a talk at [NSMeetup in San Francisco](http://www.meetup.com/nsmeetup/events/220950179/) on Functional Reactive Programming on iOS.
+
+<!--more-->
 
 The talk discusses the idea & motivation behind FRP and dives into some practical examples using Reactive Cocoa 2.x. The examples are based on a small [demo app](https://github.com/Ben-G/PeopleCRM) that I built for that talk.
 

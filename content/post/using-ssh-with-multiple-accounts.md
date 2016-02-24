@@ -6,7 +6,9 @@ title = "Using SSH for private and work account on a Mac"
 
 > Disclaimer: I'm not a huge fan of configuring software; I'm primarily writing this to remember it for the future.
 
-Using SSH instead of HTTPS to authenticate against services such as GitHub, Bitbucket or Heroku is very convenient, instead of typing a password for every interaction Mac OS simply exchanges SSH keys behind the scene. However, one can run into trouble when trying to use multiple accounts of the same service with SSH authentication. 
+Using SSH instead of HTTPS to authenticate against services such as GitHub, Bitbucket or Heroku is very convenient, instead of typing a password for every interaction Mac OS simply exchanges SSH keys behind the scene. However, one can run into trouble when trying to use multiple accounts of the same service with SSH authentication.
+
+<!--more-->
 
 In this brief write-up I want to discuss how to set up multiple Bitbucket accounts with different associated SSH Keys.
 
@@ -23,7 +25,7 @@ Now let's assume you have two Bitbucket accounts, one for work and a second priv
 This means you will need to create a second pair of SSH keys for use with your work account using the following command:
 
 	ssh-keygen -t rsa -C "your_email@example.com"
-    
+
 Terminal will prompt you for a file name for that new key - you can choose one that identifies the key as a work SSH key (e.g. company name). Now you have a second SSH key and can add that one to your work account on Bitbucket.
 
 ##Serving the right key
@@ -37,12 +39,12 @@ Currently your SSH config file (`~/.ssh/config`) should look like similar to thi
 
 Every time you connect to the host `bitbucket.org` you serve the `id_rsa` key, this setting has been established when you connected to this host the first time.
 
-We have two options at this point: 
+We have two options at this point:
 
 - specify which SSH key we want to send every time we connect to the remote server
 - change our SSH config file to server the correct SSH key
 
-The second option should mostly be preferred. 
+The second option should mostly be preferred.
 
 ##Using host alias names
 
@@ -52,13 +54,13 @@ We've just seen that the SSH client determines the SSH key based on the host nam
      HostName bitbucket.org
      IdentityFile ~/.ssh/id_rsa
      IdentitiesOnly yes
-    
+
     Host bitbucket.work
      HostName bitbucket.org
      IdentityFile ~/.ssh/makegameswithus
      IdentitiesOnly yes
-     
-In the first line of each entry we store the alias. This can be any string you want, you'll need to use it whenever you connect to the actual host. 
+
+In the first line of each entry we store the alias. This can be any string you want, you'll need to use it whenever you connect to the actual host.
 
 The actual host name is stored in the second line. When you connect to a server using the string `bitbucket.work` it will be replaced by the actual host name `bitbucket.org` *and* the SSH client will know to send the specified `makegameswithus` SSH key instead of the default one.
 
