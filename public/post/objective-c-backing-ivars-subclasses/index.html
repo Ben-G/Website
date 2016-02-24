@@ -5,8 +5,8 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-  	<meta property="og:title" content=" Objective-C: Accessing backing iVars of properties in subclasses &middot;  My New Hugo Site" />
-  	<meta property="og:site_name" content="My New Hugo Site" />
+  	<meta property="og:title" content=" Objective-C: Accessing backing iVars of properties in subclasses &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
   	<meta property="og:url" content="http://localhost:1313/post/objective-c-backing-ivars-subclasses/" />
 
     
@@ -18,7 +18,7 @@
     
 
   <title>
-     Objective-C: Accessing backing iVars of properties in subclasses &middot;  My New Hugo Site
+     Objective-C: Accessing backing iVars of properties in subclasses &middot;  [Thinking inside a large box];
   </title>
 
     <meta name="description" content="" />
@@ -36,7 +36,7 @@
 
     
       
-          <link href="http://localhost:1313/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
+          <link href="http://localhost:1313/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
       
       
     
@@ -73,27 +73,39 @@
 
 
 
+
 <header class="main-header post-head no-cover">
-  <nav class="main-nav clearfix">
+    <nav class="main-nav overlay clearfix">
 
 
-  
-  
-      <a class="menu-button icon-feed" href="http://localhost:1313/index.xml">&nbsp;&nbsp;Subscribe</a>
-  
-  </nav>
+      
+        <a class="blog-logo" href="http://localhost:1313/"><img src="http://localhost:1313/images/sf-clouds.jpg" alt="Home" /></a>
+      
+      
+        
+          <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+        
+      
+    </nav>
+
+    
+
+
 </header>
 
 
 
 <main class="content" role="main">
 
-
-
-
   <article class="post post">
-
     <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
         <h1 class="post-title">Objective-C: Accessing backing iVars of properties in subclasses</h1>
         <small></small>
 
@@ -108,7 +120,9 @@
     </header>
 
     <section class="post-content">
-      <p>Most Objective-C developers have a fairly good understanding of properties and instance variables and how these two work together.</p>
+
+
+<p>Most Objective-C developers have a fairly good understanding of properties and instance variables and how these two work together.</p>
 
 <p>Today I want to discuss an interesting case that will force you to understand the details of the relationship between instance variables and properties. In case you already know these details, this remains an interesting example of how complicated Objective-C can be every once in a while.</p>
 
@@ -372,57 +386,81 @@ NSLog(@&quot;ClassA1 _age: %d&quot;, _age);
 
 <p>You can find the code examples used throughout this tutorial in the <a href="https://github.com/Ben-G/Property_InstanceVariables_Inheritance">GitHub repository for this blogpost</a>.</p>
 
+
+
+
+
+
+
+
+
     </section>
 
 
   <footer class="post-footer">
 
+      
+      <figure class="author-image">
+          <a class="img" href="http://localhost:1313/" style="background-image: url(http://localhost:1313/images/sf-clouds.jpg)"><span class="hidden">'s Picture</span></a>
+      </figure>
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a><br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Objective-C%3a%20Accessing%20backing%20iVars%20of%20properties%20in%20subclasses&amp;url=http%3a%2f%2flocalhost%3a1313%2fpost%2fobjective-c-backing-ivars-subclasses%2f"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fpost%2fobjective-c-backing-ivars-subclasses%2f"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2flocalhost%3a1313%2fpost%2fobjective-c-backing-ivars-subclasses%2f"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
 
     
 
-    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
 
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = '';
 
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/localhost:1313\/post\/objective-c-backing-ivars-subclasses\/';
+    }
+  }
 
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
 
-
-<section class="author">
-  <h4><a href="http://localhost:1313/"></a></h4>
-  
-  <p>Read <a href="http://localhost:1313/">more posts</a> by this author.</p>
-  
-  <div class="author-meta">
-    
-    
-  </div>
-</section>
-
-
-
-    
-<section class="share">
-  <h4>Share this post</h4>
-  <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Objective-C%3a%20Accessing%20backing%20iVars%20of%20properties%20in%20subclasses&amp;url=http%3a%2f%2flocalhost%3a1313%2fpost%2fobjective-c-backing-ivars-subclasses%2f"
-      onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
-      <span class="hidden">Twitter</span>
-  </a>
-  <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fpost%2fobjective-c-backing-ivars-subclasses%2f"
-      onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
-      <span class="hidden">Facebook</span>
-  </a>
-  <a class="icon-pinterest" style="font-size: 1.4em" href="http://pinterest.com/pin/create/button/?url=http%3a%2f%2flocalhost%3a1313%2fpost%2fobjective-c-backing-ivars-subclasses%2f&amp;description=Objective-C%3a%20Accessing%20backing%20iVars%20of%20properties%20in%20subclasses"
-      onclick="window.open(this.href, 'pinterest-share','width=580,height=296');return false;">
-      <span class="hidden">Pinterest</span>
-  </a>
-  <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2flocalhost%3a1313%2fpost%2fobjective-c-backing-ivars-subclasses%2f"
-     onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
-      <span class="hidden">Google+</span>
-  </a>
-</section>
-
-
-
-    
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
 
 
@@ -432,7 +470,7 @@ NSLog(@&quot;ClassA1 _age: %d&quot;, _age);
 
 </main>
     <footer class="site-footer clearfix">
-        <section class="copyright"><a href="">My New Hugo Site</a> </section>
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
         
         <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
         
