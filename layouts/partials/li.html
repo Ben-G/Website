@@ -1,0 +1,48 @@
+{{ $baseurl := .Site.BaseURL }}
+<article class="post {{ .Section }}">
+    <header class="post-header">
+        <span class="post-meta">
+            {{ $disqus_link := index .Params "disqus_url" }}
+            {{ if ($disqus_link) }}
+                <!-- Creating a separate span for the disqus link is a workaround as the custom
+                    `data_disqus_url` will be ignored for <a> tags. We also cannot identify the
+                    discussion by identifier, as we can't add identifiers to existing discussions
+                    and legacy discussions do not have one. See:
+                    https://disqus.com/home/channel/discussdisqus/discussion/
+                    channel-discussdisqus/adding_disqus_identifiers_to_existing_threads/
+                -->
+                <a href='{{ .RelPermalink }}#comment_section'>
+                    <span class='disqus-comment-count' data-disqus-url='{{$disqus_link}}'>Comments</span>
+                </a>
+            {{ else }}
+                <a href='{{ .RelPermalink }}#disqus_thread'>Comments</a>
+            {{ end }}
+        </span>
+        <h2 class="post-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+    </header>
+    <section class="post-excerpt">
+        <p>{{ .Summary }} <a class="read-more" href="{{.RelPermalink}}">&raquo;</a></p>
+    </section>
+    <footer class="post-meta">
+        {{$author := index .Site.Data.authors .Params.author }}
+        {{ if isset $author "thumbnail" }}
+            <img class="author-thumb" src="{{ .Site.BaseURL }}{{ $author.thumbnail }}" alt="Author image" nopin="nopin" />
+        {{else if .Site.Params.logo }}
+            <img class="author-thumb" src="{{ .Site.BaseURL }}{{.Site.Params.logo}}" alt="Author image" nopin="nopin" />
+        {{end}}
+        {{if and (ne .Params.author .Site.Params.author) .Params.author}}
+        {{$author := index .Site.Data.authors .Params.author }}
+            {{$author.name}}
+        {{else if .Site.Params.author}}
+            {{.Site.Params.author}}
+        {{end}}
+        {{if .Params.tags }}on
+            {{ range $index, $tag := .Params.tags }}
+                <a href="{{$baseurl}}tags/{{ $tag | urlize }}/">#{{ $tag }}</a>,
+            {{ end }}
+        {{end}}
+        <time class="post-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" | safeHTML }}">
+            {{ .Date.Format "2 Jan 2006" }}
+        </time>
+    </footer>
+</article>
