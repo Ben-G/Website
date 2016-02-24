@@ -1,3 +1,14 @@
-baseurl = "http://replace-this-with-your-hugo-site.com/"
+baseurl = "http://blog.benjamin-encz.de"
 languageCode = "en-us"
-title = "My New Hugo Site"
+title = "[Thinking inside a large box];"
+
+pygmentsUseClasses = false
+pygmentsStyle = "tango"
+disqusShortname = "benjaminencz"
+
+[params]
+    cover = "images/sf-clouds.jpg"
+    logo = "images/sf-clouds.jpg"
+    githubName = "Ben-G"
+    twitterName = "benjaminencz"
+    stylesheets = ["highlight.css"]
