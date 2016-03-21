@@ -2,6 +2,9 @@
 date = "2015-11-18T22:24:54-08:00"
 draft = false
 title = "Convenient Error Handling in Swift"
+disqus_url = "http://blog.benjamin-encz.de/convenient-error-handling-in-swift/"
+slug = "convenient-error-handling-in-swift"
+aliases = ["/convenient-error-handling-in-swift/"]
 +++
 
 Swift 2 introduced an error handling mechanism that includes [backwards compatibility with Objective-C](link to my post).
@@ -10,7 +13,7 @@ Swift 2 introduced an error handling mechanism that includes [backwards compatib
 
 <!--more-->
 
-#Does Every Error Deserve an Individual Catch?
+# Does Every Error Deserve an Individual Catch?
 
 Swift will require you to provide an error handler when you call a method that `throws`, unless you resort to the `try?` or `try!` operator. Here's an example of `try!`:
 
@@ -39,7 +42,7 @@ Depending on the complexity of your app, there might be hundreds of such operati
 
 Even though you can't recover from these errors, you should definitely keep track of them through some sort of logging mechanism! How can this be done without writing many individual error handlers?
 
-#A Good Compromise?
+# A Good Compromise?
 
 Can we strike a balance between convenience and due diligence? I believe so. In my latest side project I implemented a default error handler that deals with errors that, for one reason or another, don't deserve a custom error handler.
 
@@ -75,7 +78,7 @@ errorHandler.wrap {
 ```
 We can perform a failable operation without writing any code that deals with errors or optional return values, while still capturing details about errors that might occur.
 
-#Implementation of the Default Error Handler
+# Implementation of the Default Error Handler
 
 The implementation of the error handler is very slim, here's the entire code:
 
@@ -103,7 +106,7 @@ The `wrap` function takes a function that can `throw` and that can provide a ret
 
 The `logError` function should be customized to your needs - as an example I am printing the current stack trace along with the error message. In a production environment you would likely want to log these messages using an analytics service such as Fabric or Mixpanel.
 
-#Conclusion
+# Conclusion
 
 Good error handling is incredibly important for a good user experience - I wanted to make the process as easy as possible. Now my analytics dashboard will inform me about any unhandled error that occurs in production. Going from there I can improve error handling in my apps by adding custom handlers for the most frequent errors.
 
@@ -113,7 +116,7 @@ You can find the Source Code for this blog post [on GitHub](https://github.com/B
 
 How do you tackle error handling? I would love to hear from you!
 
-##Acknowledgements
+## Acknowledgements
 
 - Thanks to [`Result.materialize`](https://github.com/antitypical/Result/blob/master/Result/Result.swift#L153-L159) for inspiring my `wrap` function
 - Thanks to [morganchen96](https://twitter.com/morganchen96) and [javi](https://twitter.com/Javi) for providing feedback on drafts of this post

@@ -2,6 +2,9 @@
 date = "2014-12-14T22:24:54-08:00"
 draft = false
 title = "Switching iOS devices and the Keychain"
+disqus_url = "http://blog.benjamin-encz.de/switching-ios-devices-and-the-keychain/"
+slug = "switching-ios-devices-and-the-keychain"
+aliases = ["/switching-ios-devices-and-the-keychain/"]
 +++
 
 Unfortunately some of my [MovieLoggr](http://www.movieloggr.com/) users ran into the following issue: After switching to a new phone and restoring it from a Backup MovieLoggr would behave unexpectetly (and in some cases crash) because the App could no longer access the user's password and unfortunately did not handle this gracefully.

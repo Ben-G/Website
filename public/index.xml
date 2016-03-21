@@ -43,11 +43,13 @@
       <pubDate>Wed, 18 Nov 2015 22:24:54 -0800</pubDate>
       
       <guid>http://localhost:1313/post/convenient-error-handling-in-swift/</guid>
-      <description>&lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
+      <description>
+
+&lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;This is great news, the new mechanism is a lot stricter.&lt;/strong&gt; Long gone are the days in which one could ignore errors by lavishly throwing &lt;code&gt;nil&lt;/code&gt; at methods that expect a pointer to an &lt;code&gt;NSError&lt;/code&gt; variable.&lt;/p&gt;
 
-&lt;p&gt;#Does Every Error Deserve an Individual Catch?&lt;/p&gt;
+&lt;h1 id=&#34;does-every-error-deserve-an-individual-catch:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Does Every Error Deserve an Individual Catch?&lt;/h1&gt;
 
 &lt;p&gt;Swift will require you to provide an error handler when you call a method that &lt;code&gt;throws&lt;/code&gt;, unless you resort to the &lt;code&gt;try?&lt;/code&gt; or &lt;code&gt;try!&lt;/code&gt; operator. Here&amp;rsquo;s an example of &lt;code&gt;try!&lt;/code&gt;:&lt;/p&gt;
 
@@ -78,7 +80,7 @@
 
 &lt;p&gt;Even though you can&amp;rsquo;t recover from these errors, you should definitely keep track of them through some sort of logging mechanism! How can this be done without writing many individual error handlers?&lt;/p&gt;
 
-&lt;p&gt;#A Good Compromise?&lt;/p&gt;
+&lt;h1 id=&#34;a-good-compromise:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;A Good Compromise?&lt;/h1&gt;
 
 &lt;p&gt;Can we strike a balance between convenience and due diligence? I believe so. In my latest side project I implemented a default error handler that deals with errors that, for one reason or another, don&amp;rsquo;t deserve a custom error handler.&lt;/p&gt;
 
@@ -115,7 +117,7 @@ errorHandler.wrap {
 
 &lt;p&gt;We can perform a failable operation without writing any code that deals with errors or optional return values, while still capturing details about errors that might occur.&lt;/p&gt;
 
-&lt;p&gt;#Implementation of the Default Error Handler&lt;/p&gt;
+&lt;h1 id=&#34;implementation-of-the-default-error-handler:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Implementation of the Default Error Handler&lt;/h1&gt;
 
 &lt;p&gt;The implementation of the error handler is very slim, here&amp;rsquo;s the entire code:&lt;/p&gt;
 
@@ -142,7 +144,7 @@ errorHandler.wrap {
 
 &lt;p&gt;The &lt;code&gt;logError&lt;/code&gt; function should be customized to your needs - as an example I am printing the current stack trace along with the error message. In a production environment you would likely want to log these messages using an analytics service such as Fabric or Mixpanel.&lt;/p&gt;
 
-&lt;p&gt;#Conclusion&lt;/p&gt;
+&lt;h1 id=&#34;conclusion:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Conclusion&lt;/h1&gt;
 
 &lt;p&gt;Good error handling is incredibly important for a good user experience - I wanted to make the process as easy as possible. Now my analytics dashboard will inform me about any unhandled error that occurs in production. Going from there I can improve error handling in my apps by adding custom handlers for the most frequent errors.&lt;/p&gt;
 
@@ -152,7 +154,7 @@ errorHandler.wrap {
 
 &lt;p&gt;How do you tackle error handling? I would love to hear from you!&lt;/p&gt;
 
-&lt;p&gt;##Acknowledgements&lt;/p&gt;
+&lt;h2 id=&#34;acknowledgements:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Acknowledgements&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Thanks to &lt;a href=&#34;https://github.com/antitypical/Result/blob/master/Result/Result.swift#L153-L159&#34;&gt;&lt;code&gt;Result.materialize&lt;/code&gt;&lt;/a&gt; for inspiring my &lt;code&gt;wrap&lt;/code&gt; function&lt;/li&gt;
@@ -189,9 +191,11 @@ errorHandler.wrap {
       <pubDate>Thu, 23 Jul 2015 22:24:54 -0800</pubDate>
       
       <guid>http://localhost:1313/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
-      <description>&lt;p&gt;For the impatient reader:&lt;/p&gt;
+      <description>
 
-&lt;p&gt;#TL;DR&lt;/p&gt;
+&lt;p&gt;For the impatient reader:&lt;/p&gt;
+
+&lt;h1 id=&#34;tl-dr:7d6cd9aa87721e34fde537cfc5c1034a&#34;&gt;TL;DR&lt;/h1&gt;
 
 &lt;ul&gt;
 &lt;li&gt;The &lt;code&gt;ErrorType&lt;/code&gt; protocol has hidden requirements that are automatically fullfilled if you use an &lt;code&gt;enum&lt;/code&gt; to implement the protocol&lt;/li&gt;
@@ -201,7 +205,7 @@ errorHandler.wrap {
 &lt;li&gt;&lt;a href=&#34;https://github.com/Ben-G/FunWithErrors&#34;&gt;GitHub project with examples&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;#Fun With Errors&lt;/p&gt;
+&lt;h1 id=&#34;fun-with-errors:7d6cd9aa87721e34fde537cfc5c1034a&#34;&gt;Fun With Errors&lt;/h1&gt;
 
 &lt;p&gt;Recently I&amp;rsquo;ve spent some time looking into the new error handling mechanism in Swift in depth. I&amp;rsquo;ve especially focused on its interoperability with Objective-C which is documented fairly lightly as of now (Xcode 7 Beta 4).&lt;/p&gt;
 
@@ -222,7 +226,7 @@ errorHandler.wrap {
 }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;##Hidden Protocol Requirements&lt;/p&gt;
+&lt;h2 id=&#34;hidden-protocol-requirements:7d6cd9aa87721e34fde537cfc5c1034a&#34;&gt;Hidden Protocol Requirements&lt;/h2&gt;
 
 &lt;p&gt;The error message revealed two hidden protocol requirements:&lt;/p&gt;
 
@@ -276,7 +280,7 @@ errorHandler.wrap {
 
 &lt;p&gt;Nothing too exciting here, but an interesting look under the covers. Next, let&amp;rsquo;s see how Objective-C&amp;rsquo;s &lt;code&gt;NSError&lt;/code&gt; works with Swift&amp;rsquo;s error handling.&lt;/p&gt;
 
-&lt;p&gt;##Throwing From Objective-C&lt;/p&gt;
+&lt;h2 id=&#34;throwing-from-objective-c:7d6cd9aa87721e34fde537cfc5c1034a&#34;&gt;Throwing From Objective-C&lt;/h2&gt;
 
 &lt;p&gt;Let&amp;rsquo;s build the simplest throwing Objective-C method following this rule in the documentation:&lt;/p&gt;
 
@@ -284,7 +288,7 @@ errorHandler.wrap {
 &lt;p&gt;If the last non-block parameter of an Objective-C method is of type &lt;code&gt;NSError **&lt;/code&gt;, Swift replaces it with the throws keyword, to indicate that the method can throw an error.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;###Methods That Return &lt;code&gt;void&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&#34;methods-that-return-void:7d6cd9aa87721e34fde537cfc5c1034a&#34;&gt;Methods That Return &lt;code&gt;void&lt;/code&gt;&lt;/h3&gt;
 
 &lt;p&gt;This is a simple Objective-C class that has a method that should throw:&lt;/p&gt;
 
@@ -303,7 +307,7 @@ errorHandler.wrap {
 
 &lt;p&gt;After mutating the method signature multiple times, I found out that the method is &lt;strong&gt;only translated to Swift&amp;rsquo;s error handling mechanism if it returns an Objective-C object or a boolean value&lt;/strong&gt;.&lt;/p&gt;
 
-&lt;p&gt;###Methods That Return Objective-C Objects or Boolean Values&lt;/p&gt;
+&lt;h3 id=&#34;methods-that-return-objective-c-objects-or-boolean-values:7d6cd9aa87721e34fde537cfc5c1034a&#34;&gt;Methods That Return Objective-C Objects or Boolean Values&lt;/h3&gt;
 
 &lt;p&gt;This method for example:&lt;/p&gt;
 
@@ -368,7 +372,7 @@ errorHandler.wrap {
 
 &lt;p&gt;Source: &lt;a href=&#34;https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/ErrorHandling/ErrorHandling.html&#34;&gt;Programming with Objective-C | Dealing with Errors&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;##Summary&lt;/p&gt;
+&lt;h2 id=&#34;summary:7d6cd9aa87721e34fde537cfc5c1034a&#34;&gt;Summary&lt;/h2&gt;
 
 &lt;p&gt;As of today (Xcode 7 Beta 4) the interopability between Swift&amp;rsquo;s error handling and Objective-C is lacking some documentation. Here are some interesting findings discussed throughout the blog post:&lt;/p&gt;
 
@@ -392,7 +396,9 @@ errorHandler.wrap {
       <pubDate>Thu, 09 Jul 2015 22:24:54 -0800</pubDate>
       
       <guid>http://localhost:1313/post/ios-9-detects-cycles-in-layout-trees/</guid>
-      <description>&lt;p&gt;A couple of months ago I was faced with an issue that was fairly hard to debug:&lt;/p&gt;
+      <description>
+
+&lt;p&gt;A couple of months ago I was faced with an issue that was fairly hard to debug:&lt;/p&gt;
 
 &lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Hackathons are a great place to see noteworthy issues. Yesterday&amp;#39;s highlight: endless recursion in Storyboard &lt;a href=&#34;https://twitter.com/LAHacks&#34;&gt;@LAHacks&lt;/a&gt;&lt;/p&gt;&amp;mdash; Benjamin Encz (@benjaminencz) &lt;a href=&#34;https://twitter.com/benjaminencz/status/584757451469127680&#34;&gt;April 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
@@ -405,7 +411,7 @@ errorHandler.wrap {
 
 &lt;p&gt;This however wasn&amp;rsquo;t immediately obvious to me since the symptom was an exception within the &lt;code&gt;cellForRowAtIndexPath:&lt;/code&gt; method.&lt;/p&gt;
 
-&lt;p&gt;##Fixed in iOS 9&lt;/p&gt;
+&lt;h2 id=&#34;fixed-in-ios-9:9df3400d24ce9ec6d67d1afbc4f7edb2&#34;&gt;Fixed in iOS 9&lt;/h2&gt;
 
 &lt;p&gt;Today I wanted to see if it is possible to reproduce the issue with Xcode 7 Beta 3.&lt;/p&gt;
 
@@ -446,7 +452,9 @@ errorHandler.wrap {
       <pubDate>Thu, 19 Feb 2015 22:24:54 -0800</pubDate>
       
       <guid>http://localhost:1313/post/breaking-the-swift-compiler-with-generics/</guid>
-      <description>&lt;p&gt;Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at &lt;a href=&#34;http://openradar.appspot.com/search?query=segmentation+fault+swift&#34;&gt;Open Radar&lt;/a&gt; there seem to be many out there)!&lt;/p&gt;
+      <description>
+
+&lt;p&gt;Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at &lt;a href=&#34;http://openradar.appspot.com/search?query=segmentation+fault+swift&#34;&gt;Open Radar&lt;/a&gt; there seem to be many out there)!&lt;/p&gt;
 
 &lt;p&gt;Here&amp;rsquo;s what I was trying to implement&lt;/p&gt;
 
@@ -473,7 +481,7 @@ extension ArrayDataSource : UITableViewDataSource {
 
 &lt;p&gt;A class that takes an array and implements &lt;code&gt;UITableViewDataSource&lt;/code&gt; using the content of that array (an idea that&amp;rsquo;s discussed in &lt;a href=&#34;http://www.objc.io/issue-1/lighter-view-controllers.html&#34;&gt;objc.io issue #1&lt;/a&gt;).&lt;/p&gt;
 
-&lt;p&gt;#The Error&lt;/p&gt;
+&lt;h1 id=&#34;the-error:ad4d4ff830a667f9bf3648d7b19cfe5c&#34;&gt;The Error&lt;/h1&gt;
 
 &lt;p&gt;As you can see I didn&amp;rsquo;t get very far before running into the compiler error. When you compile the above code (in Xcode 6.1.1 or Xcode 6.3) you&amp;rsquo;ll see the following error message:&lt;/p&gt;
 
@@ -484,7 +492,7 @@ extension ArrayDataSource : UITableViewDataSource {
 
 &lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/Swift_Crash.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;#Finding a generic reproducable example&lt;/p&gt;
+&lt;h1 id=&#34;finding-a-generic-reproducable-example:ad4d4ff830a667f9bf3648d7b19cfe5c&#34;&gt;Finding a generic reproducable example&lt;/h1&gt;
 
 &lt;p&gt;Since this issue exists in both Xcode 6.1.1 and Xcode 6.3 I wanted to file a bug report to make sure this gets resolved in future. I played around with different ways to fix the issue, here are two simple ones that worked:&lt;/p&gt;
 
@@ -580,7 +588,9 @@ extension D: NSObjectProtocol {}
       <pubDate>Tue, 18 Nov 2014 22:24:54 -0800</pubDate>
       
       <guid>http://localhost:1313/post/using-ssh-with-multiple-accounts/</guid>
-      <description>&lt;blockquote&gt;
+      <description>
+
+&lt;blockquote&gt;
 &lt;p&gt;Disclaimer: I&amp;rsquo;m not a huge fan of configuring software; I&amp;rsquo;m primarily writing this to remember it for the future.&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -588,7 +598,7 @@ extension D: NSObjectProtocol {}
 
 &lt;p&gt;In this brief write-up I want to discuss how to set up multiple Bitbucket accounts with different associated SSH Keys.&lt;/p&gt;
 
-&lt;p&gt;##Two Bitbucket SSH keys on one machine&lt;/p&gt;
+&lt;h2 id=&#34;two-bitbucket-ssh-keys-on-one-machine:641c6294d4c21efa1578d7a06f188378&#34;&gt;Two Bitbucket SSH keys on one machine&lt;/h2&gt;
 
 &lt;p&gt;The key for setting up the SSH client to use multiple SSH keys for the same service is the SSH config file which resides in: &lt;code&gt;~/.ssh/config&lt;/code&gt;&lt;/p&gt;
 
@@ -605,7 +615,7 @@ extension D: NSObjectProtocol {}
 
 &lt;p&gt;Terminal will prompt you for a file name for that new key - you can choose one that identifies the key as a work SSH key (e.g. company name). Now you have a second SSH key and can add that one to your work account on Bitbucket.&lt;/p&gt;
 
-&lt;p&gt;##Serving the right key&lt;/p&gt;
+&lt;h2 id=&#34;serving-the-right-key:641c6294d4c21efa1578d7a06f188378&#34;&gt;Serving the right key&lt;/h2&gt;
 
 &lt;p&gt;Now one problem remains. If you clone a Bitbucket repository, authenticating with SSH, SSH will by default always serve the &lt;code&gt;id_rsa&lt;/code&gt; key which is associated with your personal account - that means you still won&amp;rsquo;t be able to authenticate yourself with your work account and won&amp;rsquo;t be able to interact with work repositories using SSH authentication.&lt;/p&gt;
 
@@ -626,7 +636,7 @@ extension D: NSObjectProtocol {}
 
 &lt;p&gt;The second option should mostly be preferred.&lt;/p&gt;
 
-&lt;p&gt;##Using host alias names&lt;/p&gt;
+&lt;h2 id=&#34;using-host-alias-names:641c6294d4c21efa1578d7a06f188378&#34;&gt;Using host alias names&lt;/h2&gt;
 
 &lt;p&gt;We&amp;rsquo;ve just seen that the SSH client determines the SSH key based on the host name. That means we need two different host names for &lt;code&gt;bitbucket.org&lt;/code&gt; depending on whether we want to use the personal or private account. Luckily the SSH config file lets us declare host aliases in the following way:&lt;/p&gt;
 
@@ -668,15 +678,15 @@ Host bitbucket.work
 
 &lt;p&gt;Another great aspect of Web Services is that all the implementation details of these powerful platforms are hidden behind a well documented HTTP Interface allowing Developers to build products that integrate with multiple services in the matter of hours - without establishing old-school SQL Connections and writing complicated Database Queries.&lt;/p&gt;
 
-&lt;h2 id=&#34;now-what-are-the-downsides-then:ce30f6438cfe47012d475e0c26995713&#34;&gt;Now what are the downsides then?&lt;/h2&gt;
+&lt;h2 id=&#34;now-what-are-the-downsides-then:0db755954643c1ac111ee02a99a5dc05&#34;&gt;Now what are the downsides then?&lt;/h2&gt;
 
 &lt;p&gt;Simple is good. But simple also means less flexibility and less power. Accessing information through Web APIs can often be very inefficient. Many Web APIs embrace patterns that can lead to poor performance of a Web Application.&lt;/p&gt;
 
-&lt;h2 id=&#34;example-query-count-commits-per-contributor-on-github-repository:ce30f6438cfe47012d475e0c26995713&#34;&gt;Example Query: Count Commits per Contributor on GitHub Repository&lt;/h2&gt;
+&lt;h2 id=&#34;example-query-count-commits-per-contributor-on-github-repository:0db755954643c1ac111ee02a99a5dc05&#34;&gt;Example Query: Count Commits per Contributor on GitHub Repository&lt;/h2&gt;
 
 &lt;p&gt;Let&amp;rsquo;s assume we want to build an Application that allows users to log in with their GitHub account. Once the user is logged in, the application shall count all commits of that user from all of the repositories he/she owns.&lt;/p&gt;
 
-&lt;h3 id=&#34;database-request-solution-old-fashioned:ce30f6438cfe47012d475e0c26995713&#34;&gt;Database Request Solution (Old Fashioned)&lt;/h3&gt;
+&lt;h3 id=&#34;database-request-solution-old-fashioned:0db755954643c1ac111ee02a99a5dc05&#34;&gt;Database Request Solution (Old Fashioned)&lt;/h3&gt;
 
 &lt;p&gt;This part of the Blog post is entirely fictional. It only serves the purpose of showing what a DB request could look like. Assuming GitHub would run on a Relational Database and would allow developers to access the DB directly, a request could look somewhat like that:&lt;/p&gt;
 
@@ -690,7 +700,7 @@ Host bitbucket.work
 &lt;li&gt;We can define which information we are interested in. In this case we just want the &lt;em&gt;count&lt;/em&gt; of commits and don&amp;rsquo;t want to select any additional information.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&#34;web-api-solution:ce30f6438cfe47012d475e0c26995713&#34;&gt;Web API Solution&lt;/h3&gt;
+&lt;h3 id=&#34;web-api-solution:0db755954643c1ac111ee02a99a5dc05&#34;&gt;Web API Solution&lt;/h3&gt;
 
 &lt;p&gt;&lt;em&gt;Note: The GitHub Web API provides a Statistics API that makes it easier to access the commit count per contributor. However it only provides information for the past year. For our application we want the information over the entire lifetime.&lt;/em&gt;&lt;/p&gt;
 
@@ -719,7 +729,7 @@ Host bitbucket.work
 
 &lt;p&gt;The largest of the above problems is that we need to create an individual request for each repository. That problem is called the &lt;a href=&#34;http://www.infoq.com/articles/N-Plus-1&#34;&gt;&amp;ldquo;N+1 problem&amp;rdquo;&lt;/a&gt;. 1 Request is needed to retrieve a list of items. Than we need another request for each entry (N) in that list.&lt;/p&gt;
 
-&lt;h3 id=&#34;alternatives:ce30f6438cfe47012d475e0c26995713&#34;&gt;Alternatives?&lt;/h3&gt;
+&lt;h3 id=&#34;alternatives:0db755954643c1ac111ee02a99a5dc05&#34;&gt;Alternatives?&lt;/h3&gt;
 
 &lt;p&gt;Obviously, for Security reasons, no Platform will allow API clients to write entirely custom DB queries. The viable alternative is exposing a little bit more of the DB layer to the Web API; Resulting in more complexity but also more power. Examples:&lt;/p&gt;
 
@@ -758,10 +768,10 @@ Host bitbucket.work
     
     <item>
       <title>Arithmetic Expressions in Swift</title>
-      <link>http://localhost:1313/post/arithmetic-expressions-swift/</link>
+      <link>http://localhost:1313/post/arithmetic-expressions-in-swift/</link>
       <pubDate>Tue, 03 Jun 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/arithmetic-expressions-swift/</guid>
+      <guid>http://localhost:1313/post/arithmetic-expressions-in-swift/</guid>
       <description>&lt;p&gt;While I still cannot fully understand how the release of a new programming language didn&amp;rsquo;t leak before WWDC, most of us got surprised by the announcement of Apple&amp;rsquo;s new Programming Language &lt;strong&gt;Swift&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;Like most iOS Developers I immediately took a look at the new language. Most language details seem fairly straightforward - however, arithmetic expressions were the first small pitfall for me.&lt;/p&gt;
@@ -817,11 +827,13 @@ Host bitbucket.work
       <pubDate>Wed, 28 May 2014 22:24:54 -0800</pubDate>
       
       <guid>http://localhost:1313/post/objective-c-backing-ivars-subclasses/</guid>
-      <description>&lt;p&gt;Most Objective-C developers have a fairly good understanding of properties and instance variables and how these two work together.&lt;/p&gt;
+      <description>
+
+&lt;p&gt;Most Objective-C developers have a fairly good understanding of properties and instance variables and how these two work together.&lt;/p&gt;
 
 &lt;p&gt;Today I want to discuss an interesting case that will force you to understand the details of the relationship between instance variables and properties. In case you already know these details, this remains an interesting example of how complicated Objective-C can be every once in a while.&lt;/p&gt;
 
-&lt;p&gt;##Our Scenario&lt;/p&gt;
+&lt;h2 id=&#34;our-scenario:e0c5b2161d4a1a679573f400d6865a16&#34;&gt;Our Scenario&lt;/h2&gt;
 
 &lt;p&gt;Let&amp;rsquo;s assume we want to create a very simple &lt;strong&gt;ClassA&lt;/strong&gt; with a property called &lt;code&gt;age&lt;/code&gt; of type &lt;code&gt;NSInteger&lt;/code&gt;:&lt;/p&gt;
 
@@ -953,7 +965,7 @@ NSLog(@&amp;quot;ClassA1 _age: %d&amp;quot;, _age);
 
 &lt;p&gt;&lt;del&gt;Scratch this approach&lt;/del&gt;, and move on to option number two.&lt;/p&gt;
 
-&lt;p&gt;##Declare in ClassA.h ?&lt;/p&gt;
+&lt;h2 id=&#34;declare-in-classa-h:e0c5b2161d4a1a679573f400d6865a16&#34;&gt;Declare in ClassA.h ?&lt;/h2&gt;
 
 &lt;p&gt;We now know that we cannot synthesize / declare the &lt;code&gt;_age&lt;/code&gt; instance variable in &lt;em&gt;ClassB.m&lt;/em&gt; because we will create a new instance variable instead of using the one of our super class &lt;em&gt;ClassA&lt;/em&gt;.&lt;/p&gt;
 
@@ -1010,7 +1022,7 @@ NSLog(@&amp;quot;ClassA1 _age: %d&amp;quot;, _age);
 
 &lt;p&gt;Let&amp;rsquo;s take a look at a third solution.&lt;/p&gt;
 
-&lt;p&gt;##Use a class extension in a separate header file!&lt;/p&gt;
+&lt;h2 id=&#34;use-a-class-extension-in-a-separate-header-file:e0c5b2161d4a1a679573f400d6865a16&#34;&gt;Use a class extension in a separate header file!&lt;/h2&gt;
 
 &lt;p&gt;We now know that the &lt;code&gt;_age&lt;/code&gt; instance variable needs to be part of the interface of &lt;em&gt;ClassA&lt;/em&gt; in order for subclasses to be able to access it.&lt;/p&gt;
 
@@ -1085,11 +1097,13 @@ NSLog(@&amp;quot;ClassA1 _age: %d&amp;quot;, _age);
     
     <item>
       <title>Automatic serialization in Objective-C</title>
-      <link>http://localhost:1313/post/automatic-serialization-objective-c/</link>
+      <link>http://localhost:1313/post/seamless-serialization-objectivec/</link>
       <pubDate>Wed, 02 Apr 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/automatic-serialization-objective-c/</guid>
-      <description>&lt;p&gt;Recently I worked on a tutorial that required me to serialize a large amount of objects. This is a common use case in many games - if the user quits the game and reopens it you want to restore the entire game state.&lt;/p&gt;
+      <guid>http://localhost:1313/post/seamless-serialization-objectivec/</guid>
+      <description>
+
+&lt;p&gt;Recently I worked on a tutorial that required me to serialize a large amount of objects. This is a common use case in many games - if the user quits the game and reopens it you want to restore the entire game state.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;http://puu.sh/7U79T.png&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;
 
@@ -1099,15 +1113,15 @@ NSLog(@&amp;quot;ClassA1 _age: %d&amp;quot;, _age);
 
 &lt;p&gt;&lt;a href=&#34;https://github.com/nicklockwood/AutoCoding&#34;&gt;Autocoding&lt;/a&gt; to the rescue!&lt;/p&gt;
 
-&lt;p&gt;#Autocoding&lt;/p&gt;
+&lt;h1 id=&#34;autocoding:6a58c9cd7366117c519c359294bd5b9e&#34;&gt;Autocoding&lt;/h1&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://github.com/nicklockwood/AutoCoding&#34;&gt;Autocoding&lt;/a&gt; is a great little utility that makes serialization in Objective-C a breeze. It is a lightweight framework that adds a category to &lt;code&gt;NSObject&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;##Installation&lt;/p&gt;
+&lt;h2 id=&#34;installation:6a58c9cd7366117c519c359294bd5b9e&#34;&gt;Installation&lt;/h2&gt;
 
 &lt;p&gt;Simply add &lt;em&gt;Autocoding.m&lt;/em&gt; and &lt;em&gt;Autocoding.h&lt;/em&gt; to your project.&lt;/p&gt;
 
-&lt;p&gt;##Example Usage&lt;/p&gt;
+&lt;h2 id=&#34;example-usage:6a58c9cd7366117c519c359294bd5b9e&#34;&gt;Example Usage&lt;/h2&gt;
 
 &lt;p&gt;AutoCoding&amp;rsquo;s category adds a very convenient &lt;code&gt;writeToFile:&lt;/code&gt; method to &lt;code&gt;NSObject&lt;/code&gt;. Once you added Autocoding to your project you can call it on basically any object (there are a few exceptions stated in detail on the GitHub page). Example of writing an object to disk:&lt;/p&gt;
 
@@ -1139,7 +1153,7 @@ NSLog(@&amp;quot;ClassA1 _age: %d&amp;quot;, _age);
 
 &lt;p&gt;When it comes to work I mostly face problems that can be better solved by domain specific software. I assign and receive tasks or track and report progress, for example. This is where I try to avoid Email as often as I can.&lt;/p&gt;
 
-&lt;h2 id=&#34;you-cannot-avoid-email-all-the-time:3ec716f6ac754c98634e8663565a7bac&#34;&gt;You cannot avoid Email all the time&lt;/h2&gt;
+&lt;h2 id=&#34;you-cannot-avoid-email-all-the-time:ea71f682803e8ab24bd6553a95ac049c&#34;&gt;You cannot avoid Email all the time&lt;/h2&gt;
 
 &lt;p&gt;Today it is common sense that Emails hurts our workplace productivity and in average &lt;a href=&#34;http://http://www.inc.com/news/articles/201103/workers-spend-half-day-being-unproductive.html&#34;&gt;takes far too much time out of our day&lt;/a&gt;.&lt;/p&gt;
 
@@ -1147,7 +1161,7 @@ NSLog(@&amp;quot;ClassA1 _age: %d&amp;quot;, _age);
 
 &lt;p&gt;If you don&amp;rsquo;t want to or cannot avoid eMails - how can you stop them from hurting your daily productivity?&lt;/p&gt;
 
-&lt;h2 id=&#34;my-problems-with-emails:3ec716f6ac754c98634e8663565a7bac&#34;&gt;My problems with Emails&lt;/h2&gt;
+&lt;h2 id=&#34;my-problems-with-emails:ea71f682803e8ab24bd6553a95ac049c&#34;&gt;My problems with Emails&lt;/h2&gt;
 
 &lt;p&gt;I started by identifying the biggest problems I was facing with my tradition Email usage:&lt;/p&gt;
 
@@ -1161,7 +1175,7 @@ NSLog(@&amp;quot;ClassA1 _age: %d&amp;quot;, _age);
 
 &lt;p&gt;So many people are facing these problems - there must be a tool out there, right?&lt;/p&gt;
 
-&lt;h2 id=&#34;task-management-for-your-inbox:3ec716f6ac754c98634e8663565a7bac&#34;&gt;Task Management for your Inbox&lt;/h2&gt;
+&lt;h2 id=&#34;task-management-for-your-inbox:ea71f682803e8ab24bd6553a95ac049c&#34;&gt;Task Management for your Inbox&lt;/h2&gt;
 
 &lt;p&gt;At MakeGamesWithUs we use &lt;em&gt;Gmail&lt;/em&gt;. I started looking for tools that would provide a simple integration of my Emails with &lt;em&gt;Asana&lt;/em&gt;, a task management system.
 Unfortunately none of the existing Gmail&amp;lt;-&amp;gt;Asana integrations looked simple enough to use. However, I found a great tool that provides task management directly in your Gmail inbox:  &lt;a href=&#34;http://www.activeinboxhq.com/&#34;&gt;ActiveInbox&lt;/a&gt;.&lt;/p&gt;
@@ -1175,7 +1189,7 @@ they&amp;rsquo;re tasks&lt;/p&gt;
 
 &lt;p&gt;What I experienced in the next two hours was liberation. The same feeling you get by clearing out your wardrobe or tidying your apartment for the first time in a couple of years.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-activeinbox-philosophy:3ec716f6ac754c98634e8663565a7bac&#34;&gt;The ActiveInbox philosophy&lt;/h2&gt;
+&lt;h2 id=&#34;the-activeinbox-philosophy:ea71f682803e8ab24bd6553a95ac049c&#34;&gt;The ActiveInbox philosophy&lt;/h2&gt;
 
 &lt;p&gt;ActiveInbox works with these few core principles and features:&lt;/p&gt;
 
@@ -1203,7 +1217,7 @@ they&amp;rsquo;re tasks&lt;/p&gt;
 &lt;p&gt;As you can see I have an amount of Emails in my &amp;ldquo;overdue&amp;rdquo; section - I still fall behind schedule now and then.
 BUT I don&amp;rsquo;t have to waste any brain cycles on my inbox - all the information is visible at a glance whenever I need it.&lt;/p&gt;
 
-&lt;h2 id=&#34;conclusion:3ec716f6ac754c98634e8663565a7bac&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;h2 id=&#34;conclusion:ea71f682803e8ab24bd6553a95ac049c&#34;&gt;Conclusion&lt;/h2&gt;
 
 &lt;p&gt;Once you get started using this philosophy you will never want to go back to the dark place, with the endless list of unread Emails, you came from.&lt;/p&gt;
 

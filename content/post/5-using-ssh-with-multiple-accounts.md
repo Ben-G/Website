@@ -2,6 +2,9 @@
 date = "2014-11-18T22:24:54-08:00"
 draft = false
 title = "Using SSH for private and work account on a Mac"
+disqus_url = "http://blog.benjamin-encz.de/using-ssh-with-multiple-accounts/"
+slug = "using-ssh-with-multiple-accounts"
+aliases = ["/using-ssh-with-multiple-accounts/"]
 +++
 
 > Disclaimer: I'm not a huge fan of configuring software; I'm primarily writing this to remember it for the future.
@@ -12,7 +15,7 @@ Using SSH instead of HTTPS to authenticate against services such as GitHub, Bitb
 
 In this brief write-up I want to discuss how to set up multiple Bitbucket accounts with different associated SSH Keys.
 
-##Two Bitbucket SSH keys on one machine
+## Two Bitbucket SSH keys on one machine
 
 The key for setting up the SSH client to use multiple SSH keys for the same service is the SSH config file which resides in: `~/.ssh/config`
 
@@ -28,7 +31,7 @@ This means you will need to create a second pair of SSH keys for use with your w
 
 Terminal will prompt you for a file name for that new key - you can choose one that identifies the key as a work SSH key (e.g. company name). Now you have a second SSH key and can add that one to your work account on Bitbucket.
 
-##Serving the right key
+## Serving the right key
 
 Now one problem remains. If you clone a Bitbucket repository, authenticating with SSH, SSH will by default always serve the `id_rsa` key which is associated with your personal account - that means you still won't be able to authenticate yourself with your work account and won't be able to interact with work repositories using SSH authentication.
 
@@ -46,7 +49,7 @@ We have two options at this point:
 
 The second option should mostly be preferred.
 
-##Using host alias names
+## Using host alias names
 
 We've just seen that the SSH client determines the SSH key based on the host name. That means we need two different host names for `bitbucket.org` depending on whether we want to use the personal or private account. Luckily the SSH config file lets us declare host aliases in the following way:
 

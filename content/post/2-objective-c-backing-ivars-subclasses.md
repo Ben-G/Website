@@ -2,6 +2,9 @@
 date = "2014-05-28T22:24:54-08:00"
 draft = false
 title = "Objective-C: Accessing backing iVars of properties in subclasses"
+disqus_url = "http://blog.benjamin-encz.de/objective-c-backing-ivars-subclasses/"
+slug = "objective-c-backing-ivars-subclasses"
+aliases = ["/objective-c-backing-ivars-subclasses/"]
 +++
 
 Most Objective-C developers have a fairly good understanding of properties and instance variables and how these two work together.
@@ -10,7 +13,7 @@ Today I want to discuss an interesting case that will force you to understand th
 
 <!--more-->
 
-##Our Scenario
+## Our Scenario
 
 Let's assume we want to create a very simple **ClassA** with a property called `age` of type `NSInteger`:
 
@@ -132,7 +135,7 @@ The trimmed output:
 
 ~~Scratch this approach~~, and move on to option number two.
 
-##Declare in ClassA.h ?
+## Declare in ClassA.h ?
 
 We now know that we cannot synthesize / declare the `_age` instance variable in *ClassB.m* because we will create a new instance variable instead of using the one of our super class *ClassA*.
 
@@ -185,7 +188,7 @@ Now this looks right! First *ClassA* gets initialized and gets the same result f
 
 Let's take a look at a third solution.
 
-##Use a class extension in a separate header file!
+## Use a class extension in a separate header file!
 
 We now know that the `_age` instance variable needs to be part of the interface of *ClassA* in order for subclasses to be able to access it.
 

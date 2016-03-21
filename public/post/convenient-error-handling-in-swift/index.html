@@ -130,11 +130,13 @@
     <section class="post-content">
 
 
+
+
 <p>Swift 2 introduced an error handling mechanism that includes <a href="link to my post">backwards compatibility with Objective-C</a>.</p>
 
 <p><strong>This is great news, the new mechanism is a lot stricter.</strong> Long gone are the days in which one could ignore errors by lavishly throwing <code>nil</code> at methods that expect a pointer to an <code>NSError</code> variable.</p>
 
-<p>#Does Every Error Deserve an Individual Catch?</p>
+<h1 id="does-every-error-deserve-an-individual-catch:85608b12dd7d2681711facf6cd0f8c5a">Does Every Error Deserve an Individual Catch?</h1>
 
 <p>Swift will require you to provide an error handler when you call a method that <code>throws</code>, unless you resort to the <code>try?</code> or <code>try!</code> operator. Here&rsquo;s an example of <code>try!</code>:</p>
 
@@ -165,7 +167,7 @@
 
 <p>Even though you can&rsquo;t recover from these errors, you should definitely keep track of them through some sort of logging mechanism! How can this be done without writing many individual error handlers?</p>
 
-<p>#A Good Compromise?</p>
+<h1 id="a-good-compromise:85608b12dd7d2681711facf6cd0f8c5a">A Good Compromise?</h1>
 
 <p>Can we strike a balance between convenience and due diligence? I believe so. In my latest side project I implemented a default error handler that deals with errors that, for one reason or another, don&rsquo;t deserve a custom error handler.</p>
 
@@ -202,7 +204,7 @@ errorHandler.wrap {
 
 <p>We can perform a failable operation without writing any code that deals with errors or optional return values, while still capturing details about errors that might occur.</p>
 
-<p>#Implementation of the Default Error Handler</p>
+<h1 id="implementation-of-the-default-error-handler:85608b12dd7d2681711facf6cd0f8c5a">Implementation of the Default Error Handler</h1>
 
 <p>The implementation of the error handler is very slim, here&rsquo;s the entire code:</p>
 
@@ -229,7 +231,7 @@ errorHandler.wrap {
 
 <p>The <code>logError</code> function should be customized to your needs - as an example I am printing the current stack trace along with the error message. In a production environment you would likely want to log these messages using an analytics service such as Fabric or Mixpanel.</p>
 
-<p>#Conclusion</p>
+<h1 id="conclusion:85608b12dd7d2681711facf6cd0f8c5a">Conclusion</h1>
 
 <p>Good error handling is incredibly important for a good user experience - I wanted to make the process as easy as possible. Now my analytics dashboard will inform me about any unhandled error that occurs in production. Going from there I can improve error handling in my apps by adding custom handlers for the most frequent errors.</p>
 
@@ -239,7 +241,7 @@ errorHandler.wrap {
 
 <p>How do you tackle error handling? I would love to hear from you!</p>
 
-<p>##Acknowledgements</p>
+<h2 id="acknowledgements:85608b12dd7d2681711facf6cd0f8c5a">Acknowledgements</h2>
 
 <ul>
 <li>Thanks to <a href="https://github.com/antitypical/Result/blob/master/Result/Result.swift#L153-L159"><code>Result.materialize</code></a> for inspiring my <code>wrap</code> function</li>
@@ -296,7 +298,7 @@ errorHandler.wrap {
 <script type="text/javascript">
 
   var disqus_shortname = 'benjaminencz';
-  var disqus_url = '';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/convenient-error-handling-in-swift\/';
 
   if (disqus_url === undefined) {
     if (window.location.hostname == "localhost") {

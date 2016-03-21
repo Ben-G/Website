@@ -2,11 +2,14 @@
 date = "2015-07-23T22:24:54-08:00"
 draft = false
 title = "Swift Error Handling and Objective-C Interop in Depth"
+disqus_url = "http://blog.benjamin-encz.de/swift-error-handling-and-objective-c-interop-in-depth/"
+slug = "swift-error-handling-and-objective-c-interop-in-depth"
+aliases = ["/swift-error-handling-and-objective-c-interop-in-depth/"]
 +++
 
 For the impatient reader:
 
-#TL;DR
+# TL;DR
 
 - The `ErrorType` protocol has hidden requirements that are automatically fullfilled if you use an `enum` to implement the protocol
 - Objective-C methods can only be translated to Swift's error handling mechanism if they return Objective-C objects or boolean values
@@ -16,7 +19,7 @@ For the impatient reader:
 
 <!--more-->
 
-#Fun With Errors
+# Fun With Errors
 
 Recently I've spent some time looking into the new error handling mechanism in Swift in depth. I've especially focused on its interoperability with Objective-C which is documented fairly lightly as of now (Xcode 7 Beta 4).
 
@@ -35,7 +38,7 @@ That was pretty surprising, given that the protocol definition for `ErrorType` i
 	protocol ErrorType {
 	}
 
-##Hidden Protocol Requirements
+## Hidden Protocol Requirements
 
 The error message revealed two hidden protocol requirements:
 
@@ -84,13 +87,13 @@ The `_domain` member matches the module name in which the custom `ErrorType` was
 
 Nothing too exciting here, but an interesting look under the covers. Next, let's see how Objective-C's `NSError` works with Swift's error handling.
 
-##Throwing From Objective-C
+## Throwing From Objective-C
 
 Let's build the simplest throwing Objective-C method following this rule in the documentation:
 
 > If the last non-block parameter of an Objective-C method is of type `NSError **`, Swift replaces it with the throws keyword, to indicate that the method can throw an error.
 
-###Methods That Return `void`
+### Methods That Return `void`
 
 This is a simple Objective-C class that has a method that should throw:
 
@@ -108,7 +111,7 @@ For some reason the automatic translation promised by Swift is not working in th
 
 After mutating the method signature multiple times, I found out that the method is **only translated to Swift's error handling mechanism if it returns an Objective-C object or a boolean value**.
 
-###Methods That Return Objective-C Objects or Boolean Values
+### Methods That Return Objective-C Objects or Boolean Values
 
 This method for example:
 
@@ -166,7 +169,7 @@ As was pointed out to me, the Cocoa documentation on error handling in Objective
 
 Source: [Programming with Objective-C | Dealing with Errors](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/ErrorHandling/ErrorHandling.html)
 
-##Summary
+## Summary
 
 As of today (Xcode 7 Beta 4) the interopability between Swift's error handling and Objective-C is lacking some documentation. Here are some interesting findings discussed throughout the blog post:
 

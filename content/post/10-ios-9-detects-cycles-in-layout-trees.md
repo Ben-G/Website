@@ -2,6 +2,9 @@
 date = "2015-07-09T22:24:54-08:00"
 draft = false
 title = "iOS 9 Detects Cycles in Layout Trees"
+disqus_url = "http://blog.benjamin-encz.de/ios-9-detects-cycles-in-layout-trees/"
+slug = "ios-9-detects-cycles-in-layout-trees"
+aliases = ["/ios-9-detects-cycles-in-layout-trees/"]
 +++
 
 A couple of months ago I was faced with an issue that was fairly hard to debug:
@@ -19,7 +22,7 @@ The hackathon attendee hat mistakenly set the `accessoryView` of a `UITableViewC
 
 This however wasn't immediately obvious to me since the symptom was an exception within the `cellForRowAtIndexPath:` method.
 
-##Fixed in iOS 9
+## Fixed in iOS 9
 
 Today I wanted to see if it is possible to reproduce the issue with Xcode 7 Beta 3.
 

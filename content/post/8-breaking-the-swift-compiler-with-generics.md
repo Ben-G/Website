@@ -2,6 +2,9 @@
 date = "2015-02-19T22:24:54-08:00"
 draft = false
 title = "Breaking Swift with NSObject and Generics"
+disqus_url = "http://blog.benjamin-encz.de/breaking-the-swift-compiler-with-generics/"
+slug = "breaking-the-swift-compiler-with-generics"
+aliases = ["/breaking-the-swift-compiler-with-generics/"]
 +++
 
 Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at [Open Radar](http://openradar.appspot.com/search?query=segmentation+fault+swift) there seem to be many out there)!
@@ -32,7 +35,7 @@ Here's what I was trying to implement
 
 A class that takes an array and implements `UITableViewDataSource` using the content of that array (an idea that's discussed in [objc.io issue #1](http://www.objc.io/issue-1/lighter-view-controllers.html)).
 
-#The Error
+# The Error
 
 As you can see I didn't get very far before running into the compiler error. When you compile the above code (in Xcode 6.1.1 or Xcode 6.3) you'll see the following error message:
 
@@ -42,7 +45,7 @@ Along with a nice stack trace from swift compiler:
 
 ![](https://dl.dropboxusercontent.com/u/13528538/Blog/Swift_Crash.png)
 
-#Finding a generic reproducable example
+# Finding a generic reproducable example
 
 Since this issue exists in both Xcode 6.1.1 and Xcode 6.3 I wanted to file a bug report to make sure this gets resolved in future. I played around with different ways to fix the issue, here are two simple ones that worked:
 

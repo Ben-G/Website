@@ -2,6 +2,9 @@
 date = "2015-02-05T22:24:54-08:00"
 draft = false
 title = "\"I didn't know that\" is the best way to learn"
+disqus_url = "http://blog.benjamin-encz.de/i-didnt-know-that-is-the-best-way-to-learn/"
+slug = "i-didnt-know-that-is-the-best-way-to-learn"
+aliases = ["/i-didnt-know-that-is-the-best-way-to-learn/"]
 +++
 
 This is no original thought. Nevertheless I've been thinking about it often enough to make it worth spending a few minutes framing it in my own words.

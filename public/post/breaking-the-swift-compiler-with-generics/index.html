@@ -130,6 +130,8 @@
     <section class="post-content">
 
 
+
+
 <p>Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at <a href="http://openradar.appspot.com/search?query=segmentation+fault+swift">Open Radar</a> there seem to be many out there)!</p>
 
 <p>Here&rsquo;s what I was trying to implement</p>
@@ -157,7 +159,7 @@ extension ArrayDataSource : UITableViewDataSource {
 
 <p>A class that takes an array and implements <code>UITableViewDataSource</code> using the content of that array (an idea that&rsquo;s discussed in <a href="http://www.objc.io/issue-1/lighter-view-controllers.html">objc.io issue #1</a>).</p>
 
-<p>#The Error</p>
+<h1 id="the-error:ad4d4ff830a667f9bf3648d7b19cfe5c">The Error</h1>
 
 <p>As you can see I didn&rsquo;t get very far before running into the compiler error. When you compile the above code (in Xcode 6.1.1 or Xcode 6.3) you&rsquo;ll see the following error message:</p>
 
@@ -168,7 +170,7 @@ extension ArrayDataSource : UITableViewDataSource {
 
 <p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Swift_Crash.png" alt="" /></p>
 
-<p>#Finding a generic reproducable example</p>
+<h1 id="finding-a-generic-reproducable-example:ad4d4ff830a667f9bf3648d7b19cfe5c">Finding a generic reproducable example</h1>
 
 <p>Since this issue exists in both Xcode 6.1.1 and Xcode 6.3 I wanted to file a bug report to make sure this gets resolved in future. I played around with different ways to fix the issue, here are two simple ones that worked:</p>
 
@@ -240,7 +242,7 @@ extension D: NSObjectProtocol {}
 <script type="text/javascript">
 
   var disqus_shortname = 'benjaminencz';
-  var disqus_url = '';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/breaking-the-swift-compiler-with-generics\/';
 
   if (disqus_url === undefined) {
     if (window.location.hostname == "localhost") {

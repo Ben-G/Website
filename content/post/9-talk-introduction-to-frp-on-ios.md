@@ -2,6 +2,9 @@
 date = "2015-05-30T22:24:54-08:00"
 draft = false
 title = "Talk: Introduction to FRP on iOS"
+disqus_url = "http://blog.benjamin-encz.de/talk-introduction-to-frp-on-ios/"
+slug = "talk-introduction-to-frp-on-ios"
+aliases = ["/talk-introduction-to-frp-on-ios/"]
 +++
 
 Back in April I gave a talk at [NSMeetup in San Francisco](http://www.meetup.com/nsmeetup/events/220950179/) on Functional Reactive Programming on iOS.

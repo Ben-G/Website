@@ -2,6 +2,9 @@
 date = "2014-04-02T22:24:54-08:00"
 draft = false
 title = "Automatic serialization in Objective-C"
+disqus_url = "http://blog.benjamin-encz.de/seamless-serialization-objectivec/"
+slug = "seamless-serialization-objectivec"
+aliases = ["/seamless-serialization-objectivec/"]
 +++
 
 Recently I worked on a tutorial that required me to serialize a large amount of objects. This is a common use case in many games - if the user quits the game and reopens it you want to restore the entire game state.
@@ -16,15 +19,15 @@ In my case implementing the `NSCoding` protocol manually would have meant a bori
 
 [Autocoding](https://github.com/nicklockwood/AutoCoding) to the rescue!
 
-#Autocoding
+# Autocoding
 
 [Autocoding](https://github.com/nicklockwood/AutoCoding) is a great little utility that makes serialization in Objective-C a breeze. It is a lightweight framework that adds a category to `NSObject`.
 
-##Installation
+## Installation
 
 Simply add *Autocoding.m* and *Autocoding.h* to your project.
 
-##Example Usage
+## Example Usage
 
 AutoCoding's category adds a very convenient `writeToFile:` method to `NSObject`. Once you added Autocoding to your project you can call it on basically any object (there are a few exceptions stated in detail on the GitHub page). Example of writing an object to disk:
 

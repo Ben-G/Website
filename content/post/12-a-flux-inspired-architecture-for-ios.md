@@ -2,6 +2,9 @@
 date = "2015-09-12T22:24:54-08:00"
 draft = false
 title = "A Flux Inspired Architecture for iOS"
+disqus_url = "http://blog.benjamin-encz.de/a-flux-inspired-architecture-for-ios/"
+slug = "a-flux-inspired-architecture-for-ios"
+aliases = ["/a-flux-inspired-architecture-for-ios/"]
 +++
 
 This year I spoke at 360iDev about "Safer Swift Code with Value Types". The goal of the talk was to explore an architecture that uses immutable value types for the model layer.
