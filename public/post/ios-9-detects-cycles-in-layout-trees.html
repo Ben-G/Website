@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" iOS 9 Detects Cycles in Layout Trees &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
+  	<meta property="og:url" content="http://localhost:8888/post/ios-9-detects-cycles-in-layout-trees.html" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2015-07-09T22:24:54-08:00" />
+
+    
+    
+
+  <title>
+     iOS 9 Detects Cycles in Layout Trees &middot;  [Thinking inside a large box];
+  </title>
+
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="http://localhost:8888/images/favicon.ico">
+	  <link rel="apple-touch-icon" href="http://localhost:8888/images/apple-touch-icon.png" />
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8888/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost:8888/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata" />
+
+
+    
+      
+          <link href="http://localhost:8888/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.14" />
+
+    <link rel="canonical" href="http://localhost:8888/post/ios-9-detects-cycles-in-layout-trees.html" />
+
+    
+
+    
+</head>
+<body class="nav-closed">
+
+  <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+        
+        
+        
+    </ul>
+    
+    
+    <a class="subscribe-button icon-feed" href="http://localhost:8888/index.xml">Subscribe</a>
+    
+</div>
+<span class="nav-cover"></span>
+
+
+ <div class="site-wrapper">
+
+
+
+
+	<header class="main-header tag-head" style="background-image: url(http://localhost:8888/images/sf-clouds.jpg)">
+
+<nav class="main-nav overlay clearfix">
+  
+      <a class="menu-button" href="http://localhost:8888/" style="float: left;">&lt; Home</a>
+  
+  
+    
+      <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+    
+  
+</nav>
+<div class="vertical">
+    <div class="main-header-content inner">
+        <a href="http://localhost:8888/" style="text-decoration: none;"><h1 class="page-title">[Thinking inside a large box];</h1></a>
+        <h2 class="page-description">
+            
+        </h2>
+    </div>
+</div>
+</header>
+
+
+    
+
+
+</header>
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+    <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
+        <h1 class="post-title">iOS 9 Detects Cycles in Layout Trees</h1>
+        <small></small>
+
+        <section class="post-meta">
+        
+          <time class="post-date" datetime="2015-07-09T22:24:54-08:00">
+            Jul 9, 2015
+          </time>
+        
+         
+        </section>
+    </header>
+
+    <section class="post-content">
+
+
+
+
+<p>A couple of months ago I was faced with an issue that was fairly hard to debug:</p>
+
+<p><blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">Hackathons are a great place to see noteworthy issues. Yesterday&#39;s highlight: endless recursion in Storyboard <a href="https://twitter.com/LAHacks">@LAHacks</a></p>&mdash; Benjamin Encz (@benjaminencz) <a href="https://twitter.com/benjaminencz/status/584757451469127680">April 5, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
+
+<p>What I found out, after about 30 minutes of debugging, was the following:</p>
+
+<p><img src="https://www.dropbox.com/s/kcjgm6sgftmxo5y/accessoryView.png?dl=1" alt="" /></p>
+
+<p>The hackathon attendee hat mistakenly set the <code>accessoryView</code> of a <code>UITableViewCell</code> to the <code>UITableView</code> in which the cell was contained - causing an endless recursion during the first layout cycle.</p>
+
+<p>This however wasn&rsquo;t immediately obvious to me since the symptom was an exception within the <code>cellForRowAtIndexPath:</code> method.</p>
+
+<h2 id="fixed-in-ios-9:9df3400d24ce9ec6d67d1afbc4f7edb2">Fixed in iOS 9</h2>
+
+<p>Today I wanted to see if it is possible to reproduce the issue with Xcode 7 Beta 3.</p>
+
+<p>Indeed, I can still cause the crash. However, instead of causing a stack overflow the app now terminates because <code>CALayer</code> throws an exception:</p>
+
+<pre><code>CrashTableViewCell[33582:11713163] *** Terminating app due to uncaught exception 'CALayerInvalid', reason: 'layer &lt;CALayer: 0x7f875943c730&gt; is a part of cycle in its layer tree
+</code></pre>
+
+<p>I couldn&rsquo;t find any reference to this exception in a Stack Overflow exception so I assume the cycle detection is new in iOS 9.</p>
+
+<p>This fix will likely save some headaches!</p>
+
+<p>It also serves as a good real world example of <a href="https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm">detecting cycles in directed graphs</a>.</p>
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+  <footer class="post-footer">
+
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a><br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=iOS%209%20Detects%20Cycles%20in%20Layout%20Trees&amp;url=http%3a%2f%2flocalhost%3a8888%2fpost%2fios-9-detects-cycles-in-layout-trees.html"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a8888%2fpost%2fios-9-detects-cycles-in-layout-trees.html"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2flocalhost%3a8888%2fpost%2fios-9-detects-cycles-in-layout-trees.html"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
+
+    
+
+<span id="comment_section"></span>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/ios-9-detects-cycles-in-layout-trees\/';
+
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/localhost:8888\/post\/ios-9-detects-cycles-in-layout-trees.html';
+    }
+  }
+
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+  </footer>
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://localhost:8888/js/jquery.js"></script>
+    <script type="text/javascript" src="http://localhost:8888/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://localhost:8888/js/index.js"></script>
+    
+</body>
+</html>
+

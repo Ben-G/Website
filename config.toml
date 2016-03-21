@@ -1,4 +1,7 @@
-baseurl = "http://blog.benjamin-encz.de"
+# baseurl = "http://blog.benjamin-encz.de/"
+baseurl = "http://localhost:8888/"
+relativeURLs = true
+canonifyURLs = true
 languageCode = "en-us"
 title = "[Thinking inside a large box];"
 

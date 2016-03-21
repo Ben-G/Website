@@ -2,83 +2,93 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://localhost:1313/</loc>
-    <lastmod>2016-01-20T22:24:54-08:00</lastmod>
+    <loc>http://localhost:8888/</loc>
+    <lastmod>2016-02-25T22:24:54-08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/introducing-reswift/</loc>
+    <loc>http://localhost:8888/post/validated-a-swift-m-library-for-somewhat-dependent-types/</loc>
+    <lastmod>2016-02-25T22:24:54-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://localhost:8888/post/how-i-write-swift-specs-with-quick/</loc>
+    <lastmod>2016-02-24T22:24:54-08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://localhost:8888/post/introducing-reswift/</loc>
     <lastmod>2016-01-20T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/convenient-error-handling-in-swift/</loc>
+    <loc>http://localhost:8888/post/convenient-error-handling-in-swift/</loc>
     <lastmod>2015-11-18T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/a-flux-inspired-architecture-for-ios/</loc>
+    <loc>http://localhost:8888/post/a-flux-inspired-architecture-for-ios/</loc>
     <lastmod>2015-09-12T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/swift-error-handling-and-objective-c-interop-in-depth/</loc>
+    <loc>http://localhost:8888/post/swift-error-handling-and-objective-c-interop-in-depth/</loc>
     <lastmod>2015-07-23T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/ios-9-detects-cycles-in-layout-trees/</loc>
+    <loc>http://localhost:8888/post/ios-9-detects-cycles-in-layout-trees/</loc>
     <lastmod>2015-07-09T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/talk-introduction-to-frp-on-ios/</loc>
+    <loc>http://localhost:8888/post/talk-introduction-to-frp-on-ios/</loc>
     <lastmod>2015-05-30T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/breaking-the-swift-compiler-with-generics/</loc>
+    <loc>http://localhost:8888/post/breaking-the-swift-compiler-with-generics/</loc>
     <lastmod>2015-02-19T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/i-didnt-know-that-is-the-best-way-to-learn/</loc>
+    <loc>http://localhost:8888/post/i-didnt-know-that-is-the-best-way-to-learn/</loc>
     <lastmod>2015-02-05T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/switching-ios-devices-and-the-keychain/</loc>
+    <loc>http://localhost:8888/post/switching-ios-devices-and-the-keychain/</loc>
     <lastmod>2014-12-14T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/using-ssh-with-multiple-accounts/</loc>
+    <loc>http://localhost:8888/post/using-ssh-with-multiple-accounts/</loc>
     <lastmod>2014-11-18T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/the-downside-of-web-apis/</loc>
+    <loc>http://localhost:8888/post/the-downside-of-web-apis/</loc>
     <lastmod>2014-08-10T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/arithmetic-expressions-in-swift/</loc>
+    <loc>http://localhost:8888/post/arithmetic-expressions-in-swift/</loc>
     <lastmod>2014-06-03T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/objective-c-backing-ivars-subclasses/</loc>
+    <loc>http://localhost:8888/post/objective-c-backing-ivars-subclasses/</loc>
     <lastmod>2014-05-28T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/seamless-serialization-objectivec/</loc>
+    <loc>http://localhost:8888/post/seamless-serialization-objectivec/</loc>
     <lastmod>2014-04-02T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:1313/post/when-you-cant-avoid-email/</loc>
+    <loc>http://localhost:8888/post/when-you-cant-avoid-email/</loc>
     <lastmod>2014-03-04T22:24:54-08:00</lastmod>
   </url>
   

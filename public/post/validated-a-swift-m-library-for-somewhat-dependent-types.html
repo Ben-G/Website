@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" Validated: A Swift μ-Library for Somewhat Dependent Types &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
+  	<meta property="og:url" content="http://localhost:8888/post/validated-a-swift-m-library-for-somewhat-dependent-types.html" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2016-02-25T22:24:54-08:00" />
+
+    
+    
+
+  <title>
+     Validated: A Swift μ-Library for Somewhat Dependent Types &middot;  [Thinking inside a large box];
+  </title>
+
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="http://localhost:8888/images/favicon.ico">
+	  <link rel="apple-touch-icon" href="http://localhost:8888/images/apple-touch-icon.png" />
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8888/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost:8888/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata" />
+
+
+    
+      
+          <link href="http://localhost:8888/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.14" />
+
+    <link rel="canonical" href="http://localhost:8888/post/validated-a-swift-m-library-for-somewhat-dependent-types.html" />
+
+    
+
+    
+</head>
+<body class="nav-closed">
+
+  <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+        
+        
+        
+    </ul>
+    
+    
+    <a class="subscribe-button icon-feed" href="http://localhost:8888/index.xml">Subscribe</a>
+    
+</div>
+<span class="nav-cover"></span>
+
+
+ <div class="site-wrapper">
+
+
+
+
+	<header class="main-header tag-head" style="background-image: url(http://localhost:8888/images/sf-clouds.jpg)">
+
+<nav class="main-nav overlay clearfix">
+  
+      <a class="menu-button" href="http://localhost:8888/" style="float: left;">&lt; Home</a>
+  
+  
+    
+      <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+    
+  
+</nav>
+<div class="vertical">
+    <div class="main-header-content inner">
+        <a href="http://localhost:8888/" style="text-decoration: none;"><h1 class="page-title">[Thinking inside a large box];</h1></a>
+        <h2 class="page-description">
+            
+        </h2>
+    </div>
+</div>
+</header>
+
+
+    
+
+
+</header>
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+    <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
+        <h1 class="post-title">Validated: A Swift μ-Library for Somewhat Dependent Types</h1>
+        <small></small>
+
+        <section class="post-meta">
+        
+          <time class="post-date" datetime="2016-02-25T22:24:54-08:00">
+            Feb 25, 2016
+          </time>
+        
+         
+        </section>
+    </header>
+
+    <section class="post-content">
+
+
+<p>Today I built &amp; published a μ-library that makes it easier to leverage Swift&rsquo;s type checking system for program verification: <a href="https://github.com/Ben-G/Validated">Validated</a>.</p>
+
+<p><strong>Why?</strong></p>
+
+<p>All Swift developers already use the type system to avoid basic type mismatches (e.g. passing an <code>Int</code> where a <code>String</code> is expected), this capability is built into the languge itself.</p>
+
+<p>A type system can however help verifying more than just the abscence of these simple errors. This requires that developers express constraints and semantics of their programs in types. <strong><code>Validated</code> provides a simple way to lift requirements about values into the type system.</strong></p>
+
+<p>Here&rsquo;s an example from the GitHub Readme:</p>
+
+<p>You might have a function in your code that only knows how to work with a <code>User</code> value when the user is logged in. Usually you will implement this requirement in code &amp; add documentation, but you don&rsquo;t have an easy way of expressing this invariant in the type signature:</p>
+
+<pre><code class="language-swift">/// Please ever only call with a logged-in user!
+func performTaskWithUser(user: User) {
+    precondition(
+    	user.loggedIn,
+    	&quot;It is illegal to call this method with a logged out user!&quot;
+    )
+
+	// ...
+}
+</code></pre>
+
+<p>Using Validated you can quickly create a new type that describes this requirement in the type system. That makes it impossible to call the function with a logged-out user and it makes the method signature express your invariant (instead of relying on documentation):</p>
+
+<pre><code class="language-swift">func performTaskWithUser(user: LoggedInUser) {
+	// ...
+}
+</code></pre>
+
+<p>In short: <code>Validated</code> allows you to create new types, by taking existing types and adding validations to them. These new types can be used throughout your APIs to express expectations not only about types, but also about values.</p>
+
+<p>I&rsquo;m very interested in hearing whether this is useful to you &amp; how it could be improved!</p>
+
+<p><a href="https://github.com/Ben-G/Validated">To learn how to use this you should head to GitHub</a>!</p>
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+  <footer class="post-footer">
+
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a><br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Validated%3a%20A%20Swift%20%ce%bc-Library%20for%20Somewhat%20Dependent%20Types&amp;url=http%3a%2f%2flocalhost%3a8888%2fpost%2fvalidated-a-swift-m-library-for-somewhat-dependent-types.html"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a8888%2fpost%2fvalidated-a-swift-m-library-for-somewhat-dependent-types.html"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2flocalhost%3a8888%2fpost%2fvalidated-a-swift-m-library-for-somewhat-dependent-types.html"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
+
+    
+
+<span id="comment_section"></span>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/validated-a-swift-m-library-for-somewhat-dependent-types\/';
+
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/localhost:8888\/post\/validated-a-swift-m-library-for-somewhat-dependent-types.html';
+    }
+  }
+
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+  </footer>
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://localhost:8888/js/jquery.js"></script>
+    <script type="text/javascript" src="http://localhost:8888/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://localhost:8888/js/index.js"></script>
+    
+</body>
+</html>
+

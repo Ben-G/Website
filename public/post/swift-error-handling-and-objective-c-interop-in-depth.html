@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" Swift Error Handling and Objective-C Interop in Depth &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
+  	<meta property="og:url" content="http://localhost:8888/post/swift-error-handling-and-objective-c-interop-in-depth.html" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2015-07-23T22:24:54-08:00" />
+
+    
+    
+
+  <title>
+     Swift Error Handling and Objective-C Interop in Depth &middot;  [Thinking inside a large box];
+  </title>
+
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="http://localhost:8888/images/favicon.ico">
+	  <link rel="apple-touch-icon" href="http://localhost:8888/images/apple-touch-icon.png" />
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8888/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost:8888/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata" />
+
+
+    
+      
+          <link href="http://localhost:8888/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.14" />
+
+    <link rel="canonical" href="http://localhost:8888/post/swift-error-handling-and-objective-c-interop-in-depth.html" />
+
+    
+
+    
+</head>
+<body class="nav-closed">
+
+  <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+        
+        
+        
+    </ul>
+    
+    
+    <a class="subscribe-button icon-feed" href="http://localhost:8888/index.xml">Subscribe</a>
+    
+</div>
+<span class="nav-cover"></span>
+
+
+ <div class="site-wrapper">
+
+
+
+
+	<header class="main-header tag-head" style="background-image: url(http://localhost:8888/images/sf-clouds.jpg)">
+
+<nav class="main-nav overlay clearfix">
+  
+      <a class="menu-button" href="http://localhost:8888/" style="float: left;">&lt; Home</a>
+  
+  
+    
+      <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+    
+  
+</nav>
+<div class="vertical">
+    <div class="main-header-content inner">
+        <a href="http://localhost:8888/" style="text-decoration: none;"><h1 class="page-title">[Thinking inside a large box];</h1></a>
+        <h2 class="page-description">
+            
+        </h2>
+    </div>
+</div>
+</header>
+
+
+    
+
+
+</header>
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+    <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
+        <h1 class="post-title">Swift Error Handling and Objective-C Interop in Depth</h1>
+        <small></small>
+
+        <section class="post-meta">
+        
+          <time class="post-date" datetime="2015-07-23T22:24:54-08:00">
+            Jul 23, 2015
+          </time>
+        
+         
+        </section>
+    </header>
+
+    <section class="post-content">
+
+
+
+
+<p>For the impatient reader:</p>
+
+<h1 id="tl-dr:7d6cd9aa87721e34fde537cfc5c1034a">TL;DR</h1>
+
+<ul>
+<li>The <code>ErrorType</code> protocol has hidden requirements that are automatically fullfilled if you use an <code>enum</code> to implement the protocol</li>
+<li>Objective-C methods can only be translated to Swift&rsquo;s error handling mechanism if they return Objective-C objects or boolean values</li>
+<li>Swift will invoke the <code>catch</code> block if the Objective-C method returns <code>nil</code>/<code>false</code>, independent of whether an <code>NSError</code> was produced or not</li>
+<li>If an Objective-C method produces an <code>NSError</code> <em>and</em> returns a value the <code>catch</code> blocks is not invoked and the error cannot be retrieved</li>
+<li><a href="https://github.com/Ben-G/FunWithErrors">GitHub project with examples</a></li>
+</ul>
+
+<h1 id="fun-with-errors:7d6cd9aa87721e34fde537cfc5c1034a">Fun With Errors</h1>
+
+<p>Recently I&rsquo;ve spent some time looking into the new error handling mechanism in Swift in depth. I&rsquo;ve especially focused on its interoperability with Objective-C which is documented fairly lightly as of now (Xcode 7 Beta 4).</p>
+
+<p>It started with the following lines of code, in which I tried to experiment with creating a custom error type using a <code>struct</code> (instead of the canonical example in which we use an <code>enum</code>):</p>
+
+<pre><code>struct MyErrorType: ErrorType {
+  var errorDetails: String
+}
+</code></pre>
+
+<p>This results in the following compiler error:</p>
+
+<p><code>Type 'MyErrorType' does not conform to protocol 'ErrorType'</code>.</p>
+
+<p>That was pretty surprising, given that the protocol definition for <code>ErrorType</code> in Xcode looks like this:</p>
+
+<pre><code>protocol ErrorType {
+}
+</code></pre>
+
+<h2 id="hidden-protocol-requirements:7d6cd9aa87721e34fde537cfc5c1034a">Hidden Protocol Requirements</h2>
+
+<p>The error message revealed two hidden protocol requirements:</p>
+
+<p><img src="https://www.dropbox.com/s/rlx8vruu9ecdqko/error.png?dl=1" alt="image" /></p>
+
+<p>This means the actual protocol definition for <code>ErrorType</code> looks like this:</p>
+
+<pre><code>protocol ErrorType {
+    var _domain: String
+    var _code: Int
+}
+</code></pre>
+
+<p>When using an <code>enum</code> to define a custom <code>ErrorType</code> these fields are automatically generated and populated (this is discussed in WWDC 2015 Session 402, 08:20 min).</p>
+
+<p>These two fields, <code>domain</code> and <code>code</code>, are also provided by <code>NSError</code>, so I assume these fields are primarily used for compatibility with Objective-C.</p>
+
+<p>You might wonder how these fields are populated when using a custom <code>ErrorType</code>?</p>
+
+<p>Me too! So let&rsquo;s create this simple error type:</p>
+
+<pre><code>enum MyError: ErrorType {
+  case BasicError, FatalError
+}
+</code></pre>
+
+<p>And write a throwing function:</p>
+
+<pre><code>func badFunction() throws {
+  throw B.FatalError
+}
+</code></pre>
+
+<p>Along with a catch block to print the <code>_code</code> and <code>_domain</code> members of the error:</p>
+
+<pre><code>do {
+  try badFunction()
+} catch let error as MyError {
+  print(&quot;domain: \(error._domain) code:\(error._code)&quot;)
+} catch {
+
+}
+</code></pre>
+
+<p>This is the result that you will see in the console:</p>
+
+<pre><code>domain: FunWithErrors.MyError code: 1
+</code></pre>
+
+<p>The <code>_domain</code> member matches the module name in which the custom <code>ErrorType</code> was defined and the <code>_code</code> matches the raw enum value (<code>BasicError</code> = 0, <code>FatalError</code> = 1).</p>
+
+<p>Nothing too exciting here, but an interesting look under the covers. Next, let&rsquo;s see how Objective-C&rsquo;s <code>NSError</code> works with Swift&rsquo;s error handling.</p>
+
+<h2 id="throwing-from-objective-c:7d6cd9aa87721e34fde537cfc5c1034a">Throwing From Objective-C</h2>
+
+<p>Let&rsquo;s build the simplest throwing Objective-C method following this rule in the documentation:</p>
+
+<blockquote>
+<p>If the last non-block parameter of an Objective-C method is of type <code>NSError **</code>, Swift replaces it with the throws keyword, to indicate that the method can throw an error.</p>
+</blockquote>
+
+<h3 id="methods-that-return-void:7d6cd9aa87721e34fde537cfc5c1034a">Methods That Return <code>void</code></h3>
+
+<p>This is a simple Objective-C class that has a method that should throw:</p>
+
+<pre><code>@interface ErrorProducer : NSObject
+
++ (void)doWithError:(NSError**)error;
+
+@end
+</code></pre>
+
+<p>However, when calling this method from Swift we need to provide an <code>NSErrorPointer</code> and the method does not throw:</p>
+
+<p><img src="https://www.dropbox.com/s/zz8ev7j00vxz21k/doesntThrow.png?dl=1" alt="image" /></p>
+
+<p>For some reason the automatic translation promised by Swift is not working in this case.</p>
+
+<p>After mutating the method signature multiple times, I found out that the method is <strong>only translated to Swift&rsquo;s error handling mechanism if it returns an Objective-C object or a boolean value</strong>.</p>
+
+<h3 id="methods-that-return-objective-c-objects-or-boolean-values:7d6cd9aa87721e34fde537cfc5c1034a">Methods That Return Objective-C Objects or Boolean Values</h3>
+
+<p>This method for example:</p>
+
+<pre><code>+ (NSString *)provideStringWithError:(NSError**)error;
+</code></pre>
+
+<p>Can be used from Swift as expected:</p>
+
+<p><img src="https://www.dropbox.com/s/dqoauugwun16t4k/doesThrow.png?dl=1" alt="image" /></p>
+
+<p>So let&rsquo;s provide a simple implementation for this method to see how we can catch the thrown <code>NSError</code> in Swift:</p>
+
+<pre><code>+ (NSString *)provideStringWithError:(NSError**)error {
+  if (error) {
+    *error = [NSError errorWithDomain:@&quot;FunWithErrors&quot; code:0 userInfo:nil];
+  }
+
+  return @&quot;&quot;;
+}
+</code></pre>
+
+<p>And on the call side we provide a <code>do/catch</code> block:</p>
+
+<pre><code>do {
+  try ErrorProducer.provideString()
+} catch let error as NSError {
+  print(&quot;domain: \(error.domain) code: \(error.code)&quot;)
+}
+</code></pre>
+
+<p>If you run this code Swift code&hellip; <strong>nothing will be printed to the console!</strong> The catch block will never be reached.</p>
+
+<p>It seems that the return value of an empty string (<code>@&quot;&quot;</code>) is indicating that the method returned successfully, even though an error was assigned to the error pointer.</p>
+
+<p>If we change the implementation of the Objective-C method to return <code>nil</code>, the <code>catch</code> block is invoked correctly:</p>
+
+<pre><code>+ (NSString *)provideStringWithError:(NSError**)error {
+  if (error) {
+    *error = [NSError errorWithDomain:@&quot;FunWithErrors&quot; code:0 userInfo:nil];
+  }
+
+  return nil;
+}
+</code></pre>
+
+<p>From Swift&rsquo;s perspective this makes sense. Every Swift function that <code>throws</code> will return to the caller without providing the expected return value. In Objective-C however, <code>NSError</code> is sometimes used as an <em>additional</em> return value indicating that some minor issue occurred, while the main return value could still be created as expected. <strong>In my understanding these <code>NSError</code> instances cannot be retrieved from Swift.</strong> It will be interesting to see if and how existing Objective-C frameworks will be modernized to accomodate for this.</p>
+
+<p>There&rsquo;s one more interesting case I want to look at: It almost seems like the return value is the most important factor for determining whether an Objective-C method throws or not. What happens if we return <code>nil</code> without assigning an <code>NSError</code> to the error pointer?</p>
+
+<pre><code>+ (NSString *)provideNilStringNoErrorWithError:(NSError**)error {
+  return nil;
+}
+</code></pre>
+
+<p>This indeed throws as well! Swift provides us with an instance of <code>_SwiftNativeNSError</code>, the <code>domain</code> of the produced error is <code>Foundation._GenericObjCError</code> and the <code>code</code> is 0.</p>
+
+<p>As was pointed out to me, the Cocoa documentation on error handling in Objective-C discusses this emphasis on the return value of a method that can error out:</p>
+
+<blockquote>
+<p>When dealing with errors passed by reference, it’s important to test the return value of the method to see whether an error occurred, as shown above. Don’t just test to see whether the error pointer was set to point to an error.</p>
+</blockquote>
+
+<p>Source: <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/ErrorHandling/ErrorHandling.html">Programming with Objective-C | Dealing with Errors</a></p>
+
+<h2 id="summary:7d6cd9aa87721e34fde537cfc5c1034a">Summary</h2>
+
+<p>As of today (Xcode 7 Beta 4) the interopability between Swift&rsquo;s error handling and Objective-C is lacking some documentation. Here are some interesting findings discussed throughout the blog post:</p>
+
+<ul>
+<li>Objective-C methods can only be translated to Swift&rsquo;s error handling mechanism if they return Objective-C objects or boolean values</li>
+<li>Swift will invoke the <code>catch</code> block if the Objective-C method returns <code>nil</code>/<code>false</code>, independent of whether an <code>NSError</code> was produced or not</li>
+<li>If an Objective-C method produces an <code>NSError</code> <em>and</em> returns a value, the <code>catch</code> blocks is not invoked and the error cannot be retrieved</li>
+</ul>
+
+<p>You can find a small project that contains all of the examples used in this blog post <a href="https://github.com/Ben-G/FunWithErrors">on GitHub</a>.</p>
+
+<p><em>Thanks <a href="https://twitter.com/warrenm">@warrenm</a> for providing feedback and improving this post!</em></p>
+
+<p>You can <a href="https://twitter.com/benjaminencz">find me on twitter</a>, too.</p>
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+  <footer class="post-footer">
+
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a><br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Swift%20Error%20Handling%20and%20Objective-C%20Interop%20in%20Depth&amp;url=http%3a%2f%2flocalhost%3a8888%2fpost%2fswift-error-handling-and-objective-c-interop-in-depth.html"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a8888%2fpost%2fswift-error-handling-and-objective-c-interop-in-depth.html"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2flocalhost%3a8888%2fpost%2fswift-error-handling-and-objective-c-interop-in-depth.html"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
+
+    
+
+<span id="comment_section"></span>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/swift-error-handling-and-objective-c-interop-in-depth\/';
+
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/localhost:8888\/post\/swift-error-handling-and-objective-c-interop-in-depth.html';
+    }
+  }
+
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+  </footer>
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://localhost:8888/js/jquery.js"></script>
+    <script type="text/javascript" src="http://localhost:8888/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://localhost:8888/js/index.js"></script>
+    
+</body>
+</html>
+

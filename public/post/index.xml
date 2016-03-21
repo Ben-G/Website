@@ -2,19 +2,148 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on [Thinking inside a large box];</title>
-    <link>http://localhost:1313/post/</link>
+    <link>http://localhost:8888/post/</link>
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 20 Jan 2016 22:24:54 -0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 25 Feb 2016 22:24:54 -0800</lastBuildDate>
+    <atom:link href="http://localhost:8888/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Validated: A Swift μ-Library for Somewhat Dependent Types</title>
+      <link>http://localhost:8888/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
+      <pubDate>Thu, 25 Feb 2016 22:24:54 -0800</pubDate>
+      
+      <guid>http://localhost:8888/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
+      <description>&lt;p&gt;Today I built &amp;amp; published a μ-library that makes it easier to leverage Swift&amp;rsquo;s type checking system for program verification: &lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;Validated&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;All Swift developers already use the type system to avoid basic type mismatches (e.g. passing an &lt;code&gt;Int&lt;/code&gt; where a &lt;code&gt;String&lt;/code&gt; is expected), this capability is built into the languge itself.&lt;/p&gt;
+
+&lt;p&gt;A type system can however help verifying more than just the abscence of these simple errors. This requires that developers express constraints and semantics of their programs in types. &lt;strong&gt;&lt;code&gt;Validated&lt;/code&gt; provides a simple way to lift requirements about values into the type system.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s an example from the GitHub Readme:&lt;/p&gt;
+
+&lt;p&gt;You might have a function in your code that only knows how to work with a &lt;code&gt;User&lt;/code&gt; value when the user is logged in. Usually you will implement this requirement in code &amp;amp; add documentation, but you don&amp;rsquo;t have an easy way of expressing this invariant in the type signature:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-swift&#34;&gt;/// Please ever only call with a logged-in user!
+func performTaskWithUser(user: User) {
+    precondition(
+    	user.loggedIn,
+    	&amp;quot;It is illegal to call this method with a logged out user!&amp;quot;
+    )
+
+	// ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Using Validated you can quickly create a new type that describes this requirement in the type system. That makes it impossible to call the function with a logged-out user and it makes the method signature express your invariant (instead of relying on documentation):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-swift&#34;&gt;func performTaskWithUser(user: LoggedInUser) {
+	// ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In short: &lt;code&gt;Validated&lt;/code&gt; allows you to create new types, by taking existing types and adding validations to them. These new types can be used throughout your APIs to express expectations not only about types, but also about values.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m very interested in hearing whether this is useful to you &amp;amp; how it could be improved!&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;To learn how to use this you should head to GitHub&lt;/a&gt;!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How I Write Swift Specs With Quick</title>
+      <link>http://localhost:8888/post/how-i-write-swift-specs-with-quick/</link>
+      <pubDate>Wed, 24 Feb 2016 22:24:54 -0800</pubDate>
+      
+      <guid>http://localhost:8888/post/how-i-write-swift-specs-with-quick/</guid>
+      <description>
+
+&lt;p&gt;I&amp;rsquo;ve recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of &lt;code&gt;it&lt;/code&gt; blocks. This &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69&#34;&gt;seems to be common among many code bases that use Quick/Nimble&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I felt that I could gain more readability by focusing on testing expectations within in &lt;code&gt;it&lt;/code&gt; blocks and driving the test code outside.&lt;/p&gt;
+
+&lt;p&gt;I now structure most of my tests in the following way:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;A &lt;code&gt;describe&lt;/code&gt; or &lt;code&gt;context&lt;/code&gt; block describes the scenario under test&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;beforeEach&lt;/code&gt; block contains code to implement the scenario&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;it&lt;/code&gt; block only validates expectations&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The result looks somewhat like this, though I have emitted variable declarations in outer scopes for brevity:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// describe the scenario under test
+context(&amp;quot;when #download is called multiple times with the same URL&amp;quot;) {
+
+	// variables which will be used from `it` blocks
+	var downloadDescription: DownloadDescription!
+
+    beforeEach {
+    	// code to drive the scenario
+        downloadDescription = DownloadDescription(
+            url: NSURL(string: &amp;quot;http://test.com/download&amp;quot;)!,
+            priority: 500,
+            downloadLocation: NSURL(string: &amp;quot;file://&amp;quot;)!
+        )
+
+        (1..&amp;lt;10).forEach { _ in
+            downloadManager.downloadAsset(downloadDescription)
+        }
+    }
+
+    // Multiple expectations for that scenario:
+
+    it(&amp;quot;only asks the downloader to download the asset once&amp;quot;) {
+        expect(mockDownloader.receivedCallsToStartDownload)
+        .to(haveCount(1))
+    }
+
+    it(&amp;quot;keeps the ongoing download enqueued&amp;quot;) {
+        expect(downloadManager.queue)
+        .to(contain(downloadDescription))
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;For me it is a lot easier to read these tests, the expectations are clearly separated from the code that drives the test.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This approach has two minor drawbacks:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;it&lt;/code&gt; block needs to reference variables that are set from within the &lt;code&gt;beforeEach&lt;/code&gt; block. We therefore need to declare more variables in the &lt;code&gt;context&lt;/code&gt;/&lt;code&gt;describe&lt;/code&gt; scope which adds some visual clutter.&lt;/li&gt;
+&lt;li&gt;Having the code that drives the test in &lt;code&gt;beforeEach&lt;/code&gt; might look a little awkward at first, as most testing frameworks use these hooks to set up a shared test environment; not to drive the test code.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;future-improvements:90f0e2cd696d535cbf87455e17a8085e&#34;&gt;Future Improvements?&lt;/h2&gt;
+
+&lt;p&gt;In future it might be nice to be able to place the test driving code directly in the &lt;code&gt;context&lt;/code&gt; block. Something along these lines:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;context(&amp;quot;when multiplying two numbers&amp;quot;) {
+	let i = 2 * 2
+
+    it(&amp;quot;stores the correct result&amp;quot;) {
+    	expect(i).to(equal(4))
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I believe this isn&amp;rsquo;t possible, because Quick can&amp;rsquo;t register the top-level code within &lt;code&gt;context&lt;/code&gt; block to run as part of the tests, though I haven&amp;rsquo;t looked at the implementation in detail.&lt;/p&gt;
+
+&lt;p&gt;This would mitigate the two drawbacks of my current approach and improve the readability of the specs a little more.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;For now I&amp;rsquo;m happy with the &lt;code&gt;beforeEach&lt;/code&gt; approach.&lt;/strong&gt; How do you write your Swift test suites?&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Introducing ReSwift</title>
-      <link>http://localhost:1313/post/introducing-reswift/</link>
+      <link>http://localhost:8888/post/introducing-reswift/</link>
       <pubDate>Wed, 20 Jan 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/introducing-reswift/</guid>
+      <guid>http://localhost:8888/post/introducing-reswift/</guid>
       <description>&lt;p&gt;For the last two months I have been actively working on Swift Flow with the goal of bringing the ideas of the Flux and Redux libraries to Swift developers.&lt;/p&gt;
 
 &lt;p&gt;At about the same &lt;a href=&#34;https://twitter.com/ARendtslev&#34;&gt;@ARendtslev&lt;/a&gt; started ReduxKit, which had the goal of implementing Redux in Swift. Soon he was joined by &lt;a href=&#34;https://twitter.com/karlbowden&#34;&gt;@karlbowden&lt;/a&gt; who made significant contributions to the project (and provided amazing build and documentation infrastructure for ReduxKit and Swift Flow).&lt;/p&gt;
@@ -39,10 +168,10 @@
     
     <item>
       <title>Convenient Error Handling in Swift</title>
-      <link>http://localhost:1313/post/convenient-error-handling-in-swift/</link>
+      <link>http://localhost:8888/post/convenient-error-handling-in-swift/</link>
       <pubDate>Wed, 18 Nov 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/convenient-error-handling-in-swift/</guid>
+      <guid>http://localhost:8888/post/convenient-error-handling-in-swift/</guid>
       <description>
 
 &lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
@@ -165,10 +294,10 @@ errorHandler.wrap {
     
     <item>
       <title>A Flux Inspired Architecture for iOS</title>
-      <link>http://localhost:1313/post/a-flux-inspired-architecture-for-ios/</link>
+      <link>http://localhost:8888/post/a-flux-inspired-architecture-for-ios/</link>
       <pubDate>Sat, 12 Sep 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/a-flux-inspired-architecture-for-ios/</guid>
+      <guid>http://localhost:8888/post/a-flux-inspired-architecture-for-ios/</guid>
       <description>&lt;p&gt;This year I spoke at 360iDev about &amp;ldquo;Safer Swift Code with Value Types&amp;rdquo;. The goal of the talk was to explore an architecture that uses immutable value types for the model layer.&lt;/p&gt;
 
 &lt;p&gt;After reviewing an earlier version of this talk with my developer friend &lt;a href=&#34;https://twitter.com/devknoll&#34;&gt;Gerald Monaco&lt;/a&gt;, who is a big fan of Facebook&amp;rsquo;s open source technologies (React, Flux, etc.), I decided to take a look at how a &lt;a href=&#34;https://facebook.github.io/flux/&#34;&gt;Flux&lt;/a&gt;-inspired architecture could be applied to an iOS application.&lt;/p&gt;
@@ -187,10 +316,10 @@ errorHandler.wrap {
     
     <item>
       <title>Swift Error Handling and Objective-C Interop in Depth</title>
-      <link>http://localhost:1313/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
+      <link>http://localhost:8888/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
       <pubDate>Thu, 23 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
+      <guid>http://localhost:8888/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
       <description>
 
 &lt;p&gt;For the impatient reader:&lt;/p&gt;
@@ -392,10 +521,10 @@ errorHandler.wrap {
     
     <item>
       <title>iOS 9 Detects Cycles in Layout Trees</title>
-      <link>http://localhost:1313/post/ios-9-detects-cycles-in-layout-trees/</link>
+      <link>http://localhost:8888/post/ios-9-detects-cycles-in-layout-trees/</link>
       <pubDate>Thu, 09 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/ios-9-detects-cycles-in-layout-trees/</guid>
+      <guid>http://localhost:8888/post/ios-9-detects-cycles-in-layout-trees/</guid>
       <description>
 
 &lt;p&gt;A couple of months ago I was faced with an issue that was fairly hard to debug:&lt;/p&gt;
@@ -430,10 +559,10 @@ errorHandler.wrap {
     
     <item>
       <title>Talk: Introduction to FRP on iOS</title>
-      <link>http://localhost:1313/post/talk-introduction-to-frp-on-ios/</link>
+      <link>http://localhost:8888/post/talk-introduction-to-frp-on-ios/</link>
       <pubDate>Sat, 30 May 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/talk-introduction-to-frp-on-ios/</guid>
+      <guid>http://localhost:8888/post/talk-introduction-to-frp-on-ios/</guid>
       <description>&lt;p&gt;Back in April I gave a talk at &lt;a href=&#34;http://www.meetup.com/nsmeetup/events/220950179/&#34;&gt;NSMeetup in San Francisco&lt;/a&gt; on Functional Reactive Programming on iOS.&lt;/p&gt;
 
 &lt;p&gt;The talk discusses the idea &amp;amp; motivation behind FRP and dives into some practical examples using Reactive Cocoa 2.x. The examples are based on a small &lt;a href=&#34;https://github.com/Ben-G/PeopleCRM&#34;&gt;demo app&lt;/a&gt; that I built for that talk.&lt;/p&gt;
@@ -448,10 +577,10 @@ errorHandler.wrap {
     
     <item>
       <title>Breaking Swift with NSObject and Generics</title>
-      <link>http://localhost:1313/post/breaking-the-swift-compiler-with-generics/</link>
+      <link>http://localhost:8888/post/breaking-the-swift-compiler-with-generics/</link>
       <pubDate>Thu, 19 Feb 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/breaking-the-swift-compiler-with-generics/</guid>
+      <guid>http://localhost:8888/post/breaking-the-swift-compiler-with-generics/</guid>
       <description>
 
 &lt;p&gt;Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at &lt;a href=&#34;http://openradar.appspot.com/search?query=segmentation+fault+swift&#34;&gt;Open Radar&lt;/a&gt; there seem to be many out there)!&lt;/p&gt;
@@ -518,10 +647,10 @@ extension D: NSObjectProtocol {}
     
     <item>
       <title>&#34;I didn&#39;t know that&#34; is the best way to learn</title>
-      <link>http://localhost:1313/post/i-didnt-know-that-is-the-best-way-to-learn/</link>
+      <link>http://localhost:8888/post/i-didnt-know-that-is-the-best-way-to-learn/</link>
       <pubDate>Thu, 05 Feb 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/i-didnt-know-that-is-the-best-way-to-learn/</guid>
+      <guid>http://localhost:8888/post/i-didnt-know-that-is-the-best-way-to-learn/</guid>
       <description>&lt;p&gt;This is no original thought. Nevertheless I&amp;rsquo;ve been thinking about it often enough to make it worth spending a few minutes framing it in my own words.&lt;/p&gt;
 
 &lt;p&gt;I&amp;rsquo;m currently working as a Software Engineer. According to Wikipedia that makes me a &lt;a href=&#34;http://en.wikipedia.org/wiki/Knowledge_worker&#34;&gt;Knowledge Worker&lt;/a&gt;.&lt;/p&gt;
@@ -566,10 +695,10 @@ extension D: NSObjectProtocol {}
     
     <item>
       <title>Switching iOS devices and the Keychain</title>
-      <link>http://localhost:1313/post/switching-ios-devices-and-the-keychain/</link>
+      <link>http://localhost:8888/post/switching-ios-devices-and-the-keychain/</link>
       <pubDate>Sun, 14 Dec 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/switching-ios-devices-and-the-keychain/</guid>
+      <guid>http://localhost:8888/post/switching-ios-devices-and-the-keychain/</guid>
       <description>&lt;p&gt;Unfortunately some of my &lt;a href=&#34;http://www.movieloggr.com/&#34;&gt;MovieLoggr&lt;/a&gt; users ran into the following issue: After switching to a new phone and restoring it from a Backup MovieLoggr would behave unexpectetly (and in some cases crash) because the App could no longer access the user&amp;rsquo;s password and unfortunately did not handle this gracefully.&lt;/p&gt;
 
 &lt;p&gt;Typically iOS applications store passwords in the encrypted &lt;em&gt;Keychain&lt;/em&gt;. When creating unencrypted backups, which is the default for creating backups with iTunes, the iOS Keychain is not stored (it is stored if you create an encrypted one or use iCloud backups).  This means, after restoring your new device from a backup, all of your apps that now run on your new device can no longer access the passwords they have securely stored on your previous device.&lt;/p&gt;
@@ -584,10 +713,10 @@ extension D: NSObjectProtocol {}
     
     <item>
       <title>Using SSH for private and work account on a Mac</title>
-      <link>http://localhost:1313/post/using-ssh-with-multiple-accounts/</link>
+      <link>http://localhost:8888/post/using-ssh-with-multiple-accounts/</link>
       <pubDate>Tue, 18 Nov 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/using-ssh-with-multiple-accounts/</guid>
+      <guid>http://localhost:8888/post/using-ssh-with-multiple-accounts/</guid>
       <description>
 
 &lt;blockquote&gt;
@@ -668,10 +797,10 @@ Host bitbucket.work
     
     <item>
       <title>The downside of Web APIs</title>
-      <link>http://localhost:1313/post/the-downside-of-web-apis/</link>
+      <link>http://localhost:8888/post/the-downside-of-web-apis/</link>
       <pubDate>Sun, 10 Aug 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/the-downside-of-web-apis/</guid>
+      <guid>http://localhost:8888/post/the-downside-of-web-apis/</guid>
       <description>
 
 &lt;p&gt;Web APIs have done a lot for the world of technology. Services that have formerly been isolated islands can now be connected through a few simple HTTP Requests. Posting to Facebook on every GitHub commit? Printing a Postcard as soon as a new Photo is uploaded to a Dropbox folder? Basically anything is possible through Web Services.&lt;/p&gt;
@@ -768,10 +897,10 @@ Host bitbucket.work
     
     <item>
       <title>Arithmetic Expressions in Swift</title>
-      <link>http://localhost:1313/post/arithmetic-expressions-in-swift/</link>
+      <link>http://localhost:8888/post/arithmetic-expressions-in-swift/</link>
       <pubDate>Tue, 03 Jun 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/arithmetic-expressions-in-swift/</guid>
+      <guid>http://localhost:8888/post/arithmetic-expressions-in-swift/</guid>
       <description>&lt;p&gt;While I still cannot fully understand how the release of a new programming language didn&amp;rsquo;t leak before WWDC, most of us got surprised by the announcement of Apple&amp;rsquo;s new Programming Language &lt;strong&gt;Swift&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;Like most iOS Developers I immediately took a look at the new language. Most language details seem fairly straightforward - however, arithmetic expressions were the first small pitfall for me.&lt;/p&gt;
@@ -823,10 +952,10 @@ Host bitbucket.work
     
     <item>
       <title>Objective-C: Accessing backing iVars of properties in subclasses</title>
-      <link>http://localhost:1313/post/objective-c-backing-ivars-subclasses/</link>
+      <link>http://localhost:8888/post/objective-c-backing-ivars-subclasses/</link>
       <pubDate>Wed, 28 May 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/objective-c-backing-ivars-subclasses/</guid>
+      <guid>http://localhost:8888/post/objective-c-backing-ivars-subclasses/</guid>
       <description>
 
 &lt;p&gt;Most Objective-C developers have a fairly good understanding of properties and instance variables and how these two work together.&lt;/p&gt;
@@ -1092,138 +1221,6 @@ NSLog(@&amp;quot;ClassA1 _age: %d&amp;quot;, _age);
 &lt;p&gt;&lt;strong&gt;This little example shows how complex some Objective-C language details are and how important it can be to undertand them.&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;You can find the code examples used throughout this tutorial in the &lt;a href=&#34;https://github.com/Ben-G/Property_InstanceVariables_Inheritance&#34;&gt;GitHub repository for this blogpost&lt;/a&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Automatic serialization in Objective-C</title>
-      <link>http://localhost:1313/post/seamless-serialization-objectivec/</link>
-      <pubDate>Wed, 02 Apr 2014 22:24:54 -0800</pubDate>
-      
-      <guid>http://localhost:1313/post/seamless-serialization-objectivec/</guid>
-      <description>
-
-&lt;p&gt;Recently I worked on a tutorial that required me to serialize a large amount of objects. This is a common use case in many games - if the user quits the game and reopens it you want to restore the entire game state.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://puu.sh/7U79T.png&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;As you may know the &lt;code&gt;NSCoding&lt;/code&gt; protocol is responsible for marking Objects to be encodable and decodable. Without using third party tools you need to implement &lt;code&gt;encodeWithCoder:&lt;/code&gt; and &lt;code&gt;decodeWithCoder&lt;/code&gt; manually. You need two lines of code for every property of your object, one for writing it and for reading it. It is nice that Cocoa provides the flexibility to do this manually, but honestly in most cases you just want to go with a default serialization.&lt;/p&gt;
-
-&lt;p&gt;In my case implementing the &lt;code&gt;NSCoding&lt;/code&gt; protocol manually would have meant a boring afternoon and hundreds of lines of boilerplate code.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/nicklockwood/AutoCoding&#34;&gt;Autocoding&lt;/a&gt; to the rescue!&lt;/p&gt;
-
-&lt;h1 id=&#34;autocoding:6a58c9cd7366117c519c359294bd5b9e&#34;&gt;Autocoding&lt;/h1&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/nicklockwood/AutoCoding&#34;&gt;Autocoding&lt;/a&gt; is a great little utility that makes serialization in Objective-C a breeze. It is a lightweight framework that adds a category to &lt;code&gt;NSObject&lt;/code&gt;.&lt;/p&gt;
-
-&lt;h2 id=&#34;installation:6a58c9cd7366117c519c359294bd5b9e&#34;&gt;Installation&lt;/h2&gt;
-
-&lt;p&gt;Simply add &lt;em&gt;Autocoding.m&lt;/em&gt; and &lt;em&gt;Autocoding.h&lt;/em&gt; to your project.&lt;/p&gt;
-
-&lt;h2 id=&#34;example-usage:6a58c9cd7366117c519c359294bd5b9e&#34;&gt;Example Usage&lt;/h2&gt;
-
-&lt;p&gt;AutoCoding&amp;rsquo;s category adds a very convenient &lt;code&gt;writeToFile:&lt;/code&gt; method to &lt;code&gt;NSObject&lt;/code&gt;. Once you added Autocoding to your project you can call it on basically any object (there are a few exceptions stated in detail on the GitHub page). Example of writing an object to disk:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[gameModel writeToFile:persistencePath atomically:TRUE];
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Reading a serialized file into an object is just as convenient:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;GameModel *gameModel = [GameModel objectWithContentsOfFile:persistencePath];
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;There are a lot of additional options, for example for excluding properties from being serialized, but for most applications it will stay this simple! An incredible improvement over writing hundreds of lines.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Never write hundreds of lines of serialization code again!&lt;/strong&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>When You Can&#39;t Avoid Email</title>
-      <link>http://localhost:1313/post/when-you-cant-avoid-email/</link>
-      <pubDate>Tue, 04 Mar 2014 22:24:54 -0800</pubDate>
-      
-      <guid>http://localhost:1313/post/when-you-cant-avoid-email/</guid>
-      <description>
-
-&lt;p&gt;Don&amp;rsquo;t get me wrong, Email is a great tool and an evergreen in everyone&amp;rsquo;s communication stack. I use it, among many other things, to stay in touch with friends, receive food delivery confirmations and to consume newsletters. Emails are an essential part my everyday life.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://puu.sh/7idbF.jpg&#34; alt=&#34;Pile of letters&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;When it comes to work I mostly face problems that can be better solved by domain specific software. I assign and receive tasks or track and report progress, for example. This is where I try to avoid Email as often as I can.&lt;/p&gt;
-
-&lt;h2 id=&#34;you-cannot-avoid-email-all-the-time:ea71f682803e8ab24bd6553a95ac049c&#34;&gt;You cannot avoid Email all the time&lt;/h2&gt;
-
-&lt;p&gt;Today it is common sense that Emails hurts our workplace productivity and in average &lt;a href=&#34;http://http://www.inc.com/news/articles/201103/workers-spend-half-day-being-unproductive.html&#34;&gt;takes far too much time out of our day&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;However, sometimes Email actually is the right tool for the job and other times it simply cannot be avoided, especially when communicating with people outside of your own organization. &lt;strong&gt;One way or another - Emails will be part of our work culture for the foreseeable future.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;If you don&amp;rsquo;t want to or cannot avoid eMails - how can you stop them from hurting your daily productivity?&lt;/p&gt;
-
-&lt;h2 id=&#34;my-problems-with-emails:ea71f682803e8ab24bd6553a95ac049c&#34;&gt;My problems with Emails&lt;/h2&gt;
-
-&lt;p&gt;I started by identifying the biggest problems I was facing with my tradition Email usage:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Unread Emails piling up in my inbox&lt;/li&gt;
-&lt;li&gt;Forgetting about Emails when I&amp;rsquo;m waiting for a response&lt;/li&gt;
-&lt;li&gt;Forgetting to respond to Emails&lt;/li&gt;
-&lt;li&gt;Wasting time browsing my Inbox / rereading Emails&lt;/li&gt;
-&lt;li&gt;Searching through my inbox to find potential unresolved tasks&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;So many people are facing these problems - there must be a tool out there, right?&lt;/p&gt;
-
-&lt;h2 id=&#34;task-management-for-your-inbox:ea71f682803e8ab24bd6553a95ac049c&#34;&gt;Task Management for your Inbox&lt;/h2&gt;
-
-&lt;p&gt;At MakeGamesWithUs we use &lt;em&gt;Gmail&lt;/em&gt;. I started looking for tools that would provide a simple integration of my Emails with &lt;em&gt;Asana&lt;/em&gt;, a task management system.
-Unfortunately none of the existing Gmail&amp;lt;-&amp;gt;Asana integrations looked simple enough to use. However, I found a great tool that provides task management directly in your Gmail inbox:  &lt;a href=&#34;http://www.activeinboxhq.com/&#34;&gt;ActiveInbox&lt;/a&gt;.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Because emails aren&amp;rsquo;t letters,
-they&amp;rsquo;re tasks&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;This clever slogan convinced me to try ActiveInbox out.&lt;/p&gt;
-
-&lt;p&gt;What I experienced in the next two hours was liberation. The same feeling you get by clearing out your wardrobe or tidying your apartment for the first time in a couple of years.&lt;/p&gt;
-
-&lt;h2 id=&#34;the-activeinbox-philosophy:ea71f682803e8ab24bd6553a95ac049c&#34;&gt;The ActiveInbox philosophy&lt;/h2&gt;
-
-&lt;p&gt;ActiveInbox works with these few core principles and features:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;you archive every Email in your inbox after reading it&lt;/li&gt;
-&lt;li&gt;before you archive an Email you can choose to
-
-&lt;ul&gt;
-&lt;li&gt;do nothing - you will never see this Email again (except a new response occurs)&lt;/li&gt;
-&lt;li&gt;mark Email as &lt;em&gt;Todo&lt;/em&gt; and assign a due date&lt;/li&gt;
-&lt;li&gt;mark Email as &lt;em&gt;Waiting On&lt;/em&gt; and assign a due date&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;the ultimate goal is an empty inbox&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;You repeat the following steps for every Email:
-&lt;img src=&#34;http://puu.sh/7iNvX.png&#34; alt=&#34;The ActiveInbox workflow&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Using these principles you will avoid rereading Emails, will never again forget to respond to an Email and will be able to follow up on Emails that no one responded to.&lt;/p&gt;
-
-&lt;p&gt;Here&amp;rsquo;s an an anonymized example of my inbox as of today:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://puu.sh/7iwjR.png&#34; alt=&#34;ActiveInbox in Gmail&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;As you can see I have an amount of Emails in my &amp;ldquo;overdue&amp;rdquo; section - I still fall behind schedule now and then.
-BUT I don&amp;rsquo;t have to waste any brain cycles on my inbox - all the information is visible at a glance whenever I need it.&lt;/p&gt;
-
-&lt;h2 id=&#34;conclusion:ea71f682803e8ab24bd6553a95ac049c&#34;&gt;Conclusion&lt;/h2&gt;
-
-&lt;p&gt;Once you get started using this philosophy you will never want to go back to the dark place, with the endless list of unread Emails, you came from.&lt;/p&gt;
-
-&lt;p&gt;The UX of ActiveInbox isn&amp;rsquo;t great which for the biggest part is a problem of how Gmail plugins get injected into the application - however it solves my problem so compellingly that I am more than happy to connive over that.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;How do you domesticate your inbox? I&amp;rsquo;m happy to hear about more tools and techniques.&lt;/strong&gt;&lt;/p&gt;
 </description>
     </item>
     
