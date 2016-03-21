@@ -6,18 +6,8 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Feb 2016 22:51:22 -0800</lastBuildDate>
+    <lastBuildDate>Wed, 20 Jan 2016 22:24:54 -0800</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
-    
-    <item>
-      <title>about</title>
-      <link>http://localhost:1313/about/about/</link>
-      <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
-      
-      <guid>http://localhost:1313/about/about/</guid>
-      <description>&lt;p&gt;This website is about Benjamin Encz.&lt;/p&gt;
-</description>
-    </item>
     
     <item>
       <title>Introducing ReSwift</title>
@@ -1132,6 +1122,94 @@ NSLog(@&amp;quot;ClassA1 _age: %d&amp;quot;, _age);
 &lt;p&gt;There are a lot of additional options, for example for excluding properties from being serialized, but for most applications it will stay this simple! An incredible improvement over writing hundreds of lines.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Never write hundreds of lines of serialization code again!&lt;/strong&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>When You Can&#39;t Avoid Email</title>
+      <link>http://localhost:1313/post/when-you-cant-avoid-email/</link>
+      <pubDate>Tue, 04 Mar 2014 22:24:54 -0800</pubDate>
+      
+      <guid>http://localhost:1313/post/when-you-cant-avoid-email/</guid>
+      <description>
+
+&lt;p&gt;Don&amp;rsquo;t get me wrong, Email is a great tool and an evergreen in everyone&amp;rsquo;s communication stack. I use it, among many other things, to stay in touch with friends, receive food delivery confirmations and to consume newsletters. Emails are an essential part my everyday life.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://puu.sh/7idbF.jpg&#34; alt=&#34;Pile of letters&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;When it comes to work I mostly face problems that can be better solved by domain specific software. I assign and receive tasks or track and report progress, for example. This is where I try to avoid Email as often as I can.&lt;/p&gt;
+
+&lt;h2 id=&#34;you-cannot-avoid-email-all-the-time:3ec716f6ac754c98634e8663565a7bac&#34;&gt;You cannot avoid Email all the time&lt;/h2&gt;
+
+&lt;p&gt;Today it is common sense that Emails hurts our workplace productivity and in average &lt;a href=&#34;http://http://www.inc.com/news/articles/201103/workers-spend-half-day-being-unproductive.html&#34;&gt;takes far too much time out of our day&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;However, sometimes Email actually is the right tool for the job and other times it simply cannot be avoided, especially when communicating with people outside of your own organization. &lt;strong&gt;One way or another - Emails will be part of our work culture for the foreseeable future.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t want to or cannot avoid eMails - how can you stop them from hurting your daily productivity?&lt;/p&gt;
+
+&lt;h2 id=&#34;my-problems-with-emails:3ec716f6ac754c98634e8663565a7bac&#34;&gt;My problems with Emails&lt;/h2&gt;
+
+&lt;p&gt;I started by identifying the biggest problems I was facing with my tradition Email usage:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Unread Emails piling up in my inbox&lt;/li&gt;
+&lt;li&gt;Forgetting about Emails when I&amp;rsquo;m waiting for a response&lt;/li&gt;
+&lt;li&gt;Forgetting to respond to Emails&lt;/li&gt;
+&lt;li&gt;Wasting time browsing my Inbox / rereading Emails&lt;/li&gt;
+&lt;li&gt;Searching through my inbox to find potential unresolved tasks&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So many people are facing these problems - there must be a tool out there, right?&lt;/p&gt;
+
+&lt;h2 id=&#34;task-management-for-your-inbox:3ec716f6ac754c98634e8663565a7bac&#34;&gt;Task Management for your Inbox&lt;/h2&gt;
+
+&lt;p&gt;At MakeGamesWithUs we use &lt;em&gt;Gmail&lt;/em&gt;. I started looking for tools that would provide a simple integration of my Emails with &lt;em&gt;Asana&lt;/em&gt;, a task management system.
+Unfortunately none of the existing Gmail&amp;lt;-&amp;gt;Asana integrations looked simple enough to use. However, I found a great tool that provides task management directly in your Gmail inbox:  &lt;a href=&#34;http://www.activeinboxhq.com/&#34;&gt;ActiveInbox&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Because emails aren&amp;rsquo;t letters,
+they&amp;rsquo;re tasks&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This clever slogan convinced me to try ActiveInbox out.&lt;/p&gt;
+
+&lt;p&gt;What I experienced in the next two hours was liberation. The same feeling you get by clearing out your wardrobe or tidying your apartment for the first time in a couple of years.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-activeinbox-philosophy:3ec716f6ac754c98634e8663565a7bac&#34;&gt;The ActiveInbox philosophy&lt;/h2&gt;
+
+&lt;p&gt;ActiveInbox works with these few core principles and features:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;you archive every Email in your inbox after reading it&lt;/li&gt;
+&lt;li&gt;before you archive an Email you can choose to
+
+&lt;ul&gt;
+&lt;li&gt;do nothing - you will never see this Email again (except a new response occurs)&lt;/li&gt;
+&lt;li&gt;mark Email as &lt;em&gt;Todo&lt;/em&gt; and assign a due date&lt;/li&gt;
+&lt;li&gt;mark Email as &lt;em&gt;Waiting On&lt;/em&gt; and assign a due date&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;the ultimate goal is an empty inbox&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You repeat the following steps for every Email:
+&lt;img src=&#34;http://puu.sh/7iNvX.png&#34; alt=&#34;The ActiveInbox workflow&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Using these principles you will avoid rereading Emails, will never again forget to respond to an Email and will be able to follow up on Emails that no one responded to.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s an an anonymized example of my inbox as of today:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://puu.sh/7iwjR.png&#34; alt=&#34;ActiveInbox in Gmail&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see I have an amount of Emails in my &amp;ldquo;overdue&amp;rdquo; section - I still fall behind schedule now and then.
+BUT I don&amp;rsquo;t have to waste any brain cycles on my inbox - all the information is visible at a glance whenever I need it.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:3ec716f6ac754c98634e8663565a7bac&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Once you get started using this philosophy you will never want to go back to the dark place, with the endless list of unread Emails, you came from.&lt;/p&gt;
+
+&lt;p&gt;The UX of ActiveInbox isn&amp;rsquo;t great which for the biggest part is a problem of how Gmail plugins get injected into the application - however it solves my problem so compellingly that I am more than happy to connive over that.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;How do you domesticate your inbox? I&amp;rsquo;m happy to hear about more tools and techniques.&lt;/strong&gt;&lt;/p&gt;
 </description>
     </item>
     

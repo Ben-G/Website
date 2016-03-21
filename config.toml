@@ -8,7 +8,6 @@ disqusShortname = "benjaminencz"
 
 [params]
     cover = "images/sf-clouds.jpg"
-    logo = "images/sf-clouds.jpg"
     githubName = "Ben-G"
     twitterName = "benjaminencz"
     stylesheets = ["highlight.css"]
