@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>[Thinking inside a large box];</title>
-    <link>http://localhost:8888/</link>
+    <link>http://blog.benjamin-encz.de/</link>
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 25 Feb 2016 22:24:54 -0800</lastBuildDate>
-    <atom:link href="http://localhost:8888/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Validated: A Swift μ-Library for Somewhat Dependent Types</title>
-      <link>http://localhost:8888/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
+      <link>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
       <pubDate>Thu, 25 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
+      <guid>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
       <description>&lt;p&gt;Today I built &amp;amp; published a μ-library that makes it easier to leverage Swift&amp;rsquo;s type checking system for program verification: &lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;Validated&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt;&lt;/p&gt;
@@ -55,10 +55,10 @@ func performTaskWithUser(user: User) {
     
     <item>
       <title>How I Write Swift Specs With Quick</title>
-      <link>http://localhost:8888/post/how-i-write-swift-specs-with-quick/</link>
+      <link>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</link>
       <pubDate>Wed, 24 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/how-i-write-swift-specs-with-quick/</guid>
+      <guid>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</guid>
       <description>
 
 &lt;p&gt;I&amp;rsquo;ve recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of &lt;code&gt;it&lt;/code&gt; blocks. This &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69&#34;&gt;seems to be common among many code bases that use Quick/Nimble&lt;/a&gt;.&lt;/p&gt;
@@ -140,10 +140,10 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     
     <item>
       <title>Introducing ReSwift</title>
-      <link>http://localhost:8888/post/introducing-reswift/</link>
+      <link>http://blog.benjamin-encz.de/post/introducing-reswift/</link>
       <pubDate>Wed, 20 Jan 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/introducing-reswift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/introducing-reswift/</guid>
       <description>&lt;p&gt;For the last two months I have been actively working on Swift Flow with the goal of bringing the ideas of the Flux and Redux libraries to Swift developers.&lt;/p&gt;
 
 &lt;p&gt;At about the same &lt;a href=&#34;https://twitter.com/ARendtslev&#34;&gt;@ARendtslev&lt;/a&gt; started ReduxKit, which had the goal of implementing Redux in Swift. Soon he was joined by &lt;a href=&#34;https://twitter.com/karlbowden&#34;&gt;@karlbowden&lt;/a&gt; who made significant contributions to the project (and provided amazing build and documentation infrastructure for ReduxKit and Swift Flow).&lt;/p&gt;
@@ -168,10 +168,10 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     
     <item>
       <title>Convenient Error Handling in Swift</title>
-      <link>http://localhost:8888/post/convenient-error-handling-in-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</link>
       <pubDate>Wed, 18 Nov 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/convenient-error-handling-in-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</guid>
       <description>
 
 &lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
@@ -294,10 +294,10 @@ errorHandler.wrap {
     
     <item>
       <title>A Flux Inspired Architecture for iOS</title>
-      <link>http://localhost:8888/post/a-flux-inspired-architecture-for-ios/</link>
+      <link>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</link>
       <pubDate>Sat, 12 Sep 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/a-flux-inspired-architecture-for-ios/</guid>
+      <guid>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</guid>
       <description>&lt;p&gt;This year I spoke at 360iDev about &amp;ldquo;Safer Swift Code with Value Types&amp;rdquo;. The goal of the talk was to explore an architecture that uses immutable value types for the model layer.&lt;/p&gt;
 
 &lt;p&gt;After reviewing an earlier version of this talk with my developer friend &lt;a href=&#34;https://twitter.com/devknoll&#34;&gt;Gerald Monaco&lt;/a&gt;, who is a big fan of Facebook&amp;rsquo;s open source technologies (React, Flux, etc.), I decided to take a look at how a &lt;a href=&#34;https://facebook.github.io/flux/&#34;&gt;Flux&lt;/a&gt;-inspired architecture could be applied to an iOS application.&lt;/p&gt;
@@ -316,10 +316,10 @@ errorHandler.wrap {
     
     <item>
       <title>Swift Error Handling and Objective-C Interop in Depth</title>
-      <link>http://localhost:8888/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
+      <link>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
       <pubDate>Thu, 23 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
+      <guid>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
       <description>
 
 &lt;p&gt;For the impatient reader:&lt;/p&gt;
@@ -521,10 +521,10 @@ errorHandler.wrap {
     
     <item>
       <title>iOS 9 Detects Cycles in Layout Trees</title>
-      <link>http://localhost:8888/post/ios-9-detects-cycles-in-layout-trees/</link>
+      <link>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</link>
       <pubDate>Thu, 09 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/ios-9-detects-cycles-in-layout-trees/</guid>
+      <guid>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</guid>
       <description>
 
 &lt;p&gt;A couple of months ago I was faced with an issue that was fairly hard to debug:&lt;/p&gt;
@@ -559,10 +559,10 @@ errorHandler.wrap {
     
     <item>
       <title>Talk: Introduction to FRP on iOS</title>
-      <link>http://localhost:8888/post/talk-introduction-to-frp-on-ios/</link>
+      <link>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</link>
       <pubDate>Sat, 30 May 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/talk-introduction-to-frp-on-ios/</guid>
+      <guid>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</guid>
       <description>&lt;p&gt;Back in April I gave a talk at &lt;a href=&#34;http://www.meetup.com/nsmeetup/events/220950179/&#34;&gt;NSMeetup in San Francisco&lt;/a&gt; on Functional Reactive Programming on iOS.&lt;/p&gt;
 
 &lt;p&gt;The talk discusses the idea &amp;amp; motivation behind FRP and dives into some practical examples using Reactive Cocoa 2.x. The examples are based on a small &lt;a href=&#34;https://github.com/Ben-G/PeopleCRM&#34;&gt;demo app&lt;/a&gt; that I built for that talk.&lt;/p&gt;
@@ -577,10 +577,10 @@ errorHandler.wrap {
     
     <item>
       <title>Breaking Swift with NSObject and Generics</title>
-      <link>http://localhost:8888/post/breaking-the-swift-compiler-with-generics/</link>
+      <link>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</link>
       <pubDate>Thu, 19 Feb 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/breaking-the-swift-compiler-with-generics/</guid>
+      <guid>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</guid>
       <description>
 
 &lt;p&gt;Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at &lt;a href=&#34;http://openradar.appspot.com/search?query=segmentation+fault+swift&#34;&gt;Open Radar&lt;/a&gt; there seem to be many out there)!&lt;/p&gt;
@@ -647,10 +647,10 @@ extension D: NSObjectProtocol {}
     
     <item>
       <title>&#34;I didn&#39;t know that&#34; is the best way to learn</title>
-      <link>http://localhost:8888/post/i-didnt-know-that-is-the-best-way-to-learn/</link>
+      <link>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</link>
       <pubDate>Thu, 05 Feb 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/i-didnt-know-that-is-the-best-way-to-learn/</guid>
+      <guid>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</guid>
       <description>&lt;p&gt;This is no original thought. Nevertheless I&amp;rsquo;ve been thinking about it often enough to make it worth spending a few minutes framing it in my own words.&lt;/p&gt;
 
 &lt;p&gt;I&amp;rsquo;m currently working as a Software Engineer. According to Wikipedia that makes me a &lt;a href=&#34;http://en.wikipedia.org/wiki/Knowledge_worker&#34;&gt;Knowledge Worker&lt;/a&gt;.&lt;/p&gt;
@@ -695,10 +695,10 @@ extension D: NSObjectProtocol {}
     
     <item>
       <title>Switching iOS devices and the Keychain</title>
-      <link>http://localhost:8888/post/switching-ios-devices-and-the-keychain/</link>
+      <link>http://blog.benjamin-encz.de/post/switching-ios-devices-and-the-keychain/</link>
       <pubDate>Sun, 14 Dec 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/switching-ios-devices-and-the-keychain/</guid>
+      <guid>http://blog.benjamin-encz.de/post/switching-ios-devices-and-the-keychain/</guid>
       <description>&lt;p&gt;Unfortunately some of my &lt;a href=&#34;http://www.movieloggr.com/&#34;&gt;MovieLoggr&lt;/a&gt; users ran into the following issue: After switching to a new phone and restoring it from a Backup MovieLoggr would behave unexpectetly (and in some cases crash) because the App could no longer access the user&amp;rsquo;s password and unfortunately did not handle this gracefully.&lt;/p&gt;
 
 &lt;p&gt;Typically iOS applications store passwords in the encrypted &lt;em&gt;Keychain&lt;/em&gt;. When creating unencrypted backups, which is the default for creating backups with iTunes, the iOS Keychain is not stored (it is stored if you create an encrypted one or use iCloud backups).  This means, after restoring your new device from a backup, all of your apps that now run on your new device can no longer access the passwords they have securely stored on your previous device.&lt;/p&gt;
@@ -713,10 +713,10 @@ extension D: NSObjectProtocol {}
     
     <item>
       <title>Using SSH for private and work account on a Mac</title>
-      <link>http://localhost:8888/post/using-ssh-with-multiple-accounts/</link>
+      <link>http://blog.benjamin-encz.de/post/using-ssh-with-multiple-accounts/</link>
       <pubDate>Tue, 18 Nov 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/using-ssh-with-multiple-accounts/</guid>
+      <guid>http://blog.benjamin-encz.de/post/using-ssh-with-multiple-accounts/</guid>
       <description>
 
 &lt;blockquote&gt;
@@ -797,10 +797,10 @@ Host bitbucket.work
     
     <item>
       <title>The downside of Web APIs</title>
-      <link>http://localhost:8888/post/the-downside-of-web-apis/</link>
+      <link>http://blog.benjamin-encz.de/post/the-downside-of-web-apis/</link>
       <pubDate>Sun, 10 Aug 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/the-downside-of-web-apis/</guid>
+      <guid>http://blog.benjamin-encz.de/post/the-downside-of-web-apis/</guid>
       <description>
 
 &lt;p&gt;Web APIs have done a lot for the world of technology. Services that have formerly been isolated islands can now be connected through a few simple HTTP Requests. Posting to Facebook on every GitHub commit? Printing a Postcard as soon as a new Photo is uploaded to a Dropbox folder? Basically anything is possible through Web Services.&lt;/p&gt;
@@ -897,10 +897,10 @@ Host bitbucket.work
     
     <item>
       <title>Arithmetic Expressions in Swift</title>
-      <link>http://localhost:8888/post/arithmetic-expressions-in-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/arithmetic-expressions-in-swift/</link>
       <pubDate>Tue, 03 Jun 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/arithmetic-expressions-in-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/arithmetic-expressions-in-swift/</guid>
       <description>&lt;p&gt;While I still cannot fully understand how the release of a new programming language didn&amp;rsquo;t leak before WWDC, most of us got surprised by the announcement of Apple&amp;rsquo;s new Programming Language &lt;strong&gt;Swift&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;Like most iOS Developers I immediately took a look at the new language. Most language details seem fairly straightforward - however, arithmetic expressions were the first small pitfall for me.&lt;/p&gt;
@@ -952,10 +952,10 @@ Host bitbucket.work
     
     <item>
       <title>Objective-C: Accessing backing iVars of properties in subclasses</title>
-      <link>http://localhost:8888/post/objective-c-backing-ivars-subclasses/</link>
+      <link>http://blog.benjamin-encz.de/post/objective-c-backing-ivars-subclasses/</link>
       <pubDate>Wed, 28 May 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:8888/post/objective-c-backing-ivars-subclasses/</guid>
+      <guid>http://blog.benjamin-encz.de/post/objective-c-backing-ivars-subclasses/</guid>
       <description>
 
 &lt;p&gt;Most Objective-C developers have a fairly good understanding of properties and instance variables and how these two work together.&lt;/p&gt;

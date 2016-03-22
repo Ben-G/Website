@@ -1,0 +1,20 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    git-version-bump (0.15.1)
+    rack (1.6.4)
+    rack-contrib (1.4.0)
+      git-version-bump (~> 0.15)
+      rack (~> 1.4)
+    rack-rewrite (1.5.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rack
+  rack-contrib
+  rack-rewrite (~> 1.5.0)
+
+BUNDLED WITH
+   1.11.0

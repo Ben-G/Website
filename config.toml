@@ -1,5 +1,4 @@
-# baseurl = "http://blog.benjamin-encz.de/"
-baseurl = "http://localhost:8888/"
+baseurl = "http://blog.benjamin-encz.de/"
 relativeURLs = true
 canonifyURLs = true
 languageCode = "en-us"
