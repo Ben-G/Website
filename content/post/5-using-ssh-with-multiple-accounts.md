@@ -4,7 +4,6 @@ draft = false
 title = "Using SSH for private and work account on a Mac"
 disqus_url = "http://blog.benjamin-encz.de/using-ssh-with-multiple-accounts/"
 slug = "using-ssh-with-multiple-accounts"
-aliases = ["/using-ssh-with-multiple-accounts/"]
 +++
 
 > Disclaimer: I'm not a huge fan of configuring software; I'm primarily writing this to remember it for the future.

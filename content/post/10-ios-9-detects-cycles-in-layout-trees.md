@@ -4,7 +4,6 @@ draft = false
 title = "iOS 9 Detects Cycles in Layout Trees"
 disqus_url = "http://blog.benjamin-encz.de/ios-9-detects-cycles-in-layout-trees/"
 slug = "ios-9-detects-cycles-in-layout-trees"
-aliases = ["/ios-9-detects-cycles-in-layout-trees/"]
 +++
 
 A couple of months ago I was faced with an issue that was fairly hard to debug:

@@ -4,7 +4,6 @@ draft = false
 title = "When You Can't Avoid Email"
 disqus_url = "http://blog.benjamin-encz.de/when-you-cant-avoid-email/"
 slug = "when-you-cant-avoid-email"
-aliases = ["/when-you-cant-avoid-email/"]
 +++
 
 Don't get me wrong, Email is a great tool and an evergreen in everyone's communication stack. I use it, among many other things, to stay in touch with friends, receive food delivery confirmations and to consume newsletters. Emails are an essential part my everyday life.

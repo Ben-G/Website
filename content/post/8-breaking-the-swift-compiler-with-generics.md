@@ -4,7 +4,6 @@ draft = false
 title = "Breaking Swift with NSObject and Generics"
 disqus_url = "http://blog.benjamin-encz.de/breaking-the-swift-compiler-with-generics/"
 slug = "breaking-the-swift-compiler-with-generics"
-aliases = ["/breaking-the-swift-compiler-with-generics/"]
 +++
 
 Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at [Open Radar](http://openradar.appspot.com/search?query=segmentation+fault+swift) there seem to be many out there)!

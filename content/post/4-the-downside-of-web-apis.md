@@ -4,7 +4,6 @@ draft = false
 title = "The downside of Web APIs"
 disqus_url = "http://blog.benjamin-encz.de/the-downside-of-web-apis/"
 slug = "the-downside-of-web-apis"
-aliases = ["/the-downside-of-web-apis/"]
 +++
 
 Web APIs have done a lot for the world of technology. Services that have formerly been isolated islands can now be connected through a few simple HTTP Requests. Posting to Facebook on every GitHub commit? Printing a Postcard as soon as a new Photo is uploaded to a Dropbox folder? Basically anything is possible through Web Services.

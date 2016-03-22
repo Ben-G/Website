@@ -4,7 +4,6 @@ draft = false
 title = "Objective-C: Accessing backing iVars of properties in subclasses"
 disqus_url = "http://blog.benjamin-encz.de/objective-c-backing-ivars-subclasses/"
 slug = "objective-c-backing-ivars-subclasses"
-aliases = ["/objective-c-backing-ivars-subclasses/"]
 +++
 
 Most Objective-C developers have a fairly good understanding of properties and instance variables and how these two work together.

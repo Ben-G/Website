@@ -4,7 +4,6 @@ draft = false
 title = "Arithmetic Expressions in Swift"
 disqus_url = "http://blog.benjamin-encz.de/arithmetic-expressions-in-swift/"
 slug = "arithmetic-expressions-in-swift"
-aliases = ["/arithmetic-expressions-in-swift/"]
 +++
 
 While I still cannot fully understand how the release of a new programming language didn't leak before WWDC, most of us got surprised by the announcement of Apple's new Programming Language **Swift**.

@@ -4,7 +4,6 @@ draft = false
 title = "Introducing ReSwift"
 disqus_url = "http://blog.benjamin-encz.de/introducing-reswift/"
 slug = "introducing-reswift"
-aliases = ["/introducing-reswift/"]
 +++
 
 For the last two months I have been actively working on Swift Flow with the goal of bringing the ideas of the Flux and Redux libraries to Swift developers.

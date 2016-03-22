@@ -4,7 +4,6 @@ draft = false
 title = "Automatic serialization in Objective-C"
 disqus_url = "http://blog.benjamin-encz.de/seamless-serialization-objectivec/"
 slug = "seamless-serialization-objectivec"
-aliases = ["/seamless-serialization-objectivec/"]
 +++
 
 Recently I worked on a tutorial that required me to serialize a large amount of objects. This is a common use case in many games - if the user quits the game and reopens it you want to restore the entire game state.

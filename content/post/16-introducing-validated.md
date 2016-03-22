@@ -4,7 +4,6 @@ draft = false
 title = "Validated: A Swift μ-Library for Somewhat Dependent Types"
 disqus_url = "http://blog.benjamin-encz.de/validated-a-swift-m-library-for-somewhat-dependent-types/"
 slug = "validated-a-swift-m-library-for-somewhat-dependent-types"
-aliases = ["/validated-a-swift-m-library-for-somewhat-dependent-types/"]
 +++
 
 Today I built & published a μ-library that makes it easier to leverage Swift's type checking system for program verification: [Validated](https://github.com/Ben-G/Validated).

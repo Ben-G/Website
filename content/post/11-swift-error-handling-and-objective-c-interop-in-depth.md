@@ -4,7 +4,6 @@ draft = false
 title = "Swift Error Handling and Objective-C Interop in Depth"
 disqus_url = "http://blog.benjamin-encz.de/swift-error-handling-and-objective-c-interop-in-depth/"
 slug = "swift-error-handling-and-objective-c-interop-in-depth"
-aliases = ["/swift-error-handling-and-objective-c-interop-in-depth/"]
 +++
 
 For the impatient reader:

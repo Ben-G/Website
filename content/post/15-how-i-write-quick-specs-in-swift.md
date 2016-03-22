@@ -4,7 +4,6 @@ draft = false
 title = "How I Write Swift Specs With Quick"
 disqus_url = "http://blog.benjamin-encz.de/how-i-write-swift-specs-with-quick/"
 slug = "how-i-write-swift-specs-with-quick"
-aliases = ["/how-i-write-swift-specs-with-quick/"]
 +++
 
 I've recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of `it` blocks. This [seems to be common among many code bases that use Quick/Nimble](https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69).

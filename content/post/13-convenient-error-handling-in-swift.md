@@ -4,7 +4,6 @@ draft = false
 title = "Convenient Error Handling in Swift"
 disqus_url = "http://blog.benjamin-encz.de/convenient-error-handling-in-swift/"
 slug = "convenient-error-handling-in-swift"
-aliases = ["/convenient-error-handling-in-swift/"]
 +++
 
 Swift 2 introduced an error handling mechanism that includes [backwards compatibility with Objective-C](link to my post).
