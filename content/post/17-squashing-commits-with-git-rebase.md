@@ -3,6 +3,7 @@ date = "2016-03-24T22:24:54-08:00"
 draft = false
 title = "Squashing Commits With Git Rebase: A Very Quick Guide"
 slug = "squashing-commits-with-git-rebase-guide"
+disqus_url = "http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/"
 +++
 
 Git's interactive rebase is extremely useful for keeping a somewhat clear commit history. Here's a very brief guide on how to squash multiple commits into a single one.
@@ -54,5 +55,3 @@ Close the text editor by saving, and you're done. If you take a look at the new 
 ![](https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/6_git_rebase_done.png)
 
 A clean commit history that is ready to merge!
-
-
