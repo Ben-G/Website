@@ -5,20 +5,20 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-  	<meta property="og:title" content=" How I Write Swift Specs With Quick &middot;  [Thinking inside a large box];" />
+  	<meta property="og:title" content=" Squashing Commits With Git Rebase: A Very Quick Guide &middot;  [Thinking inside a large box];" />
   	<meta property="og:site_name" content="[Thinking inside a large box];" />
-  	<meta property="og:url" content="http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/" />
+  	<meta property="og:url" content="http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/" />
 
     
   	<meta property="og:type" content="article" />
 
-    <meta property="og:article:published_time" content="2016-02-24T22:24:54-08:00" />
+    <meta property="og:article:published_time" content="2016-03-24T22:24:54-08:00" />
 
     
     
 
   <title>
-     How I Write Swift Specs With Quick &middot;  [Thinking inside a large box];
+     Squashing Commits With Git Rebase: A Very Quick Guide &middot;  [Thinking inside a large box];
   </title>
 
     <meta name="description" content="" />
@@ -40,7 +40,7 @@
     
     <meta name="generator" content="Hugo 0.15" />
 
-    <link rel="canonical" href="http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/" />
+    <link rel="canonical" href="http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/" />
 
     
 
@@ -112,13 +112,13 @@
       </nav>
 
 
-        <h1 class="post-title">How I Write Swift Specs With Quick</h1>
+        <h1 class="post-title">Squashing Commits With Git Rebase: A Very Quick Guide</h1>
         <small></small>
 
         <section class="post-meta">
         
-          <time class="post-date" datetime="2016-02-24T22:24:54-08:00">
-            Feb 24, 2016
+          <time class="post-date" datetime="2016-03-24T22:24:54-08:00">
+            Mar 24, 2016
           </time>
         
          
@@ -128,82 +128,52 @@
     <section class="post-content">
 
 
+<p>Git&rsquo;s interactive rebase is extremely useful for keeping a somewhat clear commit history. Here&rsquo;s a very brief guide on how to squash multiple commits into a single one.</p>
 
+<p>Git rebase allows you to rewrite the history of a git repository. <strong>Yes, you are right, this can be incredibly dangerous, therefore don&rsquo;t use this technique on branches that are shared with other developers</strong>. To me rebase is most useful for preparing a branch that is about to be merged into the main branch of a project.</p>
 
-<p>I&rsquo;ve recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of <code>it</code> blocks. This <a href="https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69">seems to be common among many code bases that use Quick/Nimble</a>.</p>
+<p>Let&rsquo;s assume our branch&rsquo;s commit log is in the following state (printed by using <code>git log</code>):</p>
 
-<p>I felt that I could gain more readability by focusing on testing expectations within in <code>it</code> blocks and driving the test code outside.</p>
+<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/1_initial_log.png" alt="" /></p>
 
-<p>I now structure most of my tests in the following way:</p>
+<p>We have a bunch of intermediate commits for stages in which our code was not working as expected ending with a commit that indicates that our feature/bug fix is complete.</p>
 
-<ol>
-<li>A <code>describe</code> or <code>context</code> block describes the scenario under test</li>
-<li>The <code>beforeEach</code> block contains code to implement the scenario</li>
-<li>The <code>it</code> block only validates expectations</li>
-</ol>
+<p>Having all of these commits in the history of a project would mean that the commit log would quickly become very difficult to read.</p>
 
-<p>The result looks somewhat like this, though I have emitted variable declarations in outer scopes for brevity:</p>
+<p>Git rebase allows us to turn these 3 intermediate commits into a single one.</p>
 
-<pre><code>// describe the scenario under test
-context(&quot;when #download is called multiple times with the same URL&quot;) {
+<p>The following command will bring you into git&rsquo;s interactive rebase mode:</p>
 
-	// variables which will be used from `it` blocks
-	var downloadDescription: DownloadDescription!
-
-    beforeEach {
-    	// code to drive the scenario
-        downloadDescription = DownloadDescription(
-            url: NSURL(string: &quot;http://test.com/download&quot;)!,
-            priority: 500,
-            downloadLocation: NSURL(string: &quot;file://&quot;)!
-        )
-
-        (1..&lt;10).forEach { _ in
-            downloadManager.downloadAsset(downloadDescription)
-        }
-    }
-
-    // Multiple expectations for that scenario:
-
-    it(&quot;only asks the downloader to download the asset once&quot;) {
-        expect(mockDownloader.receivedCallsToStartDownload)
-        .to(haveCount(1))
-    }
-
-    it(&quot;keeps the ongoing download enqueued&quot;) {
-        expect(downloadManager.queue)
-        .to(contain(downloadDescription))
-    }
-}
+<pre><code>git rebase -i HEAD~3
 </code></pre>
 
-<p><strong>For me it is a lot easier to read these tests, the expectations are clearly separated from the code that drives the test.</strong></p>
+<p>There are different ways to choose the range of commits you want to rebase. I mostly end up using <code>HEAD~N</code> to rewrite the latest <code>N</code> commits.</p>
 
-<p>This approach has two minor drawbacks:</p>
+<p>This will bring up the following screen:</p>
 
-<ul>
-<li>The <code>it</code> block needs to reference variables that are set from within the <code>beforeEach</code> block. We therefore need to declare more variables in the <code>context</code>/<code>describe</code> scope which adds some visual clutter.</li>
-<li>Having the code that drives the test in <code>beforeEach</code> might look a little awkward at first, as most testing frameworks use these hooks to set up a shared test environment; not to drive the test code.</li>
-</ul>
+<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/2_git_rebase.png" alt="" /></p>
 
-<h2 id="future-improvements:90f0e2cd696d535cbf87455e17a8085e">Future Improvements?</h2>
+<p>You can now see the 3 commits you are about to rewrite. There are many different commands available, we are only going to use <code>squash</code> for now.</p>
 
-<p>In future it might be nice to be able to place the test driving code directly in the <code>context</code> block. Something along these lines:</p>
+<p>Type an <code>s</code> for <code>squash</code> in front of the commits that you want to squash together. In our example we choose the final commit along with one intermediate commit to be squashed into the first intermediate commit (this will turn 3 commits into one):</p>
 
-<pre><code>context(&quot;when multiplying two numbers&quot;) {
-	let i = 2 * 2
+<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/3_git_rebase_squash.png" alt="" /></p>
 
-    it(&quot;stores the correct result&quot;) {
-    	expect(i).to(equal(4))
-    }
-}
-</code></pre>
+<p>Then close the text editor. Next, git will bring up a screen that will allow you to choose some details for each rebasing step. In our example we only have a single step - the one in which we merge 3 commits into one.</p>
 
-<p>I believe this isn&rsquo;t possible, because Quick can&rsquo;t register the top-level code within <code>context</code> block to run as part of the tests, though I haven&rsquo;t looked at the implementation in detail.</p>
+<p>Git will allow you to change the commit message for this new squashed commit. It starts out by showing you the messages of all commits it is about to squash:</p>
 
-<p>This would mitigate the two drawbacks of my current approach and improve the readability of the specs a little more.</p>
+<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/4_git_rebase_step.png" alt="" /></p>
 
-<p><strong>For now I&rsquo;m happy with the <code>beforeEach</code> approach.</strong> How do you write your Swift test suites?</p>
+<p>Now you can choose a new, descriptive, commit message:</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/5_git_rebase_new_message.png" alt="" /></p>
+
+<p>Close the text editor by saving, and you&rsquo;re done. If you take a look at the new commit history via <code>git log</code>, you should see the following output:</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/6_git_rebase_done.png" alt="" /></p>
+
+<p>A clean commit history that is ready to merge!</p>
 
 
 
@@ -230,15 +200,15 @@ context(&quot;when #download is called multiple times with the same URL&quot;) {
     
     <section class="share">
       <h4>Share this post</h4>
-      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=How%20I%20Write%20Swift%20Specs%20With%20Quick&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fhow-i-write-swift-specs-with-quick%2f"
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Squashing%20Commits%20With%20Git%20Rebase%3a%20A%20Very%20Quick%20Guide&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fsquashing-commits-with-git-rebase-guide%2f"
           onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
           <span class="hidden">Twitter</span>
       </a>
-      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fhow-i-write-swift-specs-with-quick%2f"
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fsquashing-commits-with-git-rebase-guide%2f"
           onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
           <span class="hidden">Facebook</span>
       </a>
-      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fhow-i-write-swift-specs-with-quick%2f"
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fsquashing-commits-with-git-rebase-guide%2f"
          onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
           <span class="hidden">Google+</span>
       </a>
@@ -255,14 +225,14 @@ context(&quot;when #download is called multiple times with the same URL&quot;) {
 <script type="text/javascript">
 
   var disqus_shortname = 'benjaminencz';
-  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/how-i-write-swift-specs-with-quick\/';
+  var disqus_url = '';
 
   if (disqus_url === undefined) {
     if (window.location.hostname == "localhost") {
         
         disqus_url = undefined;
     } else {
-        disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/how-i-write-swift-specs-with-quick\/';
+        disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/squashing-commits-with-git-rebase-guide\/';
     }
   }
 

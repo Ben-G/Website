@@ -3,8 +3,13 @@
   
   <url>
     <loc>http://blog.benjamin-encz.de/</loc>
-    <lastmod>2016-02-25T22:24:54-08:00</lastmod>
+    <lastmod>2016-03-24T22:24:54-08:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</loc>
+    <lastmod>2016-03-24T22:24:54-08:00</lastmod>
   </url>
   
   <url>
