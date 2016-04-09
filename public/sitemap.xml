@@ -2,98 +2,98 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://localhost:9292/</loc>
+    <loc>http://blog.benjamin-encz.de/</loc>
     <lastmod>2016-03-24T22:24:54-08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</loc>
+    <loc>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</loc>
     <lastmod>2016-03-24T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</loc>
+    <loc>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</loc>
     <lastmod>2016-02-25T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</loc>
+    <loc>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</loc>
     <lastmod>2016-02-24T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/introducing-reswift/</loc>
+    <loc>http://blog.benjamin-encz.de/post/introducing-reswift/</loc>
     <lastmod>2016-01-20T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/convenient-error-handling-in-swift/</loc>
+    <loc>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</loc>
     <lastmod>2015-11-18T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</loc>
+    <loc>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</loc>
     <lastmod>2015-09-12T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</loc>
+    <loc>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</loc>
     <lastmod>2015-07-23T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</loc>
+    <loc>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</loc>
     <lastmod>2015-07-09T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</loc>
+    <loc>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</loc>
     <lastmod>2015-05-30T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</loc>
+    <loc>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</loc>
     <lastmod>2015-02-19T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/i-didnt-know-that-is-the-best-way-to-learn/</loc>
+    <loc>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</loc>
     <lastmod>2015-02-05T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/switching-ios-devices-and-the-keychain/</loc>
+    <loc>http://blog.benjamin-encz.de/post/switching-ios-devices-and-the-keychain/</loc>
     <lastmod>2014-12-14T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/using-ssh-with-multiple-accounts/</loc>
+    <loc>http://blog.benjamin-encz.de/post/using-ssh-with-multiple-accounts/</loc>
     <lastmod>2014-11-18T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/the-downside-of-web-apis/</loc>
+    <loc>http://blog.benjamin-encz.de/post/the-downside-of-web-apis/</loc>
     <lastmod>2014-08-10T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/arithmetic-expressions-in-swift/</loc>
+    <loc>http://blog.benjamin-encz.de/post/arithmetic-expressions-in-swift/</loc>
     <lastmod>2014-06-03T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/objective-c-backing-ivars-subclasses/</loc>
+    <loc>http://blog.benjamin-encz.de/post/objective-c-backing-ivars-subclasses/</loc>
     <lastmod>2014-05-28T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/seamless-serialization-objectivec/</loc>
+    <loc>http://blog.benjamin-encz.de/post/seamless-serialization-objectivec/</loc>
     <lastmod>2014-04-02T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://localhost:9292/post/when-you-cant-avoid-email/</loc>
+    <loc>http://blog.benjamin-encz.de/post/when-you-cant-avoid-email/</loc>
     <lastmod>2014-03-04T22:24:54-08:00</lastmod>
   </url>
   
