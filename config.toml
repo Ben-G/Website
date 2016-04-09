@@ -1,4 +1,5 @@
-baseurl = "http://blog.benjamin-encz.de/"
+# baseurl = "http://blog.benjamin-encz.de/"
+baseurl = "http://localhost:9292/"
 relativeURLs = true
 canonifyURLs = true
 languageCode = "en-us"
@@ -9,7 +10,7 @@ pygmentsStyle = "tango"
 disqusShortname = "benjaminencz"
 
 [params]
-    cover = "images/sf-clouds.jpg"
+    cover = "images/japan-backdrop.jpg"
     githubName = "Ben-G"
     twitterName = "benjaminencz"
     stylesheets = ["highlight.css"]

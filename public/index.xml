@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>[Thinking inside a large box];</title>
-    <link>http://blog.benjamin-encz.de/</link>
+    <link>http://localhost:9292/</link>
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 24 Mar 2016 22:24:54 -0800</lastBuildDate>
-    <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:9292/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Squashing Commits With Git Rebase: A Very Quick Guide</title>
-      <link>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</link>
+      <link>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</link>
       <pubDate>Thu, 24 Mar 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</guid>
+      <guid>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</guid>
       <description>&lt;p&gt;Git&amp;rsquo;s interactive rebase is extremely useful for keeping a somewhat clear commit history. Here&amp;rsquo;s a very brief guide on how to squash multiple commits into a single one.&lt;/p&gt;
 
 &lt;p&gt;Git rebase allows you to rewrite the history of a git repository. &lt;strong&gt;Yes, you are right, this can be incredibly dangerous, therefore don&amp;rsquo;t use this technique on branches that are shared with other developers&lt;/strong&gt;. To me rebase is most useful for preparing a branch that is about to be merged into the main branch of a project.&lt;/p&gt;
@@ -66,10 +66,10 @@
     
     <item>
       <title>Validated: A Swift μ-Library for Somewhat Dependent Types</title>
-      <link>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
+      <link>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
       <pubDate>Thu, 25 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
+      <guid>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
       <description>&lt;p&gt;Today I built &amp;amp; published a μ-library that makes it easier to leverage Swift&amp;rsquo;s type checking system for program verification: &lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;Validated&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt;&lt;/p&gt;
@@ -110,10 +110,10 @@ func performTaskWithUser(user: User) {
     
     <item>
       <title>How I Write Swift Specs With Quick</title>
-      <link>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</link>
+      <link>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</link>
       <pubDate>Wed, 24 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</guid>
+      <guid>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</guid>
       <description>
 
 &lt;p&gt;I&amp;rsquo;ve recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of &lt;code&gt;it&lt;/code&gt; blocks. This &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69&#34;&gt;seems to be common among many code bases that use Quick/Nimble&lt;/a&gt;.&lt;/p&gt;
@@ -195,10 +195,10 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     
     <item>
       <title>Introducing ReSwift</title>
-      <link>http://blog.benjamin-encz.de/post/introducing-reswift/</link>
+      <link>http://localhost:9292/post/introducing-reswift/</link>
       <pubDate>Wed, 20 Jan 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/introducing-reswift/</guid>
+      <guid>http://localhost:9292/post/introducing-reswift/</guid>
       <description>&lt;p&gt;For the last two months I have been actively working on Swift Flow with the goal of bringing the ideas of the Flux and Redux libraries to Swift developers.&lt;/p&gt;
 
 &lt;p&gt;At about the same &lt;a href=&#34;https://twitter.com/ARendtslev&#34;&gt;@ARendtslev&lt;/a&gt; started ReduxKit, which had the goal of implementing Redux in Swift. Soon he was joined by &lt;a href=&#34;https://twitter.com/karlbowden&#34;&gt;@karlbowden&lt;/a&gt; who made significant contributions to the project (and provided amazing build and documentation infrastructure for ReduxKit and Swift Flow).&lt;/p&gt;
@@ -223,10 +223,10 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     
     <item>
       <title>Convenient Error Handling in Swift</title>
-      <link>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</link>
+      <link>http://localhost:9292/post/convenient-error-handling-in-swift/</link>
       <pubDate>Wed, 18 Nov 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</guid>
+      <guid>http://localhost:9292/post/convenient-error-handling-in-swift/</guid>
       <description>
 
 &lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
@@ -349,10 +349,10 @@ errorHandler.wrap {
     
     <item>
       <title>A Flux Inspired Architecture for iOS</title>
-      <link>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</link>
+      <link>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</link>
       <pubDate>Sat, 12 Sep 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</guid>
+      <guid>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</guid>
       <description>&lt;p&gt;This year I spoke at 360iDev about &amp;ldquo;Safer Swift Code with Value Types&amp;rdquo;. The goal of the talk was to explore an architecture that uses immutable value types for the model layer.&lt;/p&gt;
 
 &lt;p&gt;After reviewing an earlier version of this talk with my developer friend &lt;a href=&#34;https://twitter.com/devknoll&#34;&gt;Gerald Monaco&lt;/a&gt;, who is a big fan of Facebook&amp;rsquo;s open source technologies (React, Flux, etc.), I decided to take a look at how a &lt;a href=&#34;https://facebook.github.io/flux/&#34;&gt;Flux&lt;/a&gt;-inspired architecture could be applied to an iOS application.&lt;/p&gt;
@@ -371,10 +371,10 @@ errorHandler.wrap {
     
     <item>
       <title>Swift Error Handling and Objective-C Interop in Depth</title>
-      <link>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
+      <link>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
       <pubDate>Thu, 23 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
+      <guid>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
       <description>
 
 &lt;p&gt;For the impatient reader:&lt;/p&gt;
@@ -576,10 +576,10 @@ errorHandler.wrap {
     
     <item>
       <title>iOS 9 Detects Cycles in Layout Trees</title>
-      <link>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</link>
+      <link>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</link>
       <pubDate>Thu, 09 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</guid>
+      <guid>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</guid>
       <description>
 
 &lt;p&gt;A couple of months ago I was faced with an issue that was fairly hard to debug:&lt;/p&gt;
@@ -614,10 +614,10 @@ errorHandler.wrap {
     
     <item>
       <title>Talk: Introduction to FRP on iOS</title>
-      <link>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</link>
+      <link>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</link>
       <pubDate>Sat, 30 May 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</guid>
+      <guid>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</guid>
       <description>&lt;p&gt;Back in April I gave a talk at &lt;a href=&#34;http://www.meetup.com/nsmeetup/events/220950179/&#34;&gt;NSMeetup in San Francisco&lt;/a&gt; on Functional Reactive Programming on iOS.&lt;/p&gt;
 
 &lt;p&gt;The talk discusses the idea &amp;amp; motivation behind FRP and dives into some practical examples using Reactive Cocoa 2.x. The examples are based on a small &lt;a href=&#34;https://github.com/Ben-G/PeopleCRM&#34;&gt;demo app&lt;/a&gt; that I built for that talk.&lt;/p&gt;
@@ -632,10 +632,10 @@ errorHandler.wrap {
     
     <item>
       <title>Breaking Swift with NSObject and Generics</title>
-      <link>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</link>
+      <link>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</link>
       <pubDate>Thu, 19 Feb 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</guid>
+      <guid>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</guid>
       <description>
 
 &lt;p&gt;Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at &lt;a href=&#34;http://openradar.appspot.com/search?query=segmentation+fault+swift&#34;&gt;Open Radar&lt;/a&gt; there seem to be many out there)!&lt;/p&gt;
@@ -702,10 +702,10 @@ extension D: NSObjectProtocol {}
     
     <item>
       <title>&#34;I didn&#39;t know that&#34; is the best way to learn</title>
-      <link>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</link>
+      <link>http://localhost:9292/post/i-didnt-know-that-is-the-best-way-to-learn/</link>
       <pubDate>Thu, 05 Feb 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</guid>
+      <guid>http://localhost:9292/post/i-didnt-know-that-is-the-best-way-to-learn/</guid>
       <description>&lt;p&gt;This is no original thought. Nevertheless I&amp;rsquo;ve been thinking about it often enough to make it worth spending a few minutes framing it in my own words.&lt;/p&gt;
 
 &lt;p&gt;I&amp;rsquo;m currently working as a Software Engineer. According to Wikipedia that makes me a &lt;a href=&#34;http://en.wikipedia.org/wiki/Knowledge_worker&#34;&gt;Knowledge Worker&lt;/a&gt;.&lt;/p&gt;
@@ -750,10 +750,10 @@ extension D: NSObjectProtocol {}
     
     <item>
       <title>Switching iOS devices and the Keychain</title>
-      <link>http://blog.benjamin-encz.de/post/switching-ios-devices-and-the-keychain/</link>
+      <link>http://localhost:9292/post/switching-ios-devices-and-the-keychain/</link>
       <pubDate>Sun, 14 Dec 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/switching-ios-devices-and-the-keychain/</guid>
+      <guid>http://localhost:9292/post/switching-ios-devices-and-the-keychain/</guid>
       <description>&lt;p&gt;Unfortunately some of my &lt;a href=&#34;http://www.movieloggr.com/&#34;&gt;MovieLoggr&lt;/a&gt; users ran into the following issue: After switching to a new phone and restoring it from a Backup MovieLoggr would behave unexpectetly (and in some cases crash) because the App could no longer access the user&amp;rsquo;s password and unfortunately did not handle this gracefully.&lt;/p&gt;
 
 &lt;p&gt;Typically iOS applications store passwords in the encrypted &lt;em&gt;Keychain&lt;/em&gt;. When creating unencrypted backups, which is the default for creating backups with iTunes, the iOS Keychain is not stored (it is stored if you create an encrypted one or use iCloud backups).  This means, after restoring your new device from a backup, all of your apps that now run on your new device can no longer access the passwords they have securely stored on your previous device.&lt;/p&gt;
@@ -768,10 +768,10 @@ extension D: NSObjectProtocol {}
     
     <item>
       <title>Using SSH for private and work account on a Mac</title>
-      <link>http://blog.benjamin-encz.de/post/using-ssh-with-multiple-accounts/</link>
+      <link>http://localhost:9292/post/using-ssh-with-multiple-accounts/</link>
       <pubDate>Tue, 18 Nov 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/using-ssh-with-multiple-accounts/</guid>
+      <guid>http://localhost:9292/post/using-ssh-with-multiple-accounts/</guid>
       <description>
 
 &lt;blockquote&gt;
@@ -852,10 +852,10 @@ Host bitbucket.work
     
     <item>
       <title>The downside of Web APIs</title>
-      <link>http://blog.benjamin-encz.de/post/the-downside-of-web-apis/</link>
+      <link>http://localhost:9292/post/the-downside-of-web-apis/</link>
       <pubDate>Sun, 10 Aug 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/the-downside-of-web-apis/</guid>
+      <guid>http://localhost:9292/post/the-downside-of-web-apis/</guid>
       <description>
 
 &lt;p&gt;Web APIs have done a lot for the world of technology. Services that have formerly been isolated islands can now be connected through a few simple HTTP Requests. Posting to Facebook on every GitHub commit? Printing a Postcard as soon as a new Photo is uploaded to a Dropbox folder? Basically anything is possible through Web Services.&lt;/p&gt;
@@ -952,23 +952,23 @@ Host bitbucket.work
     
     <item>
       <title>Arithmetic Expressions in Swift</title>
-      <link>http://blog.benjamin-encz.de/post/arithmetic-expressions-in-swift/</link>
+      <link>http://localhost:9292/post/arithmetic-expressions-in-swift/</link>
       <pubDate>Tue, 03 Jun 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/arithmetic-expressions-in-swift/</guid>
+      <guid>http://localhost:9292/post/arithmetic-expressions-in-swift/</guid>
       <description>&lt;p&gt;While I still cannot fully understand how the release of a new programming language didn&amp;rsquo;t leak before WWDC, most of us got surprised by the announcement of Apple&amp;rsquo;s new Programming Language &lt;strong&gt;Swift&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;Like most iOS Developers I immediately took a look at the new language. Most language details seem fairly straightforward - however, arithmetic expressions were the first small pitfall for me.&lt;/p&gt;
 
 &lt;p&gt;If you for example try to run the following lines of code:&lt;/p&gt;
 
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// assume margin needs to be of type Float&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;margin&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;Float&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;elements&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;3&lt;/span&gt;
 
-// assume margin needs to be of type Float
-var margin :Float
-var elements = 3
-
-margin = CGRectGetWidth(self.view.frame) / elements
-
+&lt;span style=&#34;color: #000000&#34;&gt;margin&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;CGRectGetWidth&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;view&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;frame&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;/&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;elements&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;You will receive a very technical error message (nearly as cryptic as the GCC error messages back in the old days):
 &amp;gt; Could not find an overload for &amp;lsquo;/&amp;rsquo; that accepts the supplied arguments&lt;/p&gt;
@@ -980,25 +980,25 @@ margin = CGRectGetWidth(self.view.frame) / elements
 &lt;/blockquote&gt;
 
 &lt;p&gt;You can solve this problem by explicitly initializing a &lt;code&gt;Float&lt;/code&gt;:
-
-margin = CGRectGetWidth(self.view.frame) / Float(elements);
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;margin&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;CGRectGetWidth&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;view&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;frame&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;/&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Float&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;elements&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
 &lt;p&gt;Similar to Java, all basic types have heavily overloaded constructors that allow us to initialize them with other types, here are the &lt;code&gt;CGFloat&lt;/code&gt; initializers:&lt;/p&gt;
 
-&lt;p&gt;
-extension Float {
-	init(_ v: UInt8)
-	init(_ v: Int8)
-	init(_ v: UInt16)
-	init(_ v: Int16)
-	init(_ v: UInt32)
-	init(_ v: Int32)
-	init(_ v: UInt64)
-	init(_ v: Int64)
-	init(_ v: UInt)
-	init(_ v: Int)
-}
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;extension&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Float&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+	&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;v&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;UInt8&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+	&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;v&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int8&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+	&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;v&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;UInt16&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+	&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;v&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int16&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+	&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;v&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;UInt32&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+	&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;v&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int32&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+	&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;v&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;UInt64&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+	&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;v&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int64&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+	&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;v&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;UInt&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+	&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;v&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
 &lt;p&gt;Complex arithmetic expressions may get a little bit less readable in future.&lt;/p&gt;
