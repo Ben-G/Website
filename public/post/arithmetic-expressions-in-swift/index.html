@@ -38,7 +38,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.14" />
+    <meta name="generator" content="Hugo 0.15" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/arithmetic-expressions-in-swift/" />
 
@@ -134,13 +134,13 @@
 
 <p>If you for example try to run the following lines of code:</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">// assume margin needs to be of type Float</span>
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">// assume margin needs to be of type Float</span>
 <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">margin</span> <span style="color: #000000; font-weight: bold">:</span><span style="color: #204a87">Float</span>
 <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">elements</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #0000cf; font-weight: bold">3</span>
 
 <span style="color: #000000">margin</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">CGRectGetWidth</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">view</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">frame</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #ce5c00; font-weight: bold">/</span> <span style="color: #000000">elements</span>
 </pre></div>
-</p>
+
 
 <p>You will receive a very technical error message (nearly as cryptic as the GCC error messages back in the old days):
 &gt; Could not find an overload for &lsquo;/&rsquo; that accepts the supplied arguments</p>
