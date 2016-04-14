@@ -50,7 +50,7 @@ printHumanName(Visitor())
 printHumanName(Car())
 {{< /highlight >}}
 
-In this example, again, all of the type checking occurs at compile time, solely based on the source code. The swift compiler can verify which function calls' arguments match the generic constraints of the `printHumanName` function; and for ones that don't it can emit a compile error.
+In this example, again, all of the type checking occurs at compile time, solely based on the source code. The swift compiler can verify which function calls provide arguments that match the generic constraints of the `printHumanName` function; and for ones that don't it can emit a compile error.
 
 Since Swift's static type system offers these powerful tools we try to verify as much as possible at compile time. However, in same cases run time type verification is necessary.
 
@@ -60,7 +60,7 @@ In some unfortunate cases relying on static type checking is not possible. The m
 
 This means instead of being able to *define* a type statically, we need to *verify* a type dynamically at run time.
 
-When checking types at run time we rely on the type metadata stored within the memory of all Swift instances. The only tools we have available at this stage are the `is` and `as` keywords that use that metadata to confirm wheter or not the instance is of a certain type or conforms to a certain protocol. 
+When checking types at run time we rely on the type metadata stored within the memory of all Swift instances). The only tools we have available at this stage are the `is` and `as` keywords that use that metadata to confirm whether or not the instance is of a certain type or conforms to a certain protocol. 
 
 This is what all the different Swift JSON mapping libraries do - they provide a convenient API for dynamically casting an unknown type to one that matches the type of a specified variable.
 
@@ -76,7 +76,7 @@ if let unknownData = unknownData as? HumanType {
 }
 {{< /highlight >}}
 
-As in the example above, when we cast an unknown type to match a concrete argument type, we gain the ability to call that function with our casted type. 
+All we need to do in order to call the function with `unknownData` is to cast it to the argument type of the function.
 
 However, if we try to use this approach to call a function that defines arguments as generic constraints, we run into issues...
 
@@ -96,13 +96,17 @@ if let unknownData = unknownData as? protocol<HumanType, HasName> {
 }
 {{< /highlight >}}
 
-The dynamic type check in the above example actually works correctly. The body of the `if let` block is only called for types that conform to our two expected protocols. However, we cannot convey this to the compiler. The compiler expects a *concrete* type (one that exists at compile time) that conforms to `HumanType` and `HasName`. All we can offer is a dynamically verified type.
+The dynamic type check in the above example actually works correctly. The body of the `if let` block is only executed for types that conform to our two expected protocols. However, we cannot convey this to the compiler. The compiler expects a *concrete* type (one that has a fully specified type at compile time) that conforms to `HumanType` and `HasName`. All we can offer is a dynamically verified type.
 
-There is no way to get this to compile (even though I will briefly touch on a possible future option in the conclusion of this post).
+As of Swift 2.2, there is no way to get this to compile. At the end of this post I will briefly touch on which changes to Swift would likely be necessary to make this approach work.
 
-At this point we have two different workarounds: 
+For now, we need a workaround. 
 
-- Cast to a concrete type
+### Workarounds
+
+In the past I've used one of these two approaches: 
+
+- Cast `unknowndData` to a concrete type instead of casting it to a protocol
 - Provide a second implementation of `printHumanName` without generic constraints
 
 The concrete type solution would look something like this:
@@ -117,12 +121,14 @@ if let user = unknownData as? User {
 
 Not beautiful; but it might the best possible solution in some cases.
 
-A solution that involves rewriting `printHumanName` might look like this (though there are many other possible solutions):
+A solution that involves providing a second implementation of `printHumanName` might look like this (though there are many other possible solutions):
 
 {{< highlight swift >}}
 func _printHumanName(thing: Any) {
     if let hasName = thing as? HasName where thing is HumanType {
-        print(hasName)
+        // Put implementation code here
+        // Or call a third function that is shared between
+        // both implementations of `printHumanName`
     } else {
         fatalError("Provided Incorrect Type")
     }
@@ -131,19 +137,18 @@ func _printHumanName(thing: Any) {
 _printHumanName(unknownData)
 {{< /highlight >}}
 
-In this second solution we have substituted the compile time constraints for a run time check. We cast the `Any` type to the protocol that allows us to access the relevant information, `HasName` and we include an `is` check to verify that the type is one that conforms to `HumanType`. We have established a dynamic type check that is equivalent to our generic constraint.
+In this second solution we have substituted the compile time constraints for a run time check. We cast the `Any` type to `HasName`, that allows us to access the relevant information for printing a name, and we include an `is` check to verify that the type is one that conforms to `HumanType`. We have established a dynamic type check that is equivalent to our generic constraint.
 
-This way we have offered a second implementation that will run code dynamically, if an arbitrary type matches our protocol requirements.
+This way we have offered a second implementation that will run code dynamically, if an arbitrary type matches our protocol requirements. In practice I would extract the actual functionality of this function into a third function that gets called from both `printHumanName` and `_printHumanName` - that way we can avoid duplicate code.
 
-This solution isn't nice either; but in practice I have used a similar approaches in cases where other code guarantees that the function will be called with the correct type, but there wasn't a way of expressing it within Swift's type system.
+The solution of the "type erased" function that accept an `Any` argument isn't really nice either; but in practice I have used similar approaches in cases where other code guarantees that the function will be called with the correct type, but there wasn't a way of expressing that within Swift's type system.
 
 ## Conclusion
 
 The examples above are extremely simplified, but I hope they demonstrate the issues that can arise from differences in compile time and run time type checking. The key takeaways are: 
 
-- Static type checking happens at compile time, dynamic type checking happens at run time
-- The static type checker uses type annotations and constraints
-- The dynamic type checker uses run time information and casting
+- The static type checker runs at compile time, operates on the source code and uses type annotations and constraints for type checking
+- The dynamic type checker uses run time information and casting for type checking
 - **We cannot cast a an argument dynamically, in order call a function that has generic constraints**.
 
 Is there potential for adding support for this to Swift? I think we would need the ability to dynamically create & use a constrained metatype. One could imagine a syntax that looks somewhat like this:
@@ -154,11 +159,11 @@ if let <T: HumanType, HasName> value = unknownData as? T {
 }
 {{< /highlight >}}
 
-I know too little about the Swift compiler to know if this is feasible at all. I would assume that the relative cost of implementing this is pretty large, compared to the benefits it would provide to a very small part of the average Swift codebase.
+I know too little about the Swift compiler to know if this is feasible at all. I would assume that the relative cost of implementing this is huge, compared to the benefits it would provide to a very small part of the average Swift codebase.
 
-However, according to this [Stack Overflow answer](http://stackoverflow.com/questions/28124684/swift-check-if-generic-type-conforms-to-protocol) by [David Smith](https://twitter.com/Catfish_Man) Swift currently checks generic constraints at run time (unless the compiler generates specialized copies of a function for performance optimizations), so it seems like the idea of dynamically created constrained metatypes could, at least in theory, be possible.
+However, according to this [Stack Overflow answer](http://stackoverflow.com/questions/28124684/swift-check-if-generic-type-conforms-to-protocol) by [David Smith](https://twitter.com/Catfish_Man), Swift currently checks generic constraints at run time (unless the compiler generates specialized copies of a function for performance optimizations). This means the information about generic constraints is still available at run time and, at least in theory, the idea of dynamically created constrained metatypes might be possible.
 
-For now it is helpful to understand this limitation, to perform as much type checking as possible during compile time and to be aware of the possible workarounds for the worst case.
+For now it is helpful to understand the limitations of mixing static and dynamic type checking and to be aware of the possible workarounds.
 
 I cannot finish this post without a fabulous quote from [@AirspeedSwift](https://twitter.com/AirspeedSwift):
 
