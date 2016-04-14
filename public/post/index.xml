@@ -6,13 +6,13 @@
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 08 Apr 2016 22:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Wed, 13 Apr 2016 21:09:24 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Compile Time vs. Run Time Type Checking in Swift</title>
       <link>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</link>
-      <pubDate>Fri, 08 Apr 2016 22:24:54 -0800</pubDate>
+      <pubDate>Wed, 13 Apr 2016 21:09:24 -0800</pubDate>
       
       <guid>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</guid>
       <description>
@@ -25,7 +25,7 @@
 
 &lt;p&gt;Compile time type checking (or static type checking) operates on the Swift source code. The Swift compiler looks at explicitly stated and inferred types and ensures correctness of our type constraints.&lt;/p&gt;
 
-&lt;p&gt;A trivial example of static type checking is this:
+&lt;p&gt;Here&amp;rsquo;s a trivial example of static type checking:
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;text&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;
 &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Compile Error: Cannot convert value of &lt;/span&gt;
 &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// type &amp;#39;String&amp;#39; to specified type &amp;#39;Int&amp;#39;&lt;/span&gt;
@@ -33,7 +33,7 @@
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Based on the source code the static type checker can decide that &lt;code&gt;text&lt;/code&gt; is not of type &lt;code&gt;Int&lt;/code&gt; - therefore it will raise a compile error.&lt;/p&gt;
+&lt;p&gt;Based on the source code the type checker can decide that &lt;code&gt;text&lt;/code&gt; is not of type &lt;code&gt;Int&lt;/code&gt; - therefore it will raise a compile error.&lt;/p&gt;
 
 &lt;p&gt;Swift&amp;rsquo;s static type checker can do a lot more powerful things, e.g. verifying generic constraints:&lt;/p&gt;
 
@@ -44,6 +44,7 @@
 &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Visitor&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Car&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
 
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Require a type that is both human and provides a name&lt;/span&gt;
 &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;T&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;thing&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;T&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
     &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// ...&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
@@ -58,19 +59,21 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;In this example, again, all of the type checking occurs ate compile time, solely based on the source code. The swift compiler can verify which types match the generic constraints of the &lt;code&gt;printHumanName&lt;/code&gt; function; and for ones that don&amp;rsquo;t it can emit a compile error.&lt;/p&gt;
+&lt;p&gt;In this example, again, all of the type checking occurs at compile time, solely based on the source code. The swift compiler can verify which function calls&amp;rsquo; arguments match the generic constraints of the &lt;code&gt;printHumanName&lt;/code&gt; function; and for ones that don&amp;rsquo;t it can emit a compile error.&lt;/p&gt;
 
-&lt;p&gt;Since Swift&amp;rsquo;s static type system offers these powerful tools we try to verify as much as possible at compile time. However, in same cases, run time type verification is necessary.&lt;/p&gt;
+&lt;p&gt;Since Swift&amp;rsquo;s static type system offers these powerful tools we try to verify as much as possible at compile time. However, in same cases run time type verification is necessary.&lt;/p&gt;
 
 &lt;h2 id=&#34;run-time-type-checking:7523e14371168feae6a10e37d5f0382f&#34;&gt;Run Time Type Checking&lt;/h2&gt;
 
-&lt;p&gt;In some unfortunate cases, relying on static type checking is not possible. The most common example is reading data from an outside resource (network, db, etc.) - in that case we often don&amp;rsquo;t have the ability to retrieve Swift type information along with the data itself.&lt;/p&gt;
+&lt;p&gt;In some unfortunate cases relying on static type checking is not possible. The most common example is reading data from an outside resource (network, database, etc.). In such cases the data and thus the type information is not part of the source code, therefore we cannot prove to the static type checker that our data has a specific type (since the static type checker can only operate on type information it can extract from our source code).&lt;/p&gt;
 
-&lt;p&gt;This means instead of being able to &lt;em&gt;define&lt;/em&gt; a type statically, we need to &lt;em&gt;verify&lt;/em&gt; a type dynamically, at run time.&lt;/p&gt;
+&lt;p&gt;This means instead of being able to &lt;em&gt;define&lt;/em&gt; a type statically, we need to &lt;em&gt;verify&lt;/em&gt; a type dynamically at run time.&lt;/p&gt;
 
-&lt;p&gt;When checking types at run time we rely on the type metadata stored alongside all Swift instances. The only tool we have available is casting via &lt;code&gt;is&lt;/code&gt; and &lt;code&gt;as&lt;/code&gt;. This is what all the different Swift JSON mapping libraries do - they provide a convenient API for dynamically casting an unknown type to one that matches a specified property.&lt;/p&gt;
+&lt;p&gt;When checking types at run time we rely on the type metadata stored within the memory of all Swift instances. The only tools we have available at this stage are the &lt;code&gt;is&lt;/code&gt; and &lt;code&gt;as&lt;/code&gt; keywords that use that metadata to confirm wheter or not the instance is of a certain type or conforms to a certain protocol.&lt;/p&gt;
 
-&lt;p&gt;In many scenarios dynamic type checking allows to integrate types that are unknown at compile time with our statically checked Swift code:&lt;/p&gt;
+&lt;p&gt;This is what all the different Swift JSON mapping libraries do - they provide a convenient API for dynamically casting an unknown type to one that matches the type of a specified variable.&lt;/p&gt;
+
+&lt;p&gt;In many scenarios dynamic type checking enables us to integrate types that are unknown at compile time with our statically checked Swift code:&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;takesHuman&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;human&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
 

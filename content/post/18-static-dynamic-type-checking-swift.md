@@ -1,9 +1,9 @@
 +++
-date = "2016-04-08T22:24:54-08:00"
+date = "2016-04-13T21:09:24-08:00"
 draft = false
 title = "Compile Time vs. Run Time Type Checking in Swift"
 slug = "compile-time-vs-runtime-type-checking-swift"
-disqus_url = "http://blog.benjamin-encz.de/post/static-dynamic-type-checking-swift/"
+disqus_url = "http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/"
 +++
 
 At some point, when learning how to use Swift's type system, it is important to understand that Swift (like many other languages) has two different forms of type checking: static and dynamic. Today I want to briefly discuss the difference between them and why headaches might arise when we try to combine them.
@@ -16,7 +16,7 @@ Static type checking occurs at compile time and dynamic type checking happens at
 
 Compile time type checking (or static type checking) operates on the Swift source code. The Swift compiler looks at explicitly stated and inferred types and ensures correctness of our type constraints.
 
-A trivial example of static type checking is this:
+Here's a trivial example of static type checking:
 {{< highlight swift >}}
 let text: String = ""
 // Compile Error: Cannot convert value of 
@@ -24,7 +24,7 @@ let text: String = ""
 let number: Int = text
 {{< /highlight >}}
 
-Based on the source code the static type checker can decide that `text` is not of type `Int` - therefore it will raise a compile error.
+Based on the source code the type checker can decide that `text` is not of type `Int` - therefore it will raise a compile error.
 
 Swift's static type checker can do a lot more powerful things, e.g. verifying generic constraints:
 
@@ -36,6 +36,7 @@ struct User: HasName, HumanType { }
 struct Visitor: HasName, HumanType { }
 struct Car: HasName {}
 
+// Require a type that is both human and provides a name
 func printHumanName<T: protocol<HumanType, HasName>>(thing: T) {
     // ...
 }
@@ -49,19 +50,21 @@ printHumanName(Visitor())
 printHumanName(Car())
 {{< /highlight >}}
 
-In this example, again, all of the type checking occurs ate compile time, solely based on the source code. The swift compiler can verify which types match the generic constraints of the `printHumanName` function; and for ones that don't it can emit a compile error.
+In this example, again, all of the type checking occurs at compile time, solely based on the source code. The swift compiler can verify which function calls' arguments match the generic constraints of the `printHumanName` function; and for ones that don't it can emit a compile error.
 
-Since Swift's static type system offers these powerful tools we try to verify as much as possible at compile time. However, in same cases, run time type verification is necessary.
+Since Swift's static type system offers these powerful tools we try to verify as much as possible at compile time. However, in same cases run time type verification is necessary.
 
 ## Run Time Type Checking
 
-In some unfortunate cases, relying on static type checking is not possible. The most common example is reading data from an outside resource (network, db, etc.) - in that case we often don't have the ability to retrieve Swift type information along with the data itself. 
+In some unfortunate cases relying on static type checking is not possible. The most common example is reading data from an outside resource (network, database, etc.). In such cases the data and thus the type information is not part of the source code, therefore we cannot prove to the static type checker that our data has a specific type (since the static type checker can only operate on type information it can extract from our source code). 
 
-This means instead of being able to *define* a type statically, we need to *verify* a type dynamically, at run time.
+This means instead of being able to *define* a type statically, we need to *verify* a type dynamically at run time.
 
-When checking types at run time we rely on the type metadata stored alongside all Swift instances. The only tool we have available is casting via `is` and `as`. This is what all the different Swift JSON mapping libraries do - they provide a convenient API for dynamically casting an unknown type to one that matches a specified property.
+When checking types at run time we rely on the type metadata stored within the memory of all Swift instances. The only tools we have available at this stage are the `is` and `as` keywords that use that metadata to confirm wheter or not the instance is of a certain type or conforms to a certain protocol. 
 
-In many scenarios dynamic type checking allows to integrate types that are unknown at compile time with our statically checked Swift code:
+This is what all the different Swift JSON mapping libraries do - they provide a convenient API for dynamically casting an unknown type to one that matches the type of a specified variable.
+
+In many scenarios dynamic type checking enables us to integrate types that are unknown at compile time with our statically checked Swift code:
 
 {{< highlight swift >}}
 func takesHuman(human: HumanType) {}

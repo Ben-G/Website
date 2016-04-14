@@ -12,7 +12,7 @@
     
   	<meta property="og:type" content="article" />
 
-    <meta property="og:article:published_time" content="2016-04-08T22:24:54-08:00" />
+    <meta property="og:article:published_time" content="2016-04-13T21:09:24-08:00" />
 
     
     
@@ -117,8 +117,8 @@
 
         <section class="post-meta">
         
-          <time class="post-date" datetime="2016-04-08T22:24:54-08:00">
-            Apr 8, 2016
+          <time class="post-date" datetime="2016-04-13T21:09:24-08:00">
+            Apr 13, 2016
           </time>
         
          
@@ -138,7 +138,7 @@
 
 <p>Compile time type checking (or static type checking) operates on the Swift source code. The Swift compiler looks at explicitly stated and inferred types and ensures correctness of our type constraints.</p>
 
-<p>A trivial example of static type checking is this:
+<p>Here&rsquo;s a trivial example of static type checking:
 <div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">text</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">String</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #4e9a06">&quot;&quot;</span>
 <span style="color: #8f5902; font-style: italic">// Compile Error: Cannot convert value of </span>
 <span style="color: #8f5902; font-style: italic">// type &#39;String&#39; to specified type &#39;Int&#39;</span>
@@ -146,7 +146,7 @@
 </pre></div>
 </p>
 
-<p>Based on the source code the static type checker can decide that <code>text</code> is not of type <code>Int</code> - therefore it will raise a compile error.</p>
+<p>Based on the source code the type checker can decide that <code>text</code> is not of type <code>Int</code> - therefore it will raise a compile error.</p>
 
 <p>Swift&rsquo;s static type checker can do a lot more powerful things, e.g. verifying generic constraints:</p>
 
@@ -157,6 +157,7 @@
 <span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">Visitor</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">HasName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">HumanType</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #000000; font-weight: bold">}</span>
 <span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">Car</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">HasName</span> <span style="color: #000000; font-weight: bold">{}</span>
 
+<span style="color: #8f5902; font-style: italic">// Require a type that is both human and provides a name</span>
 <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">printHumanName</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">T</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">protocol</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">HumanType</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">HasName</span><span style="color: #000000; font-weight: bold">&gt;</span><span style="color: #ce5c00; font-weight: bold">&gt;</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">thing</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">T</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
     <span style="color: #8f5902; font-style: italic">// ...</span>
 <span style="color: #000000; font-weight: bold">}</span>
@@ -171,19 +172,21 @@
 </pre></div>
 
 
-<p>In this example, again, all of the type checking occurs ate compile time, solely based on the source code. The swift compiler can verify which types match the generic constraints of the <code>printHumanName</code> function; and for ones that don&rsquo;t it can emit a compile error.</p>
+<p>In this example, again, all of the type checking occurs at compile time, solely based on the source code. The swift compiler can verify which function calls&rsquo; arguments match the generic constraints of the <code>printHumanName</code> function; and for ones that don&rsquo;t it can emit a compile error.</p>
 
-<p>Since Swift&rsquo;s static type system offers these powerful tools we try to verify as much as possible at compile time. However, in same cases, run time type verification is necessary.</p>
+<p>Since Swift&rsquo;s static type system offers these powerful tools we try to verify as much as possible at compile time. However, in same cases run time type verification is necessary.</p>
 
 <h2 id="run-time-type-checking:7523e14371168feae6a10e37d5f0382f">Run Time Type Checking</h2>
 
-<p>In some unfortunate cases, relying on static type checking is not possible. The most common example is reading data from an outside resource (network, db, etc.) - in that case we often don&rsquo;t have the ability to retrieve Swift type information along with the data itself.</p>
+<p>In some unfortunate cases relying on static type checking is not possible. The most common example is reading data from an outside resource (network, database, etc.). In such cases the data and thus the type information is not part of the source code, therefore we cannot prove to the static type checker that our data has a specific type (since the static type checker can only operate on type information it can extract from our source code).</p>
 
-<p>This means instead of being able to <em>define</em> a type statically, we need to <em>verify</em> a type dynamically, at run time.</p>
+<p>This means instead of being able to <em>define</em> a type statically, we need to <em>verify</em> a type dynamically at run time.</p>
 
-<p>When checking types at run time we rely on the type metadata stored alongside all Swift instances. The only tool we have available is casting via <code>is</code> and <code>as</code>. This is what all the different Swift JSON mapping libraries do - they provide a convenient API for dynamically casting an unknown type to one that matches a specified property.</p>
+<p>When checking types at run time we rely on the type metadata stored within the memory of all Swift instances. The only tools we have available at this stage are the <code>is</code> and <code>as</code> keywords that use that metadata to confirm wheter or not the instance is of a certain type or conforms to a certain protocol.</p>
 
-<p>In many scenarios dynamic type checking allows to integrate types that are unknown at compile time with our statically checked Swift code:</p>
+<p>This is what all the different Swift JSON mapping libraries do - they provide a convenient API for dynamically casting an unknown type to one that matches the type of a specified variable.</p>
+
+<p>In many scenarios dynamic type checking enables us to integrate types that are unknown at compile time with our statically checked Swift code:</p>
 
 <div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">takesHuman</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">human</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">HumanType</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{}</span>
 
@@ -342,7 +345,7 @@
 <script type="text/javascript">
 
   var disqus_shortname = 'benjaminencz';
-  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/static-dynamic-type-checking-swift\/';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/compile-time-vs-runtime-type-checking-swift\/';
 
   if (disqus_url === undefined) {
     if (window.location.hostname == "localhost") {
