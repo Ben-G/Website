@@ -186,6 +186,15 @@
 &lt;/blockquote&gt;
 
 &lt;p&gt;If you have corrections or general thoughts on this post, &lt;a href=&#34;https://twitter.com/benjaminencz&#34;&gt;I would love to hear from you&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Addendum&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;Russ Bishop (in the comments) and Joe Groff (on twitter) pointed out that the idea presented in this post is already being discussed as part of extending Swift&amp;rsquo;s support for generics. The twitter conversation also revealed that all compile time information is available at runtime, too. This opens the door for exciting extensions to Swift&amp;rsquo;s type system in future.&lt;/p&gt;
+
+&lt;p&gt;The relevant conversation on twitter is here:&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/xenadu02&#34;&gt;@xenadu02&lt;/a&gt; &lt;a href=&#34;https://twitter.com/benjaminencz&#34;&gt;@benjaminencz&lt;/a&gt; Everything in the static type system is in the runtime too. Making it all available&amp;#39;s a &amp;quot;simple matter of design&amp;quot;&lt;/p&gt;&amp;mdash; Joe Groff (@jckarter) &lt;a href=&#34;https://twitter.com/jckarter/status/720661475405094913&#34;&gt;April 14, 2016&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
 </description>
     </item>
     

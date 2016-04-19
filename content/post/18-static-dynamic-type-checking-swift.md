@@ -171,3 +171,12 @@ I cannot finish this post without a fabulous quote from [@AirspeedSwift](https:/
 - [Source: StackOverflow.com](http://stackoverflow.com/questions/28124684/swift-check-if-generic-type-conforms-to-protocol)
 
 If you have corrections or general thoughts on this post, [I would love to hear from you](https://twitter.com/benjaminencz).
+
+**Addendum**:
+
+Russ Bishop (in the comments) and Joe Groff (on twitter) pointed out that the idea presented in this post is already being discussed as part of extending Swift's support for generics. The twitter conversation also revealed that all compile time information is available at runtime, too. This opens the door for exciting extensions to Swift's type system in future. 
+
+The relevant conversation on twitter is here:
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/xenadu02">@xenadu02</a> <a href="https://twitter.com/benjaminencz">@benjaminencz</a> Everything in the static type system is in the runtime too. Making it all available&#39;s a &quot;simple matter of design&quot;</p>&mdash; Joe Groff (@jckarter) <a href="https://twitter.com/jckarter/status/720661475405094913">April 14, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
