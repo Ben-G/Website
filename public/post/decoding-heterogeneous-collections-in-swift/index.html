@@ -136,9 +136,7 @@
 
 <p>We define how a JSON object representing a user can be mapped to a <code>User</code> type, as in this example:</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">User</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">Deserializable</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #204a87; font-weight: bold">static</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">typeIdentifier</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #4e9a06">&quot;user&quot;</span>
-
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">User</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">Decodable</span> <span style="color: #000000; font-weight: bold">{</span>
     <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">name</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">String</span>
     <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">age</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Int</span>
 

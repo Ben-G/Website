@@ -15,9 +15,7 @@ However, most of the libraries I've seen so far deal with decoding individual ty
 We define how a JSON object representing a user can be mapped to a `User` type, as in this example:
 
 {{< highlight swift >}}
-struct User: Deserializable {
-    static let typeIdentifier = "user"
-
+struct User: Decodable {
     let name: String
     let age: Int
 
