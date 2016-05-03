@@ -6,8 +6,173 @@
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 13 Apr 2016 21:09:24 -0800</lastBuildDate>
+    <lastBuildDate>Tue, 03 May 2016 10:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Decoding Heterogeneous Collections in Swift</title>
+      <link>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</link>
+      <pubDate>Tue, 03 May 2016 10:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</guid>
+      <description>
+
+&lt;p&gt;The problem of decoding Swift types from an outside data source, such as JSON, has been mostly solved. Since Swift&amp;rsquo;s release we&amp;rsquo;ve seen more than a dozen popular JSON mapping libraries pop up.&lt;/p&gt;
+
+&lt;p&gt;However, most of the libraries I&amp;rsquo;ve seen so far deal with decoding individual types. We define how a JSON object representing a user can be mapped to a &lt;code&gt;User&lt;/code&gt; type, as in this example:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;typeIdentifier&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;user&amp;quot;&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;age&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;decode&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;AnyObject&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;throws&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;try&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;age&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This approach requires the developer to know that a certain piece of JSON will ever only contain user objects.&lt;/p&gt;
+
+&lt;p&gt;But how can we handle heterogeneous collections like the following one?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; [
+  {
+      &amp;quot;type&amp;quot; : &amp;quot;user&amp;quot;,
+      &amp;quot;name&amp;quot; : &amp;quot;test&amp;quot;,
+      &amp;quot;age&amp;quot;  : 99
+  },
+  {
+      &amp;quot;type&amp;quot;  : &amp;quot;car&amp;quot;,
+      &amp;quot;color&amp;quot; : &amp;quot;green&amp;quot;
+  },
+  {
+      &amp;quot;type&amp;quot; : &amp;quot;phone&amp;quot;,
+      &amp;quot;model&amp;quot; : &amp;quot;iPhone&amp;quot;
+  },
+  {
+      &amp;quot;type&amp;quot;  : &amp;quot;car&amp;quot;,
+      &amp;quot;color&amp;quot; : &amp;quot;yellow&amp;quot;
+  },
+  {
+      &amp;quot;type&amp;quot; : &amp;quot;phone&amp;quot;,
+      &amp;quot;model&amp;quot; : &amp;quot;Anroid Device&amp;quot;
+  }
+]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this example we have three different types: &amp;ldquo;user&amp;rdquo;, &amp;ldquo;car&amp;rdquo; and &amp;ldquo;phone&amp;rdquo;, that can occur anywhere throughout the JSON array. In order to use one of the JSON mapping libraries we would need to inspect each individual element in this list, identify it&amp;rsquo;s type, and then call the initializer of the respective Swift type.&lt;/p&gt;
+
+&lt;h2 id=&#34;dynamically-mapping-json-entities-and-types:bf293cba123ff2f8b761ea95baf2f08c&#34;&gt;Dynamically Mapping JSON Entities and Types&lt;/h2&gt;
+
+&lt;p&gt;In Objective-C it would be fairly easy to solve this problem automatically. We can rely on the Objective-C runtime to dynamically look up a class by its name and create the relevant instance for each entity we find in the JSON array.&lt;/p&gt;
+
+&lt;p&gt;In Swift we cannot rely on these run time mechanisms, but we can still create a mapping between a JSON type and a Swift type.&lt;/p&gt;
+
+&lt;p&gt;The first step is to indroduce a protocol for all types that can be deserialized with our new mechanism. These types will need to fullfill two requirements:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;They need to be able to be initialized with a JSON entity&lt;/li&gt;
+&lt;li&gt;They need to provide a &lt;code&gt;typeIdentifier&lt;/code&gt; string that we can use to match the &amp;ldquo;type&amp;rdquo; identifier from our JSON example above.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Here&amp;rsquo;s what the protocol looks like in my example:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Decodable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;typeIdentifier&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;get&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that I&amp;rsquo;m relying on the &lt;a href=&#34;https://github.com/Anviking/Decodable&#34;&gt;Decodable&lt;/a&gt; JSON mapping library to require the JSON initializer for me via the &lt;code&gt;Decodable&lt;/code&gt; protocol.&lt;/p&gt;
+
+&lt;p&gt;Each of the individual types will now implement this protocol. Here&amp;rsquo;s an example for the &lt;code&gt;User&lt;/code&gt; type:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;typeIdentifier&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;user&amp;quot;&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;age&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;decode&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;AnyObject&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;throws&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;try&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;age&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;This is mostly the regular JSON mapping code we&amp;rsquo;re familiar with. The only addition is the static &lt;code&gt;typeIdentifier&lt;/code&gt; member that tells us what this type is called in the JSON array.&lt;/p&gt;
+
+&lt;p&gt;We also implement this protocol for the other types represented in the JSON array (&lt;code&gt;Car&lt;/code&gt;and  &lt;code&gt;Phone&lt;/code&gt;) but I will spare you the details of that&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Now to the interesting part.&lt;/strong&gt; We need a component that can take the entire, heterogeneous,  array of JSON objects, can iterate over all of them and create the correct Swift instances based on the types it finds.&lt;/p&gt;
+
+&lt;p&gt;For this example I&amp;rsquo;ve called the type &lt;code&gt;Deserializer&lt;/code&gt;. Here&amp;rsquo;s what it looks like:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializer&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;modelLookupTable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;Type&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[:]&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;models&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;Type&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;])&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Store all types in lookup table&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;model&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;models&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;modelLookupTable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;model&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;typeIdentifier&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;model&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;deserialize&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[[&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;AnyObject&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]])&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;parsedModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[]&lt;/span&gt;
+
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Iterate over each entity in the JSON array&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;jsonEntity&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Find metatype for this entity&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;guard&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;jsonEntity&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;as&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;continue&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;guard&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;modelMetatype&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;modelLookupTable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;type&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;continue&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+            &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Call initializer on the metatype&lt;/span&gt;
+            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;model&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;try&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;modelMetatype&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;decode&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;jsonEntity&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+                &lt;span style=&#34;color: #000000&#34;&gt;parsedModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;append&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;model&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+            &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;parsedModels&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;This type gets initialized with an array of model metatypes (&lt;code&gt;[Deserializable.Type]&lt;/code&gt;). This is necessary in order for the component to know which types can appear within the JSON array it will deserialize. Since we cannot dynamically look up types at runtime, we need to require a developer to manually provide all the types as part of the &lt;code&gt;Deserializer&lt;/code&gt; setup.&lt;/p&gt;
+
+&lt;p&gt;We now store these types in a &lt;code&gt;modelLookupTable&lt;/code&gt;. This is a simple dictionary that maps from the types &lt;code&gt;typeIdentifier&lt;/code&gt; to the metatype itself. We will use this lookup table within the &lt;code&gt;deserialize&lt;/code&gt; method.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;deserialize&lt;/code&gt; method takes a JSON array and returns a heterogenous list of &lt;code&gt;Deserializable&lt;/code&gt; models. The implementation iterates over each entity in the JSON array. It extracts the &amp;ldquo;type&amp;rdquo; property from each entity and uses that string to find the relevant metatype in our &lt;code&gt;modelLookupTable&lt;/code&gt;. If we can find a Swift type that matches the JSON type identifier then we will proceede and try to &lt;code&gt;decode&lt;/code&gt; that type with the current &lt;code&gt;jsonEntity&lt;/code&gt;.
+If the decoding works successfully, we add the instantiated type to the &lt;code&gt;parsedModels&lt;/code&gt; array.
+At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the list of decoded models.&lt;/p&gt;
+
+&lt;p&gt;With all this in place, we can now create an instance of the deserializer and use it:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;deserializer&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializer&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;models&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Car&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Phone&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;])&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;models&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;deserializer&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;deserialize&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;jsonArray&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+
+&lt;span style=&#34;color: #3465a4&#34;&gt;print&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;models&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The printed output will now be a list of the different instances that have been decoded:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[User(name: &amp;quot;test&amp;quot;, age: 99), Car(color: &amp;quot;green&amp;quot;), Phone(model: &amp;quot;iPhone&amp;quot;), Car(color: &amp;quot;yellow&amp;quot;), Phone(model: &amp;quot;Anroid Device&amp;quot;)]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I hope this concept is useful to some other Swift developers as well. You can find a playground with the full example code on &lt;a href=&#34;https://github.com/Ben-G/Decoding-Heterogeneous-Collections-Swift/blob/master/Decodable.playground/Contents.swift&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Compile Time vs. Run Time Type Checking in Swift</title>
@@ -1036,106 +1201,6 @@ Host bitbucket.work
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;And the SSH client will serve your work SSH key allowing you to authenticate with the Bitbucket server. Hooray!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>The downside of Web APIs</title>
-      <link>http://blog.benjamin-encz.de/post/the-downside-of-web-apis/</link>
-      <pubDate>Sun, 10 Aug 2014 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/the-downside-of-web-apis/</guid>
-      <description>
-
-&lt;p&gt;Web APIs have done a lot for the world of technology. Services that have formerly been isolated islands can now be connected through a few simple HTTP Requests. Posting to Facebook on every GitHub commit? Printing a Postcard as soon as a new Photo is uploaded to a Dropbox folder? Basically anything is possible through Web Services.&lt;/p&gt;
-
-&lt;p&gt;Another great aspect of Web Services is that all the implementation details of these powerful platforms are hidden behind a well documented HTTP Interface allowing Developers to build products that integrate with multiple services in the matter of hours - without establishing old-school SQL Connections and writing complicated Database Queries.&lt;/p&gt;
-
-&lt;h2 id=&#34;now-what-are-the-downsides-then:0db755954643c1ac111ee02a99a5dc05&#34;&gt;Now what are the downsides then?&lt;/h2&gt;
-
-&lt;p&gt;Simple is good. But simple also means less flexibility and less power. Accessing information through Web APIs can often be very inefficient. Many Web APIs embrace patterns that can lead to poor performance of a Web Application.&lt;/p&gt;
-
-&lt;h2 id=&#34;example-query-count-commits-per-contributor-on-github-repository:0db755954643c1ac111ee02a99a5dc05&#34;&gt;Example Query: Count Commits per Contributor on GitHub Repository&lt;/h2&gt;
-
-&lt;p&gt;Let&amp;rsquo;s assume we want to build an Application that allows users to log in with their GitHub account. Once the user is logged in, the application shall count all commits of that user from all of the repositories he/she owns.&lt;/p&gt;
-
-&lt;h3 id=&#34;database-request-solution-old-fashioned:0db755954643c1ac111ee02a99a5dc05&#34;&gt;Database Request Solution (Old Fashioned)&lt;/h3&gt;
-
-&lt;p&gt;This part of the Blog post is entirely fictional. It only serves the purpose of showing what a DB request could look like. Assuming GitHub would run on a Relational Database and would allow developers to access the DB directly, a request could look somewhat like that:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;SELECT COUNT(*) FROM COMMITS WHERE AUTHOR=$USERNAME AND REPO_OWNER=$USERNAME
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Despite the fact that an actual request on GitHubs DB definitely would not look like the one above, the key takeaways are:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;We can retrieve the information with one query. Admittedly the request above assumes a &lt;em&gt;strongly&lt;/em&gt; denormalized DB model. But even if that wasn&amp;rsquo;t the case we could retrieve the information we need in one query by joining tables&lt;/li&gt;
-&lt;li&gt;We can define which information we are interested in. In this case we just want the &lt;em&gt;count&lt;/em&gt; of commits and don&amp;rsquo;t want to select any additional information.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;web-api-solution:0db755954643c1ac111ee02a99a5dc05&#34;&gt;Web API Solution&lt;/h3&gt;
-
-&lt;p&gt;&lt;em&gt;Note: The GitHub Web API provides a Statistics API that makes it easier to access the commit count per contributor. However it only provides information for the past year. For our application we want the information over the entire lifetime.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Now let&amp;rsquo;s take a look at a solution using the GitHub Web API. Like most queries our problem cannot be solved with a single request. First we need to retrieve a list of repositories using this GET Request:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;GET /users/:username/repos
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now we need to perform another request &lt;strong&gt;for each&lt;/strong&gt; repository to get the repository details (Can you already feel the pain?):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;GET /repos/:owner/:repo/commits
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Finally we need to iterate over all returned commits for each repository and check the author field and count all commits authored by the current user.&lt;/p&gt;
-
-&lt;p&gt;You can see the downsides? If the User has 20 Repositories we need to run 21 &lt;code&gt;HTTP GET&lt;/code&gt; requests. For each repository we will get all commits, even though we only want the ones authored by the current user. Then we have to manually filter the list in order to retrieve the actual commit count.&lt;/p&gt;
-
-&lt;p&gt;This is inefficient in multiple ways:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;The overhead of 21 HTTP Requests is significant&lt;/li&gt;
-&lt;li&gt;The server will trigger a DB Query for each HTTP Request (let&amp;rsquo;s ignore potential caches for simplicity). Because the Server treats every request isolated it cannot optimize the DB Query&lt;/li&gt;
-&lt;li&gt;The server will return too much data. If only 70% of the commits on the repositories we are checking are by the original author then we are downloading 30% of the JSON data for nothing. Additionally we cannot specify which fields we are interested in. For each Commit the GitHub API returns 11 fields of which we only need the email of the author&lt;/li&gt;
-&lt;li&gt;After all the requests have completed we need to filter the response manually. This is more of an inefficiency from a development standpoint. The performance impact of this step will usually be very low&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The largest of the above problems is that we need to create an individual request for each repository. That problem is called the &lt;a href=&#34;http://www.infoq.com/articles/N-Plus-1&#34;&gt;&amp;ldquo;N+1 problem&amp;rdquo;&lt;/a&gt;. 1 Request is needed to retrieve a list of items. Than we need another request for each entry (N) in that list.&lt;/p&gt;
-
-&lt;h3 id=&#34;alternatives:0db755954643c1ac111ee02a99a5dc05&#34;&gt;Alternatives?&lt;/h3&gt;
-
-&lt;p&gt;Obviously, for Security reasons, no Platform will allow API clients to write entirely custom DB queries. The viable alternative is exposing a little bit more of the DB layer to the Web API; Resulting in more complexity but also more power. Examples:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://parse.com/docs/rest#objects-batch&#34;&gt;Batch Requests&lt;/a&gt; as used e.g. by Parse. Though these in most cases only avoid multiple HTTP Requests but not multiple DB Queries&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://stormpath.com/blog/linking-and-resource-expansion-rest-api-tips/&#34;&gt;Resource Expansion&lt;/a&gt; as provided by some REST APIs. If GitHub would provide this option, an example query could look like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;GET /users/:username/repos?expand=commits
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This would tell the GitHub API that we want to select the commits of each repository along with the repository details in one response. Resource Expansion can solve the N+1 problem.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The Microsoft initiated OData goes one step further and allows Web API clients to append &lt;a href=&#34;http://blogs.msdn.com/b/webdev/archive/2013/07/05/introducing-select-and-expand-support-in-web-api-odata.aspx&#34;&gt;&lt;em&gt;expand&lt;/em&gt; &lt;strong&gt;and&lt;/strong&gt; &lt;em&gt;select&lt;/em&gt;&lt;/a&gt; parameters to their queries providing an Interface that is almost as powerful as direct DB queries.&lt;/p&gt;
-
-&lt;p&gt;The N+1 problem should be kept in mind when consuming or designing Web APIs. I&amp;rsquo;m sure we will see more sophisticated query interfaces in Web APIs in future.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;Resources linked in this post:&lt;/em&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://stormpath.com/blog/linking-and-resource-expansion-rest-api-tips/&#34;&gt;https://stormpath.com/blog/linking-and-resource-expansion-rest-api-tips/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.asp.net/web-api/overview/odata-support-in-aspnet-web-api/using-$select,-$expand,-and-$value&#34;&gt;http://www.asp.net/web-api/overview/odata-support-in-aspnet-web-api/using-$select,-$expand,-and-$value&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://blogs.msdn.com/b/webdev/archive/2013/07/05/introducing-select-and-expand-support-in-web-api-odata.aspx&#34;&gt;http://blogs.msdn.com/b/webdev/archive/2013/07/05/introducing-select-and-expand-support-in-web-api-odata.aspx&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;em&gt;Other related Resources:&lt;/em&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://redotheweb.com/2012/08/09/how-to-design-rest-apis-for-mobile.html&#34;&gt;http://redotheweb.com/2012/08/09/how-to-design-rest-apis-for-mobile.html&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
 </description>
     </item>
     
