@@ -8,7 +8,11 @@ disqus_url = "http://blog.benjamin-encz.de/post/deserializing-heterogeneous-type
 
 The problem of decoding Swift types from an outside data source, such as JSON, has been mostly solved. Since Swift's release we've seen more than a dozen popular JSON mapping libraries pop up.
 
-However, most of the libraries I've seen so far deal with decoding individual types. We define how a JSON object representing a user can be mapped to a `User` type, as in this example:
+However, most of the libraries I've seen so far deal with decoding individual types, not entire collections of heterogeneous types.
+
+<!--more--> 
+
+We define how a JSON object representing a user can be mapped to a `User` type, as in this example:
 
 {{< highlight swift >}}
 struct User: Deserializable {

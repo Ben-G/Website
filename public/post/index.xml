@@ -19,7 +19,9 @@
 
 &lt;p&gt;The problem of decoding Swift types from an outside data source, such as JSON, has been mostly solved. Since Swift&amp;rsquo;s release we&amp;rsquo;ve seen more than a dozen popular JSON mapping libraries pop up.&lt;/p&gt;
 
-&lt;p&gt;However, most of the libraries I&amp;rsquo;ve seen so far deal with decoding individual types. We define how a JSON object representing a user can be mapped to a &lt;code&gt;User&lt;/code&gt; type, as in this example:&lt;/p&gt;
+&lt;p&gt;However, most of the libraries I&amp;rsquo;ve seen so far deal with decoding individual types, not entire collections of heterogeneous types.&lt;/p&gt;
+
+&lt;p&gt;We define how a JSON object representing a user can be mapped to a &lt;code&gt;User&lt;/code&gt; type, as in this example:&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;typeIdentifier&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;user&amp;quot;&lt;/span&gt;
@@ -74,7 +76,7 @@
 
 &lt;p&gt;In Swift we cannot rely on these run time mechanisms, but we can still create a mapping between a JSON type and a Swift type.&lt;/p&gt;
 
-&lt;p&gt;The first step is to indroduce a protocol for all types that can be deserialized with our new mechanism. These types will need to fullfill two requirements:&lt;/p&gt;
+&lt;p&gt;The first step is to introduce a protocol for all types that can be deserialized with our new mechanism. These types will need to fulfill two requirements:&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;They need to be able to be initialized with a JSON entity&lt;/li&gt;
@@ -152,7 +154,7 @@
 
 &lt;p&gt;We now store these types in a &lt;code&gt;modelLookupTable&lt;/code&gt;. This is a simple dictionary that maps from the types &lt;code&gt;typeIdentifier&lt;/code&gt; to the metatype itself. We will use this lookup table within the &lt;code&gt;deserialize&lt;/code&gt; method.&lt;/p&gt;
 
-&lt;p&gt;The &lt;code&gt;deserialize&lt;/code&gt; method takes a JSON array and returns a heterogenous list of &lt;code&gt;Deserializable&lt;/code&gt; models. The implementation iterates over each entity in the JSON array. It extracts the &amp;ldquo;type&amp;rdquo; property from each entity and uses that string to find the relevant metatype in our &lt;code&gt;modelLookupTable&lt;/code&gt;. If we can find a Swift type that matches the JSON type identifier then we will proceede and try to &lt;code&gt;decode&lt;/code&gt; that type with the current &lt;code&gt;jsonEntity&lt;/code&gt;.
+&lt;p&gt;The &lt;code&gt;deserialize&lt;/code&gt; method takes a JSON array and returns a heterogenous list of &lt;code&gt;Deserializable&lt;/code&gt; models. The implementation iterates over each entity in the JSON array. It extracts the &amp;ldquo;type&amp;rdquo; property from each entity and uses that string to find the relevant metatype in our &lt;code&gt;modelLookupTable&lt;/code&gt;. If we can find a Swift type that matches the JSON type identifier then we will proceed and try to &lt;code&gt;decode&lt;/code&gt; that type with the current &lt;code&gt;jsonEntity&lt;/code&gt;.
 If the decoding works successfully, we add the instantiated type to the &lt;code&gt;parsedModels&lt;/code&gt; array.
 At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the list of decoded models.&lt;/p&gt;
 
