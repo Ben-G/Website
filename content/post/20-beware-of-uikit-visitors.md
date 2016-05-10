@@ -94,7 +94,7 @@ Using this technique I identified that after a new subview is added, the parent 
 
 Why exactly is that happening in that case? I have not yet been able to track it down definitely, but I have a bunch more clues that I'd like to share.
 
-#### Guessing Rather Than Giving Up
+#### Let the Guesswork begin
 
 Since we want to know why the `_UITintColorVisitor` is called so frequently, it makes sense to start by investigating the backtrace. We can do this as well with an lldb command that we can invoke while halted at the breakpoint:
 
@@ -122,9 +122,110 @@ Since we want to know why the `_UITintColorVisitor` is called so frequently, it 
     frame #29: 0x0291ca25 libdyld.dylib`start + 1
 (lldb) 
 ```
-Up until `frame #11` we're only seeing code that is necessary to set up the example project. `frame #10` is the actual starting point for our investigation. It is called whenever a new subview is added and it eventually results in a call to the `_UITintColorVisitor`. What is interesting is that `addSubview` is only ever called on the parent view of an added view but the `_UITintColorVisitor` is called with all of the subviews of that parent view. The cause of this problem must lie somewhere between `frame #11` and `frame #0`.
+Up until `frame #11` we're only seeing code that is necessary to set up the example project. `frame #10` is the actual starting point for our investigation. It is called whenever a new subview is added and it eventually results in a call to the `_UITintColorVisitor`. 
 
-Looking at the full stack trace we can identify that the `_UITintColorVisitor` is called in response to the `
+What is interesting is that `addSubview` is only ever called on our root view, but the `_UITintColorVisitor` is called for all of the subviews of that root view. The cause of this problem must lie somewhere between `frame #11` and `frame #0`.
 
+At this point it was not obvious to me why all views were being caused to be visited; at the very end of the next section I might have a likely answer to that question...
 
-Thanks a lot to Russ Bishop who tracked down this issue together with me. He has also filed a radar: (fingers crossed).
+#### Digging Deeper
+
+Since I hit a dead end in identifying why all subviews in the view hierarchy were constantly being revisited, I decided to investigate another interesting aspect about this problem that profiler had revealed.
+
+Earlier we identified that about 25% of the total time is taken up in calls to `[NSArray containsObject:]` which is called as part of the implementation of `[_UITintColorVisitor visitView:]`. I have used [Hopper Disassembler](http://www.hopperapp.com/) to try to understand why that's the case. Hopper has a handy feature that can generate pseudo code from a disassembled binary, which makes it somewhat easier to try and grasp the control flow of a program (if, like me, you're mostly unfamiliar with assembly code).
+
+Here's what the relevant pseudo code looks like:
+
+![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code.png)
+
+As part of stepping through the assembly code I have identified a few things that are relevant to this snippet:
+
+- One `_UITintColorVisitor` instance is used to visit all views (at least in this simple example with only one view hierarchy)
+- The `_UITintColorVisitor` has a few properties that are persisted between the different invocations of `visitView:`. Here's an overview of all properties found in Hopper:
+	- ![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/tint-color-visitor-properties.png)
+	
+From stepping through the assembly code and investigating different registires I could identify that in the above pseudo code `eax` refers to the `_originalVisitedView` and `edi` refers to the view that is currently being visited.
+
+This means, that as soon as a `_UITintColorVisitor` has an original visited view (which is true after it visited it's first view), the outlined code checks if the `subviews` array of the `originalVisitedView` contains the currently visited view. This check scans the full array of subviews; in cases where the `originalVisitedView` is our root view, the cost of this operation grows linearly with the amount of added subviews.
+
+I investigated this further by creating another breakpoint in UIKit at the point where this check takes place. When disassembling the 32-Bit slice of UIKit and running the app in 32-Bit mode, the adress offsets align nicely. Based on the `loc_4956fd` in Hopper I created the new breakpoint like this:
+
+```
+b 0xe4b6fd
+```
+(By creating a breakpoint in `-[_UITintColorVisitor visitView:]` I could compare the assembly & addresses in the debugger and in Hopper and identify that the addresses match up when replacing the `495` in the hopper address with `0xe4b`). 
+
+Within the breakpoint I printed both the `eax` register and the `_originalVisitedView` of `self` (which is stored in the `ebx` register):
+
+```
+(lldb) po $eax
+<UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = <CALayer: 0xc1176d0>>
+
+(lldb) po [$ebx valueForKey:@"_originalVisitedView"]
+<UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = <CALayer: 0xc1176d0>>
+```
+
+With this approach I identified that with the current sample code, `eax` **always refers to the root view**. This means we are iterating over all subviews of the root view, N times for each subview that is added. 
+
+I'm no expert in complexity analysis but it appears that the total cost of `[_UITintColor visitView:]` sums up to `n^2`:
+
+(**n** invocations of `[_UITintColor visitView:]`) * (**n** cost of iterating all subviews) where **n** = amount of added subviews
+
+**But why do we have these two code paths outlined above in the first place**? Why do we need to check if the currently visited view is a subview of the original visited view?
+
+In both cases, whether it is a subview or not, we end up calling: ` ___34-[_UITintColorVisitor _visitView:]_block_invoke`. In the case of the currently visited view being a subview of the original visited view, we pass two arguments to the block, in the other case we pass only one.
+
+By double-clicking onto the block in Hopper we can jump into the called code; it looks as following:
+
+![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/called-block.png)
+
+In this piece of code `ebx` refers to the `UIView` instance that is being visited and `*(esi + 0x14)` refers to the tint color visitor.
+
+Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block:
+
+```
+(lldb) b 0xe4b7ee
+```
+The code seems to switch over the `_reasons` property of the `[_UITintColorVisitor]` and some properties of the visited view.
+
+After stepping through the prolog we can investiage the relevant values:
+
+```
+po [*(id *)($esi+0x14) valueForKey:@"_reasons"]
+1
+```
+The `_reasons` property seems to store a bitmask value. Our bitmask is set to `1` which means that the first block will run if the views `_interactionTintColor` is `nil`.
+
+Inside of this block we finally might find the magical key to solving this puzzle:
+
+```
+[ebx _setAncestorDefinesTintColor:eax];
+```
+
+Here UIKit is marking this view, noting that its parent is defining a tint color. I'm assuming that this flag is what registers this view in some way to be visited by the `_UITintColorVisitor`, since we are passing it as an argument to the `_setAncestorDefinesTintColor` method.
+
+The big question remains why this is flag is set every single time the view is visited and not only in cases where the subview has moved in the view hierarchy or when the parent view changes its tint color - but that mistery will most likely remain unsolved.
+
+This also solves the big question of the two code paths in the piece of code that calls into this block that we examined earlier:
+
+![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code.png)
+
+If the currently visited view is not a child view of the original visited view, we don't pass a second argument to this block; which is equivalent to passing `nil`. This means that `ebx` will be `nil`, which in turn means we will never call `[ebx _setAncestorDefinesTintColor:eax];`.
+
+# Conclusion
+
+When I started out diving into this issue I was almost entirely clueless about how to interpret disassembled code; and now I still mostly am. However, I learned a few very handy tricks along the way:
+
+- I learned how to set breakpoints in private methods & and at any address within the assembly code.
+- I learned about the x86_32 and Objective-C calling conventions, e.g. which arguments are stored in which registers.
+- I learned that the addresses in Hopper match the addresses in the actual framework code (besides a base pointers offset depending on where UIKit is loaded into memory). In hindsight this sounds obvious but it definitely was not the case when starting out. [This article](http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction) was very helpful in getting more comfortable with working with lldb in UIKit alongside of Hopper.
+
+These three tools allowed me to explore the code paths & relevant variables a lot faster which in turn made it a lot easier (yet still hard) to get a grasp of what was going on.
+
+In the end I didn't find a definite answer on how this issue could be fixed, but I found a lot of clues about how the current visitor pattern is implemented and I think I got fairly close to the underlying issue.
+
+Most importantly I learned how to be more efficient at exploring the inner workings of closed source frameworks which will surely come in handy in future! Attempting to reverse engineer code can be very intimidating and the learning curve is really steep. I hope some day when I have a better grasp myself I can share a beginner friendly guide on all of this!
+
+---
+
+Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar (fingers crossed)!
