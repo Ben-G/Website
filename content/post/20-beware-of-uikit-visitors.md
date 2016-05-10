@@ -6,27 +6,25 @@ slug = "beware-the-uikit-visitors"
 disqus_url = "http://blog.benjamin-encz.de/post/beware-the-uikit-visitors/"
 +++
 
-Yesterday we identified a performance regression in the PlanGrid app, when entering a view that dynamically adds a large amount of subviews.
+~~Yesterday~~ Two weeks ago we identified a performance regression in the PlanGrid app, when entering a view that dynamically adds a large amount of subviews.
 
 I was able to reproduce this issue with the following lines of code:
 
 ```swift
-// In AppDelegate:
-self.window?.tintColor = .redColor()
-
-// In UIViewController:
 override func viewDidAppear(animated: Bool) {
-    super.viewDidAppear(animated)
+        super.viewDidAppear(animated)
 
-    for i in 1..<1000 {
-        let view = UIView()
-        self.view.addSubview(view)
+        self.view.tintColor = .blueColor()
+
+        for i in 1..<10000 {
+            let view = UIView()
+            self.view.addSubview(view)
+        }
     }
-}
 ```
-The above example is obviously extreme, but it reveals an interesting performance issue.
+The above example is obviously extreme, but it reveals an interesting performance issue: when setting a `tintColor` on a parent view, and not setting an explicit color on child views the performance of `addSubview` reduces itself drastically with a large amount of added subviews.
 
-Long story short, here's what we could identify within Instrument's time profiler:
+Here's what we could identify within Instrument's time profiler:
 ![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/tint-color-visitor-highlight.png)
 
 A majority of the time is adding subviews is spent within `[_UITintColorVisitor _visitView:]`. In this example it's 64% of the time; and the proportion only increases with the amount of subviews we're adding (Adding 10,000 views takes a little more than 3 minutes on the latest iPad Pro).
@@ -35,29 +33,66 @@ We like our custom tint color; but not enough to justify such an impact on perfo
 
 The same affect can be accomplished by specifying the `tintColor` on each view we're adding, which stops the expensive `_UITintColorVisitor` from stopping by.
 
-##How Could this Happen?
+## Digging into UIKit
 
-Finding a workaround for this issue is only half of the fun. Let's try to find out what exactly is causing these poor performance characteristics. We can start by taking a closer look at the time profiler output:
+Finding a workaround for this issue is only half of the fun. Let's try to find out what is causing these poor performance characteristics in the first place. We can start by taking a closer look at the time profiler output:
 
 ![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/focus-tint-color-visitor.png)
 
 We can see that the app doesn't spend too much time in `[_UITintColor _visitView]` itself. The majority of the time is consumed by `objc_msgSend` which simply indicates that this method is being called very, very often. Further, we're spending a lot of time in `[NSArray containsObject:]` which means that the array might be accessed too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).
 
-```assembly
-loc_4956fd:
-    stack[2023] = edi;
-    if ([[eax subviews] containsObject:stack[2023]] != 0x0) {
-            eax = ebx->_changedSubview;
-            if (eax != 0x0) {
-                    if (eax == edi) {
-                            ___34-[_UITintColorVisitor _visitView:]_block_invoke(__NSConcreteStackBlock, edi);
-                    }
-            }
-    }
-    else {
-            ___34-[_UITintColorVisitor _visitView:]_block_invoke(__NSConcreteStackBlock, edi, stack[2023]);
-    }
-    goto loc_49575a;
+### Breakpoints in Framework Functions
+
+We can start by setting a breakpoint within the `[_UITintColor _visitView]` method; that will give us an idea of how often that method is called.
+
+We can do that by setting a breakpoint early in our program to bring up the lldb console (alternatively we could use lldb from the terminal). Then we can enter the following command to set a breakpoint:
+
 ```
+(lldb) b -[_UITintColorVisitor _visitView:]
+```
+Now we can continue execution; soon we should trap into our breakpoint. Checking how often this method is called, I quickly identified that the amount of calls grows with the amount of subviews we have added. As a next step I wanted to see which views exactly are being visited. For that we need to dive into a little bit of assembly code.
+
+### Inspecting the Assembly Code
+
+When stepping into the breakpoint in `-[_UITintColorVisitor _visitView:]` you are greeted with a cryptic wall of assembly code. I started out with very barebones knowledge of understanding/investigating complex assembly code, but this bug forced me to learn some tricks that hopefully are useful to you as well!
+
+#### Configuring for 32-Bit
+
+As a first step, let's ensure that our app runs in **32-Bit** mode in the simulator. This architecture is known as **x86_32**. We choose to run the app in 32-Bit mode since x86_32 has a simpler way of passing function arguments (which will come in handy shortly). In Xcode 7 you can run on x86_32 by selecting the *iPad 2* simulator.
+
+With this setup in place, we can now inspect which views are visited from within our breakpoint in `-[_UITintColorVisitor _visitView:]`. Looking at the method signature we can see that this method takes on argument: the view that is being visited. That's the information that we would like to inspect further. In addition to that argument every method call in Objective-C receives `self` as the first argument and the `selector` as the second argument.
+
+#### Printing Function Arguments in Assembly
+
+By using [this handy reference](https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/) we can look up where these arguments are stored when a method is called (the reference is old and mentions `gdb` instead of `lldb`, but the info is still up to date.). The order of these arguments is part of what we call a "calling convention". It states for i386 (which is equivalent to x86_32) arguments are passed as follows:
+
+- Before prolog:
+	- *($esp+4n) ➡ arg(n)	
+- After prolog:
+	- *($ebp+8+4n) ➡ arg(n)
+	
+Without getting into too much detail at this point: the "prolog" is a sequence at the beginning of a function call that configures the stack pointer and different stack variables. The variable locations for our function arguments are different before and after the prolog. All arguments are offset from the base address that is stored in the `esp` register.
+
+For now we'll use the addresses before the prolog, since we'll access the arguments as soon as we trap into our breakpoint at the beginning of the `-[_UITintColorVisitor _visitView:]` method.
+
+When we reach that breakpoint we can print all 3 arguments to our function call as following:
+
+```
+(lldb) po *(id *)($esp+4)
+<_UITintColorVisitor: 0xc502540>
+
+(lldb) po *(SEL *)($esp+8)
+"_visitView:"
+
+(lldb) po *(id *)($esp+12)
+<UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = <CALayer: 0xc1176d0>>
+```	
+
+Now we can use this new ability to print the visited view every single time we step into our breakpoint: `po *(id *)($esp+12)`.
+
+Using this technique I identified that after a new subview is added, the parent view and all of its children are passed to calls of `-[_UITintColorVisitor _visitView:]`. This means the complexity of adding a subview with no tint color to a parent view with a tint color is O(n^2) - for each added view UIKit will iterate all of its siblings.
+
+Why exactly is that happening in that case? I have not yet been able to track it down definitely, but I have a bunch more clues that I'd like to share.
+
 
 Thanks a lot to Russ Bishop who tracked down this issue together with me. He has also filed a radar: (fingers crossed).
