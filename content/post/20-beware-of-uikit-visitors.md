@@ -6,9 +6,9 @@ slug = "disassembling-uikit-tintcolor-visitor"
 disqus_url = "http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/"
 +++
 
-     
+<p></p>
 
-#### Investigating the Cause of O(n^2) Cost of Adding Subviews in UIKit
+#### Investigating the Cause of Quadratic Time Complexity When Adding Subviews in UIKit
 
 ~~Yesterday~~ Two weeks ago we identified a performance regression in the PlanGrid app, when entering a view that dynamically adds a large amount of subviews.
 
@@ -21,7 +21,7 @@ I started this blog post back then, but was recently motivated to finish it quic
 
 For this blog post I wanted to isolate this issue from our code base. I was able to reproduce the issue with this minimal example inside of a blank `UIViewController`:
 
-```swift
+{{< highlight swift >}}
 override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -32,7 +32,7 @@ override func viewDidAppear(animated: Bool) {
             self.view.addSubview(view)
         }
 }
-```
+{{< /highlight >}}
 
 The above example is obviously extreme, but it reveals an interesting performance issue: when setting a `tintColor` on a parent view, and not setting an explicit color on child views the performance of `addSubview` reduces itself drastically with a large amount of added subviews.
 
@@ -124,15 +124,8 @@ Since we want to know why the `_UITintColorVisitor` is called so frequently, it 
     frame #8: 0x00a9cce4 UIKit`-[UIView(Hierarchy) _postMovedFromSuperview:] + 521
     frame #9: 0x00aac7f1 UIKit`-[UIView(Internal) _addSubview:positioned:relativeTo:] + 2367
     frame #10: 0x00a9acc8 UIKit`-[UIView(Hierarchy) addSubview:] + 56
-    frame #11: 0x00002be9 CopyOnWriteClosures`ViewController.viewDidAppear(animated=false, self=0x0c72cce0) -> () + 825 at ViewController.swift:40
-    frame #12: 0x00002cbf CopyOnWriteClosures`@objc ViewController.viewDidAppear(Bool) -> () + 63 at ViewController.swift:0
-	
-	// ...
-	
-    frame #27: 0x009dfeb9 UIKit`UIApplicationMain + 160
-    frame #28: 0x00004411 CopyOnWriteClosures`main + 145 at AppDelegate.swift:12
-    frame #29: 0x0291ca25 libdyld.dylib`start + 1
-(lldb) 
+    frame #11: 0x00002be9 ExampleApp`ViewController.viewDidAppear(animated=false, self=0x0c72cce0) -> () + 825 at ViewController.swift:40
+    frame #12: 0x00002cbf ExampleApp`@objc ViewController.viewDidAppear(Bool) -> () + 63 at ViewController.swift:0
 ```
 Up until `frame #11` we're only seeing code that is necessary to set up the example project. `frame #10` is the actual starting point for our investigation. It is called whenever a new subview is added and it eventually results in a call to the `_UITintColorVisitor`. 
 
@@ -241,3 +234,10 @@ Most importantly I learned how to be more efficient at exploring the inner worki
 ---
 
 Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar (fingers crossed)!
+
+I also recommend the following helpful articles for getting started with reverse engineering close source frameworks:
+
+- This article was a great introduction to the very basics of using Hopper and lldb side by side: [Hopper + lldb for iOS Developers: A Gentle Introduction](http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction)
+- [x86 Register Overview](http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html)
+- [x86 + ObjC Calling Conventions](https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/)
+- [Breakpoint Commands in lldb](http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based)

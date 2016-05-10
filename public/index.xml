@@ -17,7 +17,9 @@
       <guid>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</guid>
       <description>
 
-&lt;h4 id=&#34;investigating-the-cause-of-o-n-2-cost-of-adding-subviews-in-uikit:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Investigating the Cause of O(n^2) Cost of Adding Subviews in UIKit&lt;/h4&gt;
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;investigating-the-cause-of-quadratic-time-complexity-when-adding-subviews-in-uikit:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Investigating the Cause of Quadratic Time Complexity When Adding Subviews in UIKit&lt;/h4&gt;
 
 &lt;p&gt;&lt;del&gt;Yesterday&lt;/del&gt; Two weeks ago we identified a performance regression in the PlanGrid app, when entering a view that dynamically adds a large amount of subviews.&lt;/p&gt;
 
@@ -28,17 +30,18 @@
 
 &lt;p&gt;For this blog post I wanted to isolate this issue from our code base. I was able to reproduce the issue with this minimal example inside of a blank &lt;code&gt;UIViewController&lt;/code&gt;:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-swift&#34;&gt;override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;override&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;viewDidAppear&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;animated&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Bool&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;super&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;viewDidAppear&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;animated&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
 
-        self.view.tintColor = .blueColor()
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;view&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tintColor&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;blueColor&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
 
-        for i in 1..&amp;lt;10000 {
-            let view = UIView()
-            self.view.addSubview(view)
-        }
-}
-&lt;/code&gt;&lt;/pre&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;1.&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;10000&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;view&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIView&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;view&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;addSubview&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;view&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The above example is obviously extreme, but it reveals an interesting performance issue: when setting a &lt;code&gt;tintColor&lt;/code&gt; on a parent view, and not setting an explicit color on child views the performance of &lt;code&gt;addSubview&lt;/code&gt; reduces itself drastically with a large amount of added subviews.&lt;/p&gt;
 
@@ -136,15 +139,8 @@
     frame #8: 0x00a9cce4 UIKit`-[UIView(Hierarchy) _postMovedFromSuperview:] + 521
     frame #9: 0x00aac7f1 UIKit`-[UIView(Internal) _addSubview:positioned:relativeTo:] + 2367
     frame #10: 0x00a9acc8 UIKit`-[UIView(Hierarchy) addSubview:] + 56
-    frame #11: 0x00002be9 CopyOnWriteClosures`ViewController.viewDidAppear(animated=false, self=0x0c72cce0) -&amp;gt; () + 825 at ViewController.swift:40
-    frame #12: 0x00002cbf CopyOnWriteClosures`@objc ViewController.viewDidAppear(Bool) -&amp;gt; () + 63 at ViewController.swift:0
-	
-	// ...
-	
-    frame #27: 0x009dfeb9 UIKit`UIApplicationMain + 160
-    frame #28: 0x00004411 CopyOnWriteClosures`main + 145 at AppDelegate.swift:12
-    frame #29: 0x0291ca25 libdyld.dylib`start + 1
-(lldb) 
+    frame #11: 0x00002be9 ExampleApp`ViewController.viewDidAppear(animated=false, self=0x0c72cce0) -&amp;gt; () + 825 at ViewController.swift:40
+    frame #12: 0x00002cbf ExampleApp`@objc ViewController.viewDidAppear(Bool) -&amp;gt; () + 63 at ViewController.swift:0
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Up until &lt;code&gt;frame #11&lt;/code&gt; we&amp;rsquo;re only seeing code that is necessary to set up the example project. &lt;code&gt;frame #10&lt;/code&gt; is the actual starting point for our investigation. It is called whenever a new subview is added and it eventually results in a call to the &lt;code&gt;_UITintColorVisitor&lt;/code&gt;.&lt;/p&gt;
@@ -259,6 +255,15 @@
 &lt;hr /&gt;
 
 &lt;p&gt;Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar (fingers crossed)!&lt;/p&gt;
+
+&lt;p&gt;I also recommend the following helpful articles for getting started with reverse engineering close source frameworks:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;This article was a great introduction to the very basics of using Hopper and lldb side by side: &lt;a href=&#34;http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction&#34;&gt;Hopper + lldb for iOS Developers: A Gentle Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html&#34;&gt;x86 Register Overview&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/&#34;&gt;x86 + ObjC Calling Conventions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based&#34;&gt;Breakpoint Commands in lldb&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 </description>
     </item>
     
