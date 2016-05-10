@@ -102,9 +102,9 @@ When we reach that breakpoint we can print all 3 arguments to our function call 
 
 Now we can use this new ability to print the visited view every single time we step into our breakpoint: `po *(id *)($esp+12)`.
 
-Using this technique I identified that after a new subview is added, the parent view and all of its children are passed to calls of `-[_UITintColorVisitor _visitView:]`. This means the complexity of adding a subview with no tint color to a parent view with a tint color is O(n^2) - for each added view UIKit will iterate all of its siblings.
+Using this technique I identified that after a new subview is added, the parent view and all of its children are passed to calls of `-[_UITintColorVisitor _visitView:]`. For each added view UIKit will iterate all of its siblings.
 
-Why exactly is that happening in that case? I have not yet been able to track it down definitely, but I have a bunch more clues that I'd like to share.
+Why exactly is that happening? I have not yet been able to track it down definitely, but I have a bunch more clues that I'd like to share.
 
 #### Let the Guesswork begin
 
