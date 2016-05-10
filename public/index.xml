@@ -6,8 +6,261 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 03 May 2016 10:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Tue, 10 May 2016 12:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Beware the UIKit Visitors!</title>
+      <link>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</link>
+      <pubDate>Tue, 10 May 2016 12:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</guid>
+      <description>
+
+&lt;h4 id=&#34;investigating-the-cause-of-o-n-2-cost-of-adding-subviews-in-uikit:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Investigating the Cause of O(n^2) Cost of Adding Subviews in UIKit&lt;/h4&gt;
+
+&lt;p&gt;&lt;del&gt;Yesterday&lt;/del&gt; Two weeks ago we identified a performance regression in the PlanGrid app, when entering a view that dynamically adds a large amount of subviews.&lt;/p&gt;
+
+&lt;p&gt;I started this blog post back then, but was recently motivated to finish it quickly by seeing other developers running into this issue as well:&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;My discovery for the day is iOS has an O(n^2) cost to add a subview so never have too many subviews on a view or performance goes to shit&lt;/p&gt;&amp;mdash; Rupert H (@rpy) &lt;a href=&#34;https://twitter.com/rpy/status/729550705137090560&#34;&gt;May 9, 2016&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;For this blog post I wanted to isolate this issue from our code base. I was able to reproduce the issue with this minimal example inside of a blank &lt;code&gt;UIViewController&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-swift&#34;&gt;override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+
+        self.view.tintColor = .blueColor()
+
+        for i in 1..&amp;lt;10000 {
+            let view = UIView()
+            self.view.addSubview(view)
+        }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The above example is obviously extreme, but it reveals an interesting performance issue: when setting a &lt;code&gt;tintColor&lt;/code&gt; on a parent view, and not setting an explicit color on child views the performance of &lt;code&gt;addSubview&lt;/code&gt; reduces itself drastically with a large amount of added subviews.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s what I could identify within Instrument&amp;rsquo;s time profiler:
+&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/tint-color-visitor-highlight.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A majority of the time is adding subviews is spent within &lt;code&gt;[_UITintColorVisitor _visitView:]&lt;/code&gt;. In this example it&amp;rsquo;s 64% of the time; and the proportion only increases with the amount of subviews we&amp;rsquo;re adding.&lt;/p&gt;
+
+&lt;p&gt;We like our custom tint color; but not enough to justify such an impact on performance. &lt;strong&gt;By deactivating the custom tint color we bring the overall run time of &lt;code&gt;viewDidAppear&lt;/code&gt; from our example project from over 700ms down to ~10ms.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The same affect can be accomplished by specifying the &lt;code&gt;tintColor&lt;/code&gt; on each view we&amp;rsquo;re adding, which stops the expensive &lt;code&gt;_UITintColorVisitor&lt;/code&gt; from stopping by too often.&lt;/p&gt;
+
+&lt;h2 id=&#34;digging-into-uikit:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Digging into UIKit&lt;/h2&gt;
+
+&lt;p&gt;Finding a workaround for this issue is only half of the fun. Let&amp;rsquo;s try to find out what is causing these poor performance characteristics in the first place. We can start by taking a closer look at the time profiler output:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/focus-tint-color-visitor.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can see that the app doesn&amp;rsquo;t spend too much time in &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; itself. The majority of the time is consumed by &lt;code&gt;objc_msgSend&lt;/code&gt; which indicates that this method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we&amp;rsquo;re spending a lot of time in &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).&lt;/p&gt;
+
+&lt;h3 id=&#34;breakpoints-in-framework-functions:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Breakpoints in Framework Functions&lt;/h3&gt;
+
+&lt;p&gt;We can start by setting a breakpoint within the &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; method; that will give us an idea of how often that method is called.&lt;/p&gt;
+
+&lt;p&gt;We can do that by setting a breakpoint early in our program to bring up the lldb console (alternatively we could use lldb from the terminal). Then we can enter the following command to set a breakpoint:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(lldb) b -[_UITintColorVisitor _visitView:]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we can continue execution; soon we should trap into our breakpoint. Checking how often this method is called, I quickly identified that the amount of calls grows with the amount of subviews we have added. As a next step I wanted to see which views exactly are being visited. For that we need to dive into a little bit of assembly code.&lt;/p&gt;
+
+&lt;h3 id=&#34;inspecting-the-assembly-code:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Inspecting the Assembly Code&lt;/h3&gt;
+
+&lt;p&gt;When stepping into the breakpoint in &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt; you are greeted with a cryptic wall of assembly code. I started out with very barebones knowledge of understanding/investigating complex assembly code, but this bug forced me to learn some tricks that hopefully are useful to you as well!&lt;/p&gt;
+
+&lt;h4 id=&#34;configuring-for-32-bit:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Configuring for 32-Bit&lt;/h4&gt;
+
+&lt;p&gt;As a first step, let&amp;rsquo;s ensure that our app runs in &lt;strong&gt;32-Bit&lt;/strong&gt; mode in the simulator. This architecture is known as &lt;strong&gt;x86_32&lt;/strong&gt;. We choose to run the app in 32-Bit mode since x86_32 has a simpler way of passing function arguments (which will come in handy shortly). In Xcode 7 you can run on x86_32 by selecting the &lt;em&gt;iPad 2&lt;/em&gt; simulator.&lt;/p&gt;
+
+&lt;p&gt;With this setup in place, we can now inspect which views are visited from within our breakpoint in &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt;. Looking at the method signature we can see that this method takes on argument: the view that is being visited. That&amp;rsquo;s the information that we would like to inspect further. In addition to that argument every method call in Objective-C receives &lt;code&gt;self&lt;/code&gt; as the first argument and the &lt;code&gt;selector&lt;/code&gt; as the second argument.&lt;/p&gt;
+
+&lt;h4 id=&#34;printing-function-arguments-in-assembly:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Printing Function Arguments in Assembly&lt;/h4&gt;
+
+&lt;p&gt;By using &lt;a href=&#34;https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/&#34;&gt;this handy reference&lt;/a&gt; we can look up where these arguments are stored when a method is called (the reference is old and mentions &lt;code&gt;gdb&lt;/code&gt; instead of &lt;code&gt;lldb&lt;/code&gt;, but the info is still up to date.). The order of these arguments is part of what we call a &amp;ldquo;calling convention&amp;rdquo;. It states for i386 (which is equivalent to x86_32) arguments are passed as follows:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Before prolog:
+
+&lt;ul&gt;
+&lt;li&gt;*($esp+4n) ➡ arg(n)&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;After prolog:
+
+&lt;ul&gt;
+&lt;li&gt;*($ebp+8+4n) ➡ arg(n)&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Without getting into too much detail at this point: the &amp;ldquo;prolog&amp;rdquo; is a sequence at the beginning of a function call that configures the stack pointer and different stack variables. The variable locations for our function arguments are different before and after the prolog. All arguments are offset from the base address that is stored in the &lt;code&gt;esp&lt;/code&gt; register.&lt;/p&gt;
+
+&lt;p&gt;For now we&amp;rsquo;ll use the addresses before the prolog, since we&amp;rsquo;ll access the arguments as soon as we trap into our breakpoint at the beginning of the &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt; method.&lt;/p&gt;
+
+&lt;p&gt;When we reach that breakpoint we can print all 3 arguments to our function call as following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(lldb) po *(id *)($esp+4)
+&amp;lt;_UITintColorVisitor: 0xc502540&amp;gt;
+
+(lldb) po *(SEL *)($esp+8)
+&amp;quot;_visitView:&amp;quot;
+
+(lldb) po *(id *)($esp+12)
+&amp;lt;UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = &amp;lt;CALayer: 0xc1176d0&amp;gt;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we can use this new ability to print the visited view every single time we step into our breakpoint: &lt;code&gt;po *(id *)($esp+12)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Using this technique I identified that after a new subview is added, the parent view and all of its children are passed to calls of &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt;. This means the complexity of adding a subview with no tint color to a parent view with a tint color is O(n^2) - for each added view UIKit will iterate all of its siblings.&lt;/p&gt;
+
+&lt;p&gt;Why exactly is that happening in that case? I have not yet been able to track it down definitely, but I have a bunch more clues that I&amp;rsquo;d like to share.&lt;/p&gt;
+
+&lt;h4 id=&#34;let-the-guesswork-begin:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Let the Guesswork begin&lt;/h4&gt;
+
+&lt;p&gt;Since we want to know why the &lt;code&gt;_UITintColorVisitor&lt;/code&gt; is called so frequently, it makes sense to start by investigating the backtrace. We can do this as well with an lldb command that we can invoke while halted at the breakpoint:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(lldb) bt
+* thread #1: tid = 0x156ea9, 0x00e4b61c UIKit`-[_UITintColorVisitor _visitView:], queue = &#39;com.apple.main-thread&#39;, stop reason = breakpoint 9.1
+  * frame #0: 0x00e4b61c UIKit`-[_UITintColorVisitor _visitView:]
+    frame #1: 0x00e4bfbb UIKit`_UIViewVisitorEntertainVisitors + 107
+    frame #2: 0x00e4af30 UIKit`_UIViewVisitorRecursivelyEntertainDescendingVisitors + 162
+    frame #3: 0x00e4a8ca UIKit`_UIViewVisitorEntertainDescendingTrackingVisitors + 705
+    frame #4: 0x00e4a2be UIKit`_UIViewVisitorEntertainHierarchyTrackingVisitors + 58
+    frame #5: 0x00a9ce3f UIKit`__45-[UIView(Hierarchy) _postMovedFromSuperview:]_block_invoke + 268
+    frame #6: 0x005b1440 Foundation`-[NSISEngine withBehaviors:performModifications:] + 150
+    frame #7: 0x005b491c Foundation`-[NSISEngine withAutomaticOptimizationDisabled:] + 48
+    frame #8: 0x00a9cce4 UIKit`-[UIView(Hierarchy) _postMovedFromSuperview:] + 521
+    frame #9: 0x00aac7f1 UIKit`-[UIView(Internal) _addSubview:positioned:relativeTo:] + 2367
+    frame #10: 0x00a9acc8 UIKit`-[UIView(Hierarchy) addSubview:] + 56
+    frame #11: 0x00002be9 CopyOnWriteClosures`ViewController.viewDidAppear(animated=false, self=0x0c72cce0) -&amp;gt; () + 825 at ViewController.swift:40
+    frame #12: 0x00002cbf CopyOnWriteClosures`@objc ViewController.viewDidAppear(Bool) -&amp;gt; () + 63 at ViewController.swift:0
+	
+	// ...
+	
+    frame #27: 0x009dfeb9 UIKit`UIApplicationMain + 160
+    frame #28: 0x00004411 CopyOnWriteClosures`main + 145 at AppDelegate.swift:12
+    frame #29: 0x0291ca25 libdyld.dylib`start + 1
+(lldb) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Up until &lt;code&gt;frame #11&lt;/code&gt; we&amp;rsquo;re only seeing code that is necessary to set up the example project. &lt;code&gt;frame #10&lt;/code&gt; is the actual starting point for our investigation. It is called whenever a new subview is added and it eventually results in a call to the &lt;code&gt;_UITintColorVisitor&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;What is interesting is that &lt;code&gt;addSubview&lt;/code&gt; is only ever called on our root view, but the &lt;code&gt;_UITintColorVisitor&lt;/code&gt; is called for all of the subviews of that root view. The cause of this problem must lie somewhere between &lt;code&gt;frame #11&lt;/code&gt; and &lt;code&gt;frame #0&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;At this point it was not obvious to me why all views were being caused to be visited; at the very end of the next section I might have a likely answer to that question&amp;hellip;&lt;/p&gt;
+
+&lt;h4 id=&#34;digging-deeper:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Digging Deeper&lt;/h4&gt;
+
+&lt;p&gt;Since I hit a dead end in identifying why all subviews in the view hierarchy were constantly being revisited, I decided to investigate another interesting aspect about this problem that profiler had revealed.&lt;/p&gt;
+
+&lt;p&gt;Earlier we identified that about 25% of the total time is taken up in calls to &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which is called as part of the implementation of &lt;code&gt;[_UITintColorVisitor visitView:]&lt;/code&gt;. I have used &lt;a href=&#34;http://www.hopperapp.com/&#34;&gt;Hopper Disassembler&lt;/a&gt; to try to understand why that&amp;rsquo;s the case. Hopper has a handy feature that can generate pseudo code from a disassembled binary, which makes it somewhat easier to try and grasp the control flow of a program (if, like me, you&amp;rsquo;re mostly unfamiliar with assembly code).&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s what the relevant pseudo code looks like:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As part of stepping through the assembly code I have identified a few things that are relevant to this snippet:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;One &lt;code&gt;_UITintColorVisitor&lt;/code&gt; instance is used to visit all views (at least in this simple example with only one view hierarchy)&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;_UITintColorVisitor&lt;/code&gt; has a few properties that are persisted between the different invocations of &lt;code&gt;visitView:&lt;/code&gt;. Here&amp;rsquo;s an overview of all properties found in Hopper:
+
+&lt;ul&gt;
+&lt;li&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/tint-color-visitor-properties.png&#34; alt=&#34;&#34; /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;From stepping through the assembly code and investigating different registries I could identify that in the above pseudo code &lt;code&gt;eax&lt;/code&gt; refers to the &lt;code&gt;_originalVisitedView&lt;/code&gt; and &lt;code&gt;edi&lt;/code&gt; refers to the view that is currently being visited.&lt;/p&gt;
+
+&lt;p&gt;This means, that as soon as a &lt;code&gt;_UITintColorVisitor&lt;/code&gt; has an original visited view (which is true after it visited it&amp;rsquo;s first view), the outlined code checks if the &lt;code&gt;subviews&lt;/code&gt; array of the &lt;code&gt;originalVisitedView&lt;/code&gt; contains the currently visited view. This check scans the full array of subviews; in cases where the &lt;code&gt;originalVisitedView&lt;/code&gt; is our root view, the cost of this operation grows linearly with the amount of added subviews.&lt;/p&gt;
+
+&lt;p&gt;I investigated this further by creating another breakpoint in UIKit at the point where this check takes place. When disassembling the 32-Bit slice of UIKit and running the app in 32-Bit mode, the address offsets align nicely. Based on the &lt;code&gt;loc_4956fd&lt;/code&gt; in Hopper I created the new breakpoint like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;b 0xe4b6fd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;(By creating a breakpoint in &lt;code&gt;-[_UITintColorVisitor visitView:]&lt;/code&gt; I could compare the assembly &amp;amp; addresses in the debugger and in Hopper and identify that the addresses match up when replacing the &lt;code&gt;495&lt;/code&gt; in the hopper address with &lt;code&gt;0xe4b&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;Within the breakpoint I printed both the &lt;code&gt;eax&lt;/code&gt; register and the &lt;code&gt;_originalVisitedView&lt;/code&gt; of &lt;code&gt;self&lt;/code&gt; (which is stored in the &lt;code&gt;ebx&lt;/code&gt; register):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(lldb) po $eax
+&amp;lt;UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = &amp;lt;CALayer: 0xc1176d0&amp;gt;&amp;gt;
+
+(lldb) po [$ebx valueForKey:@&amp;quot;_originalVisitedView&amp;quot;]
+&amp;lt;UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = &amp;lt;CALayer: 0xc1176d0&amp;gt;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With this approach I identified that with the current sample code, &lt;code&gt;eax&lt;/code&gt; &lt;strong&gt;always refers to the root view&lt;/strong&gt;. This means we are iterating over all subviews of the root view, N times for each subview that is added.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m no expert in complexity analysis but it appears that the total cost of &lt;code&gt;[_UITintColor visitView:]&lt;/code&gt; sums up to &lt;code&gt;n^2&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;(&lt;strong&gt;n&lt;/strong&gt; invocations of &lt;code&gt;[_UITintColor visitView:]&lt;/code&gt;) * (&lt;strong&gt;n&lt;/strong&gt; cost of iterating all subviews) where &lt;strong&gt;n&lt;/strong&gt; = amount of added subviews&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;But why do we have these two code paths outlined above in the first place&lt;/strong&gt;? Why do we need to check if the currently visited view is a subview of the original visited view?&lt;/p&gt;
+
+&lt;p&gt;In both cases, whether it is a subview or not, we end up calling: &lt;code&gt;___34-[_UITintColorVisitor _visitView:]_block_invoke&lt;/code&gt;. In the case of the currently visited view being a subview of the original visited view, we pass two arguments to the block, in the other case we pass only one.&lt;/p&gt;
+
+&lt;p&gt;By double-clicking onto the block in Hopper we can jump into the called code; it looks as following:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/called-block.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In this piece of code &lt;code&gt;ebx&lt;/code&gt; refers to the &lt;code&gt;UIView&lt;/code&gt; instance that is being visited and &lt;code&gt;*(esi + 0x14)&lt;/code&gt; refers to the tint color visitor.&lt;/p&gt;
+
+&lt;p&gt;Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(lldb) b 0xe4b7ee
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of the &lt;code&gt;[_UITintColorVisitor]&lt;/code&gt; and some properties of the visited view.&lt;/p&gt;
+
+&lt;p&gt;After stepping through the prolog we can investigate the relevant values:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;po [*(id *)($esi+0x14) valueForKey:@&amp;quot;_reasons&amp;quot;]
+1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code&gt;_reasons&lt;/code&gt; property seems to store a bitmask value. Our bitmask is set to &lt;code&gt;1&lt;/code&gt; which means that the first block will run if the views &lt;code&gt;_interactionTintColor&lt;/code&gt; is &lt;code&gt;nil&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Inside of this block we finally might find the magical key to solving this puzzle:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[ebx _setAncestorDefinesTintColor:eax];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here UIKit is marking this view, noting that its parent is defining a tint color. I&amp;rsquo;m assuming that this flag is what registers this view in some way to be visited by the &lt;code&gt;_UITintColorVisitor&lt;/code&gt;, since we are passing it as an argument to the &lt;code&gt;_setAncestorDefinesTintColor&lt;/code&gt; method.&lt;/p&gt;
+
+&lt;p&gt;The big question remains why this is flag is set every single time the view is visited and not only in cases where the subview has moved in the view hierarchy or when the parent view changes its tint color. Another interesting question is why the &lt;code&gt;superview&lt;/code&gt; property of the view is not used instead of iterating over the array of subviews of the parent view. Both of these mysteries will most likely remain unsolved.&lt;/p&gt;
+
+&lt;p&gt;However, our new findings help explaining the two code paths in the piece of code that calls into this block (which we examined earlier):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If the currently visited view is not a child view of the original visited view, we don&amp;rsquo;t pass a second argument to this block; which is equivalent to passing &lt;code&gt;nil&lt;/code&gt;. This means that &lt;code&gt;ebx&lt;/code&gt; will be &lt;code&gt;nil&lt;/code&gt;, which in turn means we will never call &lt;code&gt;[ebx _setAncestorDefinesTintColor:eax];&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h1 id=&#34;conclusion:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;When I started out diving into this issue I was almost entirely clueless about how to interpret disassembled code; and now I still mostly am. However, I learned a few very handy tricks along the way:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;I learned how to set breakpoints in private methods &amp;amp; and at any address within the assembly code.&lt;/li&gt;
+&lt;li&gt;I learned about the x86_32 and Objective-C calling conventions, e.g. which arguments are stored in which registers.&lt;/li&gt;
+&lt;li&gt;I learned that the addresses in Hopper match the addresses in the actual framework code (besides a base pointers offset depending on where UIKit is loaded into memory). In hindsight this sounds obvious but it definitely was not the case when starting out. &lt;a href=&#34;http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction&#34;&gt;This article&lt;/a&gt; was very helpful in getting more comfortable with working with lldb in UIKit alongside of Hopper.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These three tools allowed me to explore the code paths &amp;amp; relevant variables a lot faster which in turn made it a lot easier (yet still hard) to get a grasp of what was going on.&lt;/p&gt;
+
+&lt;p&gt;In the end I didn&amp;rsquo;t find a definite answer on how this issue could be fixed, but I found a lot of clues about how the current visitor pattern is implemented and I think I got fairly close to the underlying issue.&lt;/p&gt;
+
+&lt;p&gt;Most importantly I learned how to be more efficient at exploring the inner workings of closed source frameworks which will surely come in handy in future! Attempting to reverse engineer code can be very intimidating and the learning curve is really steep. I hope some day when I have a better grasp myself I can share a beginner friendly guide on all of this!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar (fingers crossed)!&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Decoding Heterogeneous Collections in Swift</title>
@@ -1117,90 +1370,6 @@ extension D: NSObjectProtocol {}
 &lt;p&gt;If the case that I described occurs, the Keychain will inform you that the password you are looking for could not be found, this is where you need to ask the user to re-enter their password. You can reproduce this case for testing purposes by choosing a different &lt;em&gt;ServiceName&lt;/em&gt; for accessing the Keychain than you used for creating the Keychain entry.&lt;/p&gt;
 
 &lt;p&gt;P.S.: Apple&amp;rsquo;s Keychain API is pretty arcane so I&amp;rsquo;m using &lt;a href=&#34;https://github.com/soffes/sskeychain&#34;&gt;SSKeychain&lt;/a&gt; which provides a nice abstraction instead.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Using SSH for private and work account on a Mac</title>
-      <link>http://blog.benjamin-encz.de/post/using-ssh-with-multiple-accounts/</link>
-      <pubDate>Tue, 18 Nov 2014 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/using-ssh-with-multiple-accounts/</guid>
-      <description>
-
-&lt;blockquote&gt;
-&lt;p&gt;Disclaimer: I&amp;rsquo;m not a huge fan of configuring software; I&amp;rsquo;m primarily writing this to remember it for the future.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Using SSH instead of HTTPS to authenticate against services such as GitHub, Bitbucket or Heroku is very convenient, instead of typing a password for every interaction Mac OS simply exchanges SSH keys behind the scene. However, one can run into trouble when trying to use multiple accounts of the same service with SSH authentication.&lt;/p&gt;
-
-&lt;p&gt;In this brief write-up I want to discuss how to set up multiple Bitbucket accounts with different associated SSH Keys.&lt;/p&gt;
-
-&lt;h2 id=&#34;two-bitbucket-ssh-keys-on-one-machine:641c6294d4c21efa1578d7a06f188378&#34;&gt;Two Bitbucket SSH keys on one machine&lt;/h2&gt;
-
-&lt;p&gt;The key for setting up the SSH client to use multiple SSH keys for the same service is the SSH config file which resides in: &lt;code&gt;~/.ssh/config&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;The config files remembers hosts to which you have previously connected using SSH and stores the associated SSH Key for each of them.&lt;/p&gt;
-
-&lt;p&gt;Per default SSH will use your main SSH key, which is typically stored in &lt;code&gt;~/.ssh/id_rsa&lt;/code&gt;, to authenticate with servers and services.&lt;/p&gt;
-
-&lt;p&gt;Now let&amp;rsquo;s assume you have two Bitbucket accounts, one for work and a second private account. When you did set up your private account you added &lt;code&gt;id_rsa&lt;/code&gt; as your public SSH key. Now when you try to add the same key to your work account Bitbucket will display an error because that public key is already associated with a different account. Bitbucket will have to identify your account based on the provided SSH key, therefore each SSH key can only be used for a single account.&lt;/p&gt;
-
-&lt;p&gt;This means you will need to create a second pair of SSH keys for use with your work account using the following command:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;ssh-keygen -t rsa -C &amp;quot;your_email@example.com&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Terminal will prompt you for a file name for that new key - you can choose one that identifies the key as a work SSH key (e.g. company name). Now you have a second SSH key and can add that one to your work account on Bitbucket.&lt;/p&gt;
-
-&lt;h2 id=&#34;serving-the-right-key:641c6294d4c21efa1578d7a06f188378&#34;&gt;Serving the right key&lt;/h2&gt;
-
-&lt;p&gt;Now one problem remains. If you clone a Bitbucket repository, authenticating with SSH, SSH will by default always serve the &lt;code&gt;id_rsa&lt;/code&gt; key which is associated with your personal account - that means you still won&amp;rsquo;t be able to authenticate yourself with your work account and won&amp;rsquo;t be able to interact with work repositories using SSH authentication.&lt;/p&gt;
-
-&lt;p&gt;Currently your SSH config file (&lt;code&gt;~/.ssh/config&lt;/code&gt;) should look like similar to this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Host bitbucket.org
-    IdentityFile ~/.ssh/id_rsa
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Every time you connect to the host &lt;code&gt;bitbucket.org&lt;/code&gt; you serve the &lt;code&gt;id_rsa&lt;/code&gt; key, this setting has been established when you connected to this host the first time.&lt;/p&gt;
-
-&lt;p&gt;We have two options at this point:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;specify which SSH key we want to send every time we connect to the remote server&lt;/li&gt;
-&lt;li&gt;change our SSH config file to server the correct SSH key&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The second option should mostly be preferred.&lt;/p&gt;
-
-&lt;h2 id=&#34;using-host-alias-names:641c6294d4c21efa1578d7a06f188378&#34;&gt;Using host alias names&lt;/h2&gt;
-
-&lt;p&gt;We&amp;rsquo;ve just seen that the SSH client determines the SSH key based on the host name. That means we need two different host names for &lt;code&gt;bitbucket.org&lt;/code&gt; depending on whether we want to use the personal or private account. Luckily the SSH config file lets us declare host aliases in the following way:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Host bitbucket.personal
- HostName bitbucket.org
- IdentityFile ~/.ssh/id_rsa
- IdentitiesOnly yes
-
-Host bitbucket.work
- HostName bitbucket.org
- IdentityFile ~/.ssh/makegameswithus
- IdentitiesOnly yes
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;In the first line of each entry we store the alias. This can be any string you want, you&amp;rsquo;ll need to use it whenever you connect to the actual host.&lt;/p&gt;
-
-&lt;p&gt;The actual host name is stored in the second line. When you connect to a server using the string &lt;code&gt;bitbucket.work&lt;/code&gt; it will be replaced by the actual host name &lt;code&gt;bitbucket.org&lt;/code&gt; &lt;em&gt;and&lt;/em&gt; the SSH client will know to send the specified &lt;code&gt;makegameswithus&lt;/code&gt; SSH key instead of the default one.&lt;/p&gt;
-
-&lt;p&gt;The &lt;code&gt;IdentitiesOnly yes&lt;/code&gt; entry defines that only the specified SSH key is served and not any other SSH keys that happen to be loaded by the SSH client at the time of the request.&lt;/p&gt;
-
-&lt;p&gt;Now, whenever you want to clone a work repository you can use your defined alias as the host name:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git clone git@bitbucket.work:repo.git
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And the SSH client will serve your work SSH key allowing you to authenticate with the Bitbucket server. Hooray!&lt;/p&gt;
 </description>
     </item>
     

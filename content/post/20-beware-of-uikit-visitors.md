@@ -1,14 +1,25 @@
 +++
-date = "2016-04-27T22:24:54-08:00"
-draft = true
+date = "2016-05-10T12:24:54-08:00"
+draft = false
 title = "Beware the UIKit Visitors!"
-slug = "beware-the-uikit-visitors"
-disqus_url = "http://blog.benjamin-encz.de/post/beware-the-uikit-visitors/"
+slug = "disassembling-uikit-tintcolor-visitor"
+disqus_url = "http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/"
 +++
+
+     
+
+#### Investigating the Cause of O(n^2) Cost of Adding Subviews in UIKit
 
 ~~Yesterday~~ Two weeks ago we identified a performance regression in the PlanGrid app, when entering a view that dynamically adds a large amount of subviews.
 
-I was able to reproduce this issue with the following lines of code:
+I started this blog post back then, but was recently motivated to finish it quickly by seeing other developers running into this issue as well:
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">My discovery for the day is iOS has an O(n^2) cost to add a subview so never have too many subviews on a view or performance goes to shit</p>&mdash; Rupert H (@rpy) <a href="https://twitter.com/rpy/status/729550705137090560">May 9, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<!--more-->
+
+For this blog post I wanted to isolate this issue from our code base. I was able to reproduce the issue with this minimal example inside of a blank `UIViewController`:
 
 ```swift
 override func viewDidAppear(animated: Bool) {
@@ -20,18 +31,19 @@ override func viewDidAppear(animated: Bool) {
             let view = UIView()
             self.view.addSubview(view)
         }
-    }
+}
 ```
+
 The above example is obviously extreme, but it reveals an interesting performance issue: when setting a `tintColor` on a parent view, and not setting an explicit color on child views the performance of `addSubview` reduces itself drastically with a large amount of added subviews.
 
-Here's what we could identify within Instrument's time profiler:
+Here's what I could identify within Instrument's time profiler:
 ![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/tint-color-visitor-highlight.png)
 
-A majority of the time is adding subviews is spent within `[_UITintColorVisitor _visitView:]`. In this example it's 64% of the time; and the proportion only increases with the amount of subviews we're adding (Adding 10,000 views takes a little more than 3 minutes on the latest iPad Pro).
+A majority of the time is adding subviews is spent within `[_UITintColorVisitor _visitView:]`. In this example it's 64% of the time; and the proportion only increases with the amount of subviews we're adding.
 
 We like our custom tint color; but not enough to justify such an impact on performance. **By deactivating the custom tint color we bring the overall run time of `viewDidAppear` from our example project from over 700ms down to ~10ms.**
 
-The same affect can be accomplished by specifying the `tintColor` on each view we're adding, which stops the expensive `_UITintColorVisitor` from stopping by.
+The same affect can be accomplished by specifying the `tintColor` on each view we're adding, which stops the expensive `_UITintColorVisitor` from stopping by too often.
 
 ## Digging into UIKit
 
@@ -39,7 +51,7 @@ Finding a workaround for this issue is only half of the fun. Let's try to find o
 
 ![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/focus-tint-color-visitor.png)
 
-We can see that the app doesn't spend too much time in `[_UITintColor _visitView]` itself. The majority of the time is consumed by `objc_msgSend` which simply indicates that this method is being called very, very often. Further, we're spending a lot of time in `[NSArray containsObject:]` which means that the array might be accessed too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).
+We can see that the app doesn't spend too much time in `[_UITintColor _visitView]` itself. The majority of the time is consumed by `objc_msgSend` which indicates that this method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we're spending a lot of time in `[NSArray containsObject:]` which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).
 
 ### Breakpoints in Framework Functions
 
@@ -86,7 +98,7 @@ When we reach that breakpoint we can print all 3 arguments to our function call 
 
 (lldb) po *(id *)($esp+12)
 <UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = <CALayer: 0xc1176d0>>
-```	
+```
 
 Now we can use this new ability to print the visited view every single time we step into our breakpoint: `po *(id *)($esp+12)`.
 
@@ -144,11 +156,11 @@ As part of stepping through the assembly code I have identified a few things tha
 - The `_UITintColorVisitor` has a few properties that are persisted between the different invocations of `visitView:`. Here's an overview of all properties found in Hopper:
 	- ![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/tint-color-visitor-properties.png)
 	
-From stepping through the assembly code and investigating different registires I could identify that in the above pseudo code `eax` refers to the `_originalVisitedView` and `edi` refers to the view that is currently being visited.
+From stepping through the assembly code and investigating different registries I could identify that in the above pseudo code `eax` refers to the `_originalVisitedView` and `edi` refers to the view that is currently being visited.
 
 This means, that as soon as a `_UITintColorVisitor` has an original visited view (which is true after it visited it's first view), the outlined code checks if the `subviews` array of the `originalVisitedView` contains the currently visited view. This check scans the full array of subviews; in cases where the `originalVisitedView` is our root view, the cost of this operation grows linearly with the amount of added subviews.
 
-I investigated this further by creating another breakpoint in UIKit at the point where this check takes place. When disassembling the 32-Bit slice of UIKit and running the app in 32-Bit mode, the adress offsets align nicely. Based on the `loc_4956fd` in Hopper I created the new breakpoint like this:
+I investigated this further by creating another breakpoint in UIKit at the point where this check takes place. When disassembling the 32-Bit slice of UIKit and running the app in 32-Bit mode, the address offsets align nicely. Based on the `loc_4956fd` in Hopper I created the new breakpoint like this:
 
 ```
 b 0xe4b6fd
@@ -188,7 +200,7 @@ Using the address translation technique from earlier I decided to create the fol
 ```
 The code seems to switch over the `_reasons` property of the `[_UITintColorVisitor]` and some properties of the visited view.
 
-After stepping through the prolog we can investiage the relevant values:
+After stepping through the prolog we can investigate the relevant values:
 
 ```
 po [*(id *)($esi+0x14) valueForKey:@"_reasons"]
@@ -204,9 +216,9 @@ Inside of this block we finally might find the magical key to solving this puzzl
 
 Here UIKit is marking this view, noting that its parent is defining a tint color. I'm assuming that this flag is what registers this view in some way to be visited by the `_UITintColorVisitor`, since we are passing it as an argument to the `_setAncestorDefinesTintColor` method.
 
-The big question remains why this is flag is set every single time the view is visited and not only in cases where the subview has moved in the view hierarchy or when the parent view changes its tint color - but that mistery will most likely remain unsolved.
+The big question remains why this is flag is set every single time the view is visited and not only in cases where the subview has moved in the view hierarchy or when the parent view changes its tint color. Another interesting question is why the `superview` property of the view is not used instead of iterating over the array of subviews of the parent view. Both of these mysteries will most likely remain unsolved.
 
-This also solves the big question of the two code paths in the piece of code that calls into this block that we examined earlier:
+However, our new findings help explaining the two code paths in the piece of code that calls into this block (which we examined earlier):
 
 ![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code.png)
 
