@@ -94,5 +94,37 @@ Using this technique I identified that after a new subview is added, the parent 
 
 Why exactly is that happening in that case? I have not yet been able to track it down definitely, but I have a bunch more clues that I'd like to share.
 
+#### Guessing Rather Than Giving Up
+
+Since we want to know why the `_UITintColorVisitor` is called so frequently, it makes sense to start by investigating the backtrace. We can do this as well with an lldb command that we can invoke while halted at the breakpoint:
+
+```
+(lldb) bt
+* thread #1: tid = 0x156ea9, 0x00e4b61c UIKit`-[_UITintColorVisitor _visitView:], queue = 'com.apple.main-thread', stop reason = breakpoint 9.1
+  * frame #0: 0x00e4b61c UIKit`-[_UITintColorVisitor _visitView:]
+    frame #1: 0x00e4bfbb UIKit`_UIViewVisitorEntertainVisitors + 107
+    frame #2: 0x00e4af30 UIKit`_UIViewVisitorRecursivelyEntertainDescendingVisitors + 162
+    frame #3: 0x00e4a8ca UIKit`_UIViewVisitorEntertainDescendingTrackingVisitors + 705
+    frame #4: 0x00e4a2be UIKit`_UIViewVisitorEntertainHierarchyTrackingVisitors + 58
+    frame #5: 0x00a9ce3f UIKit`__45-[UIView(Hierarchy) _postMovedFromSuperview:]_block_invoke + 268
+    frame #6: 0x005b1440 Foundation`-[NSISEngine withBehaviors:performModifications:] + 150
+    frame #7: 0x005b491c Foundation`-[NSISEngine withAutomaticOptimizationDisabled:] + 48
+    frame #8: 0x00a9cce4 UIKit`-[UIView(Hierarchy) _postMovedFromSuperview:] + 521
+    frame #9: 0x00aac7f1 UIKit`-[UIView(Internal) _addSubview:positioned:relativeTo:] + 2367
+    frame #10: 0x00a9acc8 UIKit`-[UIView(Hierarchy) addSubview:] + 56
+    frame #11: 0x00002be9 CopyOnWriteClosures`ViewController.viewDidAppear(animated=false, self=0x0c72cce0) -> () + 825 at ViewController.swift:40
+    frame #12: 0x00002cbf CopyOnWriteClosures`@objc ViewController.viewDidAppear(Bool) -> () + 63 at ViewController.swift:0
+	
+	// ...
+	
+    frame #27: 0x009dfeb9 UIKit`UIApplicationMain + 160
+    frame #28: 0x00004411 CopyOnWriteClosures`main + 145 at AppDelegate.swift:12
+    frame #29: 0x0291ca25 libdyld.dylib`start + 1
+(lldb) 
+```
+Up until `frame #11` we're only seeing code that is necessary to set up the example project. `frame #10` is the actual starting point for our investigation. It is called whenever a new subview is added and it eventually results in a call to the `_UITintColorVisitor`. What is interesting is that `addSubview` is only ever called on the parent view of an added view but the `_UITintColorVisitor` is called with all of the subviews of that parent view. The cause of this problem must lie somewhere between `frame #11` and `frame #0`.
+
+Looking at the full stack trace we can identify that the `_UITintColorVisitor` is called in response to the `
+
 
 Thanks a lot to Russ Bishop who tracked down this issue together with me. He has also filed a radar: (fingers crossed).
