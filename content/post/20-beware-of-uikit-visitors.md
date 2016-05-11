@@ -196,19 +196,20 @@ I'm no expert in complexity analysis but it appears that the total cost of `[_UI
 
 In both cases, whether it is a subview or not, we end up calling: ` ___34-[_UITintColorVisitor _visitView:]_block_invoke`. In the case of the currently visited view being a subview of the original visited view, we pass two arguments to the block, in the other case we pass only one.
 
-By double-clicking onto the block in Hopper we can jump into the called block; it looks as following:
+Before moving on, here's an annotated version of the method we just investigated:
+![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code-annotated.png)
+
+Now let's take a look at the block that is being invoked from here. By double-clicking onto the call to the block in Hopper, we can jump into the called block. It looks as following:
 
 ![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/called-block.png)
 
-In this piece of code `ebx` refers to the `UIView` instance that is being visited and `*(esi + 0x14)` refers to the tint color visitor.
-
-Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block using lldb:
+We can see that this block receives two arguments. Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block using lldb:
 
 ```
 (lldb) b 0xe4b7ee
 ```
-
-The code seems to switch over the `_reasons` property of the `[_UITintColorVisitor]` and some properties of the visited view.
+By investigating the registers I found out that `ebx` refers to the `UIView` instance that is being visited and `*(esi + 0x14)` refers to the tint color visitor.
+The code seems to switch over the `_reasons` property of the `[_UITintColorVisitor]` and over some properties of the visited view.
 
 After stepping through the function prologue we can investigate the relevant values:
 

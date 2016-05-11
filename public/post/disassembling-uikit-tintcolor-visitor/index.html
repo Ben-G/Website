@@ -325,18 +325,20 @@
 
 <p>In both cases, whether it is a subview or not, we end up calling: <code>___34-[_UITintColorVisitor _visitView:]_block_invoke</code>. In the case of the currently visited view being a subview of the original visited view, we pass two arguments to the block, in the other case we pass only one.</p>
 
-<p>By double-clicking onto the block in Hopper we can jump into the called block; it looks as following:</p>
+<p>Before moving on, here&rsquo;s an annotated version of the method we just investigated:
+<img src="https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code-annotated.png" alt="" /></p>
+
+<p>Now let&rsquo;s take a look at the block that is being invoked from here. By double-clicking onto the call to the block in Hopper, we can jump into the called block. It looks as following:</p>
 
 <p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/called-block.png" alt="" /></p>
 
-<p>In this piece of code <code>ebx</code> refers to the <code>UIView</code> instance that is being visited and <code>*(esi + 0x14)</code> refers to the tint color visitor.</p>
-
-<p>Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block using lldb:</p>
+<p>We can see that this block receives two arguments. Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block using lldb:</p>
 
 <pre><code>(lldb) b 0xe4b7ee
 </code></pre>
 
-<p>The code seems to switch over the <code>_reasons</code> property of the <code>[_UITintColorVisitor]</code> and some properties of the visited view.</p>
+<p>By investigating the registers I found out that <code>ebx</code> refers to the <code>UIView</code> instance that is being visited and <code>*(esi + 0x14)</code> refers to the tint color visitor.
+The code seems to switch over the <code>_reasons</code> property of the <code>[_UITintColorVisitor]</code> and over some properties of the visited view.</p>
 
 <p>After stepping through the function prologue we can investigate the relevant values:</p>
 
@@ -344,7 +346,7 @@
 1
 </code></pre>
 
-<p>The <code>_reasons</code> property seems to store a bitmask value. Our bitmask is set to <code>1</code>. The first <code>if</code> statment in the pseudo code checks is the <code>1</code> bit of the bitmask is set. A further condition is that the view&rsquo;s <code>_interactionTintColor</code> needs to be <code>nil</code> (this check likely explains why setting an explicit <code>tintColor</code> on a view fixes our performance issue). Since both conditions are met, we execute the body of the first <code>if</code> block.</p>
+<p>The <code>_reasons</code> property seems to store a bitmask value. Our bitmask is set to <code>1</code>. The first <code>if</code> statment in the pseudo code checks if the <code>1</code> bit of the bitmask is set. A further condition is that the view&rsquo;s <code>_interactionTintColor</code> needs to be <code>nil</code> (this check likely explains why setting an explicit <code>tintColor</code> on a view fixes our performance issue). Since both conditions are met, we execute the body of the first <code>if</code> block.</p>
 
 <p>Inside of the <code>if</code> block we finally find a key that might help solve this puzzle:</p>
 
