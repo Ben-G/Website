@@ -60,7 +60,7 @@
 
 &lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/focus-tint-color-visitor.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;We can see that the app doesn&amp;rsquo;t spend too much time in &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; itself. The majority of the time is consumed by &lt;code&gt;objc_msgSend&lt;/code&gt; which indicates that this method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we&amp;rsquo;re spending a lot of time in &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).&lt;/p&gt;
+&lt;p&gt;We can see that the app doesn&amp;rsquo;t spend too much time in &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; itself. The majority of the time is consumed by &lt;code&gt;objc_msgSend&lt;/code&gt; which indicates that thi386is method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we&amp;rsquo;re spending a lot of time in &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).&lt;/p&gt;
 
 &lt;h3 id=&#34;breakpoints-in-framework-functions:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Breakpoints in Framework Functions&lt;/h3&gt;
 
@@ -71,38 +71,44 @@
 &lt;pre&gt;&lt;code&gt;(lldb) b -[_UITintColorVisitor _visitView:]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Now we can continue execution; soon we should trap into our breakpoint. Checking how often this method is called, I quickly identified that the amount of calls grows with the amount of subviews we have added. As a next step I wanted to see which views exactly are being visited. For that we need to dive into a little bit of assembly code.&lt;/p&gt;
+&lt;p&gt;Now we can continue execution; soon we should trap into our breakpoint:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-breakpoint.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Checking how often this method is called, I quickly identified that the amount of calls grows with the amount of subviews we have added. As a next step I wanted to see which views exactly are being visited. For that we need to dive into a little bit of assembly code.&lt;/p&gt;
 
 &lt;h3 id=&#34;inspecting-the-assembly-code:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Inspecting the Assembly Code&lt;/h3&gt;
 
 &lt;p&gt;When stepping into the breakpoint in &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt; you are greeted with a cryptic wall of assembly code. I started out with very barebones knowledge of understanding/investigating complex assembly code, but this bug forced me to learn some tricks that hopefully are useful to you as well!&lt;/p&gt;
 
-&lt;h4 id=&#34;configuring-for-32-bit:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Configuring for 32-Bit&lt;/h4&gt;
+&lt;h4 id=&#34;running-the-example-app-on-32-bit-mode:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Running the Example App on 32-Bit Mode&lt;/h4&gt;
 
-&lt;p&gt;As a first step, let&amp;rsquo;s ensure that our app runs in &lt;strong&gt;32-Bit&lt;/strong&gt; mode in the simulator. This architecture is known as &lt;strong&gt;x86_32&lt;/strong&gt;. We choose to run the app in 32-Bit mode since x86_32 has a simpler way of passing function arguments (which will come in handy shortly). In Xcode 7 you can run on x86_32 by selecting the &lt;em&gt;iPad 2&lt;/em&gt; simulator.&lt;/p&gt;
+&lt;p&gt;As a first step, let&amp;rsquo;s ensure that our app runs in &lt;strong&gt;32-Bit&lt;/strong&gt; mode in the simulator. This architecture is known as &lt;strong&gt;i386&lt;/strong&gt;. We choose to run the app in 32-Bit mode since i386 has a simpler way of passing function arguments (which will come in handy shortly). In Xcode 7 the easiest way to run on the i386 architecture is to select the &lt;em&gt;iPad 2&lt;/em&gt; simulator.&lt;/p&gt;
 
-&lt;p&gt;With this setup in place, we can now inspect which views are visited from within our breakpoint in &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt;. Looking at the method signature we can see that this method takes on argument: the view that is being visited. That&amp;rsquo;s the information that we would like to inspect further. In addition to that argument every method call in Objective-C receives &lt;code&gt;self&lt;/code&gt; as the first argument and the &lt;code&gt;selector&lt;/code&gt; as the second argument.&lt;/p&gt;
+&lt;p&gt;With this setup in place, we can now inspect which views are visited from within our breakpoint in &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt;. Looking at the method signature we can see that this method takes on argument: the view that is being visited. That&amp;rsquo;s the information that we would like to inspect further. In addition to that explicit argument every method call in Objective-C receives &lt;code&gt;self&lt;/code&gt; as the first and the &lt;code&gt;selector&lt;/code&gt; as the second implicit argument.&lt;/p&gt;
 
 &lt;h4 id=&#34;printing-function-arguments-in-assembly:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Printing Function Arguments in Assembly&lt;/h4&gt;
 
-&lt;p&gt;By using &lt;a href=&#34;https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/&#34;&gt;this handy reference&lt;/a&gt; we can look up where these arguments are stored when a method is called (the reference is old and mentions &lt;code&gt;gdb&lt;/code&gt; instead of &lt;code&gt;lldb&lt;/code&gt;, but the info is still up to date.). The order of these arguments is part of what we call a &amp;ldquo;calling convention&amp;rdquo;. It states for i386 (which is equivalent to x86_32) arguments are passed as follows:&lt;/p&gt;
+&lt;p&gt;By using &lt;a href=&#34;https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/&#34;&gt;this handy reference&lt;/a&gt; we can look up where these arguments are stored when a method is called (the reference is old and refers &lt;code&gt;gdb&lt;/code&gt; instead of &lt;code&gt;lldb&lt;/code&gt;, but the info is still up to date.). The order of these arguments is part of what we call a &amp;ldquo;calling convention&amp;rdquo;. It states that on a i386 architecture function arguments are passed as follows:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Before prolog:
+&lt;li&gt;Before prologue:
 
 &lt;ul&gt;
 &lt;li&gt;*($esp+4n) ➡ arg(n)&lt;br /&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;After prolog:
+&lt;li&gt;After prologue:
 
 &lt;ul&gt;
 &lt;li&gt;*($ebp+8+4n) ➡ arg(n)&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Without getting into too much detail at this point: the &amp;ldquo;prolog&amp;rdquo; is a sequence at the beginning of a function call that configures the stack pointer and different stack variables. The variable locations for our function arguments are different before and after the prolog. All arguments are offset from the base address that is stored in the &lt;code&gt;esp&lt;/code&gt; register.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;n&lt;/em&gt; here refers to the index of the argument.&lt;/p&gt;
 
-&lt;p&gt;For now we&amp;rsquo;ll use the addresses before the prolog, since we&amp;rsquo;ll access the arguments as soon as we trap into our breakpoint at the beginning of the &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt; method.&lt;/p&gt;
+&lt;p&gt;Without getting into too much detail at this point: the &amp;ldquo;prologue&amp;rdquo; is a sequence at the beginning of a function call that configures the stack pointer and different stack variables. The variable locations for our function arguments are different before and after the prologue (&lt;a href=&#34;http://arigrant.com/blog/2014/2/18/chisels-print-invocation-command&#34;&gt;this blog post&lt;/a&gt; by Ari Grant has a good description for what the function prologue and epilogue do). All arguments are offset from the base address that is stored in the &lt;code&gt;esp&lt;/code&gt; register.&lt;/p&gt;
+
+&lt;p&gt;For now we&amp;rsquo;ll use the addresses before the prologue, since we&amp;rsquo;ll access the arguments as soon as we trap into our breakpoint at the beginning of the &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt; method.&lt;/p&gt;
 
 &lt;p&gt;When we reach that breakpoint we can print all 3 arguments to our function call as following:&lt;/p&gt;
 
@@ -116,7 +122,7 @@
 &amp;lt;UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = &amp;lt;CALayer: 0xc1176d0&amp;gt;&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Now we can use this new ability to print the visited view every single time we step into our breakpoint: &lt;code&gt;po *(id *)($esp+12)&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now we can use this new ability to print the visited view every time we step into our breakpoint, by calling: &lt;code&gt;po *(id *)($esp+12)&lt;/code&gt; (alternatively you can also use a &lt;a href=&#34;http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based&#34;&gt;breakpoint command&lt;/a&gt;).&lt;/p&gt;
 
 &lt;p&gt;Using this technique I identified that after a new subview is added, the parent view and all of its children are passed to calls of &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt;. For each added view UIKit will iterate all of its siblings.&lt;/p&gt;
 
@@ -124,7 +130,7 @@
 
 &lt;h4 id=&#34;let-the-guesswork-begin:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Let the Guesswork begin&lt;/h4&gt;
 
-&lt;p&gt;Since we want to know why the &lt;code&gt;_UITintColorVisitor&lt;/code&gt; is called so frequently, it makes sense to start by investigating the backtrace. We can do this as well with an lldb command that we can invoke while halted at the breakpoint:&lt;/p&gt;
+&lt;p&gt;Since we want to know why the &lt;code&gt;_UITintColorVisitor&lt;/code&gt; is called so frequently, it makes sense to start by investigating the backtrace. We can do this with the &lt;code&gt;bt&lt;/code&gt; lldb command that we can invoke while halted in a breakpoint:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;(lldb) bt
 * thread #1: tid = 0x156ea9, 0x00e4b61c UIKit`-[_UITintColorVisitor _visitView:], queue = &#39;com.apple.main-thread&#39;, stop reason = breakpoint 9.1
@@ -141,6 +147,7 @@
     frame #10: 0x00a9acc8 UIKit`-[UIView(Hierarchy) addSubview:] + 56
     frame #11: 0x00002be9 ExampleApp`ViewController.viewDidAppear(animated=false, self=0x0c72cce0) -&amp;gt; () + 825 at ViewController.swift:40
     frame #12: 0x00002cbf ExampleApp`@objc ViewController.viewDidAppear(Bool) -&amp;gt; () + 63 at ViewController.swift:0
+    [...]
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Up until &lt;code&gt;frame #11&lt;/code&gt; we&amp;rsquo;re only seeing code that is necessary to set up the example project. &lt;code&gt;frame #10&lt;/code&gt; is the actual starting point for our investigation. It is called whenever a new subview is added and it eventually results in a call to the &lt;code&gt;_UITintColorVisitor&lt;/code&gt;.&lt;/p&gt;
@@ -153,33 +160,38 @@
 
 &lt;p&gt;Since I hit a dead end in identifying why all subviews in the view hierarchy were constantly being revisited, I decided to investigate another interesting aspect about this problem that profiler had revealed.&lt;/p&gt;
 
-&lt;p&gt;Earlier we identified that about 25% of the total time is taken up in calls to &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which is called as part of the implementation of &lt;code&gt;[_UITintColorVisitor visitView:]&lt;/code&gt;. I have used &lt;a href=&#34;http://www.hopperapp.com/&#34;&gt;Hopper Disassembler&lt;/a&gt; to try to understand why that&amp;rsquo;s the case. Hopper has a handy feature that can generate pseudo code from a disassembled binary, which makes it somewhat easier to try and grasp the control flow of a program (if, like me, you&amp;rsquo;re mostly unfamiliar with assembly code).&lt;/p&gt;
+&lt;p&gt;Earlier we identified that about 25% of the total time is taken up in calls to &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which is called as part of the implementation of &lt;code&gt;[_UITintColorVisitor visitView:]&lt;/code&gt;. I have used &lt;a href=&#34;http://www.hopperapp.com/&#34;&gt;Hopper Disassembler&lt;/a&gt; to try to understand why that&amp;rsquo;s the case. A disassembler can translate a binary (in machine code) back into assembly instructions which enables us to explore some of the inner workings of closed source software. This is useful, e.g. to explore issues in Apple&amp;rsquo;s UIKit framework.&lt;/p&gt;
 
-&lt;p&gt;Here&amp;rsquo;s what the relevant pseudo code looks like:&lt;/p&gt;
+&lt;p&gt;If you have never used Hopper before, but would like to follow along, I would recommend reading this &lt;a href=&#34;http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction&#34;&gt;brief introduction&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Hopper has a handy feature that can generate pseudo code from the disassembled binary, which makes it somewhat easier to try and grasp the control flow of a program (if, like me, you&amp;rsquo;re mostly unfamiliar with assembly code).&lt;/p&gt;
+
+&lt;p&gt;By browsing throught the pseudo code generated by Hopper I could identify the section of &lt;code&gt;[_UITintColorVisitor _visitView:]&lt;/code&gt; that calls &lt;code&gt;containsObject&lt;/code&gt;:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;As part of stepping through the assembly code I have identified a few things that are relevant to this snippet:&lt;/p&gt;
+&lt;p&gt;I also stepped through the assembly code that corresponds to this pseudo code in the debugger. As part of that effort I identified a few things that are relevant to this snippet:&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;One &lt;code&gt;_UITintColorVisitor&lt;/code&gt; instance is used to visit all views (at least in this simple example with only one view hierarchy)&lt;/li&gt;
 &lt;li&gt;The &lt;code&gt;_UITintColorVisitor&lt;/code&gt; has a few properties that are persisted between the different invocations of &lt;code&gt;visitView:&lt;/code&gt;. Here&amp;rsquo;s an overview of all properties found in Hopper:
-
-&lt;ul&gt;
-&lt;li&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/tint-color-visitor-properties.png&#34; alt=&#34;&#34; /&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
+&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/tint-color-visitor-properties.png&#34; alt=&#34;&#34; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;From stepping through the assembly code and investigating different registries I could identify that in the above pseudo code &lt;code&gt;eax&lt;/code&gt; refers to the &lt;code&gt;_originalVisitedView&lt;/code&gt; and &lt;code&gt;edi&lt;/code&gt; refers to the view that is currently being visited.&lt;/p&gt;
 
-&lt;p&gt;This means, that as soon as a &lt;code&gt;_UITintColorVisitor&lt;/code&gt; has an original visited view (which is true after it visited it&amp;rsquo;s first view), the outlined code checks if the &lt;code&gt;subviews&lt;/code&gt; array of the &lt;code&gt;originalVisitedView&lt;/code&gt; contains the currently visited view. This check scans the full array of subviews; in cases where the &lt;code&gt;originalVisitedView&lt;/code&gt; is our root view, the cost of this operation grows linearly with the amount of added subviews.&lt;/p&gt;
+&lt;p&gt;This means, that as soon as a &lt;code&gt;_UITintColorVisitor&lt;/code&gt; has an original visited view (which is true after it visited its first view), the outlined code checks if the &lt;code&gt;subviews&lt;/code&gt; array of the &lt;code&gt;originalVisitedView&lt;/code&gt; contains the currently visited view. This check scans the full array of subviews; in cases where the &lt;code&gt;originalVisitedView&lt;/code&gt; is our root view, the cost of this operation grows linearly with the amount of added subviews.&lt;/p&gt;
 
-&lt;p&gt;I investigated this further by creating another breakpoint in UIKit at the point where this check takes place. When disassembling the 32-Bit slice of UIKit and running the app in 32-Bit mode, the address offsets align nicely. Based on the &lt;code&gt;loc_4956fd&lt;/code&gt; in Hopper I created the new breakpoint like this:&lt;/p&gt;
+&lt;p&gt;I investigated this further by creating another breakpoint in UIKit at the point where this check takes place. When disassembling the 32-Bit slice of UIKit and running the app in 32-Bit mode, the address offsets align nicely. By stepping into the breakpoint in &lt;code&gt;-[_UITintColorVisitor visitView:]&lt;/code&gt; I could compare the assembly addresses in the debugger and in Hopper and identify that the addresses match up when replacing the &lt;code&gt;495&lt;/code&gt; in the hopper address with &lt;code&gt;0xe4b&lt;/code&gt;. The relative addresses within UIKit are constant, only the base address at which the framework is loaded is dynamic:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/address-align.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once we know the memory address offset we can create breakpoints in lldb based on addresses in Hopper.&lt;/p&gt;
+
+&lt;p&gt;Knowing this, I created a new breakpoint based on the &lt;code&gt;loc_4956fd&lt;/code&gt; in Hopper like this:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;b 0xe4b6fd
 &lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;(By creating a breakpoint in &lt;code&gt;-[_UITintColorVisitor visitView:]&lt;/code&gt; I could compare the assembly &amp;amp; addresses in the debugger and in Hopper and identify that the addresses match up when replacing the &lt;code&gt;495&lt;/code&gt; in the hopper address with &lt;code&gt;0xe4b&lt;/code&gt;).&lt;/p&gt;
 
 &lt;p&gt;Within the breakpoint I printed both the &lt;code&gt;eax&lt;/code&gt; register and the &lt;code&gt;_originalVisitedView&lt;/code&gt; of &lt;code&gt;self&lt;/code&gt; (which is stored in the &lt;code&gt;ebx&lt;/code&gt; register):&lt;/p&gt;
 
@@ -200,37 +212,37 @@
 
 &lt;p&gt;In both cases, whether it is a subview or not, we end up calling: &lt;code&gt;___34-[_UITintColorVisitor _visitView:]_block_invoke&lt;/code&gt;. In the case of the currently visited view being a subview of the original visited view, we pass two arguments to the block, in the other case we pass only one.&lt;/p&gt;
 
-&lt;p&gt;By double-clicking onto the block in Hopper we can jump into the called code; it looks as following:&lt;/p&gt;
+&lt;p&gt;By double-clicking onto the block in Hopper we can jump into the called block; it looks as following:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/called-block.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In this piece of code &lt;code&gt;ebx&lt;/code&gt; refers to the &lt;code&gt;UIView&lt;/code&gt; instance that is being visited and &lt;code&gt;*(esi + 0x14)&lt;/code&gt; refers to the tint color visitor.&lt;/p&gt;
 
-&lt;p&gt;Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block:&lt;/p&gt;
+&lt;p&gt;Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block using lldb:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;(lldb) b 0xe4b7ee
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of the &lt;code&gt;[_UITintColorVisitor]&lt;/code&gt; and some properties of the visited view.&lt;/p&gt;
 
-&lt;p&gt;After stepping through the prolog we can investigate the relevant values:&lt;/p&gt;
+&lt;p&gt;After stepping through the function prologue we can investigate the relevant values:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;po [*(id *)($esi+0x14) valueForKey:@&amp;quot;_reasons&amp;quot;]
 1
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;The &lt;code&gt;_reasons&lt;/code&gt; property seems to store a bitmask value. Our bitmask is set to &lt;code&gt;1&lt;/code&gt; which means that the first block will run if the views &lt;code&gt;_interactionTintColor&lt;/code&gt; is &lt;code&gt;nil&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;_reasons&lt;/code&gt; property seems to store a bitmask value. Our bitmask is set to &lt;code&gt;1&lt;/code&gt;. The first &lt;code&gt;if&lt;/code&gt; statment in the pseudo code checks is the &lt;code&gt;1&lt;/code&gt; bit of the bitmask is set. A further condition is that the view&amp;rsquo;s &lt;code&gt;_interactionTintColor&lt;/code&gt; needs to be &lt;code&gt;nil&lt;/code&gt; (this check likely explains why setting an explicit &lt;code&gt;tintColor&lt;/code&gt; on a view fixes our performance issue). Since both conditions are met, we execute the body of the first &lt;code&gt;if&lt;/code&gt; block.&lt;/p&gt;
 
-&lt;p&gt;Inside of this block we finally might find the magical key to solving this puzzle:&lt;/p&gt;
+&lt;p&gt;Inside of the &lt;code&gt;if&lt;/code&gt; block we finally find a key that might help solve this puzzle:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;[ebx _setAncestorDefinesTintColor:eax];
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Here UIKit is marking this view, noting that its parent is defining a tint color. I&amp;rsquo;m assuming that this flag is what registers this view in some way to be visited by the &lt;code&gt;_UITintColorVisitor&lt;/code&gt;, since we are passing it as an argument to the &lt;code&gt;_setAncestorDefinesTintColor&lt;/code&gt; method.&lt;/p&gt;
 
-&lt;p&gt;The big question remains why this is flag is set every single time the view is visited and not only in cases where the subview has moved in the view hierarchy or when the parent view changes its tint color. Another interesting question is why the &lt;code&gt;superview&lt;/code&gt; property of the view is not used instead of iterating over the array of subviews of the parent view. Both of these mysteries will most likely remain unsolved.&lt;/p&gt;
+&lt;p&gt;The big question remains why this is flag is set every single time the view is visited and not only in cases where the subview has moved in the view hierarchy or when the parent view changes its tint color. Another interesting question is why the &lt;code&gt;superview&lt;/code&gt; property of the visited view is not used instead of iterating over the array of subviews of the parent view. Both of these mysteries will most likely remain unsolved.&lt;/p&gt;
 
-&lt;p&gt;However, our new findings help explaining the two code paths in the piece of code that calls into this block (which we examined earlier):&lt;/p&gt;
+&lt;p&gt;However, our new findings help explain the two code paths in the piece of code that calls into this block (which we examined earlier):&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
@@ -238,11 +250,11 @@
 
 &lt;h1 id=&#34;conclusion:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Conclusion&lt;/h1&gt;
 
-&lt;p&gt;When I started out diving into this issue I was almost entirely clueless about how to interpret disassembled code; and now I still mostly am. However, I learned a few very handy tricks along the way:&lt;/p&gt;
+&lt;p&gt;When I started out diving into this issue I was almost entirely clueless about how to interpret complex disassembled code - now I&amp;rsquo;m still mostly clueless. However, I learned a few very handy tricks along the way:&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;I learned how to set breakpoints in private methods &amp;amp; and at any address within the assembly code.&lt;/li&gt;
-&lt;li&gt;I learned about the x86_32 and Objective-C calling conventions, e.g. which arguments are stored in which registers.&lt;/li&gt;
+&lt;li&gt;I learned about the i386 and Objective-C calling conventions, e.g. which arguments are stored in which registers.&lt;/li&gt;
 &lt;li&gt;I learned that the addresses in Hopper match the addresses in the actual framework code (besides a base pointers offset depending on where UIKit is loaded into memory). In hindsight this sounds obvious but it definitely was not the case when starting out. &lt;a href=&#34;http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction&#34;&gt;This article&lt;/a&gt; was very helpful in getting more comfortable with working with lldb in UIKit alongside of Hopper.&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -256,10 +268,11 @@
 
 &lt;p&gt;Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar (fingers crossed)!&lt;/p&gt;
 
-&lt;p&gt;I also recommend the following helpful articles for getting started with reverse engineering close source frameworks:&lt;/p&gt;
+&lt;p&gt;I also recommend the following helpful articles for getting started with reverse engineering closed source code:&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;This article was a great introduction to the very basics of using Hopper and lldb side by side: &lt;a href=&#34;http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction&#34;&gt;Hopper + lldb for iOS Developers: A Gentle Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Very good discussion of function prologue and epilogue as well as calling conventions: &lt;a href=&#34;http://arigrant.com/blog/2014/2/18/chisels-print-invocation-command&#34;&gt;Printing Objective-C Invocations in LLDB&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html&#34;&gt;x86 Register Overview&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/&#34;&gt;x86 + ObjC Calling Conventions&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based&#34;&gt;Breakpoint Commands in lldb&lt;/a&gt;&lt;/li&gt;
