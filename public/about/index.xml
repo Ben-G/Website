@@ -10,12 +10,12 @@
     <atom:link href="http://localhost:9292/about/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>about</title>
+      <title></title>
       <link>http://localhost:9292/about/about/</link>
       <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
       
       <guid>http://localhost:9292/about/about/</guid>
-      <description>&lt;p&gt;This website is about Benjamin Encz.&lt;/p&gt;
+      <description>&lt;p&gt;I&amp;rsquo;m a Software Engineer currently living in San Francisco.&lt;/p&gt;
 </description>
     </item>
     
