@@ -251,12 +251,13 @@ Most importantly I learned how to be more efficient at exploring the inner worki
 
 ---
 
-Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar (fingers crossed)!
+Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar: 25934331 (fingers crossed)!
 
-I also recommend the following helpful articles for getting started with reverse engineering closed source code:
+I also recommend the following helpful articles for getting started with reverse engineering closed source Cocoa code:
 
 - This article was a great introduction to the very basics of using Hopper and lldb side by side: [Hopper + lldb for iOS Developers: A Gentle Introduction](http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction)
 - Very good discussion of function prologue and epilogue as well as calling conventions: [Printing Objective-C Invocations in LLDB](http://arigrant.com/blog/2014/2/18/chisels-print-invocation-command)
 - [x86 Register Overview](http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html)
 - [x86 + ObjC Calling Conventions](https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/)
 - [Breakpoint Commands in lldb](http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based)
+- Another post on calling conventions in Objective-C by Jeff Hui, recommended by[@rpy](https://twitter.com/rpy): [Reverse Engineering Objective-C](https://www.jeffhui.net/2014/03-reverse-engineering-objective-c.html)

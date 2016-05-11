@@ -268,9 +268,9 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
 
 &lt;hr /&gt;
 
-&lt;p&gt;Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar (fingers crossed)!&lt;/p&gt;
+&lt;p&gt;Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar: 25934331 (fingers crossed)!&lt;/p&gt;
 
-&lt;p&gt;I also recommend the following helpful articles for getting started with reverse engineering closed source code:&lt;/p&gt;
+&lt;p&gt;I also recommend the following helpful articles for getting started with reverse engineering closed source Cocoa code:&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;This article was a great introduction to the very basics of using Hopper and lldb side by side: &lt;a href=&#34;http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction&#34;&gt;Hopper + lldb for iOS Developers: A Gentle Introduction&lt;/a&gt;&lt;/li&gt;
@@ -278,6 +278,7 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
 &lt;li&gt;&lt;a href=&#34;http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html&#34;&gt;x86 Register Overview&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/&#34;&gt;x86 + ObjC Calling Conventions&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based&#34;&gt;Breakpoint Commands in lldb&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Another post on calling conventions in Objective-C by Jeff Hui, recommended by&lt;a href=&#34;https://twitter.com/rpy&#34;&gt;@rpy&lt;/a&gt;: &lt;a href=&#34;https://www.jeffhui.net/2014/03-reverse-engineering-objective-c.html&#34;&gt;Reverse Engineering Objective-C&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>
