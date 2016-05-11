@@ -51,7 +51,7 @@ Finding a workaround for this issue is only half of the fun. Let's try to find o
 
 ![](https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/focus-tint-color-visitor.png)
 
-We can see that the app doesn't spend too much time in `[_UITintColor _visitView]` itself. The majority of the time is consumed by `objc_msgSend` which indicates that thi386is method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we're spending a lot of time in `[NSArray containsObject:]` which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).
+We can see that the app doesn't spend too much time in `[_UITintColor _visitView]` itself. The majority of the time is consumed by `objc_msgSend` which indicates that this method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we're spending a lot of time in `[NSArray containsObject:]` which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).
 
 ### Breakpoints in Framework Functions
 

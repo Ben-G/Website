@@ -60,7 +60,7 @@
 
 &lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/focus-tint-color-visitor.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;We can see that the app doesn&amp;rsquo;t spend too much time in &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; itself. The majority of the time is consumed by &lt;code&gt;objc_msgSend&lt;/code&gt; which indicates that thi386is method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we&amp;rsquo;re spending a lot of time in &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).&lt;/p&gt;
+&lt;p&gt;We can see that the app doesn&amp;rsquo;t spend too much time in &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; itself. The majority of the time is consumed by &lt;code&gt;objc_msgSend&lt;/code&gt; which indicates that this method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we&amp;rsquo;re spending a lot of time in &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).&lt;/p&gt;
 
 &lt;h3 id=&#34;breakpoints-in-framework-functions:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Breakpoints in Framework Functions&lt;/h3&gt;
 
