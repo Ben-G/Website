@@ -2,142 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>[Thinking inside a large box];</title>
-    <link>http://blog.benjamin-encz.de/</link>
+    <link>http://localhost:9292/</link>
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 05 Jun 2016 10:24:54 -0800</lastBuildDate>
-    <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
-    
-    <item>
-      <title>GCD&#39;s Main Queue vs. Main Thread</title>
-      <link>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</link>
-      <pubDate>Sun, 05 Jun 2016 10:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</guid>
-      <description>
-
-&lt;p&gt;The correct way to ensure that code runs on the main thread / main queue is a recurring issue that causes some confusion among Cocoa developers.
-The topic came up again this week as part of an issue with ReactiveCocoa and MapKit:&lt;/p&gt;
-
-&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Apple DTS “explicitly stated that main queue and the main thread are not the same thing, have subtle differences”. &lt;a href=&#34;https://t.co/YxAbqkvtse&#34;&gt;https://t.co/YxAbqkvtse&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ole Begemann (@olebegemann) &lt;a href=&#34;https://twitter.com/olebegemann/status/738656134731599872&#34;&gt;June 3, 2016&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;the-problem:997ed369e26584277379d51208fcfef8&#34;&gt;The Problem&lt;/h2&gt;
-
-&lt;p&gt;When interacting with certain frameworks, e.g. UIKit, we need to ensure that all calls into the framework happen from the main thread.
-Typically we have some sort of check to determine whether our code is already executing on the main thread or whether we are on a background thread and actively need to dispatch to the main thread.&lt;/p&gt;
-
-&lt;p&gt;Let&amp;rsquo;s take a function that generates an image as a trivial example:&lt;/p&gt;
-
-&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;createImageUnsafe&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// TODO: Check for Main Thread&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;contentsOfFile&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h2 id=&#34;the-easy-solution:997ed369e26584277379d51208fcfef8&#34;&gt;The Easy Solution&lt;/h2&gt;
-
-&lt;p&gt;The easiest way to check if we are currently executing on the main thread is using &lt;code&gt;NSThread.isMainThread()&lt;/code&gt; - GCD lacks a similarly convenient API for checking if we are running on the main queue, so many developers use the &lt;code&gt;NSThread&lt;/code&gt; API instead. Our updated function will look somewhat like this:&lt;/p&gt;
-
-&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;createImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt;
-
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;NSThread&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isMainThread&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;contentsOfFile&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// /!\ Use dispatch_sync cautiously&lt;/span&gt;
-        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// it can cause deadlocks!&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;dispatch_sync&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;dispatch_get_main_queue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-            &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;contentsOfFile&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt;
-&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;This works in most cases, &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2635#issuecomment-170215083&#34;&gt;until it doesn&amp;rsquo;t&lt;/a&gt;. Here&amp;rsquo;s the excerpt from the issue on the ReactiveCocoa repo:
-&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/public/assets/mainqueue-mainthread/rac_issue_queue_thread.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;The underlying problem is that the &lt;code&gt;VektorKit&lt;/code&gt; API is checking if it is being called on the main queue instead of checking that it is running on the main thread.&lt;/strong&gt; This issue has also been filed as a &lt;a href=&#34;http://www.openradar.me/24025596&#34;&gt;radar&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;While every app will ever only have one main thread, it is possible for many different queues to execute on this one main thread.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Calling an API from a non-main queue that is executing on the main thread will lead to issues if the library (like VektorKit) relies on checking for execution on the main queue.&lt;/p&gt;
-
-&lt;p&gt;It is surprisingly easy to get a non-main queue to execute on the main thread. While doing some research for this post I found a commit to &lt;code&gt;libdispatch&lt;/code&gt; that &lt;a href=&#34;https://libdispatch.macosforge.org/trac/changeset/156&#34;&gt;ensures that blocks dispatched with &lt;code&gt;dispatch_sync&lt;/code&gt; are always executed on the current thread&lt;/a&gt;. This means if you use &lt;code&gt;dispatch_sync&lt;/code&gt; to dispatch a block from the main queue to a concurrent background queue, the code executing on the background queue will actually be executed on the main thread. While this might not be entirely intuitive, it makes sense: since the main queue needs to wait until the dispatched block completed, the main thread will be available to process blocks from queues other than the main queue.&lt;/p&gt;
-
-&lt;h2 id=&#34;the-safer-solution:997ed369e26584277379d51208fcfef8&#34;&gt;The Safer Solution&lt;/h2&gt;
-
-&lt;p&gt;Technically I think this is a MapKit / VektorKit bug, Apple&amp;rsquo;s UI frameworks typically guarantee to work correctly when being called from the main thread, no part of the documentation mentions that code needs to be executed on the main queue.&lt;/p&gt;
-
-&lt;p&gt;However, now that we know that certain APIs rely not only on running on the main thread, but also on the main queue, it is safer to check for the current queue instead of checking for the current thread.&lt;/p&gt;
-
-&lt;p&gt;Checking for the current queue also makes better use of the abstraction that GCD provides over threading. Technically we shouldn&amp;rsquo;t know/care that the main queue is a special kind of queue that is always bound to the main thread.&lt;/p&gt;
-
-&lt;p&gt;Unfortunately GCD doesn&amp;rsquo;t have a very convenient API for checking for the queue we&amp;rsquo;re currently running on (which most likely is the reason why many developers use &lt;code&gt;NSThread.isMainThread()&lt;/code&gt; in the first place).&lt;/p&gt;
-
-&lt;p&gt;We need to use the &lt;code&gt;dispatch_queue_set_specific&lt;/code&gt; function in order to associate a key-value pair with the main queue; later we can use &lt;code&gt;dispatch_queue_get_specific&lt;/code&gt; to check for the presence of key &amp;amp; value. Here&amp;rsquo;s the updated image function example:&lt;/p&gt;
-
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;mainQueueKey&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;UnsafeMutablePointer&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;Void&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;alloc&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;mainQueueValue&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;UnsafeMutablePointer&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;Void&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;alloc&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-
-&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Associate a key-value pair with the main queue&lt;/span&gt;
-&lt;span style=&#34;color: #000000&#34;&gt;dispatch_queue_set_specific&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
-    &lt;span style=&#34;color: #000000&#34;&gt;dispatch_get_main_queue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(),&lt;/span&gt; 
-    &lt;span style=&#34;color: #000000&#34;&gt;mainQueueKey&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; 
-    &lt;span style=&#34;color: #000000&#34;&gt;mainQueueValue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; 
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;
-&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-
-&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;createImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;
-
-    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Check for presence of key-value pair on current queue&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;dispatch_get_specific&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;mainQueueKey&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;mainQueueValue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// if we found right value for key, execute immediately&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;contentsOfFile&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-        &lt;span style=&#34;color: #3465a4&#34;&gt;print&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;main queue&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// otherwise dispatch on main queue now&lt;/span&gt;
-        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// /!\ Use dispatch_sync cautiously&lt;/span&gt;
-        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// it can cause deadlocks!&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;dispatch_sync&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;dispatch_get_main_queue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-            &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;contentsOfFile&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-            &lt;span style=&#34;color: #3465a4&#34;&gt;print&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;not main queue&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt;
-&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
-
-&lt;p&gt;Both, key and value are simple &lt;code&gt;Void&lt;/code&gt; pointers - we only need to use them for an equality check.&lt;/p&gt;
-
-&lt;p&gt;The function above will now not only check that we&amp;rsquo;re running on the main thread, but also ensure we&amp;rsquo;re on the main queue.&lt;/p&gt;
-
-&lt;h2 id=&#34;conclusion:997ed369e26584277379d51208fcfef8&#34;&gt;Conclusion&lt;/h2&gt;
-
-&lt;p&gt;By combining GCD and Cocoa&amp;rsquo;s &lt;code&gt;NSThread&lt;/code&gt; API we are drilling through the abstraction that CGD should provide in the first place. APIs that fully rely on GCD and ignore the presence of the underlying threads can run into problems if you call them on the main thread but not the main queue. This means, especially when calling into other frameworks, we should prefer using &lt;code&gt;dispatch_queue_set_specific&lt;/code&gt; and &lt;code&gt;dispatch_get_specific&lt;/code&gt; to check if our code is running on the main queue over using &lt;code&gt;NSThread.isMainThread()&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Other Blog Posts:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;@&lt;a href=&#34;https://twitter.com/krzyzanowskim&#34;&gt;krzyzanowskim&lt;/a&gt; has written a &lt;a href=&#34;http://blog.krzyzanowskim.com/2016/06/03/queues-are-not-bound-to-any-specific-thread/&#34;&gt;great blog post about the relationship of threads, queues and runloops&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-    </item>
+    <lastBuildDate>Tue, 10 May 2016 12:24:54 -0800</lastBuildDate>
+    <atom:link href="http://localhost:9292/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Beware the UIKit Visitors!</title>
-      <link>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</link>
+      <link>http://localhost:9292/post/disassembling-uikit-tintcolor-visitor/</link>
       <pubDate>Tue, 10 May 2016 12:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</guid>
+      <guid>http://localhost:9292/post/disassembling-uikit-tintcolor-visitor/</guid>
       <description>
 
 &lt;p&gt;&lt;/p&gt;
@@ -169,7 +46,7 @@ Typically we have some sort of check to determine whether our code is already ex
 &lt;p&gt;The above example is obviously extreme, but it reveals an interesting performance issue: when setting a &lt;code&gt;tintColor&lt;/code&gt; on a parent view, and not setting an explicit color on child views the performance of &lt;code&gt;addSubview&lt;/code&gt; reduces itself drastically with a large amount of added subviews.&lt;/p&gt;
 
 &lt;p&gt;Here&amp;rsquo;s what I could identify within Instrument&amp;rsquo;s time profiler:
-&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/tint-color-visitor-highlight.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/tint-color-visitor-highlight.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;A majority of the time is adding subviews is spent within &lt;code&gt;[_UITintColorVisitor _visitView:]&lt;/code&gt;. In this example it&amp;rsquo;s 64% of the time; and the proportion only increases with the amount of subviews we&amp;rsquo;re adding.&lt;/p&gt;
 
@@ -181,9 +58,9 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;Finding a workaround for this issue is only half of the fun. Let&amp;rsquo;s try to find out what is causing these poor performance characteristics in the first place. We can start by taking a closer look at the time profiler output:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/focus-tint-color-visitor.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/focus-tint-color-visitor.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;We can see that the app doesn&amp;rsquo;t spend too much time in &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; itself. The majority of the time is consumed by &lt;code&gt;objc_msgSend&lt;/code&gt; which indicates that this method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we&amp;rsquo;re spending a lot of time in &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).&lt;/p&gt;
+&lt;p&gt;We can see that the app doesn&amp;rsquo;t spend too much time in &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; itself. The majority of the time is consumed by &lt;code&gt;objc_msgSend&lt;/code&gt; which indicates that thi386is method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we&amp;rsquo;re spending a lot of time in &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).&lt;/p&gt;
 
 &lt;h3 id=&#34;breakpoints-in-framework-functions:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Breakpoints in Framework Functions&lt;/h3&gt;
 
@@ -196,7 +73,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;Now we can continue execution; soon we should trap into our breakpoint:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-breakpoint.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-breakpoint.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Checking how often this method is called, I quickly identified that the amount of calls grows with the amount of subviews we have added. As a next step I wanted to see which views exactly are being visited. For that we need to dive into a little bit of assembly code.&lt;/p&gt;
 
@@ -205,8 +82,6 @@ Typically we have some sort of check to determine whether our code is already ex
 &lt;p&gt;When stepping into the breakpoint in &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt; you are greeted with a cryptic wall of assembly code. I started out with very barebones knowledge of understanding/investigating complex assembly code, but this bug forced me to learn some tricks that hopefully are useful to you as well!&lt;/p&gt;
 
 &lt;h4 id=&#34;running-the-example-app-on-32-bit-mode:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Running the Example App on 32-Bit Mode&lt;/h4&gt;
-
-&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; &lt;em&gt;I have gotten feedback from multiple readers, that Hopper works just as well in 64-Bit mode, and actually makes accessing arguments easier. For my next disassembly adventure I will try 64 instead of 32-Bit.&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;As a first step, let&amp;rsquo;s ensure that our app runs in &lt;strong&gt;32-Bit&lt;/strong&gt; mode in the simulator. This architecture is known as &lt;strong&gt;i386&lt;/strong&gt;. We choose to run the app in 32-Bit mode since i386 has a simpler way of passing function arguments (which will come in handy shortly). In Xcode 7 the easiest way to run on the i386 architecture is to select the &lt;em&gt;iPad 2&lt;/em&gt; simulator.&lt;/p&gt;
 
@@ -293,14 +168,14 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;By browsing throught the pseudo code generated by Hopper I could identify the section of &lt;code&gt;[_UITintColorVisitor _visitView:]&lt;/code&gt; that calls &lt;code&gt;containsObject&lt;/code&gt;:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I also stepped through the assembly code that corresponds to this pseudo code in the debugger. As part of that effort I identified a few things that are relevant to this snippet:&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;One &lt;code&gt;_UITintColorVisitor&lt;/code&gt; instance is used to visit all views (at least in this simple example with only one view hierarchy)&lt;/li&gt;
 &lt;li&gt;The &lt;code&gt;_UITintColorVisitor&lt;/code&gt; has a few properties that are persisted between the different invocations of &lt;code&gt;visitView:&lt;/code&gt;. Here&amp;rsquo;s an overview of all properties found in Hopper:
-&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/tint-color-visitor-properties.png&#34; alt=&#34;&#34; /&gt;&lt;/li&gt;
+&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/tint-color-visitor-properties.png&#34; alt=&#34;&#34; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;From stepping through the assembly code and investigating different registries I could identify that in the above pseudo code &lt;code&gt;eax&lt;/code&gt; refers to the &lt;code&gt;_originalVisitedView&lt;/code&gt; and &lt;code&gt;edi&lt;/code&gt; refers to the view that is currently being visited.&lt;/p&gt;
@@ -309,7 +184,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;I investigated this further by creating another breakpoint in UIKit at the point where this check takes place. When disassembling the 32-Bit slice of UIKit and running the app in 32-Bit mode, the address offsets align nicely. By stepping into the breakpoint in &lt;code&gt;-[_UITintColorVisitor visitView:]&lt;/code&gt; I could compare the assembly addresses in the debugger and in Hopper and identify that the addresses match up when replacing the &lt;code&gt;495&lt;/code&gt; in the hopper address with &lt;code&gt;0xe4b&lt;/code&gt;. The relative addresses within UIKit are constant, only the base address at which the framework is loaded is dynamic:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/address-align.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/address-align.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Once we know the memory address offset we can create breakpoints in lldb based on addresses in Hopper.&lt;/p&gt;
 
@@ -338,11 +213,11 @@ Typically we have some sort of check to determine whether our code is already ex
 &lt;p&gt;In both cases, whether it is a subview or not, we end up calling: &lt;code&gt;___34-[_UITintColorVisitor _visitView:]_block_invoke&lt;/code&gt;. In the case of the currently visited view being a subview of the original visited view, we pass two arguments to the block, in the other case we pass only one.&lt;/p&gt;
 
 &lt;p&gt;Before moving on, here&amp;rsquo;s an annotated version of the method we just investigated:
-&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-pseudo-code-annotated.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code-annotated.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Now let&amp;rsquo;s take a look at the block that is being invoked from here. By double-clicking onto the call to the block in Hopper, we can jump into the called block. It looks as following:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/called-block.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/called-block.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We can see that this block receives two arguments. Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block using lldb:&lt;/p&gt;
 
@@ -371,7 +246,7 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
 
 &lt;p&gt;However, our new findings help explain the two code paths in the piece of code that calls into this block (which we examined earlier):&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/UITintColorVisitor/visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;If the currently visited view is not a child view of the original visited view, we don&amp;rsquo;t pass a second argument to this block; which is equivalent to passing &lt;code&gt;nil&lt;/code&gt;. This means that &lt;code&gt;ebx&lt;/code&gt; will be &lt;code&gt;nil&lt;/code&gt;, which in turn means we will never call &lt;code&gt;[ebx _setAncestorDefinesTintColor:eax];&lt;/code&gt;.&lt;/p&gt;
 
@@ -393,9 +268,9 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
 
 &lt;hr /&gt;
 
-&lt;p&gt;Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar: &lt;a href=&#34;https://openradar.appspot.com/radar?id=4963594483531776&#34;&gt;25934331&lt;/a&gt; (fingers crossed)!&lt;/p&gt;
+&lt;p&gt;Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar (fingers crossed)!&lt;/p&gt;
 
-&lt;p&gt;I also recommend the following helpful articles for getting started with reverse engineering closed source Cocoa code:&lt;/p&gt;
+&lt;p&gt;I also recommend the following helpful articles for getting started with reverse engineering closed source code:&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;This article was a great introduction to the very basics of using Hopper and lldb side by side: &lt;a href=&#34;http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction&#34;&gt;Hopper + lldb for iOS Developers: A Gentle Introduction&lt;/a&gt;&lt;/li&gt;
@@ -403,17 +278,16 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
 &lt;li&gt;&lt;a href=&#34;http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html&#34;&gt;x86 Register Overview&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/&#34;&gt;x86 + ObjC Calling Conventions&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based&#34;&gt;Breakpoint Commands in lldb&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Another post on calling conventions in Objective-C by Jeff Hui, recommended by&lt;a href=&#34;https://twitter.com/rpy&#34;&gt;@rpy&lt;/a&gt;: &lt;a href=&#34;https://www.jeffhui.net/2014/03-reverse-engineering-objective-c.html&#34;&gt;Reverse Engineering Objective-C&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>
     
     <item>
       <title>Decoding Heterogeneous Collections in Swift</title>
-      <link>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</link>
+      <link>http://localhost:9292/post/decoding-heterogeneous-collections-in-swift/</link>
       <pubDate>Tue, 03 May 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</guid>
+      <guid>http://localhost:9292/post/decoding-heterogeneous-collections-in-swift/</guid>
       <description>
 
 &lt;p&gt;The problem of decoding Swift types from an outside data source, such as JSON, has been mostly solved. Since Swift&amp;rsquo;s release we&amp;rsquo;ve seen more than a dozen popular JSON mapping libraries pop up.&lt;/p&gt;
@@ -575,10 +449,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Compile Time vs. Run Time Type Checking in Swift</title>
-      <link>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</link>
+      <link>http://localhost:9292/post/compile-time-vs-runtime-type-checking-swift/</link>
       <pubDate>Wed, 13 Apr 2016 21:09:24 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</guid>
+      <guid>http://localhost:9292/post/compile-time-vs-runtime-type-checking-swift/</guid>
       <description>
 
 &lt;p&gt;At some point, when learning how to use Swift&amp;rsquo;s type system, it is important to understand that Swift (like many other languages) has two different forms of type checking: static and dynamic. Today I want to briefly discuss the difference between them and why headaches might arise when we try to combine them.&lt;/p&gt;
@@ -764,10 +638,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Squashing Commits With Git Rebase: A Very Quick Guide</title>
-      <link>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</link>
+      <link>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</link>
       <pubDate>Thu, 24 Mar 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</guid>
+      <guid>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</guid>
       <description>&lt;p&gt;Git&amp;rsquo;s interactive rebase is extremely useful for keeping a somewhat clear commit history. Here&amp;rsquo;s a very brief guide on how to squash multiple commits into a single one.&lt;/p&gt;
 
 &lt;p&gt;Git rebase allows you to rewrite the history of a git repository. &lt;strong&gt;Yes, you are right, this can be incredibly dangerous, therefore don&amp;rsquo;t use this technique on branches that are shared with other developers&lt;/strong&gt;. To me rebase is most useful for preparing a branch that is about to be merged into the main branch of a project.&lt;/p&gt;
@@ -819,10 +693,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Validated: A Swift μ-Library for Somewhat Dependent Types</title>
-      <link>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
+      <link>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
       <pubDate>Thu, 25 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
+      <guid>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
       <description>&lt;p&gt;Today I built &amp;amp; published a μ-library that makes it easier to leverage Swift&amp;rsquo;s type checking system for program verification: &lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;Validated&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt;&lt;/p&gt;
@@ -863,10 +737,10 @@ func performTaskWithUser(user: User) {
     
     <item>
       <title>How I Write Swift Specs With Quick</title>
-      <link>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</link>
+      <link>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</link>
       <pubDate>Wed, 24 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</guid>
+      <guid>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</guid>
       <description>
 
 &lt;p&gt;I&amp;rsquo;ve recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of &lt;code&gt;it&lt;/code&gt; blocks. This &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69&#34;&gt;seems to be common among many code bases that use Quick/Nimble&lt;/a&gt;.&lt;/p&gt;
@@ -947,11 +821,21 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     </item>
     
     <item>
+      <title></title>
+      <link>http://localhost:9292/about/</link>
+      <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
+      
+      <guid>http://localhost:9292/about/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;m a Software Engineer currently living in San Francisco.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Introducing ReSwift</title>
-      <link>http://blog.benjamin-encz.de/post/introducing-reswift/</link>
+      <link>http://localhost:9292/post/introducing-reswift/</link>
       <pubDate>Wed, 20 Jan 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/introducing-reswift/</guid>
+      <guid>http://localhost:9292/post/introducing-reswift/</guid>
       <description>&lt;p&gt;For the last two months I have been actively working on Swift Flow with the goal of bringing the ideas of the Flux and Redux libraries to Swift developers.&lt;/p&gt;
 
 &lt;p&gt;At about the same &lt;a href=&#34;https://twitter.com/ARendtslev&#34;&gt;@ARendtslev&lt;/a&gt; started ReduxKit, which had the goal of implementing Redux in Swift. Soon he was joined by &lt;a href=&#34;https://twitter.com/karlbowden&#34;&gt;@karlbowden&lt;/a&gt; who made significant contributions to the project (and provided amazing build and documentation infrastructure for ReduxKit and Swift Flow).&lt;/p&gt;
@@ -976,10 +860,10 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     
     <item>
       <title>Convenient Error Handling in Swift</title>
-      <link>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</link>
+      <link>http://localhost:9292/post/convenient-error-handling-in-swift/</link>
       <pubDate>Wed, 18 Nov 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</guid>
+      <guid>http://localhost:9292/post/convenient-error-handling-in-swift/</guid>
       <description>
 
 &lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
@@ -1102,10 +986,10 @@ errorHandler.wrap {
     
     <item>
       <title>A Flux Inspired Architecture for iOS</title>
-      <link>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</link>
+      <link>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</link>
       <pubDate>Sat, 12 Sep 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</guid>
+      <guid>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</guid>
       <description>&lt;p&gt;This year I spoke at 360iDev about &amp;ldquo;Safer Swift Code with Value Types&amp;rdquo;. The goal of the talk was to explore an architecture that uses immutable value types for the model layer.&lt;/p&gt;
 
 &lt;p&gt;After reviewing an earlier version of this talk with my developer friend &lt;a href=&#34;https://twitter.com/devknoll&#34;&gt;Gerald Monaco&lt;/a&gt;, who is a big fan of Facebook&amp;rsquo;s open source technologies (React, Flux, etc.), I decided to take a look at how a &lt;a href=&#34;https://facebook.github.io/flux/&#34;&gt;Flux&lt;/a&gt;-inspired architecture could be applied to an iOS application.&lt;/p&gt;
@@ -1124,10 +1008,10 @@ errorHandler.wrap {
     
     <item>
       <title>Swift Error Handling and Objective-C Interop in Depth</title>
-      <link>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
+      <link>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
       <pubDate>Thu, 23 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
+      <guid>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
       <description>
 
 &lt;p&gt;For the impatient reader:&lt;/p&gt;
@@ -1329,10 +1213,10 @@ errorHandler.wrap {
     
     <item>
       <title>iOS 9 Detects Cycles in Layout Trees</title>
-      <link>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</link>
+      <link>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</link>
       <pubDate>Thu, 09 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</guid>
+      <guid>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</guid>
       <description>
 
 &lt;p&gt;A couple of months ago I was faced with an issue that was fairly hard to debug:&lt;/p&gt;
@@ -1367,10 +1251,10 @@ errorHandler.wrap {
     
     <item>
       <title>Talk: Introduction to FRP on iOS</title>
-      <link>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</link>
+      <link>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</link>
       <pubDate>Sat, 30 May 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</guid>
+      <guid>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</guid>
       <description>&lt;p&gt;Back in April I gave a talk at &lt;a href=&#34;http://www.meetup.com/nsmeetup/events/220950179/&#34;&gt;NSMeetup in San Francisco&lt;/a&gt; on Functional Reactive Programming on iOS.&lt;/p&gt;
 
 &lt;p&gt;The talk discusses the idea &amp;amp; motivation behind FRP and dives into some practical examples using Reactive Cocoa 2.x. The examples are based on a small &lt;a href=&#34;https://github.com/Ben-G/PeopleCRM&#34;&gt;demo app&lt;/a&gt; that I built for that talk.&lt;/p&gt;
@@ -1385,10 +1269,10 @@ errorHandler.wrap {
     
     <item>
       <title>Breaking Swift with NSObject and Generics</title>
-      <link>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</link>
+      <link>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</link>
       <pubDate>Thu, 19 Feb 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</guid>
+      <guid>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</guid>
       <description>
 
 &lt;p&gt;Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at &lt;a href=&#34;http://openradar.appspot.com/search?query=segmentation+fault+swift&#34;&gt;Open Radar&lt;/a&gt; there seem to be many out there)!&lt;/p&gt;
@@ -1455,10 +1339,10 @@ extension D: NSObjectProtocol {}
     
     <item>
       <title>&#34;I didn&#39;t know that&#34; is the best way to learn</title>
-      <link>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</link>
+      <link>http://localhost:9292/post/i-didnt-know-that-is-the-best-way-to-learn/</link>
       <pubDate>Thu, 05 Feb 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</guid>
+      <guid>http://localhost:9292/post/i-didnt-know-that-is-the-best-way-to-learn/</guid>
       <description>&lt;p&gt;This is no original thought. Nevertheless I&amp;rsquo;ve been thinking about it often enough to make it worth spending a few minutes framing it in my own words.&lt;/p&gt;
 
 &lt;p&gt;I&amp;rsquo;m currently working as a Software Engineer. According to Wikipedia that makes me a &lt;a href=&#34;http://en.wikipedia.org/wiki/Knowledge_worker&#34;&gt;Knowledge Worker&lt;/a&gt;.&lt;/p&gt;

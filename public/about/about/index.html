@@ -5,14 +5,14 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-  	<meta property="og:title" content=" Automatic serialization in Objective-C &middot;  [Thinking inside a large box];" />
+  	<meta property="og:title" content=" about &middot;  [Thinking inside a large box];" />
   	<meta property="og:site_name" content="[Thinking inside a large box];" />
-  	<meta property="og:url" content="http://localhost:9292/post/seamless-serialization-objectivec/" />
+  	<meta property="og:url" content="http://localhost:9292/about/about/" />
 
     
   	<meta property="og:type" content="article" />
 
-    <meta property="og:article:published_time" content="2014-04-02T22:24:54-08:00" />
+    <meta property="og:article:published_time" content="2016-02-15T22:51:22-08:00" />
 
     
     
@@ -20,7 +20,7 @@
     <a href="http://localhost:9292/about/about"><h2>About</h2></a>
 
   <title>
-     Automatic serialization in Objective-C &middot;  [Thinking inside a large box];
+     about &middot;  [Thinking inside a large box];
   </title>
 
     <meta name="description" content="" />
@@ -42,7 +42,7 @@
     
     <meta name="generator" content="Hugo 0.15" />
 
-    <link rel="canonical" href="http://localhost:9292/post/seamless-serialization-objectivec/" />
+    <link rel="canonical" href="http://localhost:9292/about/about/" />
 
     
 
@@ -105,7 +105,7 @@
 
 <main class="content" role="main">
 
-  <article class="post post">
+  <article class="post about">
     <header class="post-header">
       <nav class="breadcrumb">
         
@@ -114,14 +114,10 @@
       </nav>
 
 
-        <h1 class="post-title">Automatic serialization in Objective-C</h1>
+        <h1 class="post-title">about</h1>
         <small></small>
 
         <section class="post-meta">
-        
-          <time class="post-date" datetime="2014-04-02T22:24:54-08:00">
-            Apr 2, 2014
-          </time>
         
          
         </section>
@@ -130,41 +126,7 @@
     <section class="post-content">
 
 
-
-
-<p>Recently I worked on a tutorial that required me to serialize a large amount of objects. This is a common use case in many games - if the user quits the game and reopens it you want to restore the entire game state.</p>
-
-<p><img src="http://puu.sh/7U79T.png" alt="image" /></p>
-
-<p>As you may know the <code>NSCoding</code> protocol is responsible for marking Objects to be encodable and decodable. Without using third party tools you need to implement <code>encodeWithCoder:</code> and <code>decodeWithCoder</code> manually. You need two lines of code for every property of your object, one for writing it and for reading it. It is nice that Cocoa provides the flexibility to do this manually, but honestly in most cases you just want to go with a default serialization.</p>
-
-<p>In my case implementing the <code>NSCoding</code> protocol manually would have meant a boring afternoon and hundreds of lines of boilerplate code.</p>
-
-<p><a href="https://github.com/nicklockwood/AutoCoding">Autocoding</a> to the rescue!</p>
-
-<h1 id="autocoding:6a58c9cd7366117c519c359294bd5b9e">Autocoding</h1>
-
-<p><a href="https://github.com/nicklockwood/AutoCoding">Autocoding</a> is a great little utility that makes serialization in Objective-C a breeze. It is a lightweight framework that adds a category to <code>NSObject</code>.</p>
-
-<h2 id="installation:6a58c9cd7366117c519c359294bd5b9e">Installation</h2>
-
-<p>Simply add <em>Autocoding.m</em> and <em>Autocoding.h</em> to your project.</p>
-
-<h2 id="example-usage:6a58c9cd7366117c519c359294bd5b9e">Example Usage</h2>
-
-<p>AutoCoding&rsquo;s category adds a very convenient <code>writeToFile:</code> method to <code>NSObject</code>. Once you added Autocoding to your project you can call it on basically any object (there are a few exceptions stated in detail on the GitHub page). Example of writing an object to disk:</p>
-
-<pre><code>[gameModel writeToFile:persistencePath atomically:TRUE];
-</code></pre>
-
-<p>Reading a serialized file into an object is just as convenient:</p>
-
-<pre><code>GameModel *gameModel = [GameModel objectWithContentsOfFile:persistencePath];
-</code></pre>
-
-<p>There are a lot of additional options, for example for excluding properties from being serialized, but for most applications it will stay this simple! An incredible improvement over writing hundreds of lines.</p>
-
-<p><strong>Never write hundreds of lines of serialization code again!</strong></p>
+<p>This website is about Benjamin Encz.</p>
 
 
 
@@ -185,21 +147,21 @@
     <section class="author">
         <h4>Benjamin Encz</h4>
         <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
-        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a> (<a href="http://grnh.se/8fcutd">We're hiring!</a>)<br></p>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a><br></p>
     </section>
 
     
     <section class="share">
-      <h4>Share this post</h4>
-      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Automatic%20serialization%20in%20Objective-C&amp;url=http%3a%2f%2flocalhost%3a9292%2fpost%2fseamless-serialization-objectivec%2f"
+      <h4>Share this about</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=about&amp;url=http%3a%2f%2flocalhost%3a9292%2fabout%2fabout%2f"
           onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
           <span class="hidden">Twitter</span>
       </a>
-      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a9292%2fpost%2fseamless-serialization-objectivec%2f"
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a9292%2fabout%2fabout%2f"
           onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
           <span class="hidden">Facebook</span>
       </a>
-      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2flocalhost%3a9292%2fpost%2fseamless-serialization-objectivec%2f"
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2flocalhost%3a9292%2fabout%2fabout%2f"
          onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
           <span class="hidden">Google+</span>
       </a>
@@ -216,14 +178,14 @@
 <script type="text/javascript">
 
   var disqus_shortname = 'benjaminencz';
-  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/seamless-serialization-objectivec\/';
+  var disqus_url = '';
 
   if (disqus_url === undefined) {
     if (window.location.hostname == "localhost") {
         
         disqus_url = undefined;
     } else {
-        disqus_url = 'http:\/\/localhost:9292\/post\/seamless-serialization-objectivec\/';
+        disqus_url = 'http:\/\/localhost:9292\/about\/about\/';
     }
   }
 
