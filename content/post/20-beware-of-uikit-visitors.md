@@ -74,7 +74,7 @@ When stepping into the breakpoint in `-[_UITintColorVisitor _visitView:]` you ar
 
 #### Running the Example App on 32-Bit Mode
 
-**Update:**: *I have gotten feedback from multiple readers, that Hopper works just as well in 64-Bit mode, and actually makes accessing arguments easier. For my next disassembly adventure I will try 64 instead of 32-Bit.*
+**Update:** *I have gotten feedback from multiple readers, that Hopper works just as well in 64-Bit mode, and actually makes accessing arguments easier. For my next disassembly adventure I will try 64 instead of 32-Bit.*
 
 As a first step, let's ensure that our app runs in **32-Bit** mode in the simulator. This architecture is known as **i386**. We choose to run the app in 32-Bit mode since i386 has a simpler way of passing function arguments (which will come in handy shortly). In Xcode 7 the easiest way to run on the i386 architecture is to select the *iPad 2* simulator.
 
@@ -253,7 +253,7 @@ Most importantly I learned how to be more efficient at exploring the inner worki
 
 ---
 
-Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar: 25934331 (fingers crossed)!
+Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar: [25934331](https://openradar.appspot.com/radar?id=4963594483531776) (fingers crossed)!
 
 I also recommend the following helpful articles for getting started with reverse engineering closed source Cocoa code:
 

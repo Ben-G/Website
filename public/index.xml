@@ -83,7 +83,7 @@
 
 &lt;h4 id=&#34;running-the-example-app-on-32-bit-mode:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Running the Example App on 32-Bit Mode&lt;/h4&gt;
 
-&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt;: &lt;em&gt;I have gotten feedback from multiple readers, that Hopper works just as well in 64-Bit mode, and actually makes accessing arguments easier. For my next disassembly adventure I will try 64 instead of 32-Bit.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; &lt;em&gt;I have gotten feedback from multiple readers, that Hopper works just as well in 64-Bit mode, and actually makes accessing arguments easier. For my next disassembly adventure I will try 64 instead of 32-Bit.&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;As a first step, let&amp;rsquo;s ensure that our app runs in &lt;strong&gt;32-Bit&lt;/strong&gt; mode in the simulator. This architecture is known as &lt;strong&gt;i386&lt;/strong&gt;. We choose to run the app in 32-Bit mode since i386 has a simpler way of passing function arguments (which will come in handy shortly). In Xcode 7 the easiest way to run on the i386 architecture is to select the &lt;em&gt;iPad 2&lt;/em&gt; simulator.&lt;/p&gt;
 
@@ -270,7 +270,7 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
 
 &lt;hr /&gt;
 
-&lt;p&gt;Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar: 25934331 (fingers crossed)!&lt;/p&gt;
+&lt;p&gt;Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar: &lt;a href=&#34;https://openradar.appspot.com/radar?id=4963594483531776&#34;&gt;25934331&lt;/a&gt; (fingers crossed)!&lt;/p&gt;
 
 &lt;p&gt;I also recommend the following helpful articles for getting started with reverse engineering closed source Cocoa code:&lt;/p&gt;
 
