@@ -10,7 +10,7 @@
     <atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>GCD&#39;s Main Queue vs. Cocoa&#39;s Main Thread</title>
+      <title>GCD&#39;s Main Queue vs. Main Thread</title>
       <link>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</link>
       <pubDate>Sun, 05 Jun 2016 10:24:54 -0800</pubDate>
       

@@ -1,7 +1,7 @@
 +++
 date = "2016-06-05T10:24:54-08:00"
 draft = false
-title = "GCD's Main Queue vs. Cocoa's Main Thread"
+title = "GCD's Main Queue vs. Main Thread"
 slug = "main-queue-vs-main-thread"
 disqus_url = "http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/"
 +++
