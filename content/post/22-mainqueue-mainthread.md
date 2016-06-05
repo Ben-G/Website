@@ -53,11 +53,11 @@ This works in most cases, [until it doesn't](https://github.com/ReactiveCocoa/Re
 
 **The underlying problem is that the `VektorKit` API is checking if it is being called on the main queue instead of checking that it is running on the main thread.** This issue has also been filed as a [radar](http://www.openradar.me/24025596).
 
-While every app will ever only have one main thread, it is possible for many different queues to execute on this one main thread. 
+**While every app will ever only have one main thread, it is possible for many different queues to execute on this one main thread.**
 
 Calling an API from a non-main queue that is executing on the main thread will lead to issues if the library (like VektorKit) relies on checking for execution on the main queue.
 
-It is surprisingly easy to get a non-main queue to execute on the main thread. While doing some research for this post I found a commit to `libdispatch` that [ensures that blocks dispatched with `dispatch_sync` are always executed on the current queue](https://libdispatch.macosforge.org/trac/changeset/156). This means if you use `dispatch_sync` to dispatch a block from the main queue to a concurrent background queue, the code executing on the background queue will actually be executed on the main thread. While this might not be entirely intuitive, it makes sense: since the main queue needs to wait until the dispatched block completed, the main thread will be available to process blocks from queues other than the main queue.
+It is surprisingly easy to get a non-main queue to execute on the main thread. While doing some research for this post I found a commit to `libdispatch` that [ensures that blocks dispatched with `dispatch_sync` are always executed on the current thread](https://libdispatch.macosforge.org/trac/changeset/156). This means if you use `dispatch_sync` to dispatch a block from the main queue to a concurrent background queue, the code executing on the background queue will actually be executed on the main thread. While this might not be entirely intuitive, it makes sense: since the main queue needs to wait until the dispatched block completed, the main thread will be available to process blocks from queues other than the main queue.
 
 ## The Safer Solution
 
