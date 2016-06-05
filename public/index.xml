@@ -62,9 +62,11 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;&lt;strong&gt;The underlying problem is that the &lt;code&gt;VektorKit&lt;/code&gt; API is checking if it is being called on the main queue instead of checking that it is running on the main thread.&lt;/strong&gt; This issue has also been filed as a &lt;a href=&#34;http://www.openradar.me/24025596&#34;&gt;radar&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;While every app will ever only have one main thread, it is possible for many different queues to execute on this one main thread. Due to this issue with the VektorKit API, calling the API from a non-main queue that is executing on the main thread will lead to a crash.&lt;/p&gt;
+&lt;p&gt;While every app will ever only have one main thread, it is possible for many different queues to execute on this one main thread.&lt;/p&gt;
 
-&lt;p&gt;It is suprisingly easy to get a non-main queue to execute on the main thread. While doing some research for this post I found a commit to &lt;code&gt;libdispatch&lt;/code&gt; that &lt;a href=&#34;https://libdispatch.macosforge.org/trac/changeset/156&#34;&gt;ensures that blocks dispatched with &lt;code&gt;dispatch_sync&lt;/code&gt; are always executed on the current queue&lt;/a&gt;. This means if you call &lt;code&gt;dispatch_sync&lt;/code&gt; on a concurrent background queue, from the main thread, the code executing on the background queue will actually be executed on the main thread.&lt;/p&gt;
+&lt;p&gt;Calling an API from a non-main queue that is executing on the main thread will lead to issues if the library (like VektorKit) relies on checking for execution on the main queue.&lt;/p&gt;
+
+&lt;p&gt;It is surprisingly easy to get a non-main queue to execute on the main thread. While doing some research for this post I found a commit to &lt;code&gt;libdispatch&lt;/code&gt; that &lt;a href=&#34;https://libdispatch.macosforge.org/trac/changeset/156&#34;&gt;ensures that blocks dispatched with &lt;code&gt;dispatch_sync&lt;/code&gt; are always executed on the current queue&lt;/a&gt;. This means if you use &lt;code&gt;dispatch_sync&lt;/code&gt; to dispatch a block from the main queue to a concurrent background queue, the code executing on the background queue will actually be executed on the main thread. While this might not be entirely intuitive, it makes sense: since the main queue needs to wait until the dispatched block completed, the main thread will be available to process blocks from queues other than the main queue.&lt;/p&gt;
 
 &lt;h2 id=&#34;the-safer-solution:997ed369e26584277379d51208fcfef8&#34;&gt;The Safer Solution&lt;/h2&gt;
 

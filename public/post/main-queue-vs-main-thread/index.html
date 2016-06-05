@@ -175,9 +175,11 @@ Typically we have some sort of check to determine whether our code is already ex
 
 <p><strong>The underlying problem is that the <code>VektorKit</code> API is checking if it is being called on the main queue instead of checking that it is running on the main thread.</strong> This issue has also been filed as a <a href="http://www.openradar.me/24025596">radar</a>.</p>
 
-<p>While every app will ever only have one main thread, it is possible for many different queues to execute on this one main thread. Due to this issue with the VektorKit API, calling the API from a non-main queue that is executing on the main thread will lead to a crash.</p>
+<p>While every app will ever only have one main thread, it is possible for many different queues to execute on this one main thread.</p>
 
-<p>It is suprisingly easy to get a non-main queue to execute on the main thread. While doing some research for this post I found a commit to <code>libdispatch</code> that <a href="https://libdispatch.macosforge.org/trac/changeset/156">ensures that blocks dispatched with <code>dispatch_sync</code> are always executed on the current queue</a>. This means if you call <code>dispatch_sync</code> on a concurrent background queue, from the main thread, the code executing on the background queue will actually be executed on the main thread.</p>
+<p>Calling an API from a non-main queue that is executing on the main thread will lead to issues if the library (like VektorKit) relies on checking for execution on the main queue.</p>
+
+<p>It is surprisingly easy to get a non-main queue to execute on the main thread. While doing some research for this post I found a commit to <code>libdispatch</code> that <a href="https://libdispatch.macosforge.org/trac/changeset/156">ensures that blocks dispatched with <code>dispatch_sync</code> are always executed on the current queue</a>. This means if you use <code>dispatch_sync</code> to dispatch a block from the main queue to a concurrent background queue, the code executing on the background queue will actually be executed on the main thread. While this might not be entirely intuitive, it makes sense: since the main queue needs to wait until the dispatched block completed, the main thread will be available to process blocks from queues other than the main queue.</p>
 
 <h2 id="the-safer-solution:997ed369e26584277379d51208fcfef8">The Safer Solution</h2>
 
