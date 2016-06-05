@@ -39,6 +39,8 @@ func createImage(filename: String) -> UIImage? {
     if NSThread.isMainThread() {
         image = UIImage(contentsOfFile: filename)
     } else {
+        // /!\ Use dispatch_sync cautiously
+        // it can cause deadlocks!
         dispatch_sync(dispatch_get_main_queue()) {
             image = UIImage(contentsOfFile: filename)
         }
@@ -93,6 +95,8 @@ func createImage(filename: String) -> UIImage? {
         print("main queue")
     } else {
         // otherwise dispatch on main queue now
+        // /!\ Use dispatch_sync cautiously
+        // it can cause deadlocks!
         dispatch_sync(dispatch_get_main_queue()) {
             image = UIImage(contentsOfFile: filename)
             print("not main queue")
