@@ -6,8 +6,125 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 10 May 2016 12:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Sun, 05 Jun 2016 10:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>GCD&#39;s Main Queue vs. Cocoa&#39;s Main Thread</title>
+      <link>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</link>
+      <pubDate>Sun, 05 Jun 2016 10:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</guid>
+      <description>
+
+&lt;p&gt;The correct way to ensure that code runs on the main thread / main queue is a recurring issue that causes some confusion among Cocoa developers.
+The topic came up again this week as part of an issue with ReactiveCocoa and MapKit:&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Apple DTS “explicitly stated that main queue and the main thread are not the same thing, have subtle differences”. &lt;a href=&#34;https://t.co/YxAbqkvtse&#34;&gt;https://t.co/YxAbqkvtse&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ole Begemann (@olebegemann) &lt;a href=&#34;https://twitter.com/olebegemann/status/738656134731599872&#34;&gt;June 3, 2016&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;the-problem:997ed369e26584277379d51208fcfef8&#34;&gt;The Problem&lt;/h2&gt;
+
+&lt;p&gt;When interacting with certain frameworks, e.g. UIKit, we need to ensure that all calls into the framework happen from the main thread.
+Typically we have some sort of check to determine whether our code is already executing on the main thread or whether we are on a background thread and actively need to dispatch to the main thread.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s take a function that generates an image as a trivial example:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;createImageUnsafe&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// TODO: Check for Main Thread&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;contentsOfFile&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id=&#34;the-easy-solution:997ed369e26584277379d51208fcfef8&#34;&gt;The Easy Solution&lt;/h2&gt;
+
+&lt;p&gt;The easiest way to check if we are currently executing on the main thread is using &lt;code&gt;NSThread.isMainThread()&lt;/code&gt; - GCD lacks a similarly convenient API for checking if we are running on the main queue, so many developers use the &lt;code&gt;NSThread&lt;/code&gt; API instead. Our updated function will look somewhat like this:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;createImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;NSThread&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isMainThread&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;contentsOfFile&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;dispatch_sync&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;dispatch_get_main_queue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;contentsOfFile&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This works in most cases, &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2635#issuecomment-170215083&#34;&gt;until it doesn&amp;rsquo;t&lt;/a&gt;. Here&amp;rsquo;s the excerpt from the issue on the ReactiveCocoa repo:
+&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/public/assets/mainqueue-mainthread/rac_issue_queue_thread.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The underlying problem is that the &lt;code&gt;VektorKit&lt;/code&gt; API is checking if it is being called on the main queue instead of checking that it is running on the main thread.&lt;/strong&gt; This issue has also been filed as a &lt;a href=&#34;http://www.openradar.me/24025596&#34;&gt;radar&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;While every app will ever only have one main thread, it is possible for many different queues to execute on this one main thread. Due to this issue with the VektorKit API, calling the API from a non-main queue that is executing on the main thread will lead to a crash.&lt;/p&gt;
+
+&lt;p&gt;It is suprisingly easy to get a non-main queue to execute on the main thread. While doing some research for this post I found a commit to &lt;code&gt;libdispatch&lt;/code&gt; that &lt;a href=&#34;https://libdispatch.macosforge.org/trac/changeset/156&#34;&gt;ensures that blocks dispatched with &lt;code&gt;dispatch_sync&lt;/code&gt; are always executed on the current queue&lt;/a&gt;. This means if you call &lt;code&gt;dispatch_sync&lt;/code&gt; on a concurrent background queue, from the main thread, the code executing on the background queue will actually be executed on the main thread.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-safer-solution:997ed369e26584277379d51208fcfef8&#34;&gt;The Safer Solution&lt;/h2&gt;
+
+&lt;p&gt;Technically I think this is a MapKit / VektorKit bug, Apple&amp;rsquo;s UI frameworks typically guarantee to work correctly when being called from the main thread, no part of the documentation mentions that code needs to be executed on the main queue.&lt;/p&gt;
+
+&lt;p&gt;However, now that we know that certain APIs rely not only on running on the main thread, but also on the main queue, it is safer to check for the current queue instead of checking for the current thread.&lt;/p&gt;
+
+&lt;p&gt;Checking for the current queue also makes better use of the abstraction that GCD provides over threading. Technically we shouldn&amp;rsquo;t know/care that the main queue is a special kind of queue that is always bound to the main thread.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately GCD doesn&amp;rsquo;t have a very convenient API for checking for the queue we&amp;rsquo;re currently running on (which most likely is the reason why many developers use &lt;code&gt;NSThread.isMainThread()&lt;/code&gt; in the first place).&lt;/p&gt;
+
+&lt;p&gt;We need to use the &lt;code&gt;dispatch_queue_set_specific&lt;/code&gt; function in order to associate a key-value pair with the main queue; later we can use &lt;code&gt;dispatch_queue_get_specific&lt;/code&gt; to check for the presence of key &amp;amp; value. Here&amp;rsquo;s the updated image function example:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;mainQueueKey&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;UnsafeMutablePointer&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;Void&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;alloc&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;mainQueueValue&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;UnsafeMutablePointer&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;Void&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;alloc&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Associate a key-value pair with the main queue&lt;/span&gt;
+&lt;span style=&#34;color: #000000&#34;&gt;dispatch_queue_set_specific&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;dispatch_get_main_queue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(),&lt;/span&gt; 
+    &lt;span style=&#34;color: #000000&#34;&gt;mainQueueKey&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; 
+    &lt;span style=&#34;color: #000000&#34;&gt;mainQueueValue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; 
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;createImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Check for presence of key-value pair on current queue&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;dispatch_get_specific&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;mainQueueKey&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;mainQueueValue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// if we found right value for key, execute immediately&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;contentsOfFile&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+        &lt;span style=&#34;color: #3465a4&#34;&gt;print&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;main queue&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// otherwise dispatch on main queue now&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;dispatch_sync&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;dispatch_get_main_queue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;contentsOfFile&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+            &lt;span style=&#34;color: #3465a4&#34;&gt;print&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;not main queue&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Both, key and value are simple &lt;code&gt;Void&lt;/code&gt; pointers - we only need to use them for an equality check.&lt;/p&gt;
+
+&lt;p&gt;The function above will now not only check that we&amp;rsquo;re running on the main thread, but also ensure we&amp;rsquo;re on the main queue.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:997ed369e26584277379d51208fcfef8&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;By combining GCD and Cocoa&amp;rsquo;s &lt;code&gt;NSThread&lt;/code&gt; API we are drilling through the abstraction that CGD should provide in the first place. APIs that fully rely on GCD and ignore the presence of the underlying threads can run into problems if you call them on the main thread but not the main queue. This means, especially when calling into other frameworks, we should prefer using &lt;code&gt;dispatch_queue_set_specific&lt;/code&gt; and &lt;code&gt;dispatch_get_specific&lt;/code&gt; to check if our code is running on the main queue over using &lt;code&gt;NSThread.isMainThread()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Other Blog Posts:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;@&lt;a href=&#34;https://twitter.com/krzyzanowskim&#34;&gt;krzyzanowskim&lt;/a&gt; has written a &lt;a href=&#34;http://blog.krzyzanowskim.com/2016/06/03/queues-are-not-bound-to-any-specific-thread/&#34;&gt;great blog post about the relationship of threads, queues and runloops&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
     <item>
       <title>Beware the UIKit Visitors!</title>
@@ -1375,24 +1492,6 @@ extension D: NSObjectProtocol {}
 &lt;/blockquote&gt;
 
 &lt;p&gt;You know a little, you know a lot. Make the best out of this contradiction.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Switching iOS devices and the Keychain</title>
-      <link>http://blog.benjamin-encz.de/post/switching-ios-devices-and-the-keychain/</link>
-      <pubDate>Sun, 14 Dec 2014 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/switching-ios-devices-and-the-keychain/</guid>
-      <description>&lt;p&gt;Unfortunately some of my &lt;a href=&#34;http://www.movieloggr.com/&#34;&gt;MovieLoggr&lt;/a&gt; users ran into the following issue: After switching to a new phone and restoring it from a Backup MovieLoggr would behave unexpectetly (and in some cases crash) because the App could no longer access the user&amp;rsquo;s password and unfortunately did not handle this gracefully.&lt;/p&gt;
-
-&lt;p&gt;Typically iOS applications store passwords in the encrypted &lt;em&gt;Keychain&lt;/em&gt;. When creating unencrypted backups, which is the default for creating backups with iTunes, the iOS Keychain is not stored (it is stored if you create an encrypted one or use iCloud backups).  This means, after restoring your new device from a backup, all of your apps that now run on your new device can no longer access the passwords they have securely stored on your previous device.&lt;/p&gt;
-
-&lt;p&gt;When using the Keychain to store passwords you should be able to handle this case and request the user to re-enter their account credentials when restoring your app from an unecrypted backup.&lt;/p&gt;
-
-&lt;p&gt;If the case that I described occurs, the Keychain will inform you that the password you are looking for could not be found, this is where you need to ask the user to re-enter their password. You can reproduce this case for testing purposes by choosing a different &lt;em&gt;ServiceName&lt;/em&gt; for accessing the Keychain than you used for creating the Keychain entry.&lt;/p&gt;
-
-&lt;p&gt;P.S.: Apple&amp;rsquo;s Keychain API is pretty arcane so I&amp;rsquo;m using &lt;a href=&#34;https://github.com/soffes/sskeychain&#34;&gt;SSKeychain&lt;/a&gt; which provides a nice abstraction instead.&lt;/p&gt;
 </description>
     </item>
     
