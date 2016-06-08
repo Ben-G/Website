@@ -3,8 +3,13 @@
   
   <url>
     <loc>http://localhost:9292/</loc>
-    <lastmod>2016-05-10T12:24:54-08:00</lastmod>
+    <lastmod>2016-06-05T10:24:54-08:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://localhost:9292/post/main-queue-vs-main-thread/</loc>
+    <lastmod>2016-06-05T10:24:54-08:00</lastmod>
   </url>
   
   <url>
