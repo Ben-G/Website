@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>[Thinking inside a large box];</title>
-    <link>http://localhost:9292/</link>
+    <link>http://blog.benjamin-encz.de/</link>
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 05 Jun 2016 10:24:54 -0800</lastBuildDate>
-    <atom:link href="http://localhost:9292/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>GCD&#39;s Main Queue vs. Main Thread</title>
-      <link>http://localhost:9292/post/main-queue-vs-main-thread/</link>
+      <link>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</link>
       <pubDate>Sun, 05 Jun 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/main-queue-vs-main-thread/</guid>
+      <guid>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</guid>
       <description>
 
 &lt;p&gt;The correct way to ensure that code runs on the main thread / main queue is a recurring issue that causes some confusion among Cocoa developers.
@@ -134,10 +134,10 @@ Typically we have some sort of check to determine whether our code is already ex
     
     <item>
       <title>Beware the UIKit Visitors!</title>
-      <link>http://localhost:9292/post/disassembling-uikit-tintcolor-visitor/</link>
+      <link>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</link>
       <pubDate>Tue, 10 May 2016 12:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/disassembling-uikit-tintcolor-visitor/</guid>
+      <guid>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</guid>
       <description>
 
 &lt;p&gt;&lt;/p&gt;
@@ -410,10 +410,10 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
     
     <item>
       <title>Decoding Heterogeneous Collections in Swift</title>
-      <link>http://localhost:9292/post/decoding-heterogeneous-collections-in-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</link>
       <pubDate>Tue, 03 May 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/decoding-heterogeneous-collections-in-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</guid>
       <description>
 
 &lt;p&gt;The problem of decoding Swift types from an outside data source, such as JSON, has been mostly solved. Since Swift&amp;rsquo;s release we&amp;rsquo;ve seen more than a dozen popular JSON mapping libraries pop up.&lt;/p&gt;
@@ -575,10 +575,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Compile Time vs. Run Time Type Checking in Swift</title>
-      <link>http://localhost:9292/post/compile-time-vs-runtime-type-checking-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</link>
       <pubDate>Wed, 13 Apr 2016 21:09:24 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/compile-time-vs-runtime-type-checking-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</guid>
       <description>
 
 &lt;p&gt;At some point, when learning how to use Swift&amp;rsquo;s type system, it is important to understand that Swift (like many other languages) has two different forms of type checking: static and dynamic. Today I want to briefly discuss the difference between them and why headaches might arise when we try to combine them.&lt;/p&gt;
@@ -764,10 +764,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Squashing Commits With Git Rebase: A Very Quick Guide</title>
-      <link>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</link>
+      <link>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</link>
       <pubDate>Thu, 24 Mar 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</guid>
+      <guid>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</guid>
       <description>&lt;p&gt;Git&amp;rsquo;s interactive rebase is extremely useful for keeping a somewhat clear commit history. Here&amp;rsquo;s a very brief guide on how to squash multiple commits into a single one.&lt;/p&gt;
 
 &lt;p&gt;Git rebase allows you to rewrite the history of a git repository. &lt;strong&gt;Yes, you are right, this can be incredibly dangerous, therefore don&amp;rsquo;t use this technique on branches that are shared with other developers&lt;/strong&gt;. To me rebase is most useful for preparing a branch that is about to be merged into the main branch of a project.&lt;/p&gt;
@@ -819,10 +819,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Validated: A Swift μ-Library for Somewhat Dependent Types</title>
-      <link>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
+      <link>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
       <pubDate>Thu, 25 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
+      <guid>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
       <description>&lt;p&gt;Today I built &amp;amp; published a μ-library that makes it easier to leverage Swift&amp;rsquo;s type checking system for program verification: &lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;Validated&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt;&lt;/p&gt;
@@ -863,10 +863,10 @@ func performTaskWithUser(user: User) {
     
     <item>
       <title>How I Write Swift Specs With Quick</title>
-      <link>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</link>
+      <link>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</link>
       <pubDate>Wed, 24 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</guid>
+      <guid>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</guid>
       <description>
 
 &lt;p&gt;I&amp;rsquo;ve recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of &lt;code&gt;it&lt;/code&gt; blocks. This &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69&#34;&gt;seems to be common among many code bases that use Quick/Nimble&lt;/a&gt;.&lt;/p&gt;
@@ -947,21 +947,121 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     </item>
     
     <item>
-      <title></title>
-      <link>http://localhost:9292/about/</link>
+      <title>About</title>
+      <link>http://blog.benjamin-encz.de/about/</link>
       <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
       
-      <guid>http://localhost:9292/about/</guid>
-      <description>&lt;p&gt;I&amp;rsquo;m a Software Engineer currently living in San Francisco.&lt;/p&gt;
+      <guid>http://blog.benjamin-encz.de/about/</guid>
+      <description>&lt;p&gt;Hey there! My name is Benjamin Encz and I currently live in San Francisco. I moved here from Germany in 2013.&lt;/p&gt;
+
+&lt;p&gt;Currently I spend most of my time writing software, with a strong focus on iOS development. I&amp;rsquo;m working for &lt;a href=&#34;https://www.plangrid.com/&#34;&gt;PlanGrid&lt;/a&gt; where we are building software that makes the construction industry more efficient.&lt;/p&gt;
+
+&lt;p&gt;In the past I&amp;rsquo;ve been focused on building enterprise software &amp;amp; teaching software development. I&amp;rsquo;ve also worked for a year as a project manager and spent a decent amount of time with 2D and 3D graphics programming.&lt;/p&gt;
+
+&lt;p&gt;In 2015 I started to give talks at meetups and conferences and I&amp;rsquo;ve recently blogged more frequently. I&amp;rsquo;ve also started to work on some open source projects, such as &lt;a href=&#34;https://github.com/ReSwift/ReSwift&#34;&gt;ReSwift&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Besides software I love think and talk about economics, philosophy and politics.&lt;/p&gt;
+
+&lt;p&gt;In my free time I enjoy hiking the beatiful Bay Area, travelling and watching soccer.&lt;/p&gt;
+
+&lt;p&gt;I love getting touch with new folks, so &lt;a href=&#34;https://twitter.com/benjaminencz&#34;&gt;let me know&lt;/a&gt; if there&amp;rsquo;s anything you want to chat about.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Projects</title>
+      <link>http://blog.benjamin-encz.de/projects/</link>
+      <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/projects/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve worked on quite a few things in the last couple of years&amp;hellip;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Speaking</title>
+      <link>http://blog.benjamin-encz.de/speaking/</link>
+      <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/speaking/</guid>
+      <description>
+
+&lt;p&gt;I enjoy sharing things I&amp;rsquo;ve learned and spreading ideas. Here are the talks I&amp;rsquo;ve given in the past &amp;amp; the upcoming ones I&amp;rsquo;ve got scheduled.&lt;/p&gt;
+
+&lt;h2 id=&#34;upcoming:991f6edce4c158f0d781901c75294628&#34;&gt;Upcoming&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Turning UIKit Inside Out&lt;/strong&gt; @ AltConf, June 2016&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Leveraging and Enhancing Swift&amp;rsquo;s Type System&lt;/strong&gt; @ 360iDev, August 2016&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;2016:991f6edce4c158f0d781901c75294628&#34;&gt;2016&lt;/h2&gt;
+
+&lt;h4 id=&#34;turning-uikit-inside-out:991f6edce4c158f0d781901c75294628&#34;&gt;Turning UIKit Inside Out&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;iOSCon 2016, London&lt;/li&gt;
+&lt;li&gt;May 2016&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://speakerdeck.com/benjamin_encz/turning-uikit-inside-out&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://skillsmatter.com/skillscasts/8179-turning-uikit-inside-out&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;2015:991f6edce4c158f0d781901c75294628&#34;&gt;2015&lt;/h2&gt;
+
+&lt;h4 id=&#34;unidirectional-data-flow-in-swift:991f6edce4c158f0d781901c75294628&#34;&gt;Unidirectional Data Flow in Swift&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Swift Language User Group @Realm, San Francisco&lt;/li&gt;
+&lt;li&gt;December 2015&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://speakerdeck.com/benjamin_encz/turning-uikit-inside-out&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://realm.io/news/benji-encz-unidirectional-data-flow-swift/&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;safer-swift-code-with-value-types-ii:991f6edce4c158f0d781901c75294628&#34;&gt;Safer Swift Code With Value Types II&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;360iDev, Denver&lt;/li&gt;
+&lt;li&gt;August 2015&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://speakerdeck.com/benjamin_encz/safer-swift-code-with-value-types-ii-360idev-2015&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://vimeopro.com/360conferences/360idev-2015/video/137543393&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;safer-swift-code-with-value-types:991f6edce4c158f0d781901c75294628&#34;&gt;Safer Swift Code With Value Types&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;AltConf, San Francisco&lt;/li&gt;
+&lt;li&gt;June 2015&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://speakerdeck.com/benjamin_encz/safer-swift-code-with-value-types-i-altconf-2015&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://realm.io/news/altconf-benjamin-encz-safer-swift-code-with-value-types/&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;functional-reactive-programming-on-ios:991f6edce4c158f0d781901c75294628&#34;&gt;Functional Reactive Programming on iOS&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;NSMeetup, San Francisco&lt;/li&gt;
+&lt;li&gt;April 2015&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://speakerdeck.com/benjamin_encz/functional-reactive-programming-on-ios&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=I6mXJwFQ1YY&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Writing</title>
+      <link>http://blog.benjamin-encz.de/writing/</link>
+      <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/writing/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve spend a fair amount of my time on different writing projects.&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>Introducing ReSwift</title>
-      <link>http://localhost:9292/post/introducing-reswift/</link>
+      <link>http://blog.benjamin-encz.de/post/introducing-reswift/</link>
       <pubDate>Wed, 20 Jan 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/introducing-reswift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/introducing-reswift/</guid>
       <description>&lt;p&gt;For the last two months I have been actively working on Swift Flow with the goal of bringing the ideas of the Flux and Redux libraries to Swift developers.&lt;/p&gt;
 
 &lt;p&gt;At about the same &lt;a href=&#34;https://twitter.com/ARendtslev&#34;&gt;@ARendtslev&lt;/a&gt; started ReduxKit, which had the goal of implementing Redux in Swift. Soon he was joined by &lt;a href=&#34;https://twitter.com/karlbowden&#34;&gt;@karlbowden&lt;/a&gt; who made significant contributions to the project (and provided amazing build and documentation infrastructure for ReduxKit and Swift Flow).&lt;/p&gt;
@@ -986,10 +1086,10 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     
     <item>
       <title>Convenient Error Handling in Swift</title>
-      <link>http://localhost:9292/post/convenient-error-handling-in-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</link>
       <pubDate>Wed, 18 Nov 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/convenient-error-handling-in-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</guid>
       <description>
 
 &lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
@@ -1112,10 +1212,10 @@ errorHandler.wrap {
     
     <item>
       <title>A Flux Inspired Architecture for iOS</title>
-      <link>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</link>
+      <link>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</link>
       <pubDate>Sat, 12 Sep 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</guid>
+      <guid>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</guid>
       <description>&lt;p&gt;This year I spoke at 360iDev about &amp;ldquo;Safer Swift Code with Value Types&amp;rdquo;. The goal of the talk was to explore an architecture that uses immutable value types for the model layer.&lt;/p&gt;
 
 &lt;p&gt;After reviewing an earlier version of this talk with my developer friend &lt;a href=&#34;https://twitter.com/devknoll&#34;&gt;Gerald Monaco&lt;/a&gt;, who is a big fan of Facebook&amp;rsquo;s open source technologies (React, Flux, etc.), I decided to take a look at how a &lt;a href=&#34;https://facebook.github.io/flux/&#34;&gt;Flux&lt;/a&gt;-inspired architecture could be applied to an iOS application.&lt;/p&gt;
@@ -1134,10 +1234,10 @@ errorHandler.wrap {
     
     <item>
       <title>Swift Error Handling and Objective-C Interop in Depth</title>
-      <link>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
+      <link>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
       <pubDate>Thu, 23 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
+      <guid>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
       <description>
 
 &lt;p&gt;For the impatient reader:&lt;/p&gt;
@@ -1334,132 +1434,6 @@ errorHandler.wrap {
 &lt;p&gt;&lt;em&gt;Thanks &lt;a href=&#34;https://twitter.com/warrenm&#34;&gt;@warrenm&lt;/a&gt; for providing feedback and improving this post!&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;You can &lt;a href=&#34;https://twitter.com/benjaminencz&#34;&gt;find me on twitter&lt;/a&gt;, too.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>iOS 9 Detects Cycles in Layout Trees</title>
-      <link>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</link>
-      <pubDate>Thu, 09 Jul 2015 22:24:54 -0800</pubDate>
-      
-      <guid>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</guid>
-      <description>
-
-&lt;p&gt;A couple of months ago I was faced with an issue that was fairly hard to debug:&lt;/p&gt;
-
-&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Hackathons are a great place to see noteworthy issues. Yesterday&amp;#39;s highlight: endless recursion in Storyboard &lt;a href=&#34;https://twitter.com/LAHacks&#34;&gt;@LAHacks&lt;/a&gt;&lt;/p&gt;&amp;mdash; Benjamin Encz (@benjaminencz) &lt;a href=&#34;https://twitter.com/benjaminencz/status/584757451469127680&#34;&gt;April 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;What I found out, after about 30 minutes of debugging, was the following:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://www.dropbox.com/s/kcjgm6sgftmxo5y/accessoryView.png?dl=1&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The hackathon attendee hat mistakenly set the &lt;code&gt;accessoryView&lt;/code&gt; of a &lt;code&gt;UITableViewCell&lt;/code&gt; to the &lt;code&gt;UITableView&lt;/code&gt; in which the cell was contained - causing an endless recursion during the first layout cycle.&lt;/p&gt;
-
-&lt;p&gt;This however wasn&amp;rsquo;t immediately obvious to me since the symptom was an exception within the &lt;code&gt;cellForRowAtIndexPath:&lt;/code&gt; method.&lt;/p&gt;
-
-&lt;h2 id=&#34;fixed-in-ios-9:9df3400d24ce9ec6d67d1afbc4f7edb2&#34;&gt;Fixed in iOS 9&lt;/h2&gt;
-
-&lt;p&gt;Today I wanted to see if it is possible to reproduce the issue with Xcode 7 Beta 3.&lt;/p&gt;
-
-&lt;p&gt;Indeed, I can still cause the crash. However, instead of causing a stack overflow the app now terminates because &lt;code&gt;CALayer&lt;/code&gt; throws an exception:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;CrashTableViewCell[33582:11713163] *** Terminating app due to uncaught exception &#39;CALayerInvalid&#39;, reason: &#39;layer &amp;lt;CALayer: 0x7f875943c730&amp;gt; is a part of cycle in its layer tree
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I couldn&amp;rsquo;t find any reference to this exception in a Stack Overflow exception so I assume the cycle detection is new in iOS 9.&lt;/p&gt;
-
-&lt;p&gt;This fix will likely save some headaches!&lt;/p&gt;
-
-&lt;p&gt;It also serves as a good real world example of &lt;a href=&#34;https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm&#34;&gt;detecting cycles in directed graphs&lt;/a&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Talk: Introduction to FRP on iOS</title>
-      <link>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</link>
-      <pubDate>Sat, 30 May 2015 22:24:54 -0800</pubDate>
-      
-      <guid>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</guid>
-      <description>&lt;p&gt;Back in April I gave a talk at &lt;a href=&#34;http://www.meetup.com/nsmeetup/events/220950179/&#34;&gt;NSMeetup in San Francisco&lt;/a&gt; on Functional Reactive Programming on iOS.&lt;/p&gt;
-
-&lt;p&gt;The talk discusses the idea &amp;amp; motivation behind FRP and dives into some practical examples using Reactive Cocoa 2.x. The examples are based on a small &lt;a href=&#34;https://github.com/Ben-G/PeopleCRM&#34;&gt;demo app&lt;/a&gt; that I built for that talk.&lt;/p&gt;
-
-&lt;p&gt;Once Reactive Cocoa 3.0 has a final release I will likely update this talk to Swift - especially generics are extremely useful when working with the FRP toolset.&lt;/p&gt;
-
-&lt;p&gt;You can find a recording of the talk on &lt;a href=&#34;https://www.youtube.com/watch?v=I6mXJwFQ1YY&#34;&gt;YouTube&lt;/a&gt;. The slides are embedded here and available through &lt;a href=&#34;https://speakerdeck.com/benjamin_encz/functional-reactive-programming-on-ios&#34;&gt;Speakerdeck&lt;/a&gt;.&lt;/p&gt;
-
-&lt;script async class=&#34;speakerdeck-embed&#34; data-id=&#34;066b72a201f74767bbb16b29fc767c51&#34; data-ratio=&#34;1.77777777777778&#34; src=&#34;//speakerdeck.com/assets/embed.js&#34;&gt;&lt;/script&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Breaking Swift with NSObject and Generics</title>
-      <link>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</link>
-      <pubDate>Thu, 19 Feb 2015 22:24:54 -0800</pubDate>
-      
-      <guid>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</guid>
-      <description>
-
-&lt;p&gt;Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at &lt;a href=&#34;http://openradar.appspot.com/search?query=segmentation+fault+swift&#34;&gt;Open Radar&lt;/a&gt; there seem to be many out there)!&lt;/p&gt;
-
-&lt;p&gt;Here&amp;rsquo;s what I was trying to implement&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;public class ArrayDataSource&amp;lt;T&amp;gt; : NSObject {
-
-  private var array: Array&amp;lt;T&amp;gt;
-
-  public init(array:Array&amp;lt;T&amp;gt;) {
-    self.array = array
-  }
-}
-
-
-extension ArrayDataSource : UITableViewDataSource {
-  public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -&amp;gt; Int {
-    return 0
-  }
-
-  public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -&amp;gt; UITableViewCell {
-    return UITableViewCell()
-  }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;A class that takes an array and implements &lt;code&gt;UITableViewDataSource&lt;/code&gt; using the content of that array (an idea that&amp;rsquo;s discussed in &lt;a href=&#34;http://www.objc.io/issue-1/lighter-view-controllers.html&#34;&gt;objc.io issue #1&lt;/a&gt;).&lt;/p&gt;
-
-&lt;h1 id=&#34;the-error:ad4d4ff830a667f9bf3648d7b19cfe5c&#34;&gt;The Error&lt;/h1&gt;
-
-&lt;p&gt;As you can see I didn&amp;rsquo;t get very far before running into the compiler error. When you compile the above code (in Xcode 6.1.1 or Xcode 6.3) you&amp;rsquo;ll see the following error message:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Segmentation Fault 11: While emitting IR for source file /Users/benjaminencz/Development/Private/OSS/ListKitDemo/ListKit/ArrayDataSource.swift
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Along with a nice stack trace from swift compiler:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/Swift_Crash.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;h1 id=&#34;finding-a-generic-reproducable-example:ad4d4ff830a667f9bf3648d7b19cfe5c&#34;&gt;Finding a generic reproducable example&lt;/h1&gt;
-
-&lt;p&gt;Since this issue exists in both Xcode 6.1.1 and Xcode 6.3 I wanted to file a bug report to make sure this gets resolved in future. I played around with different ways to fix the issue, here are two simple ones that worked:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Move the conformance to the &lt;code&gt;UITableViewDataSource&lt;/code&gt; protocol into the class definition instead of the class extension&lt;/li&gt;
-&lt;li&gt;Remove the generic type from &lt;code&gt;ArrayDataSource&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;To actually file a bug report I needed to come up with a generalized, short piece of code that can reproduce the issue. After trying multiple combinations I found this to be the one that describes the problem best:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;public class D&amp;lt;T&amp;gt;: NSObject {}
-
-extension D: NSObjectProtocol {}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;These two lines are enough code to cause the segmentation fault. The underlying issue seems to be a combination of subclassing from &lt;code&gt;NSObject&lt;/code&gt;, using generics and conforming to &lt;code&gt;NSObjectProtocol&lt;/code&gt; in a class extension while the actual implementation of &lt;code&gt;NSObjectProtocol&lt;/code&gt; happens through inheritance of &lt;code&gt;NSObject&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;I couldn&amp;rsquo;t get this minimalistic example to break with any other combination of protocols and subclassing, it seems to be a problem specific to &lt;code&gt;NSObject&lt;/code&gt;. If you find a more general case that causes the segmentation fault, I&amp;rsquo;d love to hear from you.&lt;/p&gt;
-
-&lt;p&gt;For now I have filed a bug report with Apple (19889552) and an &lt;a href=&#34;http://openradar.appspot.com/19889552&#34;&gt;Open Radar Issue&lt;/a&gt;.&lt;/p&gt;
 </description>
     </item>
     
