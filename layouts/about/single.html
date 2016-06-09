@@ -1,13 +1,13 @@
-{{ partial "static_header.html" . }}
+{{ partial "header.html" . }}
 {{ $baseurl := .Site.BaseURL }}
 
-{{if .Params.cover}}
+<!-- {{if .Params.cover}}
 	<header class="main-header tag-head" style="background-image: url({{ $baseurl }}{{.Params.cover}})">
 {{else if .Site.Params.cover}}
 	<header class="main-header tag-head" style="background-image: url({{ $baseurl }}{{.Site.Params.cover}})">
 {{else}}
 	<header class="main-header tag-head no-cover">
-{{end}}
+{{end}} -->
 <nav class="main-nav overlay clearfix">
   {{ if .Site.Params.logo }}
     <a class="blog-logo" href="{{.Site.BaseURL}}"><img src="{{.Site.BaseURL}}{{ .Site.Params.logo }}" alt="Home" /></a>
@@ -16,11 +16,17 @@
   {{end}}
   {{ if .Site.Menus.main }}
       <a class="menu-button" href="#"><span class="burger">&#9776;</span><span class="word">Menu</span></a>
+  {{else}}
+    {{ if .Site.Params.RSSLink}}
+      <a class="menu-button icon-feed" href="{{.Site.Params.RSSLink }}">&nbsp;&nbsp;Subscribe</a>
+    {{else}}
+      <a class="menu-button icon-feed" href="{{ .RSSLink }}">&nbsp;&nbsp;Subscribe</a>
+    {{end}}
   {{end}}
 </nav>
 <div class="vertical">
     <div class="main-header-content inner">
-        <a style="text-decoration: none;"><h1 class="page-title">{{ .Title }}</h1></a>
+        <a href="{{.Site.BaseURL}}" style="text-decoration: none;"><h1 class="page-title">{{.Site.Title}}</h1></a>
         <h2 class="page-description">
             {{if .Params.description}}
                 {{.Params.description}}
@@ -149,6 +155,21 @@
 {{end}}
 
     </section>
+
+
+  <footer class="post-footer">
+
+      {{if .Site.Params.logo}}
+      <figure class="author-image">
+          <a class="img" href="{{.Site.BaseURL}}" style="background-image: url({{ $baseurl }}{{.Site.Params.logo}})"><span class="hidden">{{.Site.Params.author}}'s Picture</span></a>
+      </figure>
+      {{end}}
+
+    {{ partial "share.html" . }}
+
+    {{ partial "disqus.html" . }}
+
+  </footer>
 </article>
 
 </main>

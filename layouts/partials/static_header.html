@@ -5,8 +5,8 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-  	<meta property="og:title" content="{{ if ne .URL "/" }} {{ .Title }} &middot; {{ end }} {{ .Params.title }}" />
-  	<meta property="og:site_name" content="{{ .Params.title }}" />
+  	<meta property="og:title" content="{{ if ne .URL "/" }} {{ .Title }} &middot; {{ end }} {{ .Title }}" />
+  	<meta property="og:site_name" content="{{ .Title }}" />
   	<meta property="og:url" content="{{ .Permalink }}" />
 
     {{ if .IsPage }}
@@ -24,7 +24,7 @@
     {{ partial "navigation_bar.html" . }}
 
   <title>
-    {{ if ne .URL "/" }} {{ .Params.title }} &middot; {{ end }} {{ .Params.title }}
+    {{ if ne .URL "/" }} {{ .Title }} &middot; {{ end }} {{ .Site.Title }}
   </title>
 
     <meta name="description" content="{{ .Site.Params.description }}" />
@@ -39,10 +39,10 @@
 
 
     {{ if .Site.Params.RSSLink}}
-        <link href="{{.Site.Params.RSSLink }}" rel="alternate" type="application/rss+xml" title="{{ .Params.title }}" />
+        <link href="{{.Site.Params.RSSLink }}" rel="alternate" type="application/rss+xml" title="{{ .Title }}" />
     {{else}}
       {{ if ne .URL "/" }}
-          <link href="{{ .Site.BaseURL }}index.xml" rel="alternate" type="application/rss+xml" title="{{ .Params.title }}" />
+          <link href="{{ .Site.BaseURL }}index.xml" rel="alternate" type="application/rss+xml" title="{{ .Title }}" />
       {{ end }}
       {{if .IsNode}}
         <link href="{{.RSSLink}}" rel="alternate" type="application/rss+xml" title="{{ if ne .URL "/" }}{{ .Title }} &middot; {{ end }}{{ .Site.Title }}" />
