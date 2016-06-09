@@ -1,0 +1,17 @@
+.post-content {
+  margin-top: 12pt;
+}
+
+.tag-head.main-header {
+  min-height: 300px;
+}
+
+.speakerdeck-iframe {
+  width: 50%;
+}
+
+@media (max-width: 370px) {
+  .main-header {
+    background-position: -150px 0px;
+  }
+}

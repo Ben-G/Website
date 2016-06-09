@@ -7,23 +7,9 @@
   padding: 10pt 0pt;
 }
 
-.tag-head.main-header {
-  min-height: 300px;
-}
-
-.speakerdeck-iframe {
-  width: 50%;
-}
-
 @media (max-width: 600px) {
   #navigation-bar {
     max-width: 90%;
     font-size: small;
-  }
-}
-
-@media (max-width: 370px) {
-  .main-header {
-    background-position: -150px 0px;
   }
 }
