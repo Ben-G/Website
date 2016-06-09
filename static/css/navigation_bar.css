@@ -1,0 +1,12 @@
+#navigation-bar {
+  display: flex;
+  justify-content: space-between;
+  max-width: 500pt;
+  align-self: center;
+  margin: auto;
+  padding: 10pt 0pt;
+}
+
+.tag-head.main-header {
+  min-height: 300px;
+}
