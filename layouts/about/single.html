@@ -1,13 +1,13 @@
 {{ partial "header.html" . }}
 {{ $baseurl := .Site.BaseURL }}
 
-{{if .Params.cover}}
+<!-- {{if .Params.cover}}
 	<header class="main-header tag-head" style="background-image: url({{ $baseurl }}{{.Params.cover}})">
 {{else if .Site.Params.cover}}
 	<header class="main-header tag-head" style="background-image: url({{ $baseurl }}{{.Site.Params.cover}})">
 {{else}}
 	<header class="main-header tag-head no-cover">
-{{end}}
+{{end}} -->
 <nav class="main-nav overlay clearfix">
   {{ if .Site.Params.logo }}
     <a class="blog-logo" href="{{.Site.BaseURL}}"><img src="{{.Site.BaseURL}}{{ .Site.Params.logo }}" alt="Home" /></a>
@@ -157,7 +157,7 @@
     </section>
 
 
-  
+  <div class="post-footer">
 
       {{if .Site.Params.logo}}
       <figure class="author-image">
@@ -168,6 +168,8 @@
     {{ partial "share.html" . }}
 
     {{ partial "disqus.html" . }}
+
+  </div>
 </article>
 
 </main>

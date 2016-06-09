@@ -35,8 +35,7 @@
 </header>
 
 <main class="content" role="main">
-		<!-- Only show posts in this list, no static pages -->
-		{{ $paginator := .Paginate (where .Data.Pages "Type" "post") }}
+    {{ $paginator := .Paginator }}
 
 	<div class="extra-pagination inner">
     {{ partial "pagination.html" $paginator }}

@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>[Thinking inside a large box];</title>
-    <link>http://blog.benjamin-encz.de/</link>
+    <link>http://localhost:9292/</link>
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 05 Jun 2016 10:24:54 -0800</lastBuildDate>
-    <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:9292/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>GCD&#39;s Main Queue vs. Main Thread</title>
-      <link>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</link>
+      <link>http://localhost:9292/post/main-queue-vs-main-thread/</link>
       <pubDate>Sun, 05 Jun 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</guid>
+      <guid>http://localhost:9292/post/main-queue-vs-main-thread/</guid>
       <description>
 
 &lt;p&gt;The correct way to ensure that code runs on the main thread / main queue is a recurring issue that causes some confusion among Cocoa developers.
@@ -134,10 +134,10 @@ Typically we have some sort of check to determine whether our code is already ex
     
     <item>
       <title>Beware the UIKit Visitors!</title>
-      <link>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</link>
+      <link>http://localhost:9292/post/disassembling-uikit-tintcolor-visitor/</link>
       <pubDate>Tue, 10 May 2016 12:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</guid>
+      <guid>http://localhost:9292/post/disassembling-uikit-tintcolor-visitor/</guid>
       <description>
 
 &lt;p&gt;&lt;/p&gt;
@@ -410,10 +410,10 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
     
     <item>
       <title>Decoding Heterogeneous Collections in Swift</title>
-      <link>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</link>
+      <link>http://localhost:9292/post/decoding-heterogeneous-collections-in-swift/</link>
       <pubDate>Tue, 03 May 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</guid>
+      <guid>http://localhost:9292/post/decoding-heterogeneous-collections-in-swift/</guid>
       <description>
 
 &lt;p&gt;The problem of decoding Swift types from an outside data source, such as JSON, has been mostly solved. Since Swift&amp;rsquo;s release we&amp;rsquo;ve seen more than a dozen popular JSON mapping libraries pop up.&lt;/p&gt;
@@ -575,10 +575,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Compile Time vs. Run Time Type Checking in Swift</title>
-      <link>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</link>
+      <link>http://localhost:9292/post/compile-time-vs-runtime-type-checking-swift/</link>
       <pubDate>Wed, 13 Apr 2016 21:09:24 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</guid>
+      <guid>http://localhost:9292/post/compile-time-vs-runtime-type-checking-swift/</guid>
       <description>
 
 &lt;p&gt;At some point, when learning how to use Swift&amp;rsquo;s type system, it is important to understand that Swift (like many other languages) has two different forms of type checking: static and dynamic. Today I want to briefly discuss the difference between them and why headaches might arise when we try to combine them.&lt;/p&gt;
@@ -764,10 +764,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Squashing Commits With Git Rebase: A Very Quick Guide</title>
-      <link>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</link>
+      <link>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</link>
       <pubDate>Thu, 24 Mar 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</guid>
+      <guid>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</guid>
       <description>&lt;p&gt;Git&amp;rsquo;s interactive rebase is extremely useful for keeping a somewhat clear commit history. Here&amp;rsquo;s a very brief guide on how to squash multiple commits into a single one.&lt;/p&gt;
 
 &lt;p&gt;Git rebase allows you to rewrite the history of a git repository. &lt;strong&gt;Yes, you are right, this can be incredibly dangerous, therefore don&amp;rsquo;t use this technique on branches that are shared with other developers&lt;/strong&gt;. To me rebase is most useful for preparing a branch that is about to be merged into the main branch of a project.&lt;/p&gt;
@@ -819,10 +819,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Validated: A Swift μ-Library for Somewhat Dependent Types</title>
-      <link>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
+      <link>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
       <pubDate>Thu, 25 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
+      <guid>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
       <description>&lt;p&gt;Today I built &amp;amp; published a μ-library that makes it easier to leverage Swift&amp;rsquo;s type checking system for program verification: &lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;Validated&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt;&lt;/p&gt;
@@ -863,10 +863,10 @@ func performTaskWithUser(user: User) {
     
     <item>
       <title>How I Write Swift Specs With Quick</title>
-      <link>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</link>
+      <link>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</link>
       <pubDate>Wed, 24 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</guid>
+      <guid>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</guid>
       <description>
 
 &lt;p&gt;I&amp;rsquo;ve recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of &lt;code&gt;it&lt;/code&gt; blocks. This &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69&#34;&gt;seems to be common among many code bases that use Quick/Nimble&lt;/a&gt;.&lt;/p&gt;
@@ -947,11 +947,21 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     </item>
     
     <item>
+      <title></title>
+      <link>http://localhost:9292/about/</link>
+      <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
+      
+      <guid>http://localhost:9292/about/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;m a Software Engineer currently living in San Francisco.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Introducing ReSwift</title>
-      <link>http://blog.benjamin-encz.de/post/introducing-reswift/</link>
+      <link>http://localhost:9292/post/introducing-reswift/</link>
       <pubDate>Wed, 20 Jan 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/introducing-reswift/</guid>
+      <guid>http://localhost:9292/post/introducing-reswift/</guid>
       <description>&lt;p&gt;For the last two months I have been actively working on Swift Flow with the goal of bringing the ideas of the Flux and Redux libraries to Swift developers.&lt;/p&gt;
 
 &lt;p&gt;At about the same &lt;a href=&#34;https://twitter.com/ARendtslev&#34;&gt;@ARendtslev&lt;/a&gt; started ReduxKit, which had the goal of implementing Redux in Swift. Soon he was joined by &lt;a href=&#34;https://twitter.com/karlbowden&#34;&gt;@karlbowden&lt;/a&gt; who made significant contributions to the project (and provided amazing build and documentation infrastructure for ReduxKit and Swift Flow).&lt;/p&gt;
@@ -976,10 +986,10 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     
     <item>
       <title>Convenient Error Handling in Swift</title>
-      <link>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</link>
+      <link>http://localhost:9292/post/convenient-error-handling-in-swift/</link>
       <pubDate>Wed, 18 Nov 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</guid>
+      <guid>http://localhost:9292/post/convenient-error-handling-in-swift/</guid>
       <description>
 
 &lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
@@ -1102,10 +1112,10 @@ errorHandler.wrap {
     
     <item>
       <title>A Flux Inspired Architecture for iOS</title>
-      <link>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</link>
+      <link>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</link>
       <pubDate>Sat, 12 Sep 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</guid>
+      <guid>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</guid>
       <description>&lt;p&gt;This year I spoke at 360iDev about &amp;ldquo;Safer Swift Code with Value Types&amp;rdquo;. The goal of the talk was to explore an architecture that uses immutable value types for the model layer.&lt;/p&gt;
 
 &lt;p&gt;After reviewing an earlier version of this talk with my developer friend &lt;a href=&#34;https://twitter.com/devknoll&#34;&gt;Gerald Monaco&lt;/a&gt;, who is a big fan of Facebook&amp;rsquo;s open source technologies (React, Flux, etc.), I decided to take a look at how a &lt;a href=&#34;https://facebook.github.io/flux/&#34;&gt;Flux&lt;/a&gt;-inspired architecture could be applied to an iOS application.&lt;/p&gt;
@@ -1124,10 +1134,10 @@ errorHandler.wrap {
     
     <item>
       <title>Swift Error Handling and Objective-C Interop in Depth</title>
-      <link>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
+      <link>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
       <pubDate>Thu, 23 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
+      <guid>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
       <description>
 
 &lt;p&gt;For the impatient reader:&lt;/p&gt;
@@ -1329,10 +1339,10 @@ errorHandler.wrap {
     
     <item>
       <title>iOS 9 Detects Cycles in Layout Trees</title>
-      <link>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</link>
+      <link>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</link>
       <pubDate>Thu, 09 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</guid>
+      <guid>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</guid>
       <description>
 
 &lt;p&gt;A couple of months ago I was faced with an issue that was fairly hard to debug:&lt;/p&gt;
@@ -1367,10 +1377,10 @@ errorHandler.wrap {
     
     <item>
       <title>Talk: Introduction to FRP on iOS</title>
-      <link>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</link>
+      <link>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</link>
       <pubDate>Sat, 30 May 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</guid>
+      <guid>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</guid>
       <description>&lt;p&gt;Back in April I gave a talk at &lt;a href=&#34;http://www.meetup.com/nsmeetup/events/220950179/&#34;&gt;NSMeetup in San Francisco&lt;/a&gt; on Functional Reactive Programming on iOS.&lt;/p&gt;
 
 &lt;p&gt;The talk discusses the idea &amp;amp; motivation behind FRP and dives into some practical examples using Reactive Cocoa 2.x. The examples are based on a small &lt;a href=&#34;https://github.com/Ben-G/PeopleCRM&#34;&gt;demo app&lt;/a&gt; that I built for that talk.&lt;/p&gt;
@@ -1385,10 +1395,10 @@ errorHandler.wrap {
     
     <item>
       <title>Breaking Swift with NSObject and Generics</title>
-      <link>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</link>
+      <link>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</link>
       <pubDate>Thu, 19 Feb 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</guid>
+      <guid>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</guid>
       <description>
 
 &lt;p&gt;Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at &lt;a href=&#34;http://openradar.appspot.com/search?query=segmentation+fault+swift&#34;&gt;Open Radar&lt;/a&gt; there seem to be many out there)!&lt;/p&gt;
@@ -1450,54 +1460,6 @@ extension D: NSObjectProtocol {}
 &lt;p&gt;I couldn&amp;rsquo;t get this minimalistic example to break with any other combination of protocols and subclassing, it seems to be a problem specific to &lt;code&gt;NSObject&lt;/code&gt;. If you find a more general case that causes the segmentation fault, I&amp;rsquo;d love to hear from you.&lt;/p&gt;
 
 &lt;p&gt;For now I have filed a bug report with Apple (19889552) and an &lt;a href=&#34;http://openradar.appspot.com/19889552&#34;&gt;Open Radar Issue&lt;/a&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>&#34;I didn&#39;t know that&#34; is the best way to learn</title>
-      <link>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</link>
-      <pubDate>Thu, 05 Feb 2015 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</guid>
-      <description>&lt;p&gt;This is no original thought. Nevertheless I&amp;rsquo;ve been thinking about it often enough to make it worth spending a few minutes framing it in my own words.&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;m currently working as a Software Engineer. According to Wikipedia that makes me a &lt;a href=&#34;http://en.wikipedia.org/wiki/Knowledge_worker&#34;&gt;Knowledge Worker&lt;/a&gt;.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Knowledge workers are workers whose main capital is knowledge.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Most Software Engineers that I&amp;rsquo;ve met in my short career know that knowledge is their main asset. Unfortunately this can have very negative side effects.&lt;/p&gt;
-
-&lt;p&gt;Being paid for having knowledge in a scientific field or a certain technology makes it very hard to say &amp;ldquo;I didn&amp;rsquo;t know that&amp;rdquo;. After all, if knowledge is your main asset how could you admit the lack thereof?&lt;/p&gt;
-
-&lt;p&gt;I believe that being honest about what we (believe to) know and what we don&amp;rsquo;t is essential for our learning process as professionals. If it was possible to visualize the knowledge of any two people working in the same profession it would probably look somewhat like this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/knowledge.png&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;In the fields we are working today the things we &lt;em&gt;could&lt;/em&gt; know about are growing faster than anyone can learn them. We are essentially knowing less and less about our field, every single day.&lt;/p&gt;
-
-&lt;p&gt;Whatever sort of formal education you have, that portion is only a very small (yet very important) part of your entire knowledge. The rest of your knowledge is based on your personal experience. The chance that you know something your colleague does not know and vice versa is very high, for any given topic and for any point in time.&lt;/p&gt;
-
-&lt;p&gt;I think there are three potential reactions when being confronted with something you don&amp;rsquo;t know:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Nod and pretend you know about it&lt;/li&gt;
-&lt;li&gt;Nod, pretend you know about it and go read about it afterwards&lt;/li&gt;
-&lt;li&gt;Admit that you never heard about it and extract as much knowledge as possible from the conversation&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Don&amp;rsquo;t get me wrong. Reading is great and I think we all should thrive to increase our knowledge in whichever field we are working in. But if you have the chance to learn something you are interested in from a person who knows about it at the small cost of a &amp;ldquo;I didn&amp;rsquo;t know that&amp;rdquo; it wouldn&amp;rsquo;t be smart to let that opportunity pass by.&lt;/p&gt;
-
-&lt;p&gt;Learning from other people is incredibly powerful and one the fastest ways to gain new knowledge. Smart people are happy to share their knowledge. You should ask as many questions as possible.&lt;/p&gt;
-
-&lt;p&gt;While writing this I felt like I should come up with a new definition of a knowledge worker, one that is closer to the reality of explosive information growth in the 21st century:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Knowledge workers are workers with a strong understanding of concepts in their field and an ability to quickly acquire new knowledge by the most efficient means.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;You know a little, you know a lot. Make the best out of this contradiction.&lt;/p&gt;
 </description>
     </item>
     
