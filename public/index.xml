@@ -6,8 +6,78 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 05 Jun 2016 10:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Tue, 14 Jun 2016 10:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>WWDC 2016 5 Minute Update: Opening Up iOS, Xcode Extensions, Apple Filesystem, Swift Playgrounds on iPad</title>
+      <link>http://blog.benjamin-encz.de/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</link>
+      <pubDate>Tue, 14 Jun 2016 10:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</guid>
+      <description>
+
+&lt;p&gt;A very brief summary of changes &amp;amp; impressions from WWDC 2016 Day One.&lt;/p&gt;
+
+&lt;h2 id=&#34;opening-up-ios:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Opening up iOS&lt;/h2&gt;
+
+&lt;p&gt;The most notable changes to iOS were the addition of many APIs and Extension points. Apple wants to allow developers to build apps that integrate stronger with system services:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://developer.apple.com/library/prerelease/content/documentation/Intents/Conceptual/SiriIntegrationGuide/index.html#//apple_ref/doc/uid/TP40016875-CH11-SW1&#34;&gt;SiriKit&lt;/a&gt; will allow developers to integrate with Siri on iOS.&lt;/li&gt;
+&lt;li&gt;iMessage now comes with its own App Store and the &lt;a href=&#34;https://developer.apple.com/reference/messages&#34;&gt;Messages framework&lt;/a&gt; that allows apps to enrich iMessage conversations.&lt;/li&gt;
+&lt;li&gt;A new VOIP Api, &lt;a href=&#34;https://developer.apple.com/reference/callkit&#34;&gt;CallKit&lt;/a&gt; will allow third party apps to integrate with the native iOS calling experience (e.g. real ringtones, lock screen notifications on calls, integration with address book, etc.)&lt;/li&gt;
+&lt;li&gt;Via &lt;a href=&#34;https://developer.apple.com/maps/&#34;&gt;Map Extensions&lt;/a&gt;, Apple Maps is now open to third party integrations as well&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;xcode-extensions:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Xcode Extensions&lt;/h2&gt;
+
+&lt;p&gt;Xcode 8 comes with support for Extensions. For now these extensions will be limited to the source editor itself. At the same time Apple is shutting down &lt;a href=&#34;http://alcatraz.io/&#34;&gt;Alcatraz&lt;/a&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/fzwob&#34;&gt;@fzwob&lt;/a&gt; Xcode 8 uses library validation. It won&amp;#39;t load in-process plugins anymore.&lt;/p&gt;&amp;mdash; Joe Groff (@jckarter) &lt;a href=&#34;https://twitter.com/jckarter/status/742471686935568384&#34;&gt;June 13, 2016&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m still glad to see an official (albeit for the time limited) API for building Xcode extensions. From the presentation it seemed clear that Apple wants to expand the scope of Xcode extensions quickly.&lt;/p&gt;
+
+&lt;h2 id=&#34;new-apple-filesystem:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;New Apple Filesystem&lt;/h2&gt;
+
+&lt;p&gt;While this won&amp;rsquo;t affect most developers a lot, this is still an important step in modernizing Apple&amp;rsquo;s Operating Systems and it will have benefits for users, such as much faster backups and copy-on-write clones. Ars Technica has a good writeup on the key features of &lt;a href=&#34;http://arstechnica.com/apple/2016/06/digging-into-the-dev-documentation-for-apfs-apples-new-file-system/&#34;&gt;APFS&lt;/a&gt;. Apple has also published a &lt;a href=&#34;https://developer.apple.com/library/prerelease/content/documentation/FileManagement/Conceptual/APFS_Guide/NewFeatures/NewFeatures.html#//apple_ref/doc/uid/TP40016999-CH3-SW1&#34;&gt;guide&lt;/a&gt; that announces a release in 2017 and mentions that while there is no open source implementation for now, the APFS volume format specification will be published.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re curios why Apple needed a new file system you can read this blog post about some of the issues with the current &lt;a href=&#34;https://t.co/wB40yheV39&#34;&gt;HFS+ file system&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;swift-playgrounds-on-ipad:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Swift Playgrounds on iPad&lt;/h2&gt;
+
+&lt;p&gt;The new Swift Playgrounds app for iPad promises to be a great educational tool and demonstrates the emphasize that Apple has been putting on Swift as a beginner friendly language. The app will be open to third party educational content.&lt;/p&gt;
+
+&lt;p&gt;Besides the compiler the app is also entirely written in Swift, which most likely makes it the largest in house Swift project at Apple to date.&lt;/p&gt;
+
+&lt;h2 id=&#34;xcode-memory-graph-debugger:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Xcode Memory Graph Debugger&lt;/h2&gt;
+
+&lt;p&gt;This feature, announced during the State of the Union, had the largest &lt;em&gt;WOW&lt;/em&gt; effect. Xcode 8 ships with a memory graph debugger that allows halting a program and inspecting a memory management graph at runtime. This will make tracking down retain cycles a lot easier in future.&lt;/p&gt;
+
+&lt;h2 id=&#34;logging-api:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Logging API&lt;/h2&gt;
+
+&lt;p&gt;Apple has released a new &lt;a href=&#34;https://developer.apple.com/reference/os/1891852-logging&#34;&gt;logging system&lt;/a&gt;. It&amp;rsquo;s great to see such an important issue tackled by a first party API.&lt;/p&gt;
+
+&lt;h2 id=&#34;surprises-machine-learning-server-side-swift:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Surprises: Machine Learning &amp;amp; Server Side Swift&lt;/h2&gt;
+
+&lt;p&gt;To me, two surprises on the WWDC session schedule were:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Session 415: Going Server-side with Swift Open Source&lt;/li&gt;
+&lt;li&gt;Session 715: Neural Networks and Accelerate&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It&amp;rsquo;s great to see Apple so openly promote the use of Swift on other platforms. Being featured as part of WWDC gives the current efforts of building server side Swift frameworks a lot more credibility.&lt;/p&gt;
+
+&lt;p&gt;Apples new push into machine learning is also evident this year. I plan on attending the &amp;ldquo;Neural Networks and Accelerate&amp;rdquo; session; and it appears that Metal also provides new APIs relevant to machine learning:&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Metal now has a set of comprehensive APIs for building convolutional neural networks. &lt;a href=&#34;https://t.co/BppyeRJurJ&#34;&gt;https://t.co/BppyeRJurJ&lt;/a&gt; &lt;a href=&#34;https://t.co/syfbUy63Jm&#34;&gt;pic.twitter.com/syfbUy63Jm&lt;/a&gt;&lt;/p&gt;&amp;mdash; Indragie Karunaratne (@indragie) &lt;a href=&#34;https://twitter.com/indragie/status/742484067996704768&#34;&gt;June 13, 2016&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;It seems that Apple is pioneering on device machine learning which goes hand in hand with their privacy efforts (e.g. Differential Privacy). I&amp;rsquo;m very curios to see if it possible to create great results in machine learning while maintaining users privacy.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>GCD&#39;s Main Queue vs. Main Thread</title>
@@ -129,76 +199,6 @@ Typically we have some sort of check to determine whether our code is already ex
 &lt;ul&gt;
 &lt;li&gt;@&lt;a href=&#34;https://twitter.com/krzyzanowskim&#34;&gt;krzyzanowskim&lt;/a&gt; has written a &lt;a href=&#34;http://blog.krzyzanowskim.com/2016/06/03/queues-are-not-bound-to-any-specific-thread/&#34;&gt;great blog post about the relationship of threads, queues and runloops&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>WWDC 2016 5 Minute Update: Opening Up iOS, Xcode Extensions, Apple Filesystem, Swift Playgrounds on iPad</title>
-      <link>http://blog.benjamin-encz.de/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</link>
-      <pubDate>Sun, 05 Jun 2016 10:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</guid>
-      <description>
-
-&lt;p&gt;A very brief summary of changes &amp;amp; impressions from WWDC 2016 Day One.&lt;/p&gt;
-
-&lt;h2 id=&#34;opening-up-ios:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Opening up iOS&lt;/h2&gt;
-
-&lt;p&gt;The most notable changes to iOS were the addition of many APIs and Extension points. Apple wants to allow developers to build apps that integrate stronger with system services:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://developer.apple.com/library/prerelease/content/documentation/Intents/Conceptual/SiriIntegrationGuide/index.html#//apple_ref/doc/uid/TP40016875-CH11-SW1&#34;&gt;SiriKit&lt;/a&gt; will allow developers to integrate with Siri on iOS.&lt;/li&gt;
-&lt;li&gt;iMessage now comes with its own App Store and the &lt;a href=&#34;https://developer.apple.com/reference/messages&#34;&gt;Messages framework&lt;/a&gt; that allows apps to enrich iMessage conversations.&lt;/li&gt;
-&lt;li&gt;A new VOIP Api, &lt;a href=&#34;https://developer.apple.com/reference/callkit&#34;&gt;CallKit&lt;/a&gt; will allow third party apps to integrate with the native iOS calling experience (e.g. real ringtones, lock screen notifications on calls, integration with address book, etc.)&lt;/li&gt;
-&lt;li&gt;Via &lt;a href=&#34;https://developer.apple.com/maps/&#34;&gt;Map Extensions&lt;/a&gt;, Apple Maps is now open to third party integrations as well&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;xcode-extensions:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Xcode Extensions&lt;/h2&gt;
-
-&lt;p&gt;Xcode 8 comes with support for Extensions. For now these extensions will be limited to the source editor itself. At the same time Apple is shutting down &lt;a href=&#34;http://alcatraz.io/&#34;&gt;Alcatraz&lt;/a&gt;:&lt;/p&gt;
-
-&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/fzwob&#34;&gt;@fzwob&lt;/a&gt; Xcode 8 uses library validation. It won&amp;#39;t load in-process plugins anymore.&lt;/p&gt;&amp;mdash; Joe Groff (@jckarter) &lt;a href=&#34;https://twitter.com/jckarter/status/742471686935568384&#34;&gt;June 13, 2016&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;m still glad to see an official (albeit for the time limited) API for building Xcode extensions. From the presentation it seemed clear that Apple wants to expand the scope of Xcode extensions quickly.&lt;/p&gt;
-
-&lt;h2 id=&#34;new-apple-filesystem:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;New Apple Filesystem&lt;/h2&gt;
-
-&lt;p&gt;While this won&amp;rsquo;t affect most developers a lot, this is still an important step in modernizing Apple&amp;rsquo;s Operating Systems and it will have benefits for users, such as much faster backups and copy-on-write clones. Ars Technica has a good writeup on the key features of &lt;a href=&#34;http://arstechnica.com/apple/2016/06/digging-into-the-dev-documentation-for-apfs-apples-new-file-system/&#34;&gt;APFS&lt;/a&gt;. Apple has also published a &lt;a href=&#34;https://developer.apple.com/library/prerelease/content/documentation/FileManagement/Conceptual/APFS_Guide/NewFeatures/NewFeatures.html#//apple_ref/doc/uid/TP40016999-CH3-SW1&#34;&gt;guide&lt;/a&gt; that announces a release in 2017 and mentions that while there is no open source implementation for now, the APFS volume format specification will be published.&lt;/p&gt;
-
-&lt;p&gt;If you&amp;rsquo;re curios why Apple needed a new file system you can read this blog post about some of the issues with the current &lt;a href=&#34;https://t.co/wB40yheV39&#34;&gt;HFS+ file system&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h2 id=&#34;swift-playgrounds-on-ipad:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Swift Playgrounds on iPad&lt;/h2&gt;
-
-&lt;p&gt;The new Swift Playgrounds app for iPad promises to be a great educational tool and demonstrates the emphasize that Apple has been putting on Swift as a beginner friendly language. The app will be open to third party educational content.&lt;/p&gt;
-
-&lt;p&gt;Besides the compiler the app is also entirely written in Swift, which most likely makes it the largest in house Swift project at Apple to date.&lt;/p&gt;
-
-&lt;h2 id=&#34;xcode-memory-graph-debugger:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Xcode Memory Graph Debugger&lt;/h2&gt;
-
-&lt;p&gt;This feature, announced during the State of the Union, had the largest &lt;em&gt;WOW&lt;/em&gt; effect. Xcode 8 ships with a memory graph debugger that allows halting a program and inspecting a memory management graph at runtime. This will make tracking down retain cycles a lot easier in future.&lt;/p&gt;
-
-&lt;h2 id=&#34;logging-api:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Logging API&lt;/h2&gt;
-
-&lt;p&gt;Apple has released a new &lt;a href=&#34;https://developer.apple.com/reference/os/1891852-logging&#34;&gt;logging system&lt;/a&gt;. It&amp;rsquo;s great to see such an important issue tackled by a first party API.&lt;/p&gt;
-
-&lt;h2 id=&#34;surprises-machine-learning-server-side-swift:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Surprises: Machine Learning &amp;amp; Server Side Swift&lt;/h2&gt;
-
-&lt;p&gt;To me, two surprises on the WWDC session schedule were:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Session 415: Going Server-side with Swift Open Source&lt;/li&gt;
-&lt;li&gt;Session 715: Neural Networks and Accelerate&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;It&amp;rsquo;s great to see Apple so openly promote the use of Swift on other platforms. Being featured as part of WWDC gives the current efforts of building server side Swift frameworks a lot more credibility.&lt;/p&gt;
-
-&lt;p&gt;Apples new push into machine learning is also evident this year. I plan on attending the &amp;ldquo;Neural Networks and Accelerate&amp;rdquo; session; and it appears that Metal also provides new APIs relevant to machine learning:&lt;/p&gt;
-
-&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Metal now has a set of comprehensive APIs for building convolutional neural networks. &lt;a href=&#34;https://t.co/BppyeRJurJ&#34;&gt;https://t.co/BppyeRJurJ&lt;/a&gt; &lt;a href=&#34;https://t.co/syfbUy63Jm&#34;&gt;pic.twitter.com/syfbUy63Jm&lt;/a&gt;&lt;/p&gt;&amp;mdash; Indragie Karunaratne (@indragie) &lt;a href=&#34;https://twitter.com/indragie/status/742484067996704768&#34;&gt;June 13, 2016&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;It seems that Apple is pioneering on device machine learning which goes hand in hand with their privacy efforts (e.g. Differential Privacy). I&amp;rsquo;m very curios to see if it possible to create great results in machine learning while maintaining users privacy.&lt;/p&gt;
 </description>
     </item>
     
