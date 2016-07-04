@@ -64,8 +64,20 @@ One of our most important goals during refactoring the PlanGrid app was putting 
 
 State management was one of the largest sources of complexity in our app, so we decided to define a pattern that all new features could use going forward.
 
+A lot of the pain we felt in our existing codebase reminded us strongly of the issues that Facebook brought up when they first presented the Flux pattern: 
+
+- Unexpected, Cascading State Updates
+- Hard to Understand Dependencies Between Components
+- Tangled Flow of Information
+- Unclear Source of Truth
+
+It seemed that Flux would be a perfect fit for solving our biggest problems.
 
 ## A Brief Intro to Flux
+
+Flux is a very lightweight architectural pattern that Facebook uses for client-side web applications. Even though there is a [reference implementation](https://github.com/facebook/flux), Facebook emphasizes that the ideas of the Flux pattern are a lot more relevant than this particular implementation.
+
+
 
 ## Addressing Concerns
 

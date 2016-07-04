@@ -77,6 +77,17 @@
 
 &lt;p&gt;State management was one of the largest sources of complexity in our app, so we decided to define a pattern that all new features could use going forward.&lt;/p&gt;
 
+&lt;p&gt;A lot of the pain we felt in our existing codebase reminded us strongly of the issues that Facebook brought up when they first presented the Flux pattern:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Unexpected, Cascading State Updates&lt;/li&gt;
+&lt;li&gt;Hard to Understand Dependencies Between Components&lt;/li&gt;
+&lt;li&gt;Tangled Flow of Information&lt;/li&gt;
+&lt;li&gt;Unclear Source of Truth&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It seemed that Flux would be a perfect fit for solving our biggest problems.&lt;/p&gt;
+
 &lt;h2 id=&#34;a-brief-intro-to-flux:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;A Brief Intro to Flux&lt;/h2&gt;
 
 &lt;h2 id=&#34;addressing-concerns:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Addressing Concerns&lt;/h2&gt;
