@@ -8,33 +8,35 @@ disqus_url = "http://blog.benjamin-encz.de/post/real-world-flux-ios/"
 
 About half a year ago we started adopting the Flux architecture in the PlanGrid iOS app. This post will discuss our motivation for transitioning from traditional MVC to Flux and will share the experience we have gathered so far.
 
+I'm attempting to describe large parts of our Flux implementation by discussing code that is in production today. If you're only interested in the high level conclusion you can skip the middle part of this post.
+
 <!--more-->
 
 ## Why We Transitioned Away from MVC
 
-To put our decision into context I want to spend a few paragraphs describing some of the challenges the PlanGrid app faces. Some of them are somewhat unique to enterprise software, others might apply to most iOS apps.
+To put our decision into context I want to describe some of the challenges the PlanGrid app faces. Some of them are unique to enterprise software, others should apply to most iOS apps.
 
 ### We Have All the State
 
-PlanGrid is a fairly complex iOS app. It allows users to view blueprints and to collaborate on them using different types of annotations, issues and attachments.
+PlanGrid is a fairly complex iOS app. It allows users to view blueprints and to collaborate on them using different types of annotations, issues and attachments (and a lot of other stuff that requires industry specific knowledge).
 
 An important aspect of the app is that it is offline first. Users can interact with all features in the app, whether they have an internet connection or not. This means that we need to store a lot of data & state on the client. We also need to enforce a subset of the business rules locally (e.g. which annotation can a user delete?).
 
-Lastly, while the PlanGrid app runs on both iPad and iPhone, its UI is optmized to make use of the larger available space on tablets. This means that unlike many iPhone apps we often present multiple view controllers at a time. These view controllers tend to share a decent amount of state.
+The PlanGrid app runs on both iPad and iPhone, but its UI is optimized to make use of the larger available space on tablets. This means that unlike many iPhone apps we often present multiple view controllers at a time. These view controllers tend to share a decent amount of state.
 
 ### The State of State Management
 
 All of this means that our app puts a lot of effort into managing state. Any mutation within the app results in more or less the following steps:
 
-1. Update local data
+1. Update state in local object
 2. Update UI
 3. Update database
 4. Enqueue change that will be sent to server upon available network connection
-5. **Notify other controllers about state change**
+5. **Notify other objects about state change**
 
-Though I plan on covering other aspects of our new architecture in future blog posts, I want to focus on the 5. step today. *How should we populate state updates in our app?*
+Though I plan on covering other aspects of our new architecture in future blog posts, I want to focus on the 5. step today. *How should we populate state updates within our app?*
 
-This is the billion dollar question of mobile app development.
+This is the billion dollar question of app development.
 
 Most iOS engineers, including early developers of the PlanGrid app, come up with the following answers:
 
@@ -44,7 +46,7 @@ Most iOS engineers, including early developers of the PlanGrid app, come up with
 - Callback Blocks
 - Using the DB as source of truth
 
-All of these approaches can be valid in different scenarios. However, this menu of different options is a big source of inconsistencies in large codebases that have grown over multiple years.
+All of these approaches can be valid in different scenarios. However, this menu of different options is a big source of inconsistencies in a large codebase that has grown over multiple years.
 
 ### Freedom is Dangerous
 
@@ -52,7 +54,7 @@ Classic MVC only advocates the separation of data and its representation. With t
 
 For the longest time the PlanGrid app (like most iOS apps) didn't have a defined pattern for state management.
 
-Many of the existing state management tools such as delegation and blocks tend to create dependencies between components that might not be desirable - two view controllers quickly can become tightly couple in an attempt to share state updates with each other.
+Many of the existing state management tools such as delegation and blocks tend to create strong dependencies between components that might not be desirable - two view controllers quickly become tightly coupled in an attempt to share state updates with each other.
 
 Other tools, such as KVO and Notifications, create invisible dependencies. Using them in a large codebase can quickly lead to code changes that cause unexpected side effects. It is far to easy for a controller to observe details of the model layer which it shouldn't be interested in.
 
@@ -71,7 +73,7 @@ A lot of the pain we felt in our existing codebase reminded us strongly of the i
 - Tangled Flow of Information
 - Unclear Source of Truth
 
-It seemed that Flux would be a perfect fit for solving our biggest problems.
+It seemed that Flux would be a great fit for solving many of the issues we were experiencing.
 
 ## A Brief Intro to Flux
 
@@ -81,7 +83,7 @@ The pattern can be described best alongside a diagram that shows the different f
 
 ![](https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux_Original.png)
 
-In the Flux architecture a **store** is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will call a handler method on all views that subscribed to the store. The **view** receives state updates only through this one interface - the method invoked by the store upon a state update.
+In the Flux architecture a **store** is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will call a handler method on all views that subscribed to the store. The **view** receives state updates only through this one interface that is called by the store.
 
 State updates can only occurr via **actions**.
 
@@ -92,7 +94,7 @@ In response to actions some stores will update their state and notify the views 
 
 The Flux architecture enforces a unidirectional data flow as shown in the diagram above. It also enforces a strict separation of concerns:
 
-- Views will only receive data from stores, whenever the store updates a handler method on the view is invoked.
+- Views will only receive data from stores. Whenever a store updates, the handler method on the view is invoked.
 - Views can only change state by dispatching actions. Because actions are only descriptions of intents, the business logic is hidden from the view.
 - A store only updates its state when it receives an action.
 
@@ -100,13 +102,15 @@ These constraints make designing, developing and debugging new features a lot ea
 
 ## Flux in PlanGrid for iOS
 
-For the PlanGrid iOS app we have extended the Flux specification a little bit. We enforce that each store needs to have an explixit state type. This state type describes the entire state for a certain feature. This state is observed by our views and is used to update them whenever a state change occurs:
+For the PlanGrid iOS app we have extended the Flux specification a little bit. We enforce that each store needs to have an explicit state type. This state type describes the entire state for a certain feature. This state is observed by our views and is used to update them whenever a state change occurs:
 
 ![](https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux.png)
 
+Many Flux implementations on the web make us of an  explicit state in stores as well.
+
 With an understanding of the basics of the Flux architecture, let's dive into some of the implementation details and questions we needed to answer.
 
-### How Many Stores Should we Have?
+### What is the Scope of a Store?
 
 The scope of each individual store is a very interesting question that quickly comes up when using the Flux pattern.
 
@@ -120,7 +124,7 @@ For the PlanGrid app we still decided to go with traditional Flux instead of usi
 
 So far I can identify two patterns in our codebase:
 
-- **View Specific Stores:** Each view controller (or each group of closely related view controllers) receives its own store. This store models the view specific state.
+- **Feature/View Specific Stores:** Each view controller (or each group of closely related view controllers) receives its own store. This store models the view specific state.
 - **Shared State Stores:** We have stores that store & manage state that is shared between many views. We try to keep the amount of these stores minimal. An example of such a store is the `IssueStore`. It is responsible for managing the state of all issues that are visible on the currently selected blueprint. Many views that display and interact with issues derive information from this store. These types of stores essentially act like a live-updating database query.
 
 We are currently in the process of implementing our first *shared state stores* and are still deciding the best way to model the multiple dependencies of different views onto these types of stores.
@@ -139,7 +143,7 @@ The feature we'll discuss lives in the popover that's presented on the left hand
 
 Usually I begin implementing a new feature by determining the relevant state for it. The state represents everything the UI needs to know in order to render the representation of a certain feature.
 
-A simple example from the PlanGrid app is the `AnnotationFilterState`. It is used in the implementation of a filter menu that allows uers to filter annotations they have drawn on top of a blueprint:
+Let's dive right into our example by taking a look at the state for the annotation filter feature shown above:
 
 {{< highlight swift >}}
 struct AnnotationFilterState {
