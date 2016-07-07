@@ -307,7 +307,7 @@ func _bind(compositeDisposable: CompositeDisposable) {
 	    }
 	    .on(event: { [weak self] _ in
 	        self?.tableViewDataSource.refreshViews()
-	    })
+	    })	
 	    
 	compositeDisposable += self.store.state
 	    .ignoreNil()
@@ -342,7 +342,7 @@ func tableViewModelForState(state: AnnotationFilterState) -> FluxTableViewModel 
 
     let shareStatusSection = FluxTableViewModel.SectionModel(
         headerTitle: "annotation_filters.share_status_section.title".translate(),
-        headerHeight: 28,
+        headerHeight: 28,o
         cellViewModels: AnnotationFilterViewProvider.cellViewModelsForGroup(state.shareStatusFilters)
     )
 
@@ -378,9 +378,81 @@ compositeDisposable += self.navigationItem.rightBarButtonItem!.racEnabled <~ sel
             .map { $0?.isFiltering ?? false }
 {{< /highlight >}}
 
-Implementing the UI bindings is definitely one of the trickier parts, since it doesn't fit perfectly well together with UIKit's programming model. But it only takes little effort to write custom components to make this easier. And in our experience we've saved multiples of our invested time by implementing these components instead of sticking with the classical MVC approach in which these UI updates are redundantly implemented across many, many view controllers. 
+Implementing the UI bindings is definitely one of the trickier parts, since it doesn't fit perfectly well together with UIKit's programming model. But it only takes little effort to write custom components to make this easier. And in our experience we've saved multiples of our invested time by implementing these components instead of sticking with the classical MVC approach in which these UI updates are redundantly implemented across many, many view controllers.
+
+With these UI bindings in place, we've discussed the last part of implementing a Flux feature. Since I covered a lot I want to give a quick recap before moving on to discussing the testing approach for Flux features.
+
+#### Implementation Recap
+
+When implementing a Flux feature I will typically split the work into the following segments:
+
+1. Define the shape of the state type
+2. Define the actions
+3. Implement business logic and state transitions for each of the actions - this implementation lives in the store
+4. Implement UI bindings that map the state to a view representation
+
+This wraps up all of the implementation details I wanted to discuss. Let's move on to discuss how to test Flux features.
 
 ### Writing Tests
+
+One of the main benefits of the Flux architecture is that it separates concerns strictly. This makes it really easy to test the business logic and large parts of the UI code.
+
+Each Flux feature has two main areas that need to be tested:
+
+1. Testing the business logic in the store
+2. Testing the view model providers (these are our React-like functions that produce a description of the UI based on an input state)
+
+#### Testing Stores
+
+Testing stores is typically very simple. We can drive interactions with the store by passing in actions and we can observe the state changes by either subscribing to the store or by observing the internal `_state` property in our tests. 
+
+Additionally, we can mock any outside types that the store might need to communicate with in order to implement a certain feature (this could be an API client or a data access object) and inject these in the store's initializer. This allows us to validate that these types are called as expected.
+
+Within PlanGrid we write our tests in a behavioral style using Quick and Nimble. Here is a simple example of a test from our annotation filter store specification:
+
+{{< highlight swift >}}
+describe("toggling a filter") {
+
+    var hideAllFilter: AnnotationFilterType!
+
+    beforeEach {
+        hideAllFilter = annotationFilterService.hideAllFilterGroup.filters[0]
+        let toggleFilterAction = AnnotationFilteringActions.ToggleFilterAction(filter: hideAllFilter)
+        annotationFilterStore._handleActions(toggleFilterAction)
+    }
+
+    it("toggles the selected filter") {
+        expect(hideAllFilter.enabled).to(beTrue())
+    }
+
+    it("enables filtering mode") {
+        expect(annotationFilterStore._state.value?.isFiltering).to(beTrue())
+    }
+
+    context("when subsequently resetting filters") {
+
+        beforeEach {
+            annotationFilterStore._handleActions(AnnotationFilteringActions.ResetFilters())
+        }
+
+        it("deactivates previously active filters and stops filter mode") {
+            expect(hideAllFilter.enabled).to(beFalse())
+            expect(annotationFilterStore._state.value?.isFiltering).to(beFalse())
+        }
+
+    }
+}
+{{< /highlight >}}
+
+Once again, testing stores would merit it's own blog post, so I won't dive into the details of this particular test. However, the testing philosophy should be clear. We send actions to the store and validate the response in form of state changes or calls to mocked instances.
+
+(You might wonder why we're calling the `_handleActions` method on the store instead of dispatching an action using the dispatcher. Originally our dispatcher used asynchronous dispatch when delivering actions, which would have meant our tests needed to be asynchronous as well. Therefore we called the handler on the store directly. The implementation of the dispatcher has since changed, so we could be using the dispatcher in our tests going forward.)
+
+When implementing the business logic in a store I now mostly write my tests first. The structure of the our store code along with the behavioral Quick specs lends itself extremly well to a test driven development process.
+
+#### Testing Views
+
+
 
 ### What We Like So Far
 
