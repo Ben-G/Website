@@ -2,50 +2,52 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on [Thinking inside a large box];</title>
-    <link>http://localhost:1313/post/</link>
+    <link>http://blog.benjamin-encz.de/post/</link>
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Jun 2016 10:24:54 -0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 06 Jul 2016 10:24:54 -0800</lastBuildDate>
+    <atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Real World Flux Architecture on iOS</title>
-      <link>http://localhost:1313/post/real-world-flux-ios/</link>
-      <pubDate>Tue, 14 Jun 2016 10:24:54 -0800</pubDate>
+      <link>http://blog.benjamin-encz.de/post/real-world-flux-ios/</link>
+      <pubDate>Wed, 06 Jul 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/real-world-flux-ios/</guid>
+      <guid>http://blog.benjamin-encz.de/post/real-world-flux-ios/</guid>
       <description>
 
 &lt;p&gt;About half a year ago we started adopting the Flux architecture in the PlanGrid iOS app. This post will discuss our motivation for transitioning from traditional MVC to Flux and will share the experience we have gathered so far.&lt;/p&gt;
 
+&lt;p&gt;I&amp;rsquo;m attempting to describe large parts of our Flux implementation by discussing code that is in production today. If you&amp;rsquo;re only interested in the high level conclusion you can skip the middle part of this post.&lt;/p&gt;
+
 &lt;h2 id=&#34;why-we-transitioned-away-from-mvc:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Why We Transitioned Away from MVC&lt;/h2&gt;
 
-&lt;p&gt;To put our decision into context I want to spend a few paragraphs describing some of the challenges the PlanGrid app faces. Some of them are somewhat unique to enterprise software, others might apply to most iOS apps.&lt;/p&gt;
+&lt;p&gt;To put our decision into context I want to describe some of the challenges the PlanGrid app faces. Some of them are unique to enterprise software, others should apply to most iOS apps.&lt;/p&gt;
 
 &lt;h3 id=&#34;we-have-all-the-state:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;We Have All the State&lt;/h3&gt;
 
-&lt;p&gt;PlanGrid is a fairly complex iOS app. It allows users to view blueprints and to collaborate on them using different types of annotations, issues and attachments.&lt;/p&gt;
+&lt;p&gt;PlanGrid is a fairly complex iOS app. It allows users to view blueprints and to collaborate on them using different types of annotations, issues and attachments (and a lot of other stuff that requires industry specific knowledge).&lt;/p&gt;
 
 &lt;p&gt;An important aspect of the app is that it is offline first. Users can interact with all features in the app, whether they have an internet connection or not. This means that we need to store a lot of data &amp;amp; state on the client. We also need to enforce a subset of the business rules locally (e.g. which annotation can a user delete?).&lt;/p&gt;
 
-&lt;p&gt;Lastly, while the PlanGrid app runs on both iPad and iPhone, its UI is optmized to make use of the larger available space on tablets. This means that unlike many iPhone apps we often present multiple view controllers at a time. These view controllers tend to share a decent amount of state.&lt;/p&gt;
+&lt;p&gt;The PlanGrid app runs on both iPad and iPhone, but its UI is optimized to make use of the larger available space on tablets. This means that unlike many iPhone apps we often present multiple view controllers at a time. These view controllers tend to share a decent amount of state.&lt;/p&gt;
 
 &lt;h3 id=&#34;the-state-of-state-management:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;The State of State Management&lt;/h3&gt;
 
 &lt;p&gt;All of this means that our app puts a lot of effort into managing state. Any mutation within the app results in more or less the following steps:&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;Update local data&lt;/li&gt;
+&lt;li&gt;Update state in local object&lt;/li&gt;
 &lt;li&gt;Update UI&lt;/li&gt;
 &lt;li&gt;Update database&lt;/li&gt;
 &lt;li&gt;Enqueue change that will be sent to server upon available network connection&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Notify other controllers about state change&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notify other objects about state change&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;Though I plan on covering other aspects of our new architecture in future blog posts, I want to focus on the 5. step today. &lt;em&gt;How should we populate state updates in our app?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Though I plan on covering other aspects of our new architecture in future blog posts, I want to focus on the 5. step today. &lt;em&gt;How should we populate state updates within our app?&lt;/em&gt;&lt;/p&gt;
 
-&lt;p&gt;This is the billion dollar question of mobile app development.&lt;/p&gt;
+&lt;p&gt;This is the billion dollar question of app development.&lt;/p&gt;
 
 &lt;p&gt;Most iOS engineers, including early developers of the PlanGrid app, come up with the following answers:&lt;/p&gt;
 
@@ -57,7 +59,7 @@
 &lt;li&gt;Using the DB as source of truth&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;All of these approaches can be valid in different scenarios. However, this menu of different options is a big source of inconsistencies in large codebases that have grown over multiple years.&lt;/p&gt;
+&lt;p&gt;All of these approaches can be valid in different scenarios. However, this menu of different options is a big source of inconsistencies in a large codebase that has grown over multiple years.&lt;/p&gt;
 
 &lt;h3 id=&#34;freedom-is-dangerous:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Freedom is Dangerous&lt;/h3&gt;
 
@@ -65,7 +67,7 @@
 
 &lt;p&gt;For the longest time the PlanGrid app (like most iOS apps) didn&amp;rsquo;t have a defined pattern for state management.&lt;/p&gt;
 
-&lt;p&gt;Many of the existing state management tools such as delegation and blocks tend to create dependencies between components that might not be desirable - two view controllers quickly can become tightly couple in an attempt to share state updates with each other.&lt;/p&gt;
+&lt;p&gt;Many of the existing state management tools such as delegation and blocks tend to create strong dependencies between components that might not be desirable - two view controllers quickly become tightly coupled in an attempt to share state updates with each other.&lt;/p&gt;
 
 &lt;p&gt;Other tools, such as KVO and Notifications, create invisible dependencies. Using them in a large codebase can quickly lead to code changes that cause unexpected side effects. It is far to easy for a controller to observe details of the model layer which it shouldn&amp;rsquo;t be interested in.&lt;/p&gt;
 
@@ -86,7 +88,7 @@
 &lt;li&gt;Unclear Source of Truth&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;It seemed that Flux would be a perfect fit for solving our biggest problems.&lt;/p&gt;
+&lt;p&gt;It seemed that Flux would be a great fit for solving many of the issues we were experiencing.&lt;/p&gt;
 
 &lt;h2 id=&#34;a-brief-intro-to-flux:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;A Brief Intro to Flux&lt;/h2&gt;
 
@@ -96,7 +98,7 @@
 
 &lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux_Original.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;In the Flux architecture a &lt;strong&gt;store&lt;/strong&gt; is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will call a handler method on all views that subscribed to the store. The &lt;strong&gt;view&lt;/strong&gt; receives state updates only through this one interface - the method invoked by the store upon a state update.&lt;/p&gt;
+&lt;p&gt;In the Flux architecture a &lt;strong&gt;store&lt;/strong&gt; is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will call a handler method on all views that subscribed to the store. The &lt;strong&gt;view&lt;/strong&gt; receives state updates only through this one interface that is called by the store.&lt;/p&gt;
 
 &lt;p&gt;State updates can only occurr via &lt;strong&gt;actions&lt;/strong&gt;.&lt;/p&gt;
 
@@ -108,7 +110,7 @@ The stores register with the dispatcher and let it know which actions they are i
 &lt;p&gt;The Flux architecture enforces a unidirectional data flow as shown in the diagram above. It also enforces a strict separation of concerns:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Views will only receive data from stores, whenever the store updates a handler method on the view is invoked.&lt;/li&gt;
+&lt;li&gt;Views will only receive data from stores. Whenever a store updates, the handler method on the view is invoked.&lt;/li&gt;
 &lt;li&gt;Views can only change state by dispatching actions. Because actions are only descriptions of intents, the business logic is hidden from the view.&lt;/li&gt;
 &lt;li&gt;A store only updates its state when it receives an action.&lt;/li&gt;
 &lt;/ul&gt;
@@ -117,13 +119,15 @@ The stores register with the dispatcher and let it know which actions they are i
 
 &lt;h2 id=&#34;flux-in-plangrid-for-ios:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Flux in PlanGrid for iOS&lt;/h2&gt;
 
-&lt;p&gt;For the PlanGrid iOS app we have extended the Flux specification a little bit. We enforce that each store needs to have an explixit state type. This state type describes the entire state for a certain feature. This state is observed by our views and is used to update them whenever a state change occurs:&lt;/p&gt;
+&lt;p&gt;For the PlanGrid iOS app we have extended the Flux specification a little bit. We enforce that each store needs to have an explicit state type. This state type describes the entire state for a certain feature. This state is observed by our views and is used to update them whenever a state change occurs:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
+&lt;p&gt;Many Flux implementations on the web make us of an  explicit state in stores as well.&lt;/p&gt;
+
 &lt;p&gt;With an understanding of the basics of the Flux architecture, let&amp;rsquo;s dive into some of the implementation details and questions we needed to answer.&lt;/p&gt;
 
-&lt;h3 id=&#34;how-many-stores-should-we-have:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;How Many Stores Should we Have?&lt;/h3&gt;
+&lt;h3 id=&#34;what-is-the-scope-of-a-store:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;What is the Scope of a Store?&lt;/h3&gt;
 
 &lt;p&gt;The scope of each individual store is a very interesting question that quickly comes up when using the Flux pattern.&lt;/p&gt;
 
@@ -138,7 +142,7 @@ The stores register with the dispatcher and let it know which actions they are i
 &lt;p&gt;So far I can identify two patterns in our codebase:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;View Specific Stores:&lt;/strong&gt; Each view controller (or each group of closely related view controllers) receives its own store. This store models the view specific state.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Feature/View Specific Stores:&lt;/strong&gt; Each view controller (or each group of closely related view controllers) receives its own store. This store models the view specific state.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Shared State Stores:&lt;/strong&gt; We have stores that store &amp;amp; manage state that is shared between many views. We try to keep the amount of these stores minimal. An example of such a store is the &lt;code&gt;IssueStore&lt;/code&gt;. It is responsible for managing the state of all issues that are visible on the currently selected blueprint. Many views that display and interact with issues derive information from this store. These types of stores essentially act like a live-updating database query.&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -148,13 +152,19 @@ The stores register with the dispatcher and let it know which actions they are i
 
 &lt;p&gt;Let&amp;rsquo;s dive a little bit deeper into some of the implementation details of features that are built with the Flux pattern.&lt;/p&gt;
 
+&lt;p&gt;As an example throughout the next couple of sections we&amp;rsquo;ll use a feature that&amp;rsquo;s used in production within the PlanGrid app. The feature allows users to filter annotations on a blueprint:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/filter_screenshot.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The feature we&amp;rsquo;ll discuss lives in the popover that&amp;rsquo;s presented on the left hand side of the screenshot.&lt;/p&gt;
+
 &lt;h4 id=&#34;step-1-defining-the-state:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Step 1: Defining the State&lt;/h4&gt;
 
-&lt;p&gt;Usually I begin implemeting a new feature by determining the relevant state for it. The state represents everything the UI needs to know in order to render the representation of a certain feature.&lt;/p&gt;
+&lt;p&gt;Usually I begin implementing a new feature by determining the relevant state for it. The state represents everything the UI needs to know in order to render the representation of a certain feature.&lt;/p&gt;
 
-&lt;p&gt;A simple example from the PlanGrid app is the &lt;code&gt;AnnotationFilterState&lt;/code&gt;. It is used in the implementation of a filter menu that allows uers to filter annotations they have drawn on top of a blueprint:&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s dive right into our example by taking a look at the state for the annotation filter feature shown above:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterState&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterState&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hideEverythingFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;RepresentableAnnotationFilter&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;shareStatusFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;RepresentableAnnotationFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;issueFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;RepresentableAnnotationFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
@@ -165,20 +175,18 @@ The stores register with the dispatcher and let it know which actions they are i
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Bool&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;The state consists of a list of different filters, a currently selected filter group and a boolean flag that indicates wheter any of the filters are active.&lt;/p&gt;
 
 &lt;p&gt;This state is exactly tailored to the needs of the UI. The list of filters is rendered in a table view. The selected filter group is used to present/hide the details
 of an individually selected filter group. And the &lt;code&gt;isFiltering&lt;/code&gt; flag is used to determine whether or not a button to clear all filters should be enabled or disabled in the UI.&lt;/p&gt;
 
-&lt;p&gt;//TODO: Add Screenshot of Feature here&lt;/p&gt;
-
 &lt;h4 id=&#34;step-2-defining-the-actions:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Step 2: Defining the Actions&lt;/h4&gt;
 
 &lt;p&gt;After defining the shape of the state for a certain feature I usually think about the different state mutations in the next step. In the Flux architecture state mutations are modelled in the form of actions that describe which state change is intended. For the annotation filter feature the list of actions is fairly short:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
 
     &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Enables/disables a filter.&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
@@ -202,7 +210,7 @@ of an individually selected filter group. And the &lt;code&gt;isFiltering&lt;/co
     &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;Even without an in-depth understanding of the feature it should be somewhat obvious which state transitions these actions initiate. One of the many benefits of the Flux architecture is that this list of actions is an exhaustive overview of all state changes that can be triggered for this particular feature.&lt;/p&gt;
 
@@ -218,7 +226,7 @@ of an individually selected filter group. And the &lt;code&gt;isFiltering&lt;/co
 
 &lt;p&gt;As a concrete example we can take a look at how the &lt;code&gt;AnnotationFilterStore&lt;/code&gt; handles the &lt;code&gt;toggleFilterAction&lt;/code&gt;:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;handleToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;handleToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filter&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;
     &lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;!&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt;
 
@@ -238,7 +246,7 @@ of an individually selected filter group. And the &lt;code&gt;isFiltering&lt;/co
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_applyFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;This example is purposefully not simplified. So let&amp;rsquo;s break it down a litte. The &lt;code&gt;handleToggleFilterAction&lt;/code&gt; is invoked whenever a &lt;code&gt;ToggleFilterAction&lt;/code&gt; is dispatched.
 The &lt;code&gt;ToggleFilterAction&lt;/code&gt; carries information about which specific filter should be toggled.&lt;/p&gt;
@@ -249,19 +257,19 @@ The &lt;code&gt;ToggleFilterAction&lt;/code&gt; carries information about which 
 
 &lt;p&gt;At the end of the method we&amp;rsquo;re calling the &lt;code&gt;_applyFilter()&lt;/code&gt; method. This is a shared method that is used by multiple action handlers:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;_applyFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;_applyFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;applyFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
 
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;allFilterGroups&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;reduce&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt;
         &lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;activeFilterCount&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
     &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-    
+
     &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Phantom state update to refresh the cell state, technically not needed since filters are reference types&lt;/span&gt;
     &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// and previous statement already triggers a state update.&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;The call to &lt;code&gt;self._annotationFilterService.applyFilter()&lt;/code&gt; is the one that actually triggers the filtering of annotations that are displayed on a sheet. The filtering logic itself is somewhat complex, so it makes sense to move this into a separate, dedicated type.&lt;/p&gt;
 
@@ -330,14 +338,14 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;on&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;event&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;weak&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt;
 	        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableViewDataSource&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;refreshViews&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
 	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;})&lt;/span&gt;
-	    
+
 	&lt;span style=&#34;color: #000000&#34;&gt;compositeDisposable&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;store&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;
 	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ignoreNil&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
 	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;take&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
 	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;startWithNext&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;weak&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt;
 	        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableView&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;reloadData&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
 	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-	    
+
 	 &lt;span style=&#34;color: #000000&#34;&gt;compositeDisposable&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;navigationItem&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;rightBarButtonItem&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;!.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;racEnabled&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;lt;~&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;store&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;
             &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;??&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
@@ -364,7 +372,7 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;shareStatusSection&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;SectionModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
         &lt;span style=&#34;color: #000000&#34;&gt;headerTitle&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;annotation_filters.share_status_section.title&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;translate&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(),&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;headerHeight&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;28&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;headerHeight&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;28&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;o&lt;/span&gt;
         &lt;span style=&#34;color: #000000&#34;&gt;cellViewModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterViewProvider&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;cellViewModelsForGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;shareStatusFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
     &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
 
@@ -403,34 +411,148 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 
 &lt;p&gt;Implementing the UI bindings is definitely one of the trickier parts, since it doesn&amp;rsquo;t fit perfectly well together with UIKit&amp;rsquo;s programming model. But it only takes little effort to write custom components to make this easier. And in our experience we&amp;rsquo;ve saved multiples of our invested time by implementing these components instead of sticking with the classical MVC approach in which these UI updates are redundantly implemented across many, many view controllers.&lt;/p&gt;
 
+&lt;p&gt;With these UI bindings in place, we&amp;rsquo;ve discussed the last part of implementing a Flux feature. Since I covered a lot I want to give a quick recap before moving on to discussing the testing approach for Flux features.&lt;/p&gt;
+
+&lt;h4 id=&#34;implementation-recap:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Implementation Recap&lt;/h4&gt;
+
+&lt;p&gt;When implementing a Flux feature I will typically split the work into the following segments:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Define the shape of the state type&lt;/li&gt;
+&lt;li&gt;Define the actions&lt;/li&gt;
+&lt;li&gt;Implement business logic and state transitions for each of the actions - this implementation lives in the store&lt;/li&gt;
+&lt;li&gt;Implement UI bindings that map the state to a view representation&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This wraps up all of the implementation details I wanted to discuss. Let&amp;rsquo;s move on to discuss how to test Flux features.&lt;/p&gt;
+
 &lt;h3 id=&#34;writing-tests:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Writing Tests&lt;/h3&gt;
 
-&lt;h3 id=&#34;what-we-like-so-far:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;What We Like So Far&lt;/h3&gt;
+&lt;p&gt;One of the main benefits of the Flux architecture is that it separates concerns strictly. This makes it really easy to test the business logic and large parts of the UI code.&lt;/p&gt;
 
-&lt;p&gt;E.g. analytics&lt;/p&gt;
+&lt;p&gt;Each Flux feature has two main areas that need to be tested:&lt;/p&gt;
 
-&lt;h2 id=&#34;addressing-concerns:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Addressing Concerns&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;Testing the business logic in the store&lt;/li&gt;
+&lt;li&gt;Testing the view model providers (these are our React-like functions that produce a description of the UI based on an input state)&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;h3 id=&#34;what-about-uikit:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;What About UIKit?&lt;/h3&gt;
+&lt;h4 id=&#34;testing-stores:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Testing Stores&lt;/h4&gt;
 
-&lt;h3 id=&#34;what-about-onboarding-new-developers:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;What About Onboarding New Developers?&lt;/h3&gt;
+&lt;p&gt;Testing stores is typically very simple. We can drive interactions with the store by passing in actions and we can observe the state changes by either subscribing to the store or by observing the internal &lt;code&gt;_state&lt;/code&gt; property in our tests.&lt;/p&gt;
 
-&lt;h4 id=&#34;what-about-routing:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;What About Routing?&lt;/h4&gt;
+&lt;p&gt;Additionally, we can mock any outside types that the store might need to communicate with in order to implement a certain feature (this could be an API client or a data access object) and inject these in the store&amp;rsquo;s initializer. This allows us to validate that these types are called as expected.&lt;/p&gt;
 
-&lt;h3 id=&#34;integrating-with-existing-code:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Integrating with Existing Code&lt;/h3&gt;
+&lt;p&gt;Within PlanGrid we write our tests in a behavioral style using Quick and Nimble. Here is a simple example of a test from our annotation filter store specification:&lt;/p&gt;
 
-&lt;h2 id=&#34;6-months-in:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;6 Months In&lt;/h2&gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;describe&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;toggling a filter&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;!&lt;/span&gt;
+
+    &lt;span style=&#34;color: #000000&#34;&gt;beforeEach&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;hideAllFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_handleActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #000000&#34;&gt;it&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;toggles the selected filter&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beTrue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #000000&#34;&gt;it&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;enables filtering mode&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beTrue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #000000&#34;&gt;context&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;when subsequently resetting filters&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+
+        &lt;span style=&#34;color: #000000&#34;&gt;beforeEach&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_handleActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ResetFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+        &lt;span style=&#34;color: #000000&#34;&gt;it&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;deactivates previously active filters and stops filter mode&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beFalse&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beFalse&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Once again, testing stores would merit it&amp;rsquo;s own blog post, so I won&amp;rsquo;t dive into the details of this particular test. However, the testing philosophy should be clear. We send actions to the store and validate the response in form of state changes or calls to mocked instances.&lt;/p&gt;
+
+&lt;p&gt;(You might wonder why we&amp;rsquo;re calling the &lt;code&gt;_handleActions&lt;/code&gt; method on the store instead of dispatching an action using the dispatcher. Originally our dispatcher used asynchronous dispatch when delivering actions, which would have meant our tests needed to be asynchronous as well. Therefore we called the handler on the store directly. The implementation of the dispatcher has since changed, so we could be using the dispatcher in our tests going forward.)&lt;/p&gt;
+
+&lt;p&gt;When implementing the business logic in a store I now mostly write my tests first. The structure of the our store code along with the behavioral Quick specs lends itself extremely well to a test driven development process.&lt;/p&gt;
+
+&lt;h4 id=&#34;testing-views:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Testing Views&lt;/h4&gt;
+
+&lt;p&gt;The Flux architecture combined with our declarative UI layer makes
+testing views pretty simple. Internally we are still debating the amount of
+coverage we should aim for on the view layer.&lt;/p&gt;
+
+&lt;p&gt;Practically all of our view code is fairly straightforward. It binds the state
+in the store to different properties of our UI layer. For our app we have
+decided to cover most of this code through UI automation tests.&lt;/p&gt;
+
+&lt;p&gt;However, there are many alternatives. Since the view layer is set up to render
+an injected state, snapshot tests work really well, too.
+Artsy has covered the idea of snapshot testing in various talks and blog
+posts, &lt;a href=&#34;https://www.objc.io/issues/15-testing/snapshot-testing/&#34;&gt;including a great article on
+objc.io&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For our app we have decided that our UI automation coverage is sufficient, so
+that we don&amp;rsquo;t need additional snapshot tests.&lt;/p&gt;
+
+&lt;p&gt;I have also experimented with unit testing the view provider functions that
+provide a description of a table view based on an app state. As we&amp;rsquo;ve seen earlier this view providers are pure functions that map a state to a UI description, so they are very easy to test.&lt;/p&gt;
+
+&lt;p&gt;However, I found that these tests don&amp;rsquo;t add too much value as they mirror the declarative description of the UI very closely.&lt;/p&gt;
+
+&lt;p&gt;In general, using the Flux architecture view testing becomes fairly simple because the view code is well isolated from the rest of the app. You only need to inject a state that should be rendered in your tests and you are good to go.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m interested to see which testing strategy we&amp;rsquo;ll pick for the UI layer in the long term.&lt;/p&gt;
 
 &lt;h2 id=&#34;conclusion:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;After diving into many implementation details I&amp;rsquo;d like to close with high level summary of our experience so far.&lt;/p&gt;
+
+&lt;p&gt;We&amp;rsquo;ve only been using the Flux architecture for about 6 months, but we are already seeing many benefits in our code base:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;New features are implemented consistently. The structure of stores, view providers and view controllers across features is mostly almost identical.&lt;/li&gt;
+&lt;li&gt;By inspecting the state, the actions and the BDD-style tests it is very easy to understand how a feature works within a matter of minutes.&lt;/li&gt;
+&lt;li&gt;We have a strong separation of concerns between stores and views. There&amp;rsquo;s seldom ambiguity about where certain code should live.&lt;/li&gt;
+&lt;li&gt;Our code reads a lot simpler. The state upon which a view depends is always explicit. This makes debugging really easy, too.&lt;/li&gt;
+&lt;li&gt;All of the above three points make onboarding new developers a lot easier.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Obviously there are also some &lt;strong&gt;pain points&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;First and foremost integration with UIKit components can sometimes be a little painful. Unlike React components, UIKit views don&amp;rsquo;t provide an API to simply update themselves based on a new state. This burden lies on us and we either need to implement it manually in our view bindings or need to write custom components that wrap UIKit components.&lt;/li&gt;
+&lt;li&gt;Not all of our new code strictly follows the Flux pattern yet. E.g. we haven&amp;rsquo;t yet tackled a navigation/routing system that works with Flux. We need to either integrate a &lt;a href=&#34;http://khanlou.com/2015/10/coordinators-redux/&#34;&gt;coordinator pattern&lt;/a&gt; into our Flux architecture or use an actual router similar to &lt;a href=&#34;https://github.com/ReSwift/ReSwift-Router&#34;&gt;ReSwift Router&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;We need to come up with a good pattern for state that is shared across large portions of the app (as discussed very early in this post). Should we have dependencies between stores as in the original Flux pattern? What are the alternatives?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;There are many, many more implementation details, advantages and disadvantages that I would like to dive into so I hope to cover some aspects in more detail in future blog posts.&lt;/p&gt;
+
+&lt;p&gt;So far I&amp;rsquo;m very happy with our choice and I hope this blog posts gives you some insight into whether the Flux architecture is suitable for you as well.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;And finally, if you&amp;rsquo;re interested in working with Flux in Swift, or simply want to help deliver an important product to a huge industry, &lt;strong&gt;&lt;a href=&#34;http://grnh.se/8fcutd&#34;&gt;we&amp;rsquo;re hiring&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>WWDC 2016 5 Minute Update: Opening Up iOS, Xcode Extensions, Apple Filesystem, Swift Playgrounds on iPad</title>
-      <link>http://localhost:1313/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</link>
+      <link>http://blog.benjamin-encz.de/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</link>
       <pubDate>Tue, 14 Jun 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</guid>
+      <guid>http://blog.benjamin-encz.de/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</guid>
       <description>
 
 &lt;p&gt;A very brief summary of changes &amp;amp; impressions from WWDC 2016 Day One.&lt;/p&gt;
@@ -497,10 +619,10 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
     
     <item>
       <title>GCD&#39;s Main Queue vs. Main Thread</title>
-      <link>http://localhost:1313/post/main-queue-vs-main-thread/</link>
+      <link>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</link>
       <pubDate>Sun, 05 Jun 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/main-queue-vs-main-thread/</guid>
+      <guid>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</guid>
       <description>
 
 &lt;p&gt;The correct way to ensure that code runs on the main thread / main queue is a recurring issue that causes some confusion among Cocoa developers.
@@ -516,18 +638,18 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;Let&amp;rsquo;s take a function that generates an image as a trivial example:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;createImageUnsafe&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;createImageUnsafe&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
     &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// TODO: Check for Main Thread&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;contentsOfFile&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;h2 id=&#34;the-easy-solution:997ed369e26584277379d51208fcfef8&#34;&gt;The Easy Solution&lt;/h2&gt;
 
 &lt;p&gt;The easiest way to check if we are currently executing on the main thread is using &lt;code&gt;NSThread.isMainThread()&lt;/code&gt; - GCD lacks a similarly convenient API for checking if we are running on the main queue, so many developers use the &lt;code&gt;NSThread&lt;/code&gt; API instead. Our updated function will look somewhat like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;createImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;createImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filename&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIImage&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt;
 
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;NSThread&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isMainThread&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
@@ -543,7 +665,7 @@ Typically we have some sort of check to determine whether our code is already ex
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;image&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;This works in most cases, &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2635#issuecomment-170215083&#34;&gt;until it doesn&amp;rsquo;t&lt;/a&gt;. Here&amp;rsquo;s the excerpt from the issue on the ReactiveCocoa repo:
 &lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/public/assets/mainqueue-mainthread/rac_issue_queue_thread.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
@@ -620,10 +742,10 @@ Typically we have some sort of check to determine whether our code is already ex
     
     <item>
       <title>Beware the UIKit Visitors!</title>
-      <link>http://localhost:1313/post/disassembling-uikit-tintcolor-visitor/</link>
+      <link>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</link>
       <pubDate>Tue, 10 May 2016 12:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/disassembling-uikit-tintcolor-visitor/</guid>
+      <guid>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</guid>
       <description>
 
 &lt;p&gt;&lt;/p&gt;
@@ -639,7 +761,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;For this blog post I wanted to isolate this issue from our code base. I was able to reproduce the issue with this minimal example inside of a blank &lt;code&gt;UIViewController&lt;/code&gt;:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;override&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;viewDidAppear&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;animated&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Bool&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;override&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;viewDidAppear&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;animated&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Bool&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
         &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;super&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;viewDidAppear&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;animated&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
 
         &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;view&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tintColor&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;blueColor&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
@@ -650,7 +772,7 @@ Typically we have some sort of check to determine whether our code is already ex
         &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;The above example is obviously extreme, but it reveals an interesting performance issue: when setting a &lt;code&gt;tintColor&lt;/code&gt; on a parent view, and not setting an explicit color on child views the performance of &lt;code&gt;addSubview&lt;/code&gt; reduces itself drastically with a large amount of added subviews.&lt;/p&gt;
 
@@ -896,10 +1018,10 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
     
     <item>
       <title>Decoding Heterogeneous Collections in Swift</title>
-      <link>http://localhost:1313/post/decoding-heterogeneous-collections-in-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</link>
       <pubDate>Tue, 03 May 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/decoding-heterogeneous-collections-in-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</guid>
       <description>
 
 &lt;p&gt;The problem of decoding Swift types from an outside data source, such as JSON, has been mostly solved. Since Swift&amp;rsquo;s release we&amp;rsquo;ve seen more than a dozen popular JSON mapping libraries pop up.&lt;/p&gt;
@@ -908,7 +1030,7 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
 
 &lt;p&gt;We define how a JSON object representing a user can be mapped to a &lt;code&gt;User&lt;/code&gt; type, as in this example:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Decodable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Decodable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;age&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;
 
@@ -920,7 +1042,7 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
     &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;This approach requires the developer to know that a certain piece of JSON will ever only contain user objects.&lt;/p&gt;
 
@@ -968,11 +1090,11 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
 
 &lt;p&gt;Here&amp;rsquo;s what the protocol looks like in my example:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Decodable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Decodable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;typeIdentifier&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;get&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;Note that I&amp;rsquo;m relying on the &lt;a href=&#34;https://github.com/Anviking/Decodable&#34;&gt;Decodable&lt;/a&gt; JSON mapping library to require the JSON initializer for me via the &lt;code&gt;Decodable&lt;/code&gt; protocol.&lt;/p&gt;
 
@@ -1061,10 +1183,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Compile Time vs. Run Time Type Checking in Swift</title>
-      <link>http://localhost:1313/post/compile-time-vs-runtime-type-checking-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</link>
       <pubDate>Wed, 13 Apr 2016 21:09:24 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/compile-time-vs-runtime-type-checking-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</guid>
       <description>
 
 &lt;p&gt;At some point, when learning how to use Swift&amp;rsquo;s type system, it is important to understand that Swift (like many other languages) has two different forms of type checking: static and dynamic. Today I want to briefly discuss the difference between them and why headaches might arise when we try to combine them.&lt;/p&gt;
@@ -1087,7 +1209,7 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 
 &lt;p&gt;Swift&amp;rsquo;s static type checker can do a lot more powerful things, e.g. verifying generic constraints:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
 &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
 
 &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
@@ -1107,7 +1229,7 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// argument list of type &amp;#39;(Car)&amp;#39;&lt;/span&gt;
 &lt;span style=&#34;color: #000000&#34;&gt;printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Car&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;In this example, again, all of the type checking occurs at compile time, solely based on the source code. The swift compiler can verify which function calls provide arguments that match the generic constraints of the &lt;code&gt;printHumanName&lt;/code&gt; function; and for ones that don&amp;rsquo;t it can emit a compile error.&lt;/p&gt;
 
@@ -1125,7 +1247,7 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 
 &lt;p&gt;In many scenarios dynamic type checking enables us to integrate types that are unknown at compile time with our statically checked Swift code:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;takesHuman&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;human&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;takesHuman&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;human&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
 
 &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Any&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
 
@@ -1133,7 +1255,7 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     &lt;span style=&#34;color: #000000&#34;&gt;takesHuman&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;All we need to do in order to call the function with &lt;code&gt;unknownData&lt;/code&gt; is to cast it to the argument type of the function.&lt;/p&gt;
 
@@ -1250,10 +1372,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Squashing Commits With Git Rebase: A Very Quick Guide</title>
-      <link>http://localhost:1313/post/squashing-commits-with-git-rebase-guide/</link>
+      <link>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</link>
       <pubDate>Thu, 24 Mar 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/squashing-commits-with-git-rebase-guide/</guid>
+      <guid>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</guid>
       <description>&lt;p&gt;Git&amp;rsquo;s interactive rebase is extremely useful for keeping a somewhat clear commit history. Here&amp;rsquo;s a very brief guide on how to squash multiple commits into a single one.&lt;/p&gt;
 
 &lt;p&gt;Git rebase allows you to rewrite the history of a git repository. &lt;strong&gt;Yes, you are right, this can be incredibly dangerous, therefore don&amp;rsquo;t use this technique on branches that are shared with other developers&lt;/strong&gt;. To me rebase is most useful for preparing a branch that is about to be merged into the main branch of a project.&lt;/p&gt;
@@ -1305,10 +1427,10 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
     
     <item>
       <title>Validated: A Swift μ-Library for Somewhat Dependent Types</title>
-      <link>http://localhost:1313/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
+      <link>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
       <pubDate>Thu, 25 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
+      <guid>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
       <description>&lt;p&gt;Today I built &amp;amp; published a μ-library that makes it easier to leverage Swift&amp;rsquo;s type checking system for program verification: &lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;Validated&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt;&lt;/p&gt;
@@ -1349,10 +1471,10 @@ func performTaskWithUser(user: User) {
     
     <item>
       <title>How I Write Swift Specs With Quick</title>
-      <link>http://localhost:1313/post/how-i-write-swift-specs-with-quick/</link>
+      <link>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</link>
       <pubDate>Wed, 24 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/how-i-write-swift-specs-with-quick/</guid>
+      <guid>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</guid>
       <description>
 
 &lt;p&gt;I&amp;rsquo;ve recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of &lt;code&gt;it&lt;/code&gt; blocks. This &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69&#34;&gt;seems to be common among many code bases that use Quick/Nimble&lt;/a&gt;.&lt;/p&gt;
@@ -1434,10 +1556,10 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     
     <item>
       <title>Introducing ReSwift</title>
-      <link>http://localhost:1313/post/introducing-reswift/</link>
+      <link>http://blog.benjamin-encz.de/post/introducing-reswift/</link>
       <pubDate>Wed, 20 Jan 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/introducing-reswift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/introducing-reswift/</guid>
       <description>&lt;p&gt;For the last two months I have been actively working on Swift Flow with the goal of bringing the ideas of the Flux and Redux libraries to Swift developers.&lt;/p&gt;
 
 &lt;p&gt;At about the same &lt;a href=&#34;https://twitter.com/ARendtslev&#34;&gt;@ARendtslev&lt;/a&gt; started ReduxKit, which had the goal of implementing Redux in Swift. Soon he was joined by &lt;a href=&#34;https://twitter.com/karlbowden&#34;&gt;@karlbowden&lt;/a&gt; who made significant contributions to the project (and provided amazing build and documentation infrastructure for ReduxKit and Swift Flow).&lt;/p&gt;
@@ -1462,10 +1584,10 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
     
     <item>
       <title>Convenient Error Handling in Swift</title>
-      <link>http://localhost:1313/post/convenient-error-handling-in-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</link>
       <pubDate>Wed, 18 Nov 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/convenient-error-handling-in-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</guid>
       <description>
 
 &lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
@@ -1588,10 +1710,10 @@ errorHandler.wrap {
     
     <item>
       <title>A Flux Inspired Architecture for iOS</title>
-      <link>http://localhost:1313/post/a-flux-inspired-architecture-for-ios/</link>
+      <link>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</link>
       <pubDate>Sat, 12 Sep 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/a-flux-inspired-architecture-for-ios/</guid>
+      <guid>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</guid>
       <description>&lt;p&gt;This year I spoke at 360iDev about &amp;ldquo;Safer Swift Code with Value Types&amp;rdquo;. The goal of the talk was to explore an architecture that uses immutable value types for the model layer.&lt;/p&gt;
 
 &lt;p&gt;After reviewing an earlier version of this talk with my developer friend &lt;a href=&#34;https://twitter.com/devknoll&#34;&gt;Gerald Monaco&lt;/a&gt;, who is a big fan of Facebook&amp;rsquo;s open source technologies (React, Flux, etc.), I decided to take a look at how a &lt;a href=&#34;https://facebook.github.io/flux/&#34;&gt;Flux&lt;/a&gt;-inspired architecture could be applied to an iOS application.&lt;/p&gt;
@@ -1610,10 +1732,10 @@ errorHandler.wrap {
     
     <item>
       <title>Swift Error Handling and Objective-C Interop in Depth</title>
-      <link>http://localhost:1313/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
+      <link>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
       <pubDate>Thu, 23 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
+      <guid>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
       <description>
 
 &lt;p&gt;For the impatient reader:&lt;/p&gt;
@@ -1815,10 +1937,10 @@ errorHandler.wrap {
     
     <item>
       <title>iOS 9 Detects Cycles in Layout Trees</title>
-      <link>http://localhost:1313/post/ios-9-detects-cycles-in-layout-trees/</link>
+      <link>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</link>
       <pubDate>Thu, 09 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/ios-9-detects-cycles-in-layout-trees/</guid>
+      <guid>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</guid>
       <description>
 
 &lt;p&gt;A couple of months ago I was faced with an issue that was fairly hard to debug:&lt;/p&gt;
@@ -1853,10 +1975,10 @@ errorHandler.wrap {
     
     <item>
       <title>Talk: Introduction to FRP on iOS</title>
-      <link>http://localhost:1313/post/talk-introduction-to-frp-on-ios/</link>
+      <link>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</link>
       <pubDate>Sat, 30 May 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:1313/post/talk-introduction-to-frp-on-ios/</guid>
+      <guid>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</guid>
       <description>&lt;p&gt;Back in April I gave a talk at &lt;a href=&#34;http://www.meetup.com/nsmeetup/events/220950179/&#34;&gt;NSMeetup in San Francisco&lt;/a&gt; on Functional Reactive Programming on iOS.&lt;/p&gt;
 
 &lt;p&gt;The talk discusses the idea &amp;amp; motivation behind FRP and dives into some practical examples using Reactive Cocoa 2.x. The examples are based on a small &lt;a href=&#34;https://github.com/Ben-G/PeopleCRM&#34;&gt;demo app&lt;/a&gt; that I built for that talk.&lt;/p&gt;
