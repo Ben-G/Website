@@ -1,5 +1,5 @@
 +++
-date = "2016-06-14T10:24:54-08:00"
+date = "2016-07-06T10:24:54-08:00"
 draft = false
 title = "Real World Flux Architecture on iOS"
 slug = "real-world-flux-ios"
@@ -12,7 +12,7 @@ About half a year ago we started adopting the Flux architecture in the PlanGrid 
 
 ## Why We Transitioned Away from MVC
 
-To put our decision into context I want to spend a few paragraphs describing some of the challenges the PlanGrid app faces. Some of them are somewhat unique to enterprise software, others might apply to most iOS apps. 
+To put our decision into context I want to spend a few paragraphs describing some of the challenges the PlanGrid app faces. Some of them are somewhat unique to enterprise software, others might apply to most iOS apps.
 
 ### We Have All the State
 
@@ -32,9 +32,9 @@ All of this means that our app puts a lot of effort into managing state. Any mut
 4. Enqueue change that will be sent to server upon available network connection
 5. **Notify other controllers about state change**
 
-Though I plan on covering other aspects of our new architecture in future blog posts, I want to focus on the 5. step today. *How should we populate state updates in our app?* 
+Though I plan on covering other aspects of our new architecture in future blog posts, I want to focus on the 5. step today. *How should we populate state updates in our app?*
 
-This is the billion dollar question of mobile app development. 
+This is the billion dollar question of mobile app development.
 
 Most iOS engineers, including early developers of the PlanGrid app, come up with the following answers:
 
@@ -50,9 +50,9 @@ All of these approaches can be valid in different scenarios. However, this menu 
 
 Classic MVC only advocates the separation of data and its representation. With the lack of other architectural guidance, everything else is left up to individual developers.
 
-For the longest time the PlanGrid app (like most iOS apps) didn't have a defined pattern for state management. 
+For the longest time the PlanGrid app (like most iOS apps) didn't have a defined pattern for state management.
 
-Many of the existing state management tools such as delegation and blocks tend to create dependencies between components that might not be desirable - two view controllers quickly can become tightly couple in an attempt to share state updates with each other. 
+Many of the existing state management tools such as delegation and blocks tend to create dependencies between components that might not be desirable - two view controllers quickly can become tightly couple in an attempt to share state updates with each other.
 
 Other tools, such as KVO and Notifications, create invisible dependencies. Using them in a large codebase can quickly lead to code changes that cause unexpected side effects. It is far to easy for a controller to observe details of the model layer which it shouldn't be interested in.
 
@@ -64,7 +64,7 @@ One of our most important goals during refactoring the PlanGrid app was putting 
 
 State management was one of the largest sources of complexity in our app, so we decided to define a pattern that all new features could use going forward.
 
-A lot of the pain we felt in our existing codebase reminded us strongly of the issues that Facebook brought up when they first presented the Flux pattern: 
+A lot of the pain we felt in our existing codebase reminded us strongly of the issues that Facebook brought up when they first presented the Flux pattern:
 
 - Unexpected, Cascading State Updates
 - Hard to Understand Dependencies Between Components
@@ -81,9 +81,9 @@ The pattern can be described best alongside a diagram that shows the different f
 
 ![](https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux_Original.png)
 
-In the Flux architecture a **store** is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will call a handler method on all views that subscribed to the store. The **view** receives state updates only through this one interface - the method invoked by the store upon a state update. 
+In the Flux architecture a **store** is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will call a handler method on all views that subscribed to the store. The **view** receives state updates only through this one interface - the method invoked by the store upon a state update.
 
-State updates can only occurr via **actions**. 
+State updates can only occurr via **actions**.
 
 An **action** describes an intented state change, but it doesn't implement the state change itself. All components that want to change any state send an **action** to the global **dispatcher**.
 The stores register with the dispatcher and let it know which actions they are interested in. Whenever an action is dispatched, all interested stores will receive it.
@@ -108,7 +108,7 @@ With an understanding of the basics of the Flux architecture, let's dive into so
 
 ### How Many Stores Should we Have?
 
-The scope of each individual store is a very interesting question that quickly comes up when using the Flux pattern. 
+The scope of each individual store is a very interesting question that quickly comes up when using the Flux pattern.
 
 Since Facebook published the Flux pattern, different variations have been developed by the community. One of them, called Redux, iterates on the Flux pattern by enforcing that each application should only have a single store. This store stores the state for the entire application (there are many other, subtler, differences that are outside of the scope of this post).
 
@@ -129,9 +129,15 @@ We are currently in the process of implementing our first *shared state stores* 
 
 Let's dive a little bit deeper into some of the implementation details of features that are built with the Flux pattern.
 
+As an example throughout the next couple of sections we'll use a feature that's used in production within the PlanGrid app. The feature allows users to filter annotations on a blueprint:
+
+![](https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/filter_screenshot.png)
+
+The feature we'll discuss lives in the popover that's presented on the left hand side of the screenshot.
+
 #### Step 1: Defining the State
 
-Usually I begin implemeting a new feature by determining the relevant state for it. The state represents everything the UI needs to know in order to render the representation of a certain feature.
+Usually I begin implementing a new feature by determining the relevant state for it. The state represents everything the UI needs to know in order to render the representation of a certain feature.
 
 A simple example from the PlanGrid app is the `AnnotationFilterState`. It is used in the implementation of a filter menu that allows uers to filter annotations they have drawn on top of a blueprint:
 
@@ -152,8 +158,6 @@ The state consists of a list of different filters, a currently selected filter g
 
 This state is exactly tailored to the needs of the UI. The list of filters is rendered in a table view. The selected filter group is used to present/hide the details
 of an individually selected filter group. And the `isFiltering` flag is used to determine whether or not a button to clear all filters should be enabled or disabled in the UI.
-
-//TODO: Add Screenshot of Feature here
 
 #### Step 2: Defining the Actions
 
@@ -222,7 +226,7 @@ func handleToggleFilterAction(toggleFilterAction: AnnotationFilteringActions.Tog
 This example is purposefully not simplified. So let's break it down a litte. The `handleToggleFilterAction` is invoked whenever a `ToggleFilterAction` is dispatched.
 The `ToggleFilterAction` carries information about which specific filter should be toggled.
 
-As a very first step of implementing this business logic, the method simply toggles the filter by toggling the value of the `filter.enabled`. 
+As a very first step of implementing this business logic, the method simply toggles the filter by toggling the value of the `filter.enabled`.
 
 Then we implement some custom business logic for this feature. When working with filters that are intended to filter issue annotations we have some cases in which we need to activate the `issueTypeFilter`. It wouldn't make sense to dive into the specifics of this PlanGrid feature, but the idea is that this method encapsulates any business logic related to toggling filters.
 
@@ -235,7 +239,7 @@ func _applyFilter() {
     self._state.value?.isFiltering = self._annotationFilterService.allFilterGroups.reduce(false) { isFiltering, filterGroup in
         isFiltering || (filterGroup.activeFilterCount() > 0)
     }
-    
+
     // Phantom state update to refresh the cell state, technically not needed since filters are reference types
     // and previous statement already triggers a state update.
     self._state.value = self._state.value
@@ -277,7 +281,7 @@ let state: SignalProducer<AnnotationFilterState?, NoError>
 let _state: MutableProperty<AnnotationFilterState?> = MutableProperty(nil)
 {{< /highlight >}}
 
-The `_state` property is used within the store to mutate the state. The `state` property is used by clients that want to subscribe to the store. 
+The `_state` property is used within the store to mutate the state. The `state` property is used by clients that want to subscribe to the store.
 This allows store subscribers to receive state updates but doesn't allow them to mutate state directly.
 
 In the initializer the internal observable property is simply bound to the external signal producer:
@@ -307,21 +311,21 @@ func _bind(compositeDisposable: CompositeDisposable) {
 	    }
 	    .on(event: { [weak self] _ in
 	        self?.tableViewDataSource.refreshViews()
-	    })	
-	    
+	    })
+
 	compositeDisposable += self.store.state
 	    .ignoreNil()
 	    .take(1)
 	    .startWithNext { [weak self] _ in
 	        self?.tableView.reloadData()
 	    }
-	    
+
 	 compositeDisposable += self.navigationItem.rightBarButtonItem!.racEnabled <~ self.store.state
             .map { $0?.isFiltering ?? false }
 }
 {{< /highlight >}}
 
-In our codebase we follow a convention where each view controller has a `_bind` method that is called from within `viewWillAppear`. This `_bind` method is responsible for subscribing to the store's state and providing code that updates the UI when state changes occurr. 
+In our codebase we follow a convention where each view controller has a `_bind` method that is called from within `viewWillAppear`. This `_bind` method is responsible for subscribing to the store's state and providing code that updates the UI when state changes occurr.
 
 Since we need to implement partial UI updates ourselves and cannot rely on a React-like framework, this method usually contains code that describes how a certain state update maps to a UI update. Here ReactiveCocoa comes in very handy as it provides many different operators (`skipUntil`, `take`, `map`, etc.) that make it easier to set up these relationships.
 
@@ -404,7 +408,7 @@ Each Flux feature has two main areas that need to be tested:
 
 #### Testing Stores
 
-Testing stores is typically very simple. We can drive interactions with the store by passing in actions and we can observe the state changes by either subscribing to the store or by observing the internal `_state` property in our tests. 
+Testing stores is typically very simple. We can drive interactions with the store by passing in actions and we can observe the state changes by either subscribing to the store or by observing the internal `_state` property in our tests.
 
 Additionally, we can mock any outside types that the store might need to communicate with in order to implement a certain feature (this could be an API client or a data access object) and inject these in the store's initializer. This allows us to validate that these types are called as expected.
 
@@ -448,27 +452,60 @@ Once again, testing stores would merit it's own blog post, so I won't dive into 
 
 (You might wonder why we're calling the `_handleActions` method on the store instead of dispatching an action using the dispatcher. Originally our dispatcher used asynchronous dispatch when delivering actions, which would have meant our tests needed to be asynchronous as well. Therefore we called the handler on the store directly. The implementation of the dispatcher has since changed, so we could be using the dispatcher in our tests going forward.)
 
-When implementing the business logic in a store I now mostly write my tests first. The structure of the our store code along with the behavioral Quick specs lends itself extremly well to a test driven development process.
+When implementing the business logic in a store I now mostly write my tests first. The structure of the our store code along with the behavioral Quick specs lends itself extremely well to a test driven development process.
 
 #### Testing Views
 
+The Flux architecture combined with our declarative UI layer makes
+testing views pretty simple. Internally we are still debating the amount of
+coverage we should aim for on the view layer.
 
+Practically all of our view code is fairly straightforward. It binds the state
+in the store to different properties of our UI layer. For our app we have
+decided to cover most of this code through UI automation tests.
 
-### What We Like So Far
+However, there are many alternatives. Since the view layer is set up to render
+an injected state, snapshot tests work really well, too.
+Artsy has covered the idea of snapshot testing in various talks and blog
+posts, [including a great article on
+objc.io](https://www.objc.io/issues/15-testing/snapshot-testing/).
 
-E.g. analytics
+For our app we have decided that our UI automation coverage is sufficient, so
+that we don't need additional snapshot tests.
 
-## Addressing Concerns
+I have also experimented with unit testing the view provider functions that
+provide a description of a table view based on an app state. As we've seen earlier this view providers are pure functions that map a state to a UI description, so they are very easy to test.
 
-### What About UIKit?
+However, I found that these tests don't add too much value as they mirror the declarative description of the UI very closely.
 
-### What About Onboarding New Developers?
+In general, using the Flux architecture view testing becomes fairly simple because the view code is well isolated from the rest of the app. You only need to inject a state that should be rendered in your tests and you are good to go.
 
-#### What About Routing?
-
-### Integrating with Existing Code
-
-## 6 Months In
+I'm interested to see which testing strategy we'll pick for the UI layer in the long term.
 
 ## Conclusion
 
+After diving into many implementation details I'd like to close with high level summary of our experience so far.
+
+We've only been using the Flux architecture for about 6 months, but we are already seeing many benefits in our code base:
+
+- New features are implemented consistently. The structure of stores, view providers and view controllers across features is mostly almost identical.
+- By inspecting the state, the actions and the BDD-style tests it is very easy to understand how a feature works within a matter of minutes.
+- We have a strong separation of concerns between stores and views. There's seldom ambiguity about where certain code should live.
+- Our code reads a lot simpler. The state upon which a view depends is always explicit. This makes debugging really easy, too.
+- All of the above three points make onboarding new developers a lot easier.
+
+Obviously there are also some **pain points**:
+
+- First and foremost integration with UIKit components can sometimes be a little painful. Unlike React components, UIKit views don't provide an API to simply update themselves based on a new state. This burden lies on us and we either need to implement it manually in our view bindings or need to write custom components that wrap UIKit components.
+- Not all of our new code strictly follows the Flux pattern yet. E.g. we haven't yet tackled a navigation/routing system that works with Flux. We need to either integrate a [coordinator pattern](http://khanlou.com/2015/10/coordinators-redux/) into our Flux architecture or use an actual router similar to [ReSwift Router](https://github.com/ReSwift/ReSwift-Router).
+- We need to come up with a good pattern for state that is shared across large portions of the app (as discussed very early in this post). Should we have dependencies between stores as in the original Flux pattern? What are the alternatives?
+
+----
+
+There are many, many more implementation details, advantages and disadvantages that I would like to dive into so I hope to cover some aspects in more detail in future blog posts.
+
+So far I'm very happy with our choice and I hope this blog posts gives you some insight into whether the Flux architecture is suitable for you as well.
+
+---
+
+And finally, if you're interested in working with Flux in Swift, or simply want to help deliver an important product to a huge industry, **[we're hiring](http://grnh.se/8fcutd)**.
