@@ -523,6 +523,8 @@ And finally, if you're interested in working with Flux in Swift, or simply want 
 
 ---
 
+Thanks a lot to [@zats](https://twitter.com/zats), [@kubanekl](https://twitter.com/kubanekl) and [@pixelpartner](https://twitter.com/pixelpartner) for reading drafts of this post!
+
 **References**:
 
 - [Flux](https://facebook.github.io/flux/) - Facebook's official Flux website including the original talk introducing it
