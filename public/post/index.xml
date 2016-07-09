@@ -98,11 +98,11 @@
 
 &lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux_Original.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;In the Flux architecture a &lt;strong&gt;store&lt;/strong&gt; is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will call a handler method on all views that subscribed to the store. The &lt;strong&gt;view&lt;/strong&gt; receives state updates only through this one interface that is called by the store.&lt;/p&gt;
+&lt;p&gt;In the Flux architecture a &lt;strong&gt;store&lt;/strong&gt; is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will send a change event to all views that subscribed to the store. The &lt;strong&gt;view&lt;/strong&gt; receives changes only through this one interface that is called by the store.&lt;/p&gt;
 
-&lt;p&gt;State updates can only occurr via &lt;strong&gt;actions&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;State updates can only occur via &lt;strong&gt;actions&lt;/strong&gt;.&lt;/p&gt;
 
-&lt;p&gt;An &lt;strong&gt;action&lt;/strong&gt; describes an intented state change, but it doesn&amp;rsquo;t implement the state change itself. All components that want to change any state send an &lt;strong&gt;action&lt;/strong&gt; to the global &lt;strong&gt;dispatcher&lt;/strong&gt;.
+&lt;p&gt;An &lt;strong&gt;action&lt;/strong&gt; describes an intended state change, but it doesn&amp;rsquo;t implement the state change itself. All components that want to change any state send an &lt;strong&gt;action&lt;/strong&gt; to the global &lt;strong&gt;dispatcher&lt;/strong&gt;.
 The stores register with the dispatcher and let it know which actions they are interested in. Whenever an action is dispatched, all interested stores will receive it.&lt;/p&gt;
 
 &lt;p&gt;In response to actions some stores will update their state and notify the views about that new state.&lt;/p&gt;
@@ -119,13 +119,13 @@ The stores register with the dispatcher and let it know which actions they are i
 
 &lt;h2 id=&#34;flux-in-plangrid-for-ios:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Flux in PlanGrid for iOS&lt;/h2&gt;
 
-&lt;p&gt;For the PlanGrid iOS app we have extended the Flux specification a little bit. We enforce that each store needs to have an explicit state type. This state type describes the entire state for a certain feature. This state is observed by our views and is used to update them whenever a state change occurs:&lt;/p&gt;
+&lt;p&gt;For the PlanGrid iOS app we have deviated slightly from the Flux reference implementation. We enforce that each store has an observable &lt;code&gt;state&lt;/code&gt; property. Unlike in the original Flux implementation we don&amp;rsquo;t emit a change event when a store updates. Instead views observe the &lt;code&gt;state&lt;/code&gt; property of the store. Whenever the views observe a state change, they update themselves in response:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Many Flux implementations on the web make us of an  explicit state in stores as well.&lt;/p&gt;
+&lt;p&gt;This is a very subtle deviation from the Flux reference implementation, but covering it is helpful for the upcoming sections.&lt;/p&gt;
 
-&lt;p&gt;With an understanding of the basics of the Flux architecture, let&amp;rsquo;s dive into some of the implementation details and questions we needed to answer.&lt;/p&gt;
+&lt;p&gt;With an understanding of the basics of the Flux architecture, let&amp;rsquo;s dive into some of the implementation details and questions we needed to answer while implemeting Flux in the PlanGrid app.&lt;/p&gt;
 
 &lt;h3 id=&#34;what-is-the-scope-of-a-store:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;What is the Scope of a Store?&lt;/h3&gt;
 
@@ -177,14 +177,14 @@ The stores register with the dispatcher and let it know which actions they are i
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;The state consists of a list of different filters, a currently selected filter group and a boolean flag that indicates wheter any of the filters are active.&lt;/p&gt;
+&lt;p&gt;The state consists of a list of different filters, a currently selected filter group and a boolean flag that indicates whether any of the filters are active.&lt;/p&gt;
 
 &lt;p&gt;This state is exactly tailored to the needs of the UI. The list of filters is rendered in a table view. The selected filter group is used to present/hide the details
 of an individually selected filter group. And the &lt;code&gt;isFiltering&lt;/code&gt; flag is used to determine whether or not a button to clear all filters should be enabled or disabled in the UI.&lt;/p&gt;
 
 &lt;h4 id=&#34;step-2-defining-the-actions:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Step 2: Defining the Actions&lt;/h4&gt;
 
-&lt;p&gt;After defining the shape of the state for a certain feature I usually think about the different state mutations in the next step. In the Flux architecture state mutations are modelled in the form of actions that describe which state change is intended. For the annotation filter feature the list of actions is fairly short:&lt;/p&gt;
+&lt;p&gt;After defining the shape of the state for a certain feature I usually think about the different state mutations in the next step. In the Flux architecture state mutations are modeled in the form of actions that describe which state change is intended. For the annotation filter feature the list of actions is fairly short:&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
 
@@ -193,18 +193,18 @@ of an individually selected filter group. And the &lt;code&gt;isFiltering&lt;/co
         &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterType&lt;/span&gt;
     &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-	&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Navigates to details of a filter group.&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Navigates to details of a filter group.&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;EnterFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
         &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterGroupType&lt;/span&gt;
     &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-	&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Leaves detail view of a filter group.&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Leaves detail view of a filter group.&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;LeaveFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-	&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Disables all filters.&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Disables all filters.&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ResetFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-	&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Disables all filters within a filter group.&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Disables all filters within a filter group.&lt;/span&gt;
     &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ResetFiltersInGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
         &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterGroupType&lt;/span&gt;
     &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
@@ -212,11 +212,11 @@ of an individually selected filter group. And the &lt;code&gt;isFiltering&lt;/co
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Even without an in-depth understanding of the feature it should be somewhat obvious which state transitions these actions initiate. One of the many benefits of the Flux architecture is that this list of actions is an exhaustive overview of all state changes that can be triggered for this particular feature.&lt;/p&gt;
+&lt;p&gt;Even without an in-depth understanding of the feature it should be somewhat understandable which state transitions these actions initiate. One of the many benefits of the Flux architecture is that this list of actions is an exhaustive overview of all state changes that can be triggered for this particular feature.&lt;/p&gt;
 
 &lt;h4 id=&#34;step-3-implement-the-response-to-actions-in-the-store:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Step 3: Implement the Response to Actions in the Store&lt;/h4&gt;
 
-&lt;p&gt;In this step we implement the core business logic of a feature. I personally tend to implement this step using TDD, which we&amp;rsquo;ll discuss a little later. The implementation of a store can be summarized as following:&lt;/p&gt;
+&lt;p&gt;In this step we implement the core business logic of a feature. I personally tend to implement this step using TDD, which I&amp;rsquo;ll discuss a little later. The implementation of a store can be summarized as following:&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;Register store with dispatcher for all actions it is interested in. In the current example that would be all &lt;code&gt;AnnotationFilteringActions&lt;/code&gt;.&lt;/li&gt;
@@ -248,7 +248,7 @@ of an individually selected filter group. And the &lt;code&gt;isFiltering&lt;/co
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;This example is purposefully not simplified. So let&amp;rsquo;s break it down a litte. The &lt;code&gt;handleToggleFilterAction&lt;/code&gt; is invoked whenever a &lt;code&gt;ToggleFilterAction&lt;/code&gt; is dispatched.
+&lt;p&gt;This example is purposefully not simplified. So let&amp;rsquo;s break it down a little. The &lt;code&gt;handleToggleFilterAction&lt;/code&gt; is invoked whenever a &lt;code&gt;ToggleFilterAction&lt;/code&gt; is dispatched.
 The &lt;code&gt;ToggleFilterAction&lt;/code&gt; carries information about which specific filter should be toggled.&lt;/p&gt;
 
 &lt;p&gt;As a very first step of implementing this business logic, the method simply toggles the filter by toggling the value of the &lt;code&gt;filter.enabled&lt;/code&gt;.&lt;/p&gt;
@@ -277,13 +277,21 @@ The &lt;code&gt;ToggleFilterAction&lt;/code&gt; carries information about which 
 
 &lt;p&gt;The very last step of each action handler is to update the state. Within the &lt;code&gt;_applyFilter()&lt;/code&gt; method, we&amp;rsquo;re updating the &lt;code&gt;isFiltering&lt;/code&gt; state value by checking if any of the filters are now activated.&lt;/p&gt;
 
-&lt;p&gt;There&amp;rsquo;s one important thing to note about this particular store: you might expect to see an additional state update that updates the values of the filters that are stored in the &lt;code&gt;AnnotationFilterState&lt;/code&gt;. Generally that is how we implement our stores, but this implementation is a little specific.&lt;/p&gt;
+&lt;p&gt;There&amp;rsquo;s one important thing to note about this particular store: you might expect to see an additional state update that updates the values of the filters that are stored in the &lt;code&gt;AnnotationFilterState&lt;/code&gt;. Generally that is how we implement our stores, but this implementation is a little special.&lt;/p&gt;
 
 &lt;p&gt;Since the filters that are stored in the &lt;code&gt;AnnotationFilterState&lt;/code&gt; need to interact with much of our existing Objective-C code, we decided to model them as classes. This means the store and the annotation filter UI share a reference to the same instances. This in turn means that all mutations that happen to filters within the store are implicitly visible to the UI. Generally we try to avoid this by exclusively using value types in our state structs - but this is a blog post about real world Flux and in this particular case the compromise for making Objective-C interop easier was acceptable.&lt;/p&gt;
 
-&lt;p&gt;In place of a state update in which we assign the new filters to the state value, we perform a phantom state update. This state update will now kick off the mechanism that updates the UI - we&amp;rsquo;ll discuss the details of that process in a second.&lt;/p&gt;
+&lt;p&gt;In place of a state update in which we assign the new filters to the state value, we perform a phantom state update as the last step of &lt;code&gt;_applyFilter()&lt;/code&gt;:&lt;/p&gt;
 
-&lt;p&gt;Technically the last line would not be necessary, since the update of &lt;code&gt;isFiltering&lt;/code&gt; in the statement before already triggers a state update and a subsequent UI update. However, I did not want the state update logic for filters to depend on that independent state update.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Phantom state update to refresh the cell state, technically not needed since filters are reference types&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// and previous statement already triggers a state update.&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This state update will now kick off the mechanism that updates the UI - we&amp;rsquo;ll discuss the details of that process in a second.&lt;/p&gt;
+
+&lt;p&gt;Technically the last line would not be necessary, since the update of &lt;code&gt;isFiltering&lt;/code&gt; in the statement before already triggers a state update and a subsequent UI update. However, I did not want these independent state updates to depend on each other.&lt;/p&gt;
 
 &lt;p&gt;We dived pretty deep into the implementation details so I want to end this section with a reminder of the high level store responsibilities:&lt;/p&gt;
 
@@ -297,7 +305,7 @@ The &lt;code&gt;ToggleFilterAction&lt;/code&gt; carries information about which 
 
 &lt;h4 id=&#34;step-4-binding-the-ui-to-the-store:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Step 4: Binding the UI to the Store&lt;/h4&gt;
 
-&lt;p&gt;One of the core Flux concepts is that an automatic UI update is triggered whenever a state update occurs. This ensures that the UI always represents the latest state and makes away with any code that is required to maintain these upates manually. This step is very similar to the bindings of a View to the ViewModel in the MVVM architecture.&lt;/p&gt;
+&lt;p&gt;One of the core Flux concepts is that an automatic UI update is triggered whenever a state update occurs. This ensures that the UI always represents the latest state and makes away with any code that is required to maintain these updates manually. This step is very similar to the bindings of a View to the ViewModel in the MVVM architecture.&lt;/p&gt;
 
 &lt;p&gt;There are many ways to implement this - in PlanGrid we decided to use ReactiveCocoa to allow the store to provide an observable state property. Here&amp;rsquo;s how the &lt;code&gt;AnnotationFilterStore&lt;/code&gt; implements this pattern:&lt;/p&gt;
 
@@ -309,7 +317,7 @@ The &lt;code&gt;ToggleFilterAction&lt;/code&gt; carries information about which 
 &lt;/p&gt;
 
 &lt;p&gt;The &lt;code&gt;_state&lt;/code&gt; property is used within the store to mutate the state. The &lt;code&gt;state&lt;/code&gt; property is used by clients that want to subscribe to the store.
-This allows store subscribers to receive state updates but doesn&amp;rsquo;t allow them to mutate state directly.&lt;/p&gt;
+This allows store subscribers to receive state updates but doesn&amp;rsquo;t allow them to mutate state directly (state mutation should only happen through actions!).&lt;/p&gt;
 
 &lt;p&gt;In the initializer the internal observable property is simply bound to the external signal producer:&lt;/p&gt;
 
@@ -317,15 +325,15 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Now any update to &lt;code&gt;_state&lt;/code&gt; will automatically send the latest state value via the signal producer stored in &lt;code&gt;state&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now any update to &lt;code&gt;_state&lt;/code&gt; will automatically send the latest state value through the signal producer stored in &lt;code&gt;state&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;All that is left, is the code that makes sure that the UI updates whenever a new &lt;code&gt;state&lt;/code&gt; value is emmitted. This can be one of the trickiest parts when getting started with the Flux pattern on iOS. On the web Flux plays extremly well with Facebook&amp;rsquo;s React framework. React was designed for this specific scenario: &lt;em&gt;re-render the UI upon state updates without requiring any additional code&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;All that is left, is the code that makes sure that the UI updates whenever a new &lt;code&gt;state&lt;/code&gt; value is emitted. This can be one of the trickiest parts when getting started with the Flux pattern on iOS. On the web Flux plays extremely well with Facebook&amp;rsquo;s React framework. React was designed for this specific scenario: &lt;em&gt;re-render the UI upon state updates without requiring any additional code&lt;/em&gt;.&lt;/p&gt;
 
-&lt;p&gt;When working with UIKit we don&amp;rsquo;t have this luxury, instead we need to implement UI updates manually. I cannot dive into this in detail within this post, otherwise the length would of it would explode. The bottom line is that we have built some components that provide a React like API for &lt;code&gt;UITableView&lt;/code&gt; and &lt;code&gt;UICollectionView&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;When working with UIKit we don&amp;rsquo;t have this luxury, instead we need to implement UI updates manually. I cannot dive into this in detail within this post, otherwise the length of it would explode. The bottom line is that we have built some components that provide a React like API for &lt;code&gt;UITableView&lt;/code&gt; and &lt;code&gt;UICollectionView&lt;/code&gt;, we&amp;rsquo;ll take a brief look at them later on.&lt;/p&gt;
 
-&lt;p&gt;If you want to learn more about them, you can check out a &lt;a href=&#34;https://skillsmatter.com/skillscasts/8179-turning-uikit-inside-out&#34;&gt;talk I gave recently&lt;/a&gt;, as well as the two GitHub repositores that go along with it (&lt;a href=&#34;https://github.com/Ben-G/AutoTable&#34;&gt;AutoTable&lt;/a&gt;, &lt;a href=&#34;https://github.com/Ben-G/UILib&#34;&gt;UILib&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;If you want to learn more about these components, you can check out a &lt;a href=&#34;https://skillsmatter.com/skillscasts/8179-turning-uikit-inside-out&#34;&gt;talk I gave recently&lt;/a&gt;, as well as the two GitHub repositories that go along with it (&lt;a href=&#34;https://github.com/Ben-G/AutoTable&#34;&gt;AutoTable&lt;/a&gt;, &lt;a href=&#34;https://github.com/Ben-G/UILib&#34;&gt;UILib&lt;/a&gt;).&lt;/p&gt;
 
-&lt;p&gt;Let&amp;rsquo;s again take a look at some real world code (in this case it is slightly shortened) from the annotation fitler feature. This code lives in the &lt;code&gt;AnnotationFilterViewController&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s again take a look at some real world code (in this case it is slightly shortened) from the annotation filter feature. This code lives in the &lt;code&gt;AnnotationFilterViewController&lt;/code&gt;:&lt;/p&gt;
 
 &lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;_bind&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;compositeDisposable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;CompositeDisposable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
 	&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// On every state update, recalculate the cells for this table view and provide them to&lt;/span&gt;
@@ -352,9 +360,9 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;In our codebase we follow a convention where each view controller has a &lt;code&gt;_bind&lt;/code&gt; method that is called from within &lt;code&gt;viewWillAppear&lt;/code&gt;. This &lt;code&gt;_bind&lt;/code&gt; method is responsible for subscribing to the store&amp;rsquo;s state and providing code that updates the UI when state changes occurr.&lt;/p&gt;
+&lt;p&gt;In our codebase we follow a convention where each view controller has a &lt;code&gt;_bind&lt;/code&gt; method that is called from within &lt;code&gt;viewWillAppear&lt;/code&gt;. This &lt;code&gt;_bind&lt;/code&gt; method is responsible for subscribing to the store&amp;rsquo;s state and providing code that updates the UI when state changes occur.&lt;/p&gt;
 
-&lt;p&gt;Since we need to implement partial UI updates ourselves and cannot rely on a React-like framework, this method usually contains code that describes how a certain state update maps to a UI update. Here ReactiveCocoa comes in very handy as it provides many different operators (&lt;code&gt;skipUntil&lt;/code&gt;, &lt;code&gt;take&lt;/code&gt;, &lt;code&gt;map&lt;/code&gt;, etc.) that make it easier to set up these relationships.&lt;/p&gt;
+&lt;p&gt;Since we need to implement partial UI updates ourselves and cannot rely on a React-like framework, this method usually contains code that describes how a certain state update maps to a UI update. Here ReactiveCocoa comes in very handy as it provides many different operators (&lt;code&gt;skipUntil&lt;/code&gt;, &lt;code&gt;take&lt;/code&gt;, &lt;code&gt;map&lt;/code&gt;, etc.) that make it easier to set up these relationships. If you haven&amp;rsquo;t used a Reactive library before this code might look a little confusing - but the small subset of ReactiveCocoa that we use can be learnt pretty quickly.&lt;/p&gt;
 
 &lt;p&gt;The first line in the example &lt;code&gt;_bind&lt;/code&gt; method above ensures that the table view gets updated whenever a state update occurs. We use the ReactiveCocoa &lt;code&gt;ignoreNil()&lt;/code&gt; operator to ensure that we don&amp;rsquo;t kick off updates for an empty state. We then use the &lt;code&gt;map&lt;/code&gt; operator to map the latest state from the store into a description of how the table view should look like.&lt;/p&gt;
 
@@ -398,9 +406,9 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;This method is essentially a free function that receives the latest state as its input and returns a description of table view in the form of a &lt;code&gt;FluxTableViewModel&lt;/code&gt;. The idea of this method is similar to React&amp;rsquo;s render function. The &lt;code&gt;FluxTableViewModel&lt;/code&gt; is entirely independent of UIKit and is a simple struct that describes the table content. You can find an open source example implementation of this in the &lt;a href=&#34;https://github.com/Ben-G/AutoTable/blob/master/AutoTable/AutoTable/TableViewModel.swift&#34;&gt;AutoTable repository&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tableViewModelForState&lt;/code&gt; is a pure function that receives the latest state as its input and returns a description of table view in the form of a &lt;code&gt;FluxTableViewModel&lt;/code&gt;. The idea of this method is similar to React&amp;rsquo;s render function. The &lt;code&gt;FluxTableViewModel&lt;/code&gt; is entirely independent of UIKit and is a simple struct that describes the  content of the table. You can find an open source example implementation of this in the &lt;a href=&#34;https://github.com/Ben-G/AutoTable/blob/master/AutoTable/AutoTable/TableViewModel.swift&#34;&gt;AutoTable repository&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;The result of this method is then bound to the &lt;code&gt;tableViewDataSource&lt;/code&gt; property of the view controller. The type stored in that property is responsible for updating the &lt;code&gt;UITableView&lt;/code&gt; based on the information provided in the &lt;code&gt;FluxTableViewModel&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The result of this method is then bound to the &lt;code&gt;tableViewDataSource&lt;/code&gt; property of the view controller. The component stored in that property is responsible for updating the &lt;code&gt;UITableView&lt;/code&gt; based on the information provided in the &lt;code&gt;FluxTableViewModel&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;Other binding code is a lot simpler, e.g. the code that enables/disables the &amp;ldquo;Clear Filter&amp;rdquo; button based on the &lt;code&gt;isFiltering&lt;/code&gt; state:&lt;/p&gt;
 
@@ -409,7 +417,7 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Implementing the UI bindings is definitely one of the trickier parts, since it doesn&amp;rsquo;t fit perfectly well together with UIKit&amp;rsquo;s programming model. But it only takes little effort to write custom components to make this easier. And in our experience we&amp;rsquo;ve saved multiples of our invested time by implementing these components instead of sticking with the classical MVC approach in which these UI updates are redundantly implemented across many, many view controllers.&lt;/p&gt;
+&lt;p&gt;Implementing the UI bindings is definitely one of the trickier parts, since it doesn&amp;rsquo;t fit perfectly well together with UIKit&amp;rsquo;s programming model. But it only takes little effort to write custom components to make this easier. In our experience we&amp;rsquo;ve saved multiples of our invested time by implementing these components instead of sticking with the classical MVC approach in which these UI updates are redundantly implemented across many, many view controllers.&lt;/p&gt;
 
 &lt;p&gt;With these UI bindings in place, we&amp;rsquo;ve discussed the last part of implementing a Flux feature. Since I covered a lot I want to give a quick recap before moving on to discussing the testing approach for Flux features.&lt;/p&gt;
 
@@ -424,7 +432,9 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;li&gt;Implement UI bindings that map the state to a view representation&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;This wraps up all of the implementation details I wanted to discuss. Let&amp;rsquo;s move on to discuss how to test Flux features.&lt;/p&gt;
+&lt;p&gt;This wraps up all of the implementation details we discussed.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s move on to discuss how to test Flux features.&lt;/p&gt;
 
 &lt;h3 id=&#34;writing-tests:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Writing Tests&lt;/h3&gt;
 
@@ -433,8 +443,8 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;p&gt;Each Flux feature has two main areas that need to be tested:&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;Testing the business logic in the store&lt;/li&gt;
-&lt;li&gt;Testing the view model providers (these are our React-like functions that produce a description of the UI based on an input state)&lt;/li&gt;
+&lt;li&gt;The business logic in the store&lt;/li&gt;
+&lt;li&gt;The view model providers (these are our React-like functions that produce a description of the UI based on an input state)&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;h4 id=&#34;testing-stores:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Testing Stores&lt;/h4&gt;
@@ -479,7 +489,7 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Once again, testing stores would merit it&amp;rsquo;s own blog post, so I won&amp;rsquo;t dive into the details of this particular test. However, the testing philosophy should be clear. We send actions to the store and validate the response in form of state changes or calls to mocked instances.&lt;/p&gt;
+&lt;p&gt;Once again, testing stores would merit it&amp;rsquo;s own blog post, so I won&amp;rsquo;t dive into the details of this particular test. However, the testing philosophy should be clear. We send actions to the store and validate the response in form of state changes or calls to injected mocks.&lt;/p&gt;
 
 &lt;p&gt;(You might wonder why we&amp;rsquo;re calling the &lt;code&gt;_handleActions&lt;/code&gt; method on the store instead of dispatching an action using the dispatcher. Originally our dispatcher used asynchronous dispatch when delivering actions, which would have meant our tests needed to be asynchronous as well. Therefore we called the handler on the store directly. The implementation of the dispatcher has since changed, so we could be using the dispatcher in our tests going forward.)&lt;/p&gt;
 
@@ -504,14 +514,11 @@ objc.io&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;For our app we have decided that our UI automation coverage is sufficient, so
 that we don&amp;rsquo;t need additional snapshot tests.&lt;/p&gt;
 
-&lt;p&gt;I have also experimented with unit testing the view provider functions that
-provide a description of a table view based on an app state. As we&amp;rsquo;ve seen earlier this view providers are pure functions that map a state to a UI description, so they are very easy to test.&lt;/p&gt;
+&lt;p&gt;I have also experimented with unit testing the view provider functions (e.g. the &lt;code&gt;tableViewModelForState&lt;/code&gt; function we&amp;rsquo;ve seen earlier). These view providers are pure functions that map a state to a UI description, so they are very easy to test based on an input and a return value. However, I found that these tests don&amp;rsquo;t add too much value as they mirror the declarative description of the implementation very closely.&lt;/p&gt;
 
-&lt;p&gt;However, I found that these tests don&amp;rsquo;t add too much value as they mirror the declarative description of the UI very closely.&lt;/p&gt;
+&lt;p&gt;Using the Flux architecture view testing becomes fairly simple because the view code is well isolated from the rest of the app. You only need to inject a state that should be rendered in your tests and you are good to go.&lt;/p&gt;
 
-&lt;p&gt;In general, using the Flux architecture view testing becomes fairly simple because the view code is well isolated from the rest of the app. You only need to inject a state that should be rendered in your tests and you are good to go.&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;m interested to see which testing strategy we&amp;rsquo;ll pick for the UI layer in the long term.&lt;/p&gt;
+&lt;p&gt;As we&amp;rsquo;ve seen there are may alternatives for testing the UI, I&amp;rsquo;m interested to see which one we (and other developers) will pick in the long term.&lt;/p&gt;
 
 &lt;h2 id=&#34;conclusion:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Conclusion&lt;/h2&gt;
 
@@ -520,19 +527,19 @@ provide a description of a table view based on an app state. As we&amp;rsquo;ve 
 &lt;p&gt;We&amp;rsquo;ve only been using the Flux architecture for about 6 months, but we are already seeing many benefits in our code base:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;New features are implemented consistently. The structure of stores, view providers and view controllers across features is mostly almost identical.&lt;/li&gt;
+&lt;li&gt;New features are implemented consistently. The structure of stores, view providers and view. controllers across features is almost identical.&lt;/li&gt;
 &lt;li&gt;By inspecting the state, the actions and the BDD-style tests it is very easy to understand how a feature works within a matter of minutes.&lt;/li&gt;
 &lt;li&gt;We have a strong separation of concerns between stores and views. There&amp;rsquo;s seldom ambiguity about where certain code should live.&lt;/li&gt;
 &lt;li&gt;Our code reads a lot simpler. The state upon which a view depends is always explicit. This makes debugging really easy, too.&lt;/li&gt;
-&lt;li&gt;All of the above three points make onboarding new developers a lot easier.&lt;/li&gt;
+&lt;li&gt;All of the above points make onboarding new developers a lot easier.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Obviously there are also some &lt;strong&gt;pain points&lt;/strong&gt;:&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;First and foremost integration with UIKit components can sometimes be a little painful. Unlike React components, UIKit views don&amp;rsquo;t provide an API to simply update themselves based on a new state. This burden lies on us and we either need to implement it manually in our view bindings or need to write custom components that wrap UIKit components.&lt;/li&gt;
+&lt;li&gt;First and foremost the integration with UIKit components can be a little painful. Unlike React components, UIKit views don&amp;rsquo;t provide an API to simply update themselves based on a new state. This burden lies on us and we either need to implement it manually in our view bindings or need to write custom components that wrap UIKit components.&lt;/li&gt;
 &lt;li&gt;Not all of our new code strictly follows the Flux pattern yet. E.g. we haven&amp;rsquo;t yet tackled a navigation/routing system that works with Flux. We need to either integrate a &lt;a href=&#34;http://khanlou.com/2015/10/coordinators-redux/&#34;&gt;coordinator pattern&lt;/a&gt; into our Flux architecture or use an actual router similar to &lt;a href=&#34;https://github.com/ReSwift/ReSwift-Router&#34;&gt;ReSwift Router&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;We need to come up with a good pattern for state that is shared across large portions of the app (as discussed very early in this post). Should we have dependencies between stores as in the original Flux pattern? What are the alternatives?&lt;/li&gt;
+&lt;li&gt;We need to come up with a good pattern for state that is shared across large portions of the app (as discussed very early in this post: &amp;ldquo;What is the Scope of a Store?&amp;rdquo;). Should we have dependencies between stores as in the original Flux pattern? What are the alternatives?&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;hr /&gt;
@@ -544,6 +551,19 @@ provide a description of a table view based on an app state. As we&amp;rsquo;ve 
 &lt;hr /&gt;
 
 &lt;p&gt;And finally, if you&amp;rsquo;re interested in working with Flux in Swift, or simply want to help deliver an important product to a huge industry, &lt;strong&gt;&lt;a href=&#34;http://grnh.se/8fcutd&#34;&gt;we&amp;rsquo;re hiring&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Thanks a lot to &lt;a href=&#34;https://twitter.com/zats&#34;&gt;@zats&lt;/a&gt;, &lt;a href=&#34;https://twitter.com/kubanekl&#34;&gt;@kubanekl&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/pixelpartner&#34;&gt;@pixelpartner&lt;/a&gt; for reading drafts of this post!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;References&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://facebook.github.io/flux/&#34;&gt;Flux&lt;/a&gt; - Facebook&amp;rsquo;s official Flux website including the original talk introducing it&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://realm.io/news/benji-encz-unidirectional-data-flow-swift/&#34;&gt;Unidirectional Data Flow in Swift&lt;/a&gt; - a talk I gave at Swift about Redux concepts and the original ReSwift implementation&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/reswift/reswift&#34;&gt;ReSwift&lt;/a&gt; - an implementation of Redux in Swift&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/ReSwift/ReSwift-Router&#34;&gt;ReSwift Router&lt;/a&gt; - a declarative router for ReSwift apps&lt;/li&gt;
+&lt;/ul&gt;
 </description>
     </item>
     
