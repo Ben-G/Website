@@ -83,7 +83,7 @@ The pattern can be described best alongside a diagram that shows the different f
 
 ![](https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux_Original.png)
 
-In the Flux architecture a **store** is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will call a handler method on all views that subscribed to the store. The **view** receives state updates only through this one interface that is called by the store.
+In the Flux architecture a **store** is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will send a change event to all views that subscribed to the store. The **view** receives changes only through this one interface that is called by the store.
 
 State updates can only occur via **actions**.
 
@@ -102,13 +102,13 @@ These constraints make designing, developing and debugging new features a lot ea
 
 ## Flux in PlanGrid for iOS
 
-For the PlanGrid iOS app we have extended the Flux specification a little bit. We enforce that each store needs to have an explicit state type. This state type describes the entire state for a certain feature. This state is observed by our views and is used to update them whenever a state change occurs:
+For the PlanGrid iOS app we have deviated slightly from the Flux reference implementation. We enforce that each store has an observable `state` property. Unlike in the original Flux implementation we don't emit a change event when a store updates. Instead views observe the `state` property of the store. Whenever the views observe a state change, they update themselves in response:
 
 ![](https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux.png)
 
-Many Flux implementations on the web make use of an  explicit state in stores as well.
+This is a very subtle deviation from the Flux reference implementation, but covering it is helpful for the upcoming sections.
 
-With an understanding of the basics of the Flux architecture, let's dive into some of the implementation details and questions we needed to answer.
+With an understanding of the basics of the Flux architecture, let's dive into some of the implementation details and questions we needed to answer while implemeting Flux in the PlanGrid app.
 
 ### What is the Scope of a Store?
 
