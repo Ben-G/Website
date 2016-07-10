@@ -96,7 +96,7 @@
 
 &lt;p&gt;The pattern can be described best alongside a diagram that shows the different flux components:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux_Original.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux_Original.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In the Flux architecture a &lt;strong&gt;store&lt;/strong&gt; is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will send a change event to all views that subscribed to the store. The &lt;strong&gt;view&lt;/strong&gt; receives changes only through this one interface that is called by the store.&lt;/p&gt;
 
@@ -121,11 +121,11 @@ The stores register with the dispatcher and let it know which actions they are i
 
 &lt;p&gt;For the PlanGrid iOS app we have deviated slightly from the Flux reference implementation. We enforce that each store has an observable &lt;code&gt;state&lt;/code&gt; property. Unlike in the original Flux implementation we don&amp;rsquo;t emit a change event when a store updates. Instead views observe the &lt;code&gt;state&lt;/code&gt; property of the store. Whenever the views observe a state change, they update themselves in response:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This is a very subtle deviation from the Flux reference implementation, but covering it is helpful for the upcoming sections.&lt;/p&gt;
 
-&lt;p&gt;With an understanding of the basics of the Flux architecture, let&amp;rsquo;s dive into some of the implementation details and questions we needed to answer while implemeting Flux in the PlanGrid app.&lt;/p&gt;
+&lt;p&gt;With an understanding of the basics of the Flux architecture, let&amp;rsquo;s dive into some of the implementation details and questions we needed to answer while implementing Flux in the PlanGrid app.&lt;/p&gt;
 
 &lt;h3 id=&#34;what-is-the-scope-of-a-store:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;What is the Scope of a Store?&lt;/h3&gt;
 
@@ -154,7 +154,7 @@ The stores register with the dispatcher and let it know which actions they are i
 
 &lt;p&gt;As an example throughout the next couple of sections we&amp;rsquo;ll use a feature that&amp;rsquo;s used in production within the PlanGrid app. The feature allows users to filter annotations on a blueprint:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/filter_screenshot.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/filter_screenshot.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The feature we&amp;rsquo;ll discuss lives in the popover that&amp;rsquo;s presented on the left hand side of the screenshot.&lt;/p&gt;
 

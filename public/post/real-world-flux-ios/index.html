@@ -202,7 +202,7 @@
 
 <p>The pattern can be described best alongside a diagram that shows the different flux components:</p>
 
-<p><img src="https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux_Original.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux_Original.png" alt="" /></p>
 
 <p>In the Flux architecture a <strong>store</strong> is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will send a change event to all views that subscribed to the store. The <strong>view</strong> receives changes only through this one interface that is called by the store.</p>
 
@@ -227,11 +227,11 @@ The stores register with the dispatcher and let it know which actions they are i
 
 <p>For the PlanGrid iOS app we have deviated slightly from the Flux reference implementation. We enforce that each store has an observable <code>state</code> property. Unlike in the original Flux implementation we don&rsquo;t emit a change event when a store updates. Instead views observe the <code>state</code> property of the store. Whenever the views observe a state change, they update themselves in response:</p>
 
-<p><img src="https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux.png" alt="" /></p>
 
 <p>This is a very subtle deviation from the Flux reference implementation, but covering it is helpful for the upcoming sections.</p>
 
-<p>With an understanding of the basics of the Flux architecture, let&rsquo;s dive into some of the implementation details and questions we needed to answer while implemeting Flux in the PlanGrid app.</p>
+<p>With an understanding of the basics of the Flux architecture, let&rsquo;s dive into some of the implementation details and questions we needed to answer while implementing Flux in the PlanGrid app.</p>
 
 <h3 id="what-is-the-scope-of-a-store:f68a385428b3fd94e51f72ad1f78204c">What is the Scope of a Store?</h3>
 
@@ -260,7 +260,7 @@ The stores register with the dispatcher and let it know which actions they are i
 
 <p>As an example throughout the next couple of sections we&rsquo;ll use a feature that&rsquo;s used in production within the PlanGrid app. The feature allows users to filter annotations on a blueprint:</p>
 
-<p><img src="https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/filter_screenshot.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/filter_screenshot.png" alt="" /></p>
 
 <p>The feature we&rsquo;ll discuss lives in the popover that&rsquo;s presented on the left hand side of the screenshot.</p>
 
