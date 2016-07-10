@@ -12,7 +12,7 @@
     
   	<meta property="og:type" content="article" />
 
-    <meta property="og:article:published_time" content="2016-07-06T10:24:54-08:00" />
+    <meta property="og:article:published_time" content="2016-07-10T10:24:54-08:00" />
 
     
     
@@ -110,8 +110,8 @@
 
         <section class="post-meta">
         
-          <time class="post-date" datetime="2016-07-06T10:24:54-08:00">
-            Jul 6, 2016
+          <time class="post-date" datetime="2016-07-10T10:24:54-08:00">
+            Jul 10, 2016
           </time>
         
          
@@ -144,11 +144,11 @@
 <p>All of this means that our app puts a lot of effort into managing state. Any mutation within the app results in more or less the following steps:</p>
 
 <ol>
-<li>Update state in local object</li>
-<li>Update UI</li>
-<li>Update database</li>
-<li>Enqueue change that will be sent to server upon available network connection</li>
-<li><strong>Notify other objects about state change</strong></li>
+<li>Update state in local object.</li>
+<li>Update UI.</li>
+<li>Update database.</li>
+<li>Enqueue change that will be sent to server upon available network connection.</li>
+<li><strong>Notify other objects about state change.</strong></li>
 </ol>
 
 <p>Though I plan on covering other aspects of our new architecture in future blog posts, I want to focus on the 5. step today. <em>How should we populate state updates within our app?</em></p>
@@ -385,9 +385,10 @@ The <code>ToggleFilterAction</code> carries information about which specific fil
 
 <p>There&rsquo;s one important thing to note about this particular store: you might expect to see an additional state update that updates the values of the filters that are stored in the <code>AnnotationFilterState</code>. Generally that is how we implement our stores, but this implementation is a little special.</p>
 
-<p>Since the filters that are stored in the <code>AnnotationFilterState</code> need to interact with much of our existing Objective-C code, we decided to model them as classes. This means the store and the annotation filter UI share a reference to the same instances. This in turn means that all mutations that happen to filters within the store are implicitly visible to the UI. Generally we try to avoid this by exclusively using value types in our state structs - but this is a blog post about real world Flux and in this particular case the compromise for making Objective-C interop easier was acceptable.</p>
+<p>Since the filters that are stored in the <code>AnnotationFilterState</code> need to interact with much of our existing Objective-C code, we decided to model them as classes. This means they are reference types and the store and the annotation filter UI share a reference to the same instances. This in turn means that all mutations that happen to filters within the store are implicitly visible to the UI. Generally we try to avoid this by exclusively using value types in our state structs - but this is a blog post about real world Flux and in this particular case the compromise for making Objective-C interop easier was acceptable.</p>
 
-<p>In place of a state update in which we assign the new filters to the state value, we perform a phantom state update as the last step of <code>_applyFilter()</code>:</p>
+<p>If the filters were value types, we would need to assign the updated filter values to our state property in order for the UI to observe the changes.
+Since we&rsquo;re using reference types here, we perform a phantom state update instead:</p>
 
 <div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">// Phantom state update to refresh the cell state, technically not needed since filters are reference types</span>
 <span style="color: #8f5902; font-style: italic">// and previous statement already triggers a state update.</span>
@@ -395,9 +396,7 @@ The <code>ToggleFilterAction</code> carries information about which specific fil
 </pre></div>
 
 
-<p>This state update will now kick off the mechanism that updates the UI - we&rsquo;ll discuss the details of that process in a second.</p>
-
-<p>Technically the last line would not be necessary, since the update of <code>isFiltering</code> in the statement before already triggers a state update and a subsequent UI update. However, I did not want these independent state updates to depend on each other.</p>
+<p>The assignment to the <code>_state</code> property will now kick off the mechanism that updates the UI - we&rsquo;ll discuss the details of that process in a second.</p>
 
 <p>We dived pretty deep into the implementation details so I want to end this section with a reminder of the high level store responsibilities:</p>
 
@@ -532,10 +531,10 @@ This allows store subscribers to receive state updates but doesn&rsquo;t allow t
 <p>When implementing a Flux feature I will typically split the work into the following segments:</p>
 
 <ol>
-<li>Define the shape of the state type</li>
-<li>Define the actions</li>
-<li>Implement business logic and state transitions for each of the actions - this implementation lives in the store</li>
-<li>Implement UI bindings that map the state to a view representation</li>
+<li>Define the shape of the state type.</li>
+<li>Define the actions.</li>
+<li>Implement business logic and state transitions for each of the actions - this implementation lives in the store.</li>
+<li>Implement UI bindings that map the state to a view representation.</li>
 </ol>
 
 <p>This wraps up all of the implementation details we discussed.</p>
@@ -549,8 +548,8 @@ This allows store subscribers to receive state updates but doesn&rsquo;t allow t
 <p>Each Flux feature has two main areas that need to be tested:</p>
 
 <ol>
-<li>The business logic in the store</li>
-<li>The view model providers (these are our React-like functions that produce a description of the UI based on an input state)</li>
+<li>The business logic in the store.</li>
+<li>The view model providers (these are our React-like functions that produce a description of the UI based on an input state).</li>
 </ol>
 
 <h4 id="testing-stores:f68a385428b3fd94e51f72ad1f78204c">Testing Stores</h4>

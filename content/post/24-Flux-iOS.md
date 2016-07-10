@@ -1,5 +1,5 @@
 +++
-date = "2016-07-06T10:24:54-08:00"
+date = "2016-07-10T10:24:54-08:00"
 draft = false
 title = "Real World Flux Architecture on iOS"
 slug = "real-world-flux-ios"
@@ -28,11 +28,11 @@ The PlanGrid app runs on both iPad and iPhone, but its UI is optimized to make u
 
 All of this means that our app puts a lot of effort into managing state. Any mutation within the app results in more or less the following steps:
 
-1. Update state in local object
-2. Update UI
-3. Update database
-4. Enqueue change that will be sent to server upon available network connection
-5. **Notify other objects about state change**
+1. Update state in local object.
+2. Update UI.
+3. Update database.
+4. Enqueue change that will be sent to server upon available network connection.
+5. **Notify other objects about state change.**
 
 Though I plan on covering other aspects of our new architecture in future blog posts, I want to focus on the 5. step today. *How should we populate state updates within our app?*
 
@@ -258,9 +258,10 @@ The very last step of each action handler is to update the state. Within the `_a
 
 There's one important thing to note about this particular store: you might expect to see an additional state update that updates the values of the filters that are stored in the `AnnotationFilterState`. Generally that is how we implement our stores, but this implementation is a little special.
 
-Since the filters that are stored in the `AnnotationFilterState` need to interact with much of our existing Objective-C code, we decided to model them as classes. This means the store and the annotation filter UI share a reference to the same instances. This in turn means that all mutations that happen to filters within the store are implicitly visible to the UI. Generally we try to avoid this by exclusively using value types in our state structs - but this is a blog post about real world Flux and in this particular case the compromise for making Objective-C interop easier was acceptable.
+Since the filters that are stored in the `AnnotationFilterState` need to interact with much of our existing Objective-C code, we decided to model them as classes. This means they are reference types and the store and the annotation filter UI share a reference to the same instances. This in turn means that all mutations that happen to filters within the store are implicitly visible to the UI. Generally we try to avoid this by exclusively using value types in our state structs - but this is a blog post about real world Flux and in this particular case the compromise for making Objective-C interop easier was acceptable.
 
-In place of a state update in which we assign the new filters to the state value, we perform a phantom state update as the last step of `_applyFilter()`:
+If the filters were value types, we would need to assign the updated filter values to our state property in order for the UI to observe the changes.
+Since we're using reference types here, we perform a phantom state update instead:
 
 {{< highlight swift >}}
 // Phantom state update to refresh the cell state, technically not needed since filters are reference types
@@ -268,9 +269,7 @@ In place of a state update in which we assign the new filters to the state value
 self._state.value = self._state.value
 {{< /highlight >}}
 
-This state update will now kick off the mechanism that updates the UI - we'll discuss the details of that process in a second.
-
-Technically the last line would not be necessary, since the update of `isFiltering` in the statement before already triggers a state update and a subsequent UI update. However, I did not want these independent state updates to depend on each other.
+The assignment to the `_state` property will now kick off the mechanism that updates the UI - we'll discuss the details of that process in a second.
 
 We dived pretty deep into the implementation details so I want to end this section with a reminder of the high level store responsibilities:
 
@@ -402,10 +401,10 @@ With these UI bindings in place, we've discussed the last part of implementing a
 
 When implementing a Flux feature I will typically split the work into the following segments:
 
-1. Define the shape of the state type
-2. Define the actions
-3. Implement business logic and state transitions for each of the actions - this implementation lives in the store
-4. Implement UI bindings that map the state to a view representation
+1. Define the shape of the state type.
+2. Define the actions.
+3. Implement business logic and state transitions for each of the actions - this implementation lives in the store.
+4. Implement UI bindings that map the state to a view representation.
 
 This wraps up all of the implementation details we discussed.
 
@@ -417,8 +416,8 @@ One of the main benefits of the Flux architecture is that it separates concerns 
 
 Each Flux feature has two main areas that need to be tested:
 
-1. The business logic in the store
-2. The view model providers (these are our React-like functions that produce a description of the UI based on an input state)
+1. The business logic in the store.
+2. The view model providers (these are our React-like functions that produce a description of the UI based on an input state).
 
 #### Testing Stores
 

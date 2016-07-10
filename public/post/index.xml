@@ -6,13 +6,13 @@
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 06 Jul 2016 10:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Sun, 10 Jul 2016 10:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Real World Flux Architecture on iOS</title>
       <link>http://blog.benjamin-encz.de/post/real-world-flux-ios/</link>
-      <pubDate>Wed, 06 Jul 2016 10:24:54 -0800</pubDate>
+      <pubDate>Sun, 10 Jul 2016 10:24:54 -0800</pubDate>
       
       <guid>http://blog.benjamin-encz.de/post/real-world-flux-ios/</guid>
       <description>
@@ -38,11 +38,11 @@
 &lt;p&gt;All of this means that our app puts a lot of effort into managing state. Any mutation within the app results in more or less the following steps:&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;Update state in local object&lt;/li&gt;
-&lt;li&gt;Update UI&lt;/li&gt;
-&lt;li&gt;Update database&lt;/li&gt;
-&lt;li&gt;Enqueue change that will be sent to server upon available network connection&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Notify other objects about state change&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Update state in local object.&lt;/li&gt;
+&lt;li&gt;Update UI.&lt;/li&gt;
+&lt;li&gt;Update database.&lt;/li&gt;
+&lt;li&gt;Enqueue change that will be sent to server upon available network connection.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Notify other objects about state change.&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;Though I plan on covering other aspects of our new architecture in future blog posts, I want to focus on the 5. step today. &lt;em&gt;How should we populate state updates within our app?&lt;/em&gt;&lt;/p&gt;
@@ -279,9 +279,10 @@ The &lt;code&gt;ToggleFilterAction&lt;/code&gt; carries information about which 
 
 &lt;p&gt;There&amp;rsquo;s one important thing to note about this particular store: you might expect to see an additional state update that updates the values of the filters that are stored in the &lt;code&gt;AnnotationFilterState&lt;/code&gt;. Generally that is how we implement our stores, but this implementation is a little special.&lt;/p&gt;
 
-&lt;p&gt;Since the filters that are stored in the &lt;code&gt;AnnotationFilterState&lt;/code&gt; need to interact with much of our existing Objective-C code, we decided to model them as classes. This means the store and the annotation filter UI share a reference to the same instances. This in turn means that all mutations that happen to filters within the store are implicitly visible to the UI. Generally we try to avoid this by exclusively using value types in our state structs - but this is a blog post about real world Flux and in this particular case the compromise for making Objective-C interop easier was acceptable.&lt;/p&gt;
+&lt;p&gt;Since the filters that are stored in the &lt;code&gt;AnnotationFilterState&lt;/code&gt; need to interact with much of our existing Objective-C code, we decided to model them as classes. This means they are reference types and the store and the annotation filter UI share a reference to the same instances. This in turn means that all mutations that happen to filters within the store are implicitly visible to the UI. Generally we try to avoid this by exclusively using value types in our state structs - but this is a blog post about real world Flux and in this particular case the compromise for making Objective-C interop easier was acceptable.&lt;/p&gt;
 
-&lt;p&gt;In place of a state update in which we assign the new filters to the state value, we perform a phantom state update as the last step of &lt;code&gt;_applyFilter()&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;If the filters were value types, we would need to assign the updated filter values to our state property in order for the UI to observe the changes.
+Since we&amp;rsquo;re using reference types here, we perform a phantom state update instead:&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Phantom state update to refresh the cell state, technically not needed since filters are reference types&lt;/span&gt;
 &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// and previous statement already triggers a state update.&lt;/span&gt;
@@ -289,9 +290,7 @@ The &lt;code&gt;ToggleFilterAction&lt;/code&gt; carries information about which 
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;This state update will now kick off the mechanism that updates the UI - we&amp;rsquo;ll discuss the details of that process in a second.&lt;/p&gt;
-
-&lt;p&gt;Technically the last line would not be necessary, since the update of &lt;code&gt;isFiltering&lt;/code&gt; in the statement before already triggers a state update and a subsequent UI update. However, I did not want these independent state updates to depend on each other.&lt;/p&gt;
+&lt;p&gt;The assignment to the &lt;code&gt;_state&lt;/code&gt; property will now kick off the mechanism that updates the UI - we&amp;rsquo;ll discuss the details of that process in a second.&lt;/p&gt;
 
 &lt;p&gt;We dived pretty deep into the implementation details so I want to end this section with a reminder of the high level store responsibilities:&lt;/p&gt;
 
@@ -426,10 +425,10 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;p&gt;When implementing a Flux feature I will typically split the work into the following segments:&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;Define the shape of the state type&lt;/li&gt;
-&lt;li&gt;Define the actions&lt;/li&gt;
-&lt;li&gt;Implement business logic and state transitions for each of the actions - this implementation lives in the store&lt;/li&gt;
-&lt;li&gt;Implement UI bindings that map the state to a view representation&lt;/li&gt;
+&lt;li&gt;Define the shape of the state type.&lt;/li&gt;
+&lt;li&gt;Define the actions.&lt;/li&gt;
+&lt;li&gt;Implement business logic and state transitions for each of the actions - this implementation lives in the store.&lt;/li&gt;
+&lt;li&gt;Implement UI bindings that map the state to a view representation.&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;This wraps up all of the implementation details we discussed.&lt;/p&gt;
@@ -443,8 +442,8 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;p&gt;Each Flux feature has two main areas that need to be tested:&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;The business logic in the store&lt;/li&gt;
-&lt;li&gt;The view model providers (these are our React-like functions that produce a description of the UI based on an input state)&lt;/li&gt;
+&lt;li&gt;The business logic in the store.&lt;/li&gt;
+&lt;li&gt;The view model providers (these are our React-like functions that produce a description of the UI based on an input state).&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;h4 id=&#34;testing-stores:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Testing Stores&lt;/h4&gt;
