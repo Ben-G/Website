@@ -81,7 +81,7 @@ Flux is a very lightweight architectural pattern that Facebook uses for client-s
 
 The pattern can be described best alongside a diagram that shows the different flux components:
 
-![](https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux_Original.png)
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux_Original.png)
 
 In the Flux architecture a **store** is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will send a change event to all views that subscribed to the store. The **view** receives changes only through this one interface that is called by the store.
 
@@ -104,11 +104,11 @@ These constraints make designing, developing and debugging new features a lot ea
 
 For the PlanGrid iOS app we have deviated slightly from the Flux reference implementation. We enforce that each store has an observable `state` property. Unlike in the original Flux implementation we don't emit a change event when a store updates. Instead views observe the `state` property of the store. Whenever the views observe a state change, they update themselves in response:
 
-![](https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/Flux.png)
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux.png)
 
 This is a very subtle deviation from the Flux reference implementation, but covering it is helpful for the upcoming sections.
 
-With an understanding of the basics of the Flux architecture, let's dive into some of the implementation details and questions we needed to answer while implemeting Flux in the PlanGrid app.
+With an understanding of the basics of the Flux architecture, let's dive into some of the implementation details and questions we needed to answer while implementing Flux in the PlanGrid app.
 
 ### What is the Scope of a Store?
 
@@ -135,7 +135,7 @@ Let's dive a little bit deeper into some of the implementation details of featur
 
 As an example throughout the next couple of sections we'll use a feature that's used in production within the PlanGrid app. The feature allows users to filter annotations on a blueprint:
 
-![](https://raw.githubusercontent.com/Ben-G/Website/flux-post/static/assets/flux-post/filter_screenshot.png)
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/filter_screenshot.png)
 
 The feature we'll discuss lives in the popover that's presented on the left hand side of the screenshot.
 
