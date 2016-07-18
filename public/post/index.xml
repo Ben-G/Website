@@ -6,8 +6,21 @@
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 10 Jul 2016 10:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Mon, 18 Jul 2016 10:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Next Post</title>
+      <link>http://blog.benjamin-encz.de/post/25-next-post/next-post/</link>
+      <pubDate>Mon, 18 Jul 2016 10:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/25-next-post/next-post/</guid>
+      <description>&lt;p&gt;A clickbait title&amp;hellip; more in here &amp;hellip;
+PlanGrid using generics, protocols, etc.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;test_image.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Real World Flux Architecture on iOS</title>
@@ -1989,24 +2002,6 @@ errorHandler.wrap {
 &lt;p&gt;This fix will likely save some headaches!&lt;/p&gt;
 
 &lt;p&gt;It also serves as a good real world example of &lt;a href=&#34;https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm&#34;&gt;detecting cycles in directed graphs&lt;/a&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Talk: Introduction to FRP on iOS</title>
-      <link>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</link>
-      <pubDate>Sat, 30 May 2015 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</guid>
-      <description>&lt;p&gt;Back in April I gave a talk at &lt;a href=&#34;http://www.meetup.com/nsmeetup/events/220950179/&#34;&gt;NSMeetup in San Francisco&lt;/a&gt; on Functional Reactive Programming on iOS.&lt;/p&gt;
-
-&lt;p&gt;The talk discusses the idea &amp;amp; motivation behind FRP and dives into some practical examples using Reactive Cocoa 2.x. The examples are based on a small &lt;a href=&#34;https://github.com/Ben-G/PeopleCRM&#34;&gt;demo app&lt;/a&gt; that I built for that talk.&lt;/p&gt;
-
-&lt;p&gt;Once Reactive Cocoa 3.0 has a final release I will likely update this talk to Swift - especially generics are extremely useful when working with the FRP toolset.&lt;/p&gt;
-
-&lt;p&gt;You can find a recording of the talk on &lt;a href=&#34;https://www.youtube.com/watch?v=I6mXJwFQ1YY&#34;&gt;YouTube&lt;/a&gt;. The slides are embedded here and available through &lt;a href=&#34;https://speakerdeck.com/benjamin_encz/functional-reactive-programming-on-ios&#34;&gt;Speakerdeck&lt;/a&gt;.&lt;/p&gt;
-
-&lt;script async class=&#34;speakerdeck-embed&#34; data-id=&#34;066b72a201f74767bbb16b29fc767c51&#34; data-ratio=&#34;1.77777777777778&#34; src=&#34;//speakerdeck.com/assets/embed.js&#34;&gt;&lt;/script&gt;
 </description>
     </item>
     

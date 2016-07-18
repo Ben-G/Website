@@ -6,8 +6,21 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 10 Jul 2016 10:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Mon, 18 Jul 2016 10:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Next Post</title>
+      <link>http://blog.benjamin-encz.de/post/25-next-post/next-post/</link>
+      <pubDate>Mon, 18 Jul 2016 10:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/25-next-post/next-post/</guid>
+      <description>&lt;p&gt;A clickbait title&amp;hellip; more in here &amp;hellip;
+PlanGrid using generics, protocols, etc.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;test_image.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Real World Flux Architecture on iOS</title>
@@ -1708,132 +1721,6 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
 &lt;p&gt;If you&amp;rsquo;re interested in the core ideas behind ReSwift, you can &lt;a href=&#34;https://realm.io/news/benji-encz-unidirectional-data-flow-swift/&#34;&gt;watch my talk from the SLUG Meetup last December&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;In case you missed the link: &lt;a href=&#34;https://github.com/ReSwift/ReSwift&#34;&gt;ReSwift is on GitHub&lt;/a&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Convenient Error Handling in Swift</title>
-      <link>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</link>
-      <pubDate>Wed, 18 Nov 2015 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</guid>
-      <description>
-
-&lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;This is great news, the new mechanism is a lot stricter.&lt;/strong&gt; Long gone are the days in which one could ignore errors by lavishly throwing &lt;code&gt;nil&lt;/code&gt; at methods that expect a pointer to an &lt;code&gt;NSError&lt;/code&gt; variable.&lt;/p&gt;
-
-&lt;h1 id=&#34;does-every-error-deserve-an-individual-catch:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Does Every Error Deserve an Individual Catch?&lt;/h1&gt;
-
-&lt;p&gt;Swift will require you to provide an error handler when you call a method that &lt;code&gt;throws&lt;/code&gt;, unless you resort to the &lt;code&gt;try?&lt;/code&gt; or &lt;code&gt;try!&lt;/code&gt; operator. Here&amp;rsquo;s an example of &lt;code&gt;try!&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;try! NSString(contentsOfFile: &amp;quot;doesNotExist&amp;quot;, encoding: NSUTF8StringEncoding)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Using this unfaithful approach an unexpectedly occurring error will cause a crash. You should only use &lt;code&gt;try!&lt;/code&gt; if your app cannot continue to work sensibly if the attempted operation fails - i.e. if you fail load the database model for your application from disk.&lt;/p&gt;
-
-&lt;p&gt;Alternatively you can use &lt;code&gt;try?&lt;/code&gt;, which will transform the result of the operation you are performing into an optional. A successful operation will yield a value, a failed operation will yield &lt;code&gt;nil&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;let data = try? NSString(contentsOfFile: &amp;quot;doesNotExist&amp;quot;, encoding: NSUTF8StringEncoding)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;With this approach all details of an error that occurred will be swallowed entirely which is suboptimal in many cases as well.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;But is it worth it writing a custom error handler for every error producing function you call? I don&amp;rsquo;t think so.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Many kinds of errors deserve your full attention, you can write code to recover from them or, at the very least, notify the user about unexpected behavior with a meaningful error message.&lt;/p&gt;
-
-&lt;p&gt;Other errors are less suitable for custom error handlers. You cannot recover from them with reasonable effort and they don&amp;rsquo;t affect the user experience. The user will not want to be informed about them. Here are examples of errors that, in my opinion, fall into this category:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Caching a downloaded image on disk fails&lt;/li&gt;
-&lt;li&gt;Your app cannot connect to the ad service you are using&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Depending on the complexity of your app, there might be hundreds of such operations.&lt;/p&gt;
-
-&lt;p&gt;Even though you can&amp;rsquo;t recover from these errors, you should definitely keep track of them through some sort of logging mechanism! How can this be done without writing many individual error handlers?&lt;/p&gt;
-
-&lt;h1 id=&#34;a-good-compromise:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;A Good Compromise?&lt;/h1&gt;
-
-&lt;p&gt;Can we strike a balance between convenience and due diligence? I believe so. In my latest side project I implemented a default error handler that deals with errors that, for one reason or another, don&amp;rsquo;t deserve a custom error handler.&lt;/p&gt;
-
-&lt;p&gt;This error handler doesn&amp;rsquo;t swallow the error completely. Instead, it logs the errors using my analytics service. This behavior is useful for any type of error that might occur in my app. It&amp;rsquo;s the largest common denominator of error handling.&lt;/p&gt;
-
-&lt;p&gt;This is what using the API looks like:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;let errorHandler = ErrorHandler()
-
-let fileContent = errorHandler.wrap {
-    return try NSString(contentsOfFile: &amp;quot;doesNotExist&amp;quot;, encoding: NSUTF8StringEncoding)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Here are the main characteristics:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;We wrap the call to call to the error producing function, along with the &lt;code&gt;try&lt;/code&gt; keyword, into a closure that gets handed to &lt;code&gt;errorHandler.wrap&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;If the closure returns a value, then &lt;code&gt;errorHandler.wrap&lt;/code&gt; will pass it through to its caller&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;errorHandler.wrap&lt;/code&gt; always returns an optional type, indicating that the wrapped operation might fail and return &lt;code&gt;nil&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;In the above example the &lt;code&gt;fileContent&lt;/code&gt; variable has a type of &lt;code&gt;String?&lt;/code&gt;.  We can use this variable in subsequent operations. While we need to check if the optional contains a value before using it, we can ignore the details of a potential error that was thrown. In this case &lt;code&gt;errorHandler.wrap&lt;/code&gt; acts as a glorified version of &lt;code&gt;try?&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;In most cases I use the default error handler when calling functions without a return value. In these cases the value of the error handler becomes more obvious:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[...]
-let errorHandler = ErrorHandler()
-
-errorHandler.wrap {
-	try cache.storeImage(image)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;We can perform a failable operation without writing any code that deals with errors or optional return values, while still capturing details about errors that might occur.&lt;/p&gt;
-
-&lt;h1 id=&#34;implementation-of-the-default-error-handler:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Implementation of the Default Error Handler&lt;/h1&gt;
-
-&lt;p&gt;The implementation of the error handler is very slim, here&amp;rsquo;s the entire code:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class ErrorHandler {
-
-    func wrap&amp;lt;ReturnType&amp;gt;(@noescape f: () throws -&amp;gt; ReturnType?) -&amp;gt; ReturnType? {
-        do {
-            return try f()
-        } catch let error {
-            logError(error)
-            return nil
-        }
-    }
-
-    func logError(error: ErrorType) {
-        let stackSymbols = NSThread.callStackSymbols()
-        print(&amp;quot;Error: \(error) \n Stack Symbols: \(stackSymbols)&amp;quot;)
-    }
-
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The &lt;code&gt;wrap&lt;/code&gt; function takes a function that can &lt;code&gt;throw&lt;/code&gt; and that can provide a return type. It executes the function within a &lt;code&gt;do&lt;/code&gt;/&lt;code&gt;try&lt;/code&gt; block. If the operation is successful it returns the return value of the function. If an error occurs the catch block calls the &lt;code&gt;logError&lt;/code&gt; function and then returns &lt;code&gt;nil&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;The &lt;code&gt;logError&lt;/code&gt; function should be customized to your needs - as an example I am printing the current stack trace along with the error message. In a production environment you would likely want to log these messages using an analytics service such as Fabric or Mixpanel.&lt;/p&gt;
-
-&lt;h1 id=&#34;conclusion:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Conclusion&lt;/h1&gt;
-
-&lt;p&gt;Good error handling is incredibly important for a good user experience - I wanted to make the process as easy as possible. Now my analytics dashboard will inform me about any unhandled error that occurs in production. Going from there I can improve error handling in my apps by adding custom handlers for the most frequent errors.&lt;/p&gt;
-
-&lt;p&gt;I definitely encourage you and myself to handle as many errors as sensible individually - but I believe there&amp;rsquo;s a large number of potential errors that are suitable for this generic error handling scheme.&lt;/p&gt;
-
-&lt;p&gt;You can find the Source Code for this blog post &lt;a href=&#34;https://github.com/Ben-G/DefaultErrorHandlerSwift&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;How do you tackle error handling? I would love to hear from you!&lt;/p&gt;
-
-&lt;h2 id=&#34;acknowledgements:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Acknowledgements&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Thanks to &lt;a href=&#34;https://github.com/antitypical/Result/blob/master/Result/Result.swift#L153-L159&#34;&gt;&lt;code&gt;Result.materialize&lt;/code&gt;&lt;/a&gt; for inspiring my &lt;code&gt;wrap&lt;/code&gt; function&lt;/li&gt;
-&lt;li&gt;Thanks to &lt;a href=&#34;https://twitter.com/morganchen96&#34;&gt;morganchen96&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/Javi&#34;&gt;javi&lt;/a&gt; for providing feedback on drafts of this post&lt;/li&gt;
-&lt;/ul&gt;
 </description>
     </item>
     

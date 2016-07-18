@@ -14,3 +14,7 @@ disqusShortname = "benjaminencz"
     githubName = "Ben-G"
     twitterName = "benjaminencz"
     stylesheets = ["highlight.css"]
+
+[blackfriday]
+    sourceRelativeLinksEval=true
+    sourceRelativeLinksProjectFolder=true
