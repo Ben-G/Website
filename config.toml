@@ -17,4 +17,5 @@ disqusShortname = "benjaminencz"
 
 [blackfriday]
     sourceRelativeLinksEval=true
+    # This setting is likely not needed
     sourceRelativeLinksProjectFolder=true
