@@ -132,7 +132,7 @@ Even though the inverted control flow is anything but beautiful, this workaround
 
 &lt;p&gt;Among many other critical improvements, the changes suggested by the &lt;a href=&#34;https://github.com/austinzheng/swift-evolution/blob/az-existentials/proposals/XXXX-enhanced-existentials.md&#34;&gt;enhanced existential proposal &lt;strong&gt;draft&lt;/strong&gt;&lt;/a&gt; would eliminate this workaround by allowing to refer to the underlying type of an existential via &lt;code&gt;.Self&lt;/code&gt; and making it possible to use that type as a generic type parameter.&lt;/p&gt;
 
-&lt;p&gt;Even though the enhanced existential proposal is still under active development it is well worth a read. If it the final implementation will cover what is in the proposal draft today, we will be able to seemingly bridge between existentials and generics. More importantly working with protocols with associated types would no longer be a painful experience - probably the most significant improvement to Swift since its inception?.&lt;/p&gt;
+&lt;p&gt;Even though the enhanced existential proposal is still under active development it is well worth a read. If it the final implementation will cover what is in the proposal draft today, we will be able to seemingly bridge between existentials and generics. More importantly working with protocols with associated types would no longer be a painful experience - probably the most significant improvement to Swift since its inception?&lt;/p&gt;
 
 &lt;hr /&gt;
 
