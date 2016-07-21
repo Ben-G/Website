@@ -75,7 +75,7 @@ let instances: [PersistedType] = [Cat(), Dog(), Cow()]
 {{< /highlight >}}
 
 How can we implement a loop that iterates over all elements in `instances` and stores them in the generic DAO that has the matching type parameter for the object we want to store?
-Ideally we would something like the following (which is syntactically invalid in Swift 2):
+Ideally we would want to do something like the following (which is syntactically invalid in Swift 2):
 
 {{< highlight swift >}}
 // `element` is an existential since we don't know the concrete type

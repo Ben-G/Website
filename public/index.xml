@@ -83,7 +83,7 @@
 &lt;/p&gt;
 
 &lt;p&gt;How can we implement a loop that iterates over all elements in &lt;code&gt;instances&lt;/code&gt; and stores them in the generic DAO that has the matching type parameter for the object we want to store?
-Ideally we would something like the following (which is syntactically invalid in Swift 2):&lt;/p&gt;
+Ideally we would want to do something like the following (which is syntactically invalid in Swift 2):&lt;/p&gt;
 
 &lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// `element` is an existential since we don&amp;#39;t know the concrete type&lt;/span&gt;
 &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// we only know it conforms to the `PeristedType` protocol.&lt;/span&gt;
