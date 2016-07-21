@@ -6,8 +6,149 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 10 Jul 2016 10:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Thu, 21 Jul 2016 10:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Bridging Existentials &amp; Generics in Swift 2</title>
+      <link>http://blog.benjamin-encz.de/post/bridging-existentials-generics-swift-2/</link>
+      <pubDate>Thu, 21 Jul 2016 10:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/bridging-existentials-generics-swift-2/</guid>
+      <description>
+
+&lt;p&gt;We are back to another episode of discussing generics, protocols with associated types and some type system limitations in Swift 2. This time we will dive into an interesting workaround that the infamous &lt;a href=&#34;https://twitter.com/jckarter&#34;&gt;jckarter&lt;/a&gt; has taught me. We will also discuss how this workaround might become unnecessary through enhanced existential support in future Swift versions. But what are existentials anyway?&lt;/p&gt;
+
+&lt;h2 id=&#34;existentials-in-swift:66f71b701ececee95a5057b67030251d&#34;&gt;Existentials in Swift&lt;/h2&gt;
+
+&lt;p&gt;Generally speaking existentials allow us to define type variables using type requirements. We can use these type variables throughout our program without knowing which concrete underlying type implements the requirements.&lt;/p&gt;
+
+&lt;p&gt;In Swift 2 the only way to define an existential type is using the &lt;code&gt;protocol&amp;lt;&amp;gt;&lt;/code&gt; syntax (&lt;a href=&#34;https://github.com/apple/swift-evolution/blob/master/proposals/0095-any-as-existential.md&#34;&gt;which will be replaced with the &lt;code&gt;&amp;amp;&lt;/code&gt; syntax in Swift 3&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;By defining e.g. a function that takes an existential argument, we are able to use any members of the existential type without knowing which concrete type was passed to the function:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Saveable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;save&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Loadable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;load&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;doThing&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;thing&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Saveable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Loadable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;thing&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;save&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;thing&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;load&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In many ways existentials are very similar to generics. Why would we choose one over the other? My friend Russ Bishop has covered this in detail in a blog post on existentials &amp;amp; generics - &lt;a href=&#34;http://www.russbishop.net/swift-associated-types-cont&#34;&gt;if you&amp;rsquo;re curious about the details you should go read it&lt;/a&gt;!&lt;/p&gt;
+
+&lt;h2 id=&#34;bridging-between-existentials-and-generics:66f71b701ececee95a5057b67030251d&#34;&gt;Bridging Between Existentials and Generics&lt;/h2&gt;
+
+&lt;p&gt;In an &lt;a href=&#34;http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/&#34;&gt;earlier blog post&lt;/a&gt; I pointed out some incompatibilites between type information that is statically known at compile time (Generics) and type information that is dynamically available at runtime (Existenials).&lt;/p&gt;
+
+&lt;p&gt;Today I want to focus on a concrete (though simplified) example that we have encountered in the PlanGrid app.&lt;/p&gt;
+
+&lt;p&gt;As part of our client-server synchronization process we persist objects that we have parsed from JSON in our database. We do that via a generic data access object. The data access object has a generic type parameter that specifies the type of object that is going to be persisted.&lt;/p&gt;
+
+&lt;p&gt;In our simplified examples we are going to persist &lt;code&gt;Cat&lt;/code&gt;, &lt;code&gt;Dog&lt;/code&gt; and &lt;code&gt;Cow&lt;/code&gt; instances.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;PersistedType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
+
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Types that will be persisted&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Cat&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;PersistedType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Dog&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;PersistedType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Cow&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;PersistedType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
+
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// DAO that provides a generic persistence mechanism&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;GenericDAO&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ObjectType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;PersistedType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;save&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;objectType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ObjectType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #3465a4&#34;&gt;print&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;Saved \(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;objectType&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;) in \(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ObjectType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;) DAO&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the PlanGrid app we have a coordination point that has a reference to all specialized instances of our generic DAO. During the synchronization process we encounter a variety of different types that need be stored in the correct instance of the generic DAO type (e.g. cows should be store via an instance of &lt;code&gt;GenericDAO&amp;lt;Cow&amp;gt;&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;Given a heterogenous list of different types that can be persisted we want to automatically find &amp;amp; call the DAO based on the type of object we encounter.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// A list of our generic data stores&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;genericDAOs&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;Any&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;GenericDAO&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Cat&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;(),&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;GenericDAO&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Dog&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;(),&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;GenericDAO&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Cow&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;()]&lt;/span&gt;
+
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// A list of objects we have parsed &amp;amp; need to persist&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;objectTypes&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;PersistedType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Cat&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(),&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Dog&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(),&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Cow&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;How can we implement a loop that iterates over all elements in &lt;code&gt;objectTypes&lt;/code&gt; and stores them in the generic DAO that has the matching type parameter for the object we want to store?
+Ideally we would something like the following (which is syntactically invalid in Swift 2):&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// `object` is an existential since we don&amp;#39;t know the concrete type&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// we only know it conforms to the `PeristedType` protocol.&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;object&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;objectTypes&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Invalid! Cannot use existential type as generic type parameter&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;dao&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;as&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;GenericDAO&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;object&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;Self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;genericDAOs&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;dao&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;save&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;object&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Some potential, future improvements to Swift could make this possible, but for now we cannot dynamically refer to the type of the existenial (&lt;code&gt;object.Self&lt;/code&gt;) and use it as a generic type parameter.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-workaround:66f71b701ececee95a5057b67030251d&#34;&gt;The Workaround&lt;/h2&gt;
+
+&lt;p&gt;The &lt;code&gt;.Self&lt;/code&gt; member, which would refer to the concrete type of the existential doesn&amp;rsquo;t exist in Swift 2. However, we can access the concrete type of the existential using &lt;code&gt;Self&lt;/code&gt; from within protocols &amp;amp; protocol extensions.&lt;/p&gt;
+
+&lt;p&gt;Using a clever inversion of control we can use that &lt;code&gt;Self&lt;/code&gt; type from within the &lt;code&gt;PersistedType&lt;/code&gt; protocol (which all persisted types implement) to dynamically specify the generic type parameter of our &lt;code&gt;GenericDAO&amp;lt;T&amp;gt;&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;extension&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;PersistedType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Pass in a list of all DAOs.&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;saveInCorrectDAO&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;potentialDAOs&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;Any&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;])&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    	&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Iterate until we find GenericDAO with type parameter that matches&lt;/span&gt;
+    	&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// our existential type.&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;dao&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;GenericDAO&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;Self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;potentialDAOs&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;dao&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;save&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// ...&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;object&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;objectTypes&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;object&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;saveInCorrectDAO&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;genericDAOs&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;From within the protocol extension we can successfully use the underlying type of the existential (&lt;code&gt;Self&lt;/code&gt;) as a generic type parameter.
+Even though the inverted control flow is anything but beatiful, this workaround can be useful to bridge the gap between existentials and generics.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-future-is-bright:66f71b701ececee95a5057b67030251d&#34;&gt;The Future is Bright&lt;/h2&gt;
+
+&lt;p&gt;Among many other critical improvements, the changes suggested by the &lt;a href=&#34;https://github.com/austinzheng/swift-evolution/blob/az-existentials/proposals/XXXX-enhanced-existentials.md&#34;&gt;enhanced existential proposal &lt;strong&gt;draft&lt;/strong&gt;&lt;/a&gt; would eliminate this workaround by allowing to refer to the underlying type of an existential via &lt;code&gt;.Self&lt;/code&gt; and making it possible to use that type as a generic type parameter.&lt;/p&gt;
+
+&lt;p&gt;Even though the enhanced existential proposal is stil under active development it is well worth a read. If it the final implementation will cover what is in the proposal draft today, we will be able to seemingly bridge between existentials and generics. More importantly working with protocols with associated types would no longer be a painful experience - probably the most signifcant improvement to Swift since its inception?.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Interested in pushing the limits of Swift? &lt;strong&gt;&lt;a href=&#34;http://grnh.se/8fcutd&#34;&gt;we&amp;rsquo;re hiring&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;References&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/austinzheng/swift-evolution/blob/az-existentials/proposals/XXXX-enhanced-existentials.md&#34;&gt;Enhanced Existentials Proposal Draft&lt;/a&gt; - Proposal draft that is slowly taking shape and outlines drastic improvements to Swift&amp;rsquo;s existential support.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/apple/swift/blob/c39da37525255d3bc141038ff567b4aca57d316e/docs/GenericsManifesto.md&#34;&gt;Generics Manifesto&lt;/a&gt; - Doug Gregor&amp;rsquo;s original swift-evolution email that outlines various potential improvements to Swift&amp;rsquo;s generics (inlcuding enhanced existentials).&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://theory.stanford.edu/~jcm/papers/mitch-plotkin-88.pdf&#34;&gt;Abstract Types Have Existential Type&lt;/a&gt; - The paper that formalized the idea of existential types in programming languages. Most relevant quote for my understanding of existentials: &amp;ldquo;Existential types provide just enough information to verify the matching condition [&amp;hellip;], without providing any information about the representation of the carrier or the algorithms used to implement the operations.&amp;ldquo;.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
     <item>
       <title>Real World Flux Architecture on iOS</title>
@@ -1708,132 +1849,6 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
 &lt;p&gt;If you&amp;rsquo;re interested in the core ideas behind ReSwift, you can &lt;a href=&#34;https://realm.io/news/benji-encz-unidirectional-data-flow-swift/&#34;&gt;watch my talk from the SLUG Meetup last December&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;In case you missed the link: &lt;a href=&#34;https://github.com/ReSwift/ReSwift&#34;&gt;ReSwift is on GitHub&lt;/a&gt;.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Convenient Error Handling in Swift</title>
-      <link>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</link>
-      <pubDate>Wed, 18 Nov 2015 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</guid>
-      <description>
-
-&lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;This is great news, the new mechanism is a lot stricter.&lt;/strong&gt; Long gone are the days in which one could ignore errors by lavishly throwing &lt;code&gt;nil&lt;/code&gt; at methods that expect a pointer to an &lt;code&gt;NSError&lt;/code&gt; variable.&lt;/p&gt;
-
-&lt;h1 id=&#34;does-every-error-deserve-an-individual-catch:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Does Every Error Deserve an Individual Catch?&lt;/h1&gt;
-
-&lt;p&gt;Swift will require you to provide an error handler when you call a method that &lt;code&gt;throws&lt;/code&gt;, unless you resort to the &lt;code&gt;try?&lt;/code&gt; or &lt;code&gt;try!&lt;/code&gt; operator. Here&amp;rsquo;s an example of &lt;code&gt;try!&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;try! NSString(contentsOfFile: &amp;quot;doesNotExist&amp;quot;, encoding: NSUTF8StringEncoding)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Using this unfaithful approach an unexpectedly occurring error will cause a crash. You should only use &lt;code&gt;try!&lt;/code&gt; if your app cannot continue to work sensibly if the attempted operation fails - i.e. if you fail load the database model for your application from disk.&lt;/p&gt;
-
-&lt;p&gt;Alternatively you can use &lt;code&gt;try?&lt;/code&gt;, which will transform the result of the operation you are performing into an optional. A successful operation will yield a value, a failed operation will yield &lt;code&gt;nil&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;let data = try? NSString(contentsOfFile: &amp;quot;doesNotExist&amp;quot;, encoding: NSUTF8StringEncoding)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;With this approach all details of an error that occurred will be swallowed entirely which is suboptimal in many cases as well.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;But is it worth it writing a custom error handler for every error producing function you call? I don&amp;rsquo;t think so.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Many kinds of errors deserve your full attention, you can write code to recover from them or, at the very least, notify the user about unexpected behavior with a meaningful error message.&lt;/p&gt;
-
-&lt;p&gt;Other errors are less suitable for custom error handlers. You cannot recover from them with reasonable effort and they don&amp;rsquo;t affect the user experience. The user will not want to be informed about them. Here are examples of errors that, in my opinion, fall into this category:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Caching a downloaded image on disk fails&lt;/li&gt;
-&lt;li&gt;Your app cannot connect to the ad service you are using&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Depending on the complexity of your app, there might be hundreds of such operations.&lt;/p&gt;
-
-&lt;p&gt;Even though you can&amp;rsquo;t recover from these errors, you should definitely keep track of them through some sort of logging mechanism! How can this be done without writing many individual error handlers?&lt;/p&gt;
-
-&lt;h1 id=&#34;a-good-compromise:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;A Good Compromise?&lt;/h1&gt;
-
-&lt;p&gt;Can we strike a balance between convenience and due diligence? I believe so. In my latest side project I implemented a default error handler that deals with errors that, for one reason or another, don&amp;rsquo;t deserve a custom error handler.&lt;/p&gt;
-
-&lt;p&gt;This error handler doesn&amp;rsquo;t swallow the error completely. Instead, it logs the errors using my analytics service. This behavior is useful for any type of error that might occur in my app. It&amp;rsquo;s the largest common denominator of error handling.&lt;/p&gt;
-
-&lt;p&gt;This is what using the API looks like:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;let errorHandler = ErrorHandler()
-
-let fileContent = errorHandler.wrap {
-    return try NSString(contentsOfFile: &amp;quot;doesNotExist&amp;quot;, encoding: NSUTF8StringEncoding)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Here are the main characteristics:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;We wrap the call to call to the error producing function, along with the &lt;code&gt;try&lt;/code&gt; keyword, into a closure that gets handed to &lt;code&gt;errorHandler.wrap&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;If the closure returns a value, then &lt;code&gt;errorHandler.wrap&lt;/code&gt; will pass it through to its caller&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;errorHandler.wrap&lt;/code&gt; always returns an optional type, indicating that the wrapped operation might fail and return &lt;code&gt;nil&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;In the above example the &lt;code&gt;fileContent&lt;/code&gt; variable has a type of &lt;code&gt;String?&lt;/code&gt;.  We can use this variable in subsequent operations. While we need to check if the optional contains a value before using it, we can ignore the details of a potential error that was thrown. In this case &lt;code&gt;errorHandler.wrap&lt;/code&gt; acts as a glorified version of &lt;code&gt;try?&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;In most cases I use the default error handler when calling functions without a return value. In these cases the value of the error handler becomes more obvious:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[...]
-let errorHandler = ErrorHandler()
-
-errorHandler.wrap {
-	try cache.storeImage(image)
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;We can perform a failable operation without writing any code that deals with errors or optional return values, while still capturing details about errors that might occur.&lt;/p&gt;
-
-&lt;h1 id=&#34;implementation-of-the-default-error-handler:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Implementation of the Default Error Handler&lt;/h1&gt;
-
-&lt;p&gt;The implementation of the error handler is very slim, here&amp;rsquo;s the entire code:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class ErrorHandler {
-
-    func wrap&amp;lt;ReturnType&amp;gt;(@noescape f: () throws -&amp;gt; ReturnType?) -&amp;gt; ReturnType? {
-        do {
-            return try f()
-        } catch let error {
-            logError(error)
-            return nil
-        }
-    }
-
-    func logError(error: ErrorType) {
-        let stackSymbols = NSThread.callStackSymbols()
-        print(&amp;quot;Error: \(error) \n Stack Symbols: \(stackSymbols)&amp;quot;)
-    }
-
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The &lt;code&gt;wrap&lt;/code&gt; function takes a function that can &lt;code&gt;throw&lt;/code&gt; and that can provide a return type. It executes the function within a &lt;code&gt;do&lt;/code&gt;/&lt;code&gt;try&lt;/code&gt; block. If the operation is successful it returns the return value of the function. If an error occurs the catch block calls the &lt;code&gt;logError&lt;/code&gt; function and then returns &lt;code&gt;nil&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;The &lt;code&gt;logError&lt;/code&gt; function should be customized to your needs - as an example I am printing the current stack trace along with the error message. In a production environment you would likely want to log these messages using an analytics service such as Fabric or Mixpanel.&lt;/p&gt;
-
-&lt;h1 id=&#34;conclusion:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Conclusion&lt;/h1&gt;
-
-&lt;p&gt;Good error handling is incredibly important for a good user experience - I wanted to make the process as easy as possible. Now my analytics dashboard will inform me about any unhandled error that occurs in production. Going from there I can improve error handling in my apps by adding custom handlers for the most frequent errors.&lt;/p&gt;
-
-&lt;p&gt;I definitely encourage you and myself to handle as many errors as sensible individually - but I believe there&amp;rsquo;s a large number of potential errors that are suitable for this generic error handling scheme.&lt;/p&gt;
-
-&lt;p&gt;You can find the Source Code for this blog post &lt;a href=&#34;https://github.com/Ben-G/DefaultErrorHandlerSwift&#34;&gt;on GitHub&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;How do you tackle error handling? I would love to hear from you!&lt;/p&gt;
-
-&lt;h2 id=&#34;acknowledgements:85608b12dd7d2681711facf6cd0f8c5a&#34;&gt;Acknowledgements&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Thanks to &lt;a href=&#34;https://github.com/antitypical/Result/blob/master/Result/Result.swift#L153-L159&#34;&gt;&lt;code&gt;Result.materialize&lt;/code&gt;&lt;/a&gt; for inspiring my &lt;code&gt;wrap&lt;/code&gt; function&lt;/li&gt;
-&lt;li&gt;Thanks to &lt;a href=&#34;https://twitter.com/morganchen96&#34;&gt;morganchen96&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/Javi&#34;&gt;javi&lt;/a&gt; for providing feedback on drafts of this post&lt;/li&gt;
-&lt;/ul&gt;
 </description>
     </item>
     
