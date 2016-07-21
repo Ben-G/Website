@@ -62,28 +62,28 @@ class GenericDAO<ObjectType: PersistedType> {
 }
 {{< /highlight >}}
 
-In the PlanGrid app we have a coordination point that has a reference to all specialized instances of our generic DAO. During the synchronization process we encounter a variety of different types that need be stored in the correct instance of the generic DAO type (e.g. cows should be store via an instance of `GenericDAO<Cow>`).
+In the PlanGrid app we have a coordination point that has a reference to all specialized instances of our generic DAO. During the synchronization process we encounter a variety of different types that need be stored in the correct instance of the generic DAO type (e.g. cows should be stored via an instance of `GenericDAO<Cow>`).
 
-Given a heterogenous list of different types that can be persisted we want to automatically find & call the DAO based on the type of object we encounter.
+Given a heterogenous list of different instances that can be persisted we want to automatically find & call the DAO based on the type of object we encounter.
 
 {{< highlight swift >}}
 // A list of our generic data stores
 let genericDAOs: [Any] = [GenericDAO<Cat>(), GenericDAO<Dog>(), GenericDAO<Cow>()]
 
-// A list of objects we have parsed & need to persist
-let objectTypes: [PersistedType] = [Cat(), Dog(), Cow()]
+// A list of instances we have parsed & need to persist
+let instances: [PersistedType] = [Cat(), Dog(), Cow()]
 {{< /highlight >}}
 
 How can we implement a loop that iterates over all elements in `objectTypes` and stores them in the generic DAO that has the matching type parameter for the object we want to store?
 Ideally we would something like the following (which is syntactically invalid in Swift 2):
 
 {{< highlight swift >}}
-// `object` is an existential since we don't know the concrete type
+// `element` is an existential since we don't know the concrete type
 // we only know it conforms to the `PeristedType` protocol.
-for object in objectTypes {
+for element in instances {
     // Invalid! Cannot use existential type as generic type parameter
-    for case let dao as? GenericDAO<object.Self> in genericDAOs {
-        dao.save(object)
+    for case let dao as? GenericDAO<element.Self> in genericDAOs {
+        dao.save(element)
     }
 }
 {{< /highlight >}}
@@ -112,8 +112,8 @@ extension PersistedType {
 
 // ...
 
-for object in objectTypes {
-    object.saveInCorrectDAO(genericDAOs)
+for element in instances {
+    element.saveInCorrectDAO(genericDAOs)
 }
 
 {{< /highlight >}}

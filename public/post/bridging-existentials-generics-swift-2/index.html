@@ -152,7 +152,7 @@
 
 <h2 id="bridging-between-existentials-and-generics:66f71b701ececee95a5057b67030251d">Bridging Between Existentials and Generics</h2>
 
-<p>In an <a href="http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/">earlier blog post</a> I pointed out some incompatibilites between type information that is statically known at compile time (Generics) and type information that is dynamically available at runtime (Existenials).</p>
+<p>In an <a href="http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/">earlier blog post</a> I pointed out some incompatibilities between type information that is statically known at compile time (Generics) and type information that is dynamically available at runtime (Existenials).</p>
 
 <p>Today I want to focus on a concrete (though simplified) example that we have encountered in the PlanGrid app.</p>
 
@@ -176,33 +176,33 @@
 </pre></div>
 
 
-<p>In the PlanGrid app we have a coordination point that has a reference to all specialized instances of our generic DAO. During the synchronization process we encounter a variety of different types that need be stored in the correct instance of the generic DAO type (e.g. cows should be store via an instance of <code>GenericDAO&lt;Cow&gt;</code>).</p>
+<p>In the PlanGrid app we have a coordination point that has a reference to all specialized instances of our generic DAO. During the synchronization process we encounter a variety of different types that need be stored in the correct instance of the generic DAO type (e.g. cows should be stored via an instance of <code>GenericDAO&lt;Cow&gt;</code>).</p>
 
-<p>Given a heterogenous list of different types that can be persisted we want to automatically find &amp; call the DAO based on the type of object we encounter.</p>
+<p>Given a heterogenous list of different instances that can be persisted we want to automatically find &amp; call the DAO based on the type of object we encounter.</p>
 
 <p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">// A list of our generic data stores</span>
 <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">genericDAOs</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #204a87">Any</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">GenericDAO</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">Cat</span><span style="color: #000000; font-weight: bold">&gt;(),</span> <span style="color: #000000">GenericDAO</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">Dog</span><span style="color: #000000; font-weight: bold">&gt;(),</span> <span style="color: #000000">GenericDAO</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">Cow</span><span style="color: #000000; font-weight: bold">&gt;()]</span>
 
-<span style="color: #8f5902; font-style: italic">// A list of objects we have parsed &amp; need to persist</span>
-<span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">objectTypes</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">PersistedType</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">Cat</span><span style="color: #000000; font-weight: bold">(),</span> <span style="color: #000000">Dog</span><span style="color: #000000; font-weight: bold">(),</span> <span style="color: #000000">Cow</span><span style="color: #000000; font-weight: bold">()]</span>
+<span style="color: #8f5902; font-style: italic">// A list of instances we have parsed &amp; need to persist</span>
+<span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">instances</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">PersistedType</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">Cat</span><span style="color: #000000; font-weight: bold">(),</span> <span style="color: #000000">Dog</span><span style="color: #000000; font-weight: bold">(),</span> <span style="color: #000000">Cow</span><span style="color: #000000; font-weight: bold">()]</span>
 </pre></div>
 </p>
 
 <p>How can we implement a loop that iterates over all elements in <code>objectTypes</code> and stores them in the generic DAO that has the matching type parameter for the object we want to store?
 Ideally we would something like the following (which is syntactically invalid in Swift 2):</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">// `object` is an existential since we don&#39;t know the concrete type</span>
+<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">// `element` is an existential since we don&#39;t know the concrete type</span>
 <span style="color: #8f5902; font-style: italic">// we only know it conforms to the `PeristedType` protocol.</span>
-<span style="color: #204a87; font-weight: bold">for</span> <span style="color: #000000">object</span> <span style="color: #204a87; font-weight: bold">in</span> <span style="color: #000000">objectTypes</span> <span style="color: #000000; font-weight: bold">{</span>
+<span style="color: #204a87; font-weight: bold">for</span> <span style="color: #000000">element</span> <span style="color: #204a87; font-weight: bold">in</span> <span style="color: #000000">instances</span> <span style="color: #000000; font-weight: bold">{</span>
     <span style="color: #8f5902; font-style: italic">// Invalid! Cannot use existential type as generic type parameter</span>
-    <span style="color: #204a87; font-weight: bold">for</span> <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">dao</span> <span style="color: #204a87; font-weight: bold">as</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000">GenericDAO</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">object</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #204a87; font-weight: bold">Self</span><span style="color: #000000; font-weight: bold">&gt;</span> <span style="color: #204a87; font-weight: bold">in</span> <span style="color: #000000">genericDAOs</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #000000">dao</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">save</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">object</span><span style="color: #000000; font-weight: bold">)</span>
+    <span style="color: #204a87; font-weight: bold">for</span> <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">dao</span> <span style="color: #204a87; font-weight: bold">as</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000">GenericDAO</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">element</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #204a87; font-weight: bold">Self</span><span style="color: #000000; font-weight: bold">&gt;</span> <span style="color: #204a87; font-weight: bold">in</span> <span style="color: #000000">genericDAOs</span> <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #000000">dao</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">save</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">element</span><span style="color: #000000; font-weight: bold">)</span>
     <span style="color: #000000; font-weight: bold">}</span>
 <span style="color: #000000; font-weight: bold">}</span>
 </pre></div>
 </p>
 
-<p>Some potential, future improvements to Swift could make this possible, but for now we cannot dynamically refer to the type of the existenial (<code>object.Self</code>) and use it as a generic type parameter.</p>
+<p>Some potential, future improvements to Swift could make this possible, but for now we cannot dynamically refer to the type of the existential (<code>object.Self</code>) and use it as a generic type parameter.</p>
 
 <h2 id="the-workaround:66f71b701ececee95a5057b67030251d">The Workaround</h2>
 
@@ -225,20 +225,20 @@ Ideally we would something like the following (which is syntactically invalid in
 
 <span style="color: #8f5902; font-style: italic">// ...</span>
 
-<span style="color: #204a87; font-weight: bold">for</span> <span style="color: #000000">object</span> <span style="color: #204a87; font-weight: bold">in</span> <span style="color: #000000">objectTypes</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #000000">object</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">saveInCorrectDAO</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">genericDAOs</span><span style="color: #000000; font-weight: bold">)</span>
+<span style="color: #204a87; font-weight: bold">for</span> <span style="color: #000000">element</span> <span style="color: #204a87; font-weight: bold">in</span> <span style="color: #000000">instances</span> <span style="color: #000000; font-weight: bold">{</span>
+    <span style="color: #000000">element</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">saveInCorrectDAO</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">genericDAOs</span><span style="color: #000000; font-weight: bold">)</span>
 <span style="color: #000000; font-weight: bold">}</span>
 </pre></div>
 </p>
 
 <p>From within the protocol extension we can successfully use the underlying type of the existential (<code>Self</code>) as a generic type parameter.
-Even though the inverted control flow is anything but beatiful, this workaround can be useful to bridge the gap between existentials and generics.</p>
+Even though the inverted control flow is anything but beautiful, this workaround can be useful to bridge the gap between existentials and generics.</p>
 
 <h2 id="the-future-is-bright:66f71b701ececee95a5057b67030251d">The Future is Bright</h2>
 
 <p>Among many other critical improvements, the changes suggested by the <a href="https://github.com/austinzheng/swift-evolution/blob/az-existentials/proposals/XXXX-enhanced-existentials.md">enhanced existential proposal <strong>draft</strong></a> would eliminate this workaround by allowing to refer to the underlying type of an existential via <code>.Self</code> and making it possible to use that type as a generic type parameter.</p>
 
-<p>Even though the enhanced existential proposal is stil under active development it is well worth a read. If it the final implementation will cover what is in the proposal draft today, we will be able to seemingly bridge between existentials and generics. More importantly working with protocols with associated types would no longer be a painful experience - probably the most signifcant improvement to Swift since its inception?.</p>
+<p>Even though the enhanced existential proposal is still under active development it is well worth a read. If it the final implementation will cover what is in the proposal draft today, we will be able to seemingly bridge between existentials and generics. More importantly working with protocols with associated types would no longer be a painful experience - probably the most significant improvement to Swift since its inception?.</p>
 
 <hr />
 
@@ -250,7 +250,7 @@ Even though the inverted control flow is anything but beatiful, this workaround 
 
 <ul>
 <li><a href="https://github.com/austinzheng/swift-evolution/blob/az-existentials/proposals/XXXX-enhanced-existentials.md">Enhanced Existentials Proposal Draft</a> - Proposal draft that is slowly taking shape and outlines drastic improvements to Swift&rsquo;s existential support.</li>
-<li><a href="https://github.com/apple/swift/blob/c39da37525255d3bc141038ff567b4aca57d316e/docs/GenericsManifesto.md">Generics Manifesto</a> - Doug Gregor&rsquo;s original swift-evolution email that outlines various potential improvements to Swift&rsquo;s generics (inlcuding enhanced existentials).</li>
+<li><a href="https://github.com/apple/swift/blob/c39da37525255d3bc141038ff567b4aca57d316e/docs/GenericsManifesto.md">Generics Manifesto</a> - Doug Gregor&rsquo;s original swift-evolution email that outlines various potential improvements to Swift&rsquo;s generics (including enhanced existentials).</li>
 <li><a href="http://theory.stanford.edu/~jcm/papers/mitch-plotkin-88.pdf">Abstract Types Have Existential Type</a> - The paper that formalized the idea of existential types in programming languages. Most relevant quote for my understanding of existentials: &ldquo;Existential types provide just enough information to verify the matching condition [&hellip;], without providing any information about the representation of the carrier or the algorithms used to implement the operations.&ldquo;.</li>
 </ul>
 
