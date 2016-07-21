@@ -38,7 +38,7 @@ In many ways existentials are very similar to generics. Why would we choose one 
 
 ## Bridging Between Existentials and Generics
 
-In an [earlier blog post](http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/) I pointed out some incompatibilities between type information that is statically known at compile time (Generics) and type information that is dynamically available at runtime (Existenials).
+In an [earlier blog post](http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/) I pointed out some incompatibilities between type information that is statically known at compile time (Generics) and type information that is dynamically available at runtime (Existentials).
 
 Today I want to focus on a concrete (though simplified) example that we have encountered in the PlanGrid app. 
 
@@ -74,7 +74,7 @@ let genericDAOs: [Any] = [GenericDAO<Cat>(), GenericDAO<Dog>(), GenericDAO<Cow>(
 let instances: [PersistedType] = [Cat(), Dog(), Cow()]
 {{< /highlight >}}
 
-How can we implement a loop that iterates over all elements in `objectTypes` and stores them in the generic DAO that has the matching type parameter for the object we want to store?
+How can we implement a loop that iterates over all elements in `instances` and stores them in the generic DAO that has the matching type parameter for the object we want to store?
 Ideally we would something like the following (which is syntactically invalid in Swift 2):
 
 {{< highlight swift >}}
@@ -88,7 +88,7 @@ for element in instances {
 }
 {{< /highlight >}}
 
-Some potential, future improvements to Swift could make this possible, but for now we cannot dynamically refer to the type of the existential (`object.Self`) and use it as a generic type parameter.
+Some potential, future improvements to Swift could make this possible, but for now we cannot dynamically refer to the type of the existential (`element.Self`) and use it as a generic type parameter.
 
 ## The Workaround
 

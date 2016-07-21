@@ -46,7 +46,7 @@
 
 &lt;h2 id=&#34;bridging-between-existentials-and-generics:66f71b701ececee95a5057b67030251d&#34;&gt;Bridging Between Existentials and Generics&lt;/h2&gt;
 
-&lt;p&gt;In an &lt;a href=&#34;http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/&#34;&gt;earlier blog post&lt;/a&gt; I pointed out some incompatibilities between type information that is statically known at compile time (Generics) and type information that is dynamically available at runtime (Existenials).&lt;/p&gt;
+&lt;p&gt;In an &lt;a href=&#34;http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/&#34;&gt;earlier blog post&lt;/a&gt; I pointed out some incompatibilities between type information that is statically known at compile time (Generics) and type information that is dynamically available at runtime (Existentials).&lt;/p&gt;
 
 &lt;p&gt;Today I want to focus on a concrete (though simplified) example that we have encountered in the PlanGrid app.&lt;/p&gt;
 
@@ -82,7 +82,7 @@
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;How can we implement a loop that iterates over all elements in &lt;code&gt;objectTypes&lt;/code&gt; and stores them in the generic DAO that has the matching type parameter for the object we want to store?
+&lt;p&gt;How can we implement a loop that iterates over all elements in &lt;code&gt;instances&lt;/code&gt; and stores them in the generic DAO that has the matching type parameter for the object we want to store?
 Ideally we would something like the following (which is syntactically invalid in Swift 2):&lt;/p&gt;
 
 &lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// `element` is an existential since we don&amp;#39;t know the concrete type&lt;/span&gt;
@@ -96,7 +96,7 @@ Ideally we would something like the following (which is syntactically invalid in
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;Some potential, future improvements to Swift could make this possible, but for now we cannot dynamically refer to the type of the existential (&lt;code&gt;object.Self&lt;/code&gt;) and use it as a generic type parameter.&lt;/p&gt;
+&lt;p&gt;Some potential, future improvements to Swift could make this possible, but for now we cannot dynamically refer to the type of the existential (&lt;code&gt;element.Self&lt;/code&gt;) and use it as a generic type parameter.&lt;/p&gt;
 
 &lt;h2 id=&#34;the-workaround:66f71b701ececee95a5057b67030251d&#34;&gt;The Workaround&lt;/h2&gt;
 
