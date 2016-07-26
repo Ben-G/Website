@@ -357,7 +357,7 @@ func tableViewModelForState(state: AnnotationFilterState) -> FluxTableViewModel 
 
     let shareStatusSection = FluxTableViewModel.SectionModel(
         headerTitle: "annotation_filters.share_status_section.title".translate(),
-        headerHeight: 28,o
+        headerHeight: 28,
         cellViewModels: AnnotationFilterViewProvider.cellViewModelsForGroup(state.shareStatusFilters)
     )
 
