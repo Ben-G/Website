@@ -21,3 +21,5 @@ A lot of my work at PlanGrid involves refactoring code to make it easier to scal
 ## Declarative APIs in Swift
 
 In programming, being a fairly informal field in practice, most ideas can be expressed best using examples. Let's take a look at how we refactored syncing data from a server within the PlanGrid app. 
+
+- Also mention signal to noise ratio (better than in imperative code)
