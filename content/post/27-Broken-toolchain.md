@@ -1,5 +1,5 @@
 +++
-date = "2016-09-14T22:24:54-08:00"
+date = "2016-09-15T22:24:54-08:00"
 draft = true
 title = "Broken Toolchain Post Mortem"
 slug = "broken-toolchain"
@@ -28,7 +28,7 @@ This is a somewhat chronological sequence of various issues I encountered when u
 
 Xcode 8 set out to fix one of the major tool annoyances that developers encounter: code signing. The "Fix issue" button has been removed and automatic code signing has been overhauled. You can enable it with a simple checkbox (which will trigger Xcode to generate provisioning profiles automatically):
 
-![]()
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/auto_sign.png)
 
 However, this option is not compatible with `xcodebuild`. I haven't dug into the details, but when this option is checked you need to be signed into a development team so I believe the feature cannot be used on a CI machine from the command line.
 
@@ -52,7 +52,7 @@ At this point I was investigating our `buid_deploy_latest` lane, which runs when
 
 This lane was failing on both steps (archiving & testing) on CI, while it was passing locally. This was the error message in the CI build log:
 
-![]()
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/ruby_crash.png)
 
 In the past, `Exit status: 65` mostly meant codesigning issues, so I spent some time investigating in the wrong direction here. The log was claiming that a build script failure was failing the build. In particular the script that uploads our dSYM to Bugsnag.
 
@@ -66,7 +66,7 @@ Within the `Derived Data` folder I found `.xcactivitylog` files. These log files
 
 Luckily these logs contained a lot more details on the failed script phase:
 
-![]()
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/ruby_crash_details.png)
 
 The following line stands out as the root cause of the script failure:
 
@@ -91,11 +91,11 @@ This one is still a complete mystery to me. At this point I can run all lanes on
 
 On the surface (looking at xcodebuild output piped to fastlane/xcpretty) the error reporting is again very limited: `**TEST FAILED** and `Exit status: 65`:
 
-![]()
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/test-hangs.png)
 
 I again resorted to investigating the `xcactivitylog` files; this time for the test activity instead of the build activity. From there it became pretty obvious what is happening:
 
-![]()
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/test-hangs-details.png)
 
 For some reason the communication between `testmanagerd`, Xcode and the Simulator is broken and timing out, which eventually causes the test suite to fail. For now my patience is over and I've replaced this particular fastlane step with a manual call to `xcodebuild test`. I'm planning on filing a radar, though I feel bad for not really having a reproduction case.
 
@@ -106,9 +106,8 @@ For some reason the communication between `testmanagerd`, Xcode and the Simulato
 
 Various builds would fail due to GitHub request timeouts that caused CocoaPods to fail. Sometimes uploads from Bitrise to HockeyApp would fail as well. Nothing to learn here, just want to demonstrate the amount of pain I went through:
 
-![]()
-![]()
-
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/hockey-deploy-failed.png)
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/github_timeout.png)
 
 ## Conclusion
 
@@ -125,3 +124,10 @@ So far the open source community has done a great job at filling the various gap
 Recent hiring efforts on Apple's developer tools team make me optimistic. 
 
 For now I will work on my patience and on improving my toolkit debugging skills. 
+
+----
+
+Couldn't stop myself from adding these, too...
+
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/last_one.png)
+![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/last_two.png)
