@@ -62,7 +62,7 @@ After spending too much time on investigating code signing as the potential issu
 
 I modified the Bitrise workflow to add a step that deployed the `Derived Data` folder to S3 after building (Bitrise offers a convenient "Artifact Deploy" step for this).
 
-Within the `Derived Data` folder I found `.xcactivitylog` files. These log files capture the output that you can see in the build log in the  Xcode IDE. StackOverflow told me that these are [files that can be unzippeXd](http://stackoverflow.com/questions/13861658/is-it-possible-to-search-though-all-xcodes-logs).
+Within the `Derived Data` folder I found `.xcactivitylog` files. These log files capture the output that you can see in the build log in the  Xcode IDE. StackOverflow told me that these are [files that can be unzipped](http://stackoverflow.com/questions/13861658/is-it-possible-to-search-though-all-xcodes-logs).
 
 Luckily these logs contained a lot more details on the failed script phase:
 
