@@ -1,6 +1,6 @@
 +++
 date = "2016-09-15T22:24:54-08:00"
-draft = true
+draft = false
 title = "Broken Toolchain Post Mortem"
 slug = "broken-toolchain"
 disqus_url = "http://blog.benjamin-encz.de/post/broken-toolchain/"
