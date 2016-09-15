@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" Broken Toolchain Post Mortem &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
+  	<meta property="og:url" content="http://blog.benjamin-encz.de/post/broken-toolchain/" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2016-09-15T22:24:54-08:00" />
+
+    
+    
+
+    <div id="navigation-bar">
+  <a href="http://blog.benjamin-encz.de/">Blog</a>
+  <a href="http://blog.benjamin-encz.de/about">About</a>
+  <a href="http://blog.benjamin-encz.de/speaking">Speaking</a>
+  
+</div>
+
+
+  <title>
+     Broken Toolchain Post Mortem &middot;  [Thinking inside a large box];
+  </title>
+
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="apple-touch-icon" href="http://blog.benjamin-encz.de/images/apple-touch-icon.png" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/navigation_bar.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/base_style_tweaks.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata" />
+
+    
+      
+          <link href="http://blog.benjamin-encz.de/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.15" />
+
+    <link rel="canonical" href="http://blog.benjamin-encz.de/post/broken-toolchain/" />
+
+    
+
+    
+</head>
+<body class="nav-closed">
+
+  
+
+ <div class="site-wrapper">
+
+
+
+
+	<header class="main-header tag-head" style="background-image: url(http://blog.benjamin-encz.de/images/japan-backdrop.jpg)">
+
+<nav class="main-nav overlay clearfix">
+  
+      <a class="menu-button" href="http://blog.benjamin-encz.de/" style="float: left;">&lt; Home</a>
+  
+  
+    
+      <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+    
+  
+</nav>
+<div class="vertical">
+    <div class="main-header-content inner">
+        <a href="http://blog.benjamin-encz.de/" style="text-decoration: none;"><h1 class="page-title">[Thinking inside a large box];</h1></a>
+        <h2 class="page-description">
+            
+        </h2>
+    </div>
+</div>
+</header>
+
+
+    
+
+
+</header>
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+    <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
+        <h1 class="post-title">Broken Toolchain Post Mortem</h1>
+        <small></small>
+
+        <section class="post-meta">
+        
+          <time class="post-date" datetime="2016-09-15T22:24:54-08:00">
+            Sep 15, 2016
+          </time>
+        
+         
+        </section>
+    </header>
+
+    <section class="post-content">
+
+
+
+
+<p>Dependency managers, IDEs, continuous integration, automated tests - all these tools are created to supercharge a developer team&rsquo;s productivity. While modern development tools are amazing in many ways, they unfortunately also add maintenance burden to a project.</p>
+
+<p>Ask me about migrating our Bitrise &amp; fastlane CI workflows to Xcode 8.</p>
+
+<p>The goal of this post it not to blame any individual party. I&rsquo;m writing this for the following reasons:</p>
+
+<ul>
+<li>share my frustration (if you&rsquo;re feeling stupid for struggling with tooling, hopefully you won&rsquo;t anymore after reading this)</li>
+<li>keep track of the issues I encountered &amp; fixed (always helpful, and I&rsquo;ll never forget why it took 3 days to fix all CI workflows)</li>
+<li>reflect on what the causes of complicated tooling are and how they might be fixed in future</li>
+</ul>
+
+<p>I also have a somewhat special relationship to tools. I remember how, as a student, complicated tooling almost deterred me from a career in software development - &ldquo;If I can&rsquo;t even get a J2EE app configured and running, I probably shouldn&rsquo;t be a software developer&rdquo;. This post is some form of self-therapy&hellip;</p>
+
+<h2 id="migrating-to-xcode-8:2e81d9f000ef3ae5966238c2b9bf864a">Migrating to Xcode 8</h2>
+
+<p>This is a somewhat chronological sequence of various issues I encountered when updating our CI server to work (again) with Xcode 8.</p>
+
+<h4 id="1-broken-code-signing:2e81d9f000ef3ae5966238c2b9bf864a">1. Broken Code Signing</h4>
+
+<p>Xcode 8 set out to fix one of the major tool annoyances that developers encounter: code signing. The &ldquo;Fix issue&rdquo; button has been removed and automatic code signing has been overhauled. You can enable it with a simple checkbox (which will trigger Xcode to generate provisioning profiles automatically):</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/auto_sign.png" alt="" /></p>
+
+<p>However, this option is not compatible with <code>xcodebuild</code>. I haven&rsquo;t dug into the details, but when this option is checked you need to be signed into a development team so I believe the feature cannot be used on a CI machine from the command line.</p>
+
+<p>Other folks ran into this issue <a href="https://github.com/fastlane/fastlane/issues/6055">as well</a>. You can just disable automatic code signing and select specific profiles as mentioned in the <a href="https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Codesigning/XcodeProject.md#readme">fastlane codesigning docs</a>.</p>
+
+<p>However, this approach is not compatible with our current build configuration. We create various different PlanGrid builds (daily, release candidates, etc.) with slightly different configurations. As part of these configurations we change the bundle identifier to allow multiple builds to be installed on a device side by side.</p>
+
+<p>In Xcode 7 we could use a script to rename the bundle identifier and the <code>Automatic</code> provisioning setting would pick the right provisioning profile based on the bundle identifier.</p>
+
+<p>However, this option is no longer available in Xcode 8 (you can go fully automated or you need to explicitly specify a profile for each target &amp; build configuration).</p>
+
+<p>I could work around this by defining an environment variable that specifies the correct provisioning profile for each lane and using that environment variable as part of the build configuration.</p>
+
+<p><strong>First issue solved; this one was easy as I could reproduce it on a local machine.</strong> At this point fastlane builds were passing locally, but for some mysterious reason they were still failing on CI with the catchall error <code>Exit status: 65</code>.</p>
+
+<p><strong>Takeaway 1:</strong> It would be great if Apple would have documented if/how automatic signing should be used with <code>xcodebuild</code>. But admittedly our use case for changing bundle identifiers dynamically is a little unconventional (we could just have separate targets).</p>
+
+<h4 id="2-ruby-issues:2e81d9f000ef3ae5966238c2b9bf864a">2. Ruby Issues</h4>
+
+<p>At this point I was investigating our <code>buid_deploy_latest</code> lane, which runs whenever we merge to <code>dev</code>. It creates a build, ships it to HockeyApp, runs the test suite and reports code coverage to codecov.</p>
+
+<p>This lane was failing on both steps (archiving &amp; testing) on CI, while it was passing locally. This was the error message in the CI build log:</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/ruby_crash.png" alt="" /></p>
+
+<p>In the past, <code>Exit status: 65</code> mostly meant codesigning issues, so I spent some time investigating in the wrong direction here. The log was claiming that a build script failure was failing the build. In particular the script that uploads our dSYM to Bugsnag.</p>
+
+<p>For too long I assumed this error message to be incorrect. The Bugsnag script is one of the last steps before codesigning so I assumed Xcode is attributing the error incorrectly. Especially since it seemed extremely unlikely that a script that hasn&rsquo;t caused any issues so far would pass locally and fail on CI.</p>
+
+<p>After spending too much time on investigating code signing as the potential issue, I found out that the build logs referred to additional log data in the <code>Derived Data</code> folder.</p>
+
+<p>I modified the Bitrise workflow to add a step that deployed the <code>Derived Data</code> folder to S3 after building (Bitrise offers a convenient &ldquo;Artifact Deploy&rdquo; step for this).</p>
+
+<p>Within the <code>Derived Data</code> folder I found <code>.xcactivitylog</code> files. These log files capture the output that you can see in the build log in the  Xcode IDE. StackOverflow told me that these are <a href="http://stackoverflow.com/questions/13861658/is-it-possible-to-search-though-all-xcodes-logs">files that can be unzippeXd</a>.</p>
+
+<p>Luckily these logs contained a lot more details on the failed script phase:</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/ruby_crash_details.png" alt="" /></p>
+
+<p>The following line stands out as the root cause of the script failure:</p>
+
+<pre><code>Could not find json-1.8.3 in any of the sources (Bundler::GemNotFound)
+</code></pre>
+
+<p>At this point I found out that the Bitrise macOS image install the latest version of ruby from homebrew, which was version <code>2.3.1</code> while I was using the macOS system default, ruby <code>2.0.0</code>, on my local machine.</p>
+
+<p>Looking at the stacktrace we can see that the script is calling ruby <code>2.0.0</code>&rsquo;s <code>require</code> function which is then calling the ruby <code>2.3.0</code> <code>bundler</code> gem. The Bugnsag script is executed with <code>usr/bin/ruby</code> (which is the system default of <code>2.0.0</code> on Bitrise). I could temporarily fix the issue by calling the script with <code>usr/local/bin/ruby</code> (which is ruby <code>2.3.0</code> installed by homebrew on Bitrise).
+I&rsquo;m tapping a little in the dark if this version mismatch is actually the root of the problem - if you&rsquo;re better versed in the ruby universe than I am, please drop a comment!</p>
+
+<p>Eventually I decided that the best solution would be to leave the script untouched and instead ensure that Bitrise uses the system version of ruby. That&rsquo;s the default on any new developer&rsquo;s machine and should therefore cause the least discrepancy between local and CI builds.</p>
+
+<p>Using <code>brew unlink ruby</code> (thanks Bitrise support for the tip!) I was able to switch back to the system ruby on Bitrise and the error vanished.</p>
+
+<p><strong>Takeaway 2:</strong> Read xcodebuild&rsquo;s error messages exactly and believe them even though they can be misleading sometimes. Probably should also pin the ruby version used locally and on CI using <code>RVM</code> or <code>chruby</code> to avoid such mismatches in future (though this would increase the time for spinning up a new machine on Bitrise). I will also need to investigate further why this issue started ocurring after switching to the Xcode 8 toolchain. So far I&rsquo;m assuming the Bitrise image was updated as part of the Xcode update and installed a newer version of ruby.</p>
+
+<h4 id="3-xcode-test-manager-timeouts:2e81d9f000ef3ae5966238c2b9bf864a">3. Xcode Test Manager Timeouts</h4>
+
+<p>This one is still a complete mystery to me. At this point I can run all lanes on fastlane locally. I can run <code>xcodebuild test</code> on Bitrise. However, running tests via fastlane on Bitrise is still failing. The failure only occurs in this combination. I&rsquo;ve opened tickets with both tools - I&rsquo;m aware that likely no one will feel responsible for fixing this since both tools work in isolation. But maybe someone else finds these issues useful? (<a href="https://github.com/bitrise-io/bitrise.io/issues/66">Bitrise</a>, <a href="https://github.com/fastlane/fastlane/issues/6111">fastlane</a>)</p>
+
+<p>On the surface (looking at xcodebuild output piped to fastlane/xcpretty) the error reporting is again very limited: <code>**TEST FAILED** and</code>Exit status: 65`:</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/test-hangs.png" alt="" /></p>
+
+<p>I again resorted to investigating the <code>xcactivitylog</code> files; this time for the test activity instead of the build activity. From there it became pretty obvious what is happening:</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/test-hangs-details.png" alt="" /></p>
+
+<p>For some reason the communication between <code>testmanagerd</code>, Xcode and the Simulator is broken and timing out, which eventually causes the test suite to fail. For now my patience is over and I&rsquo;ve replaced this particular fastlane step with a manual call to <code>xcodebuild test</code>. I&rsquo;m planning on filing a radar, though I feel bad for not really having a reproduction case.</p>
+
+<p><strong>Takeaway 3:</strong> Interop between various tools is the worst. If you encounter issues that only occur when you combine multiple tools, it is very hard to narrow down the root cause. In this case it seems like an <code>xcodebuild</code> bug. Why is it only happening when using fastlane on Bitrise? I don&rsquo;t know (yet?).</p>
+
+<h4 id="4-github-request-timeouts-hockeyapp-deploy-failure:2e81d9f000ef3ae5966238c2b9bf864a">4. GitHub Request Timeouts &amp;  HockeyApp Deploy Failure</h4>
+
+<p>Various builds would fail due to GitHub request timeouts that caused CocoaPods to fail. Sometimes uploads from Bitrise to HockeyApp would fail as well. Nothing to learn here, just want to demonstrate the amount of pain I went through:</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/hockey-deploy-failed.png" alt="" />
+<img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/github_timeout.png" alt="" /></p>
+
+<h2 id="conclusion:2e81d9f000ef3ae5966238c2b9bf864a">Conclusion</h2>
+
+<p>I should probably accept that our tools are complex and fragile and that a significant portion of my job responsibility is simply to keep things running as various tools change over time.</p>
+
+<p>However, working with tools in Apple&rsquo;s ecosystem often feels unnecessary painful.</p>
+
+<p><code>xcodebuild</code> is one of the prime examples: there&rsquo;s barely any (up to date) documentation and the unstructured build output is still a huge issue. Maybe Apple is trying to push Xcode Server? Even if that&rsquo;s the case they shouldn&rsquo;t ignore the fact that most companies &amp; open source projects rely on <code>xcodebuild</code> as of today.</p>
+
+<p>I&rsquo;m under the impression that Apple is building tools that work great for small teams and indie developers - the new automatic code signing is the latest example. But it&rsquo;s time to admit that a lot of app development happens in large companies that rely heaviliy on automation and therefore need a solid command line interface for the entire toolchain.</p>
+
+<p>So far the open source community has done a great job at filling the various gaps in Apple&rsquo;s developer tool ecosystem. But I sincerely hope these are just temporary solutions. The combinatorial complexity of piecing together various third party solutions will always lead to issues that are extremely difficult to track down and fix.</p>
+
+<p>Recent hiring efforts on Apple&rsquo;s developer tools team make me optimistic.</p>
+
+<p>For now I will work on my patience and on improving my toolkit debugging skills.</p>
+
+<hr />
+
+<p>Couldn&rsquo;t stop myself from adding these, too&hellip;</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/last_two.png" alt="" />
+<img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/last_one.png" alt="" /></p>
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+  
+
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a> (<a href="http://grnh.se/8fcutd">We're hiring!</a>)<br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Broken%20Toolchain%20Post%20Mortem&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fbroken-toolchain%2f"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fbroken-toolchain%2f"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fbroken-toolchain%2f"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
+
+    
+
+<span id="comment_section"></span>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/broken-toolchain\/';
+
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/broken-toolchain\/';
+    }
+  }
+
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/index.js"></script>
+    
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-48608026-1', 'benjamin-encz.de');
+      ga('send', 'pageview');
+    </script>
+</body>
+</html>
+

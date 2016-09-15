@@ -6,8 +6,142 @@
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 21 Jul 2016 10:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Thu, 15 Sep 2016 22:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Broken Toolchain Post Mortem</title>
+      <link>http://blog.benjamin-encz.de/post/broken-toolchain/</link>
+      <pubDate>Thu, 15 Sep 2016 22:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/broken-toolchain/</guid>
+      <description>
+
+&lt;p&gt;Dependency managers, IDEs, continuous integration, automated tests - all these tools are created to supercharge a developer team&amp;rsquo;s productivity. While modern development tools are amazing in many ways, they unfortunately also add maintenance burden to a project.&lt;/p&gt;
+
+&lt;p&gt;Ask me about migrating our Bitrise &amp;amp; fastlane CI workflows to Xcode 8.&lt;/p&gt;
+
+&lt;p&gt;The goal of this post it not to blame any individual party. I&amp;rsquo;m writing this for the following reasons:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;share my frustration (if you&amp;rsquo;re feeling stupid for struggling with tooling, hopefully you won&amp;rsquo;t anymore after reading this)&lt;/li&gt;
+&lt;li&gt;keep track of the issues I encountered &amp;amp; fixed (always helpful, and I&amp;rsquo;ll never forget why it took 3 days to fix all CI workflows)&lt;/li&gt;
+&lt;li&gt;reflect on what the causes of complicated tooling are and how they might be fixed in future&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I also have a somewhat special relationship to tools. I remember how, as a student, complicated tooling almost deterred me from a career in software development - &amp;ldquo;If I can&amp;rsquo;t even get a J2EE app configured and running, I probably shouldn&amp;rsquo;t be a software developer&amp;rdquo;. This post is some form of self-therapy&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;migrating-to-xcode-8:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;Migrating to Xcode 8&lt;/h2&gt;
+
+&lt;p&gt;This is a somewhat chronological sequence of various issues I encountered when updating our CI server to work (again) with Xcode 8.&lt;/p&gt;
+
+&lt;h4 id=&#34;1-broken-code-signing:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;1. Broken Code Signing&lt;/h4&gt;
+
+&lt;p&gt;Xcode 8 set out to fix one of the major tool annoyances that developers encounter: code signing. The &amp;ldquo;Fix issue&amp;rdquo; button has been removed and automatic code signing has been overhauled. You can enable it with a simple checkbox (which will trigger Xcode to generate provisioning profiles automatically):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/auto_sign.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;However, this option is not compatible with &lt;code&gt;xcodebuild&lt;/code&gt;. I haven&amp;rsquo;t dug into the details, but when this option is checked you need to be signed into a development team so I believe the feature cannot be used on a CI machine from the command line.&lt;/p&gt;
+
+&lt;p&gt;Other folks ran into this issue &lt;a href=&#34;https://github.com/fastlane/fastlane/issues/6055&#34;&gt;as well&lt;/a&gt;. You can just disable automatic code signing and select specific profiles as mentioned in the &lt;a href=&#34;https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Codesigning/XcodeProject.md#readme&#34;&gt;fastlane codesigning docs&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;However, this approach is not compatible with our current build configuration. We create various different PlanGrid builds (daily, release candidates, etc.) with slightly different configurations. As part of these configurations we change the bundle identifier to allow multiple builds to be installed on a device side by side.&lt;/p&gt;
+
+&lt;p&gt;In Xcode 7 we could use a script to rename the bundle identifier and the &lt;code&gt;Automatic&lt;/code&gt; provisioning setting would pick the right provisioning profile based on the bundle identifier.&lt;/p&gt;
+
+&lt;p&gt;However, this option is no longer available in Xcode 8 (you can go fully automated or you need to explicitly specify a profile for each target &amp;amp; build configuration).&lt;/p&gt;
+
+&lt;p&gt;I could work around this by defining an environment variable that specifies the correct provisioning profile for each lane and using that environment variable as part of the build configuration.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;First issue solved; this one was easy as I could reproduce it on a local machine.&lt;/strong&gt; At this point fastlane builds were passing locally, but for some mysterious reason they were still failing on CI with the catchall error &lt;code&gt;Exit status: 65&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Takeaway 1:&lt;/strong&gt; It would be great if Apple would have documented if/how automatic signing should be used with &lt;code&gt;xcodebuild&lt;/code&gt;. But admittedly our use case for changing bundle identifiers dynamically is a little unconventional (we could just have separate targets).&lt;/p&gt;
+
+&lt;h4 id=&#34;2-ruby-issues:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;2. Ruby Issues&lt;/h4&gt;
+
+&lt;p&gt;At this point I was investigating our &lt;code&gt;buid_deploy_latest&lt;/code&gt; lane, which runs whenever we merge to &lt;code&gt;dev&lt;/code&gt;. It creates a build, ships it to HockeyApp, runs the test suite and reports code coverage to codecov.&lt;/p&gt;
+
+&lt;p&gt;This lane was failing on both steps (archiving &amp;amp; testing) on CI, while it was passing locally. This was the error message in the CI build log:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/ruby_crash.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In the past, &lt;code&gt;Exit status: 65&lt;/code&gt; mostly meant codesigning issues, so I spent some time investigating in the wrong direction here. The log was claiming that a build script failure was failing the build. In particular the script that uploads our dSYM to Bugsnag.&lt;/p&gt;
+
+&lt;p&gt;For too long I assumed this error message to be incorrect. The Bugsnag script is one of the last steps before codesigning so I assumed Xcode is attributing the error incorrectly. Especially since it seemed extremely unlikely that a script that hasn&amp;rsquo;t caused any issues so far would pass locally and fail on CI.&lt;/p&gt;
+
+&lt;p&gt;After spending too much time on investigating code signing as the potential issue, I found out that the build logs referred to additional log data in the &lt;code&gt;Derived Data&lt;/code&gt; folder.&lt;/p&gt;
+
+&lt;p&gt;I modified the Bitrise workflow to add a step that deployed the &lt;code&gt;Derived Data&lt;/code&gt; folder to S3 after building (Bitrise offers a convenient &amp;ldquo;Artifact Deploy&amp;rdquo; step for this).&lt;/p&gt;
+
+&lt;p&gt;Within the &lt;code&gt;Derived Data&lt;/code&gt; folder I found &lt;code&gt;.xcactivitylog&lt;/code&gt; files. These log files capture the output that you can see in the build log in the  Xcode IDE. StackOverflow told me that these are &lt;a href=&#34;http://stackoverflow.com/questions/13861658/is-it-possible-to-search-though-all-xcodes-logs&#34;&gt;files that can be unzippeXd&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Luckily these logs contained a lot more details on the failed script phase:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/ruby_crash_details.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The following line stands out as the root cause of the script failure:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Could not find json-1.8.3 in any of the sources (Bundler::GemNotFound)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;At this point I found out that the Bitrise macOS image install the latest version of ruby from homebrew, which was version &lt;code&gt;2.3.1&lt;/code&gt; while I was using the macOS system default, ruby &lt;code&gt;2.0.0&lt;/code&gt;, on my local machine.&lt;/p&gt;
+
+&lt;p&gt;Looking at the stacktrace we can see that the script is calling ruby &lt;code&gt;2.0.0&lt;/code&gt;&amp;rsquo;s &lt;code&gt;require&lt;/code&gt; function which is then calling the ruby &lt;code&gt;2.3.0&lt;/code&gt; &lt;code&gt;bundler&lt;/code&gt; gem. The Bugnsag script is executed with &lt;code&gt;usr/bin/ruby&lt;/code&gt; (which is the system default of &lt;code&gt;2.0.0&lt;/code&gt; on Bitrise). I could temporarily fix the issue by calling the script with &lt;code&gt;usr/local/bin/ruby&lt;/code&gt; (which is ruby &lt;code&gt;2.3.0&lt;/code&gt; installed by homebrew on Bitrise).
+I&amp;rsquo;m tapping a little in the dark if this version mismatch is actually the root of the problem - if you&amp;rsquo;re better versed in the ruby universe than I am, please drop a comment!&lt;/p&gt;
+
+&lt;p&gt;Eventually I decided that the best solution would be to leave the script untouched and instead ensure that Bitrise uses the system version of ruby. That&amp;rsquo;s the default on any new developer&amp;rsquo;s machine and should therefore cause the least discrepancy between local and CI builds.&lt;/p&gt;
+
+&lt;p&gt;Using &lt;code&gt;brew unlink ruby&lt;/code&gt; (thanks Bitrise support for the tip!) I was able to switch back to the system ruby on Bitrise and the error vanished.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Takeaway 2:&lt;/strong&gt; Read xcodebuild&amp;rsquo;s error messages exactly and believe them even though they can be misleading sometimes. Probably should also pin the ruby version used locally and on CI using &lt;code&gt;RVM&lt;/code&gt; or &lt;code&gt;chruby&lt;/code&gt; to avoid such mismatches in future (though this would increase the time for spinning up a new machine on Bitrise). I will also need to investigate further why this issue started ocurring after switching to the Xcode 8 toolchain. So far I&amp;rsquo;m assuming the Bitrise image was updated as part of the Xcode update and installed a newer version of ruby.&lt;/p&gt;
+
+&lt;h4 id=&#34;3-xcode-test-manager-timeouts:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;3. Xcode Test Manager Timeouts&lt;/h4&gt;
+
+&lt;p&gt;This one is still a complete mystery to me. At this point I can run all lanes on fastlane locally. I can run &lt;code&gt;xcodebuild test&lt;/code&gt; on Bitrise. However, running tests via fastlane on Bitrise is still failing. The failure only occurs in this combination. I&amp;rsquo;ve opened tickets with both tools - I&amp;rsquo;m aware that likely no one will feel responsible for fixing this since both tools work in isolation. But maybe someone else finds these issues useful? (&lt;a href=&#34;https://github.com/bitrise-io/bitrise.io/issues/66&#34;&gt;Bitrise&lt;/a&gt;, &lt;a href=&#34;https://github.com/fastlane/fastlane/issues/6111&#34;&gt;fastlane&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;On the surface (looking at xcodebuild output piped to fastlane/xcpretty) the error reporting is again very limited: &lt;code&gt;**TEST FAILED** and&lt;/code&gt;Exit status: 65`:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/test-hangs.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I again resorted to investigating the &lt;code&gt;xcactivitylog&lt;/code&gt; files; this time for the test activity instead of the build activity. From there it became pretty obvious what is happening:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/test-hangs-details.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;For some reason the communication between &lt;code&gt;testmanagerd&lt;/code&gt;, Xcode and the Simulator is broken and timing out, which eventually causes the test suite to fail. For now my patience is over and I&amp;rsquo;ve replaced this particular fastlane step with a manual call to &lt;code&gt;xcodebuild test&lt;/code&gt;. I&amp;rsquo;m planning on filing a radar, though I feel bad for not really having a reproduction case.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Takeaway 3:&lt;/strong&gt; Interop between various tools is the worst. If you encounter issues that only occur when you combine multiple tools, it is very hard to narrow down the root cause. In this case it seems like an &lt;code&gt;xcodebuild&lt;/code&gt; bug. Why is it only happening when using fastlane on Bitrise? I don&amp;rsquo;t know (yet?).&lt;/p&gt;
+
+&lt;h4 id=&#34;4-github-request-timeouts-hockeyapp-deploy-failure:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;4. GitHub Request Timeouts &amp;amp;  HockeyApp Deploy Failure&lt;/h4&gt;
+
+&lt;p&gt;Various builds would fail due to GitHub request timeouts that caused CocoaPods to fail. Sometimes uploads from Bitrise to HockeyApp would fail as well. Nothing to learn here, just want to demonstrate the amount of pain I went through:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/hockey-deploy-failed.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/github_timeout.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;I should probably accept that our tools are complex and fragile and that a significant portion of my job responsibility is simply to keep things running as various tools change over time.&lt;/p&gt;
+
+&lt;p&gt;However, working with tools in Apple&amp;rsquo;s ecosystem often feels unnecessary painful.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;xcodebuild&lt;/code&gt; is one of the prime examples: there&amp;rsquo;s barely any (up to date) documentation and the unstructured build output is still a huge issue. Maybe Apple is trying to push Xcode Server? Even if that&amp;rsquo;s the case they shouldn&amp;rsquo;t ignore the fact that most companies &amp;amp; open source projects rely on &lt;code&gt;xcodebuild&lt;/code&gt; as of today.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m under the impression that Apple is building tools that work great for small teams and indie developers - the new automatic code signing is the latest example. But it&amp;rsquo;s time to admit that a lot of app development happens in large companies that rely heaviliy on automation and therefore need a solid command line interface for the entire toolchain.&lt;/p&gt;
+
+&lt;p&gt;So far the open source community has done a great job at filling the various gaps in Apple&amp;rsquo;s developer tool ecosystem. But I sincerely hope these are just temporary solutions. The combinatorial complexity of piecing together various third party solutions will always lead to issues that are extremely difficult to track down and fix.&lt;/p&gt;
+
+&lt;p&gt;Recent hiring efforts on Apple&amp;rsquo;s developer tools team make me optimistic.&lt;/p&gt;
+
+&lt;p&gt;For now I will work on my patience and on improving my toolkit debugging skills.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Couldn&amp;rsquo;t stop myself from adding these, too&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/last_two.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/last_one.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Bridging Existentials &amp; Generics in Swift 2</title>
@@ -2092,44 +2226,6 @@ errorHandler.wrap {
 &lt;p&gt;&lt;em&gt;Thanks &lt;a href=&#34;https://twitter.com/warrenm&#34;&gt;@warrenm&lt;/a&gt; for providing feedback and improving this post!&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;You can &lt;a href=&#34;https://twitter.com/benjaminencz&#34;&gt;find me on twitter&lt;/a&gt;, too.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>iOS 9 Detects Cycles in Layout Trees</title>
-      <link>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</link>
-      <pubDate>Thu, 09 Jul 2015 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</guid>
-      <description>
-
-&lt;p&gt;A couple of months ago I was faced with an issue that was fairly hard to debug:&lt;/p&gt;
-
-&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Hackathons are a great place to see noteworthy issues. Yesterday&amp;#39;s highlight: endless recursion in Storyboard &lt;a href=&#34;https://twitter.com/LAHacks&#34;&gt;@LAHacks&lt;/a&gt;&lt;/p&gt;&amp;mdash; Benjamin Encz (@benjaminencz) &lt;a href=&#34;https://twitter.com/benjaminencz/status/584757451469127680&#34;&gt;April 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;What I found out, after about 30 minutes of debugging, was the following:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://www.dropbox.com/s/kcjgm6sgftmxo5y/accessoryView.png?dl=1&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The hackathon attendee hat mistakenly set the &lt;code&gt;accessoryView&lt;/code&gt; of a &lt;code&gt;UITableViewCell&lt;/code&gt; to the &lt;code&gt;UITableView&lt;/code&gt; in which the cell was contained - causing an endless recursion during the first layout cycle.&lt;/p&gt;
-
-&lt;p&gt;This however wasn&amp;rsquo;t immediately obvious to me since the symptom was an exception within the &lt;code&gt;cellForRowAtIndexPath:&lt;/code&gt; method.&lt;/p&gt;
-
-&lt;h2 id=&#34;fixed-in-ios-9:9df3400d24ce9ec6d67d1afbc4f7edb2&#34;&gt;Fixed in iOS 9&lt;/h2&gt;
-
-&lt;p&gt;Today I wanted to see if it is possible to reproduce the issue with Xcode 7 Beta 3.&lt;/p&gt;
-
-&lt;p&gt;Indeed, I can still cause the crash. However, instead of causing a stack overflow the app now terminates because &lt;code&gt;CALayer&lt;/code&gt; throws an exception:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;CrashTableViewCell[33582:11713163] *** Terminating app due to uncaught exception &#39;CALayerInvalid&#39;, reason: &#39;layer &amp;lt;CALayer: 0x7f875943c730&amp;gt; is a part of cycle in its layer tree
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I couldn&amp;rsquo;t find any reference to this exception in a Stack Overflow exception so I assume the cycle detection is new in iOS 9.&lt;/p&gt;
-
-&lt;p&gt;This fix will likely save some headaches!&lt;/p&gt;
-
-&lt;p&gt;It also serves as a good real world example of &lt;a href=&#34;https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm&#34;&gt;detecting cycles in directed graphs&lt;/a&gt;.&lt;/p&gt;
 </description>
     </item>
     
