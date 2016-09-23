@@ -1,8 +1,8 @@
 +++
 date = "2016-08-10T10:24:54-08:00"
-draft = false
-title = "The Power of Declarative Programming"
-slug = "power-of-declarative-programming"
+draft = true
+title = "The Power of Declarative Programming Part 1: Separating Intent From Implementation"
+slug = "power-of-declarative-programming-part-1"
 disqus_url = "http://blog.benjamin-encz.de/post/power-of-declarative-programming/"
 +++
 
@@ -17,9 +17,11 @@ I've mostly used declarative programming in two different ways:
 - Allow code to express an intent without providing an implementation
 - Allow code to extend generic behavior through configuration
 
+We're going to discuss the first bullet point; I'll be writing a follow up post for the second point.
+
 ## Allow Code to Express an Intent Without Providing an Implementation
 
-I first encountered this approach when exploring Flux/Redux. One core principal of the Flux pattern is that Actions are used to describe intents while the implementation of these intents lives in Stores.
+I first encountered this approach when exploring Flux/Redux. One core principal of the Flux pattern is that Actions are used to describe intents while the implementation of these intents lives in stores.
 
 If you're building a view that provides a signout button, the only responsibility of your view will be to dispatch an action describing that a user should be logged out. A simplified version of this code might look like this:
 
@@ -31,15 +33,23 @@ func logoutButtonTapped() {
 
 When using Flux you are creating an application specific DSL in the form of Actions. When you're building a view you can use these actions without having any understanding of how they are implemented. This approach forces you to separate concerns.
 
-We use the idea of separating intent from implementation extensively in the PlanGrid app. We are currently implementing a new version of our client-server sync code. As part of this we have built an API for changing client side data. Our view layer doesn't need to be aware of client-server sync at all. Instead the view layer should only be able to express the intent to make changes to a piece of data in our app. With our new API our models provide a `mutate` method through which models can be changed. When mutated models are subsequently saved, our generic persistence layer writes them to the database and generates the necessary network requests to update the server side models with our local changes.
+We use the idea of separating intent from implementation extensively in the PlanGrid app. We are currently implementing a new version of our client-server sync code. As part of this we have built an API for changing client side data. Our view layer doesn't need to be aware of client-server sync at all. Instead the view layer is only able to express the intent to make changes to a piece of data in our app. With our new API our models provide a `mutate` method through which models can be changed. When mutated models are subsequently saved, our generic persistence layer writes them to the database and generates the necessary network requests to update the server side models with our local changes.
 
 By moving to this design we got a couple of benefits: 
 
 - We provide a single well defined API for modifying, persisting and syncing client side models.
-- We reduced redundant calls to our API client and made the API client a hidden implementation detail for all of our view code
-- We enabled future improvements to our sync code. By separating the intent from implementation we can now perform optimizations in our generic sync code. E.g. we can batch multiple changes into a single API request. This was not possible when the view code was calling the API client directly
+- We reduced redundant calls to our API client and made the API client a hidden implementation detail for all of our view code.
+- We enabled future improvements to our sync code. By separating the intent from implementation we can now perform optimizations in our generic sync code. E.g. we can batch multiple changes into a single API request. This was not possible when the view code was calling the API client directly.
+
+In programming a lot of problems can be solved by an additional level of indirection. The indirection between intent and implementation enables a better separation of concerns and therefore makes it easier to change the implementation over time. 
+By using a declarative intent, we can keep the API surface of our components at a minimum.
 
 ## Allow Code to Extend Generic Behavior Through Configuration
+
+Declarative code can also be used to implement polymorphism and is a great alternative to subclassing.
+
+
+## Conclusion
 
 
 
