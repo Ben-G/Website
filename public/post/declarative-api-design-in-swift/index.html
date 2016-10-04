@@ -160,7 +160,7 @@
 
 <p>The following type captures the essence of our control flow: we have a sequences of requests. Each request might depend on the result of the previous request.</p>
 
-<p><em>Note: Some types names might seem a little odd, but they mostly follow an app-specific ontology (e.g. Operation). Others should simply be renamed; still waiting for that refactor capabilities for Swift code&hellip;</em></p>
+<p><em>Note: Some types names might seem a little odd, but they mostly follow an app-specific ontology (e.g. Operation). Others should simply be renamed; still waiting for that refactor capability for Swift code&hellip;</em></p>
 
 <div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">typealias</span> <span style="color: #000000">PreviousRequestTuple</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">(</span>
 	<span style="color: #000000">request</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">,</span> 
@@ -185,11 +185,14 @@
 
 <p>It&rsquo;s worth noting that <code>PushRequest</code> isn&rsquo;t an ideal name for the return type of this method. The type is only a description of a request (endpoint, HTTP method, etc.), it doesn&rsquo;t perform any work on its own. That&rsquo;s an important aspect of this declarative design.</p>
 
-<p>You might also have noticed that the protocol comes with a <code>class</code> requirement. We made this decision after realizing that the <code>OperationRequestSequence</code> is a stateful type. It needs to be able to capture and use results from previous requests (the third request might need to access the response from the first request). While this could have been modeled with a struct with <code>mutating</code> methods, that approach made the code in the uploader a fair bit more complex (correctly re-assigning mutated struct values isn&rsquo;t always trivial).</p>
+<p>You might also have noticed that the protocol comes with a <code>class</code> requirement. We made this decision after realizing that the <code>OperationRequestSequence</code> is a stateful type. It needs to be able to capture and use results from previous requests (the third request might need to access the response from the first request). While this could have been modeled with a struct with <code>mutating</code> methods, that approach made the code in the uploader a fair bit more complex (correctly re-assigning mutated struct values can require some boilerplate code).</p>
 
 <p>After implementing the first request sequence based on the <code>OperationRequestSequence</code> protocol, we noticed that it often would be more convenient to simply provide an array of chained requests instead of implementing the <code>nextRequest</code> method. We added an <code>ArrayRequestSequence</code> protocol that provides a default implementation based on an array of requests:</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">typealias</span> <span style="color: #000000">RequestContinuation</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span>
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">// If each requests implements the signature of the `nextRequest` method itself,</span>
+<span style="color: #8f5902; font-style: italic">// we can provide an implementation of `nextRequest` that simply composes all</span>
+<span style="color: #8f5902; font-style: italic">// requests in the `requests` array by iterating over them.</span>
+<span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">typealias</span> <span style="color: #000000">RequestContinuation</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span>
 
 <span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">protocol</span> <span style="color: #000000">ArrayRequestSequence</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">OperationRequestSequence</span> <span style="color: #000000; font-weight: bold">{</span>
     <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">currentRequestIndex</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Int</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #204a87; font-weight: bold">get</span> <span style="color: #204a87; font-weight: bold">set</span> <span style="color: #000000; font-weight: bold">}</span>
@@ -198,6 +201,10 @@
 
 <span style="color: #204a87; font-weight: bold">extension</span> <span style="color: #000000">ArrayRequestSequence</span> <span style="color: #000000; font-weight: bold">{</span>
     <span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">nextRequest</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">currentRequestIndex</span> <span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">requests</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #3465a4">count</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #204a87; font-weight: bold">nil</span> <span style="color: #000000; font-weight: bold">}</span>
+
+    	<span style="color: #8f5902; font-style: italic">// Iterate over all requests in the requests array. </span>
+    	<span style="color: #8f5902; font-style: italic">// Pass result from previous request to next one.</span>
         <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">nextRequest</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">try</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">requests</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">currentRequestIndex</span><span style="color: #000000; font-weight: bold">](</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">)</span>
         <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">currentRequestIndex</span> <span style="color: #ce5c00; font-weight: bold">+=</span> <span style="color: #0000cf; font-weight: bold">1</span>
         <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">nextRequest</span>
@@ -212,7 +219,7 @@
 
 <p>As an example, let&rsquo;s take a look at the upload sequence for uploading snapshots (snapshots in PlanGrid capture a blueprint + annotations in an image that can be exported):</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">/// Describes a sequence of requests for uploading a snapshot.</span>
+<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">/// Describes a sequence of requests for uploading a snapshot.</span>
 <span style="color: #204a87; font-weight: bold">final</span> <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">SnapshotUploadRequestSequence</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">ArrayRequestSequence</span> <span style="color: #000000; font-weight: bold">{</span>
 
     <span style="color: #8f5902; font-style: italic">// Removed boilerplate initializer &amp; </span>
@@ -298,7 +305,7 @@
 
 <span style="color: #000000; font-weight: bold">}</span>
 </pre></div>
-
+</p>
 
 <p>A few things should stand out in this implementation:</p>
 
@@ -306,7 +313,7 @@
 <li>It has almost no imperative code. Most code describes network request based on instance variables and previous requests.</li>
 <li>It doesn&rsquo;t call the networking layer, nor does it have any knowledge of the type that actually performs the upload. It just describes the intent of each request. In fact, the code has no observable side effects at all, it only mutates internal state.</li>
 <li>There is almost no error handling code here. The responsibility of this type is only to handle errors specific to this request sequence (e.g. missing required data from a previous request). All other errors are generically handled in the networking layer.</li>
-<li>We are using separate types (<code>PushInMemoryRequestDescription</code>/<code>AWSMultipartRequestDescription</code>) to model requests to our API vs. requests to AWS. Our uploader switches over these types and uses a different URL session configuration for each. This way we don&rsquo;t send our API auth token to AWS.</li>
+<li>We are using separate types (<code>PushInMemoryRequestDescription</code>/<code>AWSMultipartRequestDescription</code>) to model requests to our API vs. requests to AWS. Our uploader switches over these types and uses a different <code>NSURLSessionConfiguration</code> for each. This way we don&rsquo;t send our API auth token to AWS.</li>
 </ul>
 
 <p>I won&rsquo;t discuss the entire code in detail, but I hope this sample shows the various advantages of a declarative approach that I mentioned earlier:</p>
@@ -326,25 +333,27 @@
 
 <p><strong>Separation of concerns</strong> was a lot harder to come by. Instead of simply describing a request sequence, the NSOperations in the NSOperationQueue themselves were responsible for kicking off a network request. This promptly introduced a bunch of other responsibilities such as request cancellation and error handling. While similar code had been implemented in other places that dealt with creating upload requests there was no good way of sharing that implementation. Subclassing wasn&rsquo;t an option since most upload requests were modeled as a single <code>NSOperation</code>, while this upload request sequence was modeled as an <code>NSOperation</code> that wrapped an <code>NSOperationQueue</code>.</p>
 
-<p>The <strong>signal/noise ratio</strong> of the NSOperationQueue based solution was a lot worse. The code was littered with references to the network layer and with <code>NSOperation</code> specific code, such as the <code>main</code> and <code>finish</code> methods. Without knowing about the sequence of requests required by the API it would have been hard to understand what exactly the operation was responsible for.</p>
+<p>The <strong>signal/noise ratio</strong> of the NSOperationQueue based solution was a lot worse. The code was littered with references to the network layer and with <code>NSOperation</code> specific code, such as the <code>main</code> and operation f methods.</p>
 
 <p>The <strong>API was a lot worse to deal with for developers</strong>. Instead of simply implementing a protocol, as in the new Swift solution, one needed to understand a set of conventions. While most conventions were documented there was no way of enforcing them programmatically.</p>
 
-<p>Among other issues, this resulted in some bugs around error reporting for network requests. In order to avoid each operation implementing its own error reporting code, it was handled in a central location. The error handling code would run whenever a operation finished. The error handling code would check for the presence of a value in the <code>error</code> property of the operation. In order to report an error a developer needed to set the <code>error</code> property on the <code>NSOperation</code> subclass before the operation completed. Since this was a non-obvious convention (that wasn&rsquo;t well documented) a bunch of new code forgot to set that property. This resulted in a decent amount of unreported errors.</p>
+<p>Among other issues, this resulted in some bugs around error reporting for network requests. In order to avoid each operation implementing its own error reporting code, it was handled in a central location. The error handling code would run whenever a operation finished. The code would check for the presence of a value in the <code>error</code> property of the operation. In order to report an error a developer needed to set the <code>error</code> property on the <code>NSOperation</code> subclass before the operation completed. Since this was a non-obvious convention (that wasn&rsquo;t well documented) a bunch of new code forgot to set that property. This resulted in a decent amount of unreported errors.</p>
 
-<p>TL;DR: we&rsquo;re glad we&rsquo;re able to provide a more explicit API &amp; easier to understand code to developers that will change the upload code in future.</p>
+<p>TL;DR: we&rsquo;re glad that we&rsquo;re now able to provide a more explicit API that results in code that is easier to read.</p>
 
 <h2 id="conclusion:b989f8f58ed8c5aa5f8ff74af770fe9e">Conclusion</h2>
 
 <p>Using a declarative programming approach has had a huge impact on our codebase and our productivity. We can provide constrained APIs that can be only used in one way and don&rsquo;t leave a lot of room for error. We can avoid subclassing as a means of polymorphism and instead implement generic types that are controlled by declarative code. We can write code with excellent signal to noise ratio. The declarative code we write is extremely easy to test (to the point where even testing enthusiasts might deem tests unnecessary). So what are the downsides, if any?</p>
 
-<p>Firstly, there&rsquo;s some cost associated with understanding our custom abstraction. However, the cost can be mitigated by careful API design, and by providing tests that serve as example implementations.</p>
+<p>Firstly, there&rsquo;s some cost associated with understanding our custom abstractions. However, the cost can be mitigated by careful API design, and by providing tests that serve as example implementations.</p>
 
-<p>Secondly, and more importantly, declarative programming isn&rsquo;t always applicable. You need a problem that is solved multiple times throughout your codebase in a very similar way. If you try to apply declarative programming principles to code that needs a high degree of customization, you&rsquo;ve built the wrong abstraction and will end up with convoluted semi-declarative code. As with any abstraction, introducing it too early can cause a lot of harm.</p>
+<p>Secondly, and more importantly, declarative programming isn&rsquo;t always applicable. You need a problem that is solved multiple times throughout your codebase in a very similar way. If you try to apply declarative programming principles to code that needs a high degree of customization, you&rsquo;ve built the wrong abstraction and will end up with convoluted semi-declarative code. As with any abstraction, introducing it too early will cause harm.</p>
 
-<p><strong>Declarative APIs place more burden onto the API developer and less onto the API consumer</strong>. In order to provide a declarative API a developer needs to be able to isolate the interface strictly from the implementation details; this is a lot less true for imperative APIs. React and GraphQL have demonstrated that the simplicity of declarative APIs can enable a great developer experience while making it easier for development teams to write coherent code at scale.</p>
+<p>There&rsquo;s one last observation I&rsquo;d like to squeeze into this post: <strong>Declarative APIs place more burden onto the API developer and less onto the API consumer</strong>. In order to provide a declarative API a developer needs to be able to isolate the interface strictly from the implementation details; this is a lot less true for imperative APIs. React and GraphQL have demonstrated that the simplicity of declarative APIs can enable a great developer experience while making it easier for development teams to write coherent code at scale.</p>
 
-<p>I think this is just a first step into a future where we&rsquo;ll see sophisticated libraries hide their complexity by providing simple, declarative, interfaces. And hopefully, some day, we&rsquo;ll get a declarative UI library for building iOS apps<sup class="footnote-ref" id="fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:2"><a rel="footnote" href="#fn:b989f8f58ed8c5aa5f8ff74af770fe9e:2">2</a></sup>.</p>
+<p>Soon after I started working on apps I naively wondered why we couldn&rsquo;t just build them by configuring pre-existing components, without writing much, if any, custom code. Libraries like React and GraphQL have made this future a little more likely. I think this is just a first step, and going forward we&rsquo;ll see more sophisticated libraries hide their complexity by providing simple, declarative, interfaces.</p>
+
+<p>And hopefully, some day, we&rsquo;ll get a declarative UI library for building iOS apps<sup class="footnote-ref" id="fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:2"><a rel="footnote" href="#fn:b989f8f58ed8c5aa5f8ff74af770fe9e:2">2</a></sup>.</p>
 <div class="footnotes">
 
 <hr />

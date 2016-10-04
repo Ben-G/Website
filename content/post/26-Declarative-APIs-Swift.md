@@ -1,5 +1,5 @@
 +++
-date = "2016-09-25T10:24:54-08:00"
+date = "2016-10-03T10:24:54-08:00"
 draft = false
 title = "Declarative API Design in Swift"
 slug = "declarative-api-design-in-swift"
