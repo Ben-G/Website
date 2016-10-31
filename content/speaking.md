@@ -9,10 +9,29 @@ I enjoy sharing things I've learned and spreading ideas. Here are the talks I've
 
 ## Upcoming
 
-- **Turning UIKit Inside Out** @ AltConf, June 2016
-- **Leveraging and Enhancing Swift's Type System** @ 360iDev, August 2016
+- **The Unreasonable Effectiveness Of Declarative Code** @ Swift Summit, November 2016
 
 ## 2016
+
+#### Leveraging Swift's Type System
+
+- iOS Conf SG, Singapore
+- October 2016
+- [Slides](https://speakerdeck.com/benjamin_encz/leveraging-swifts-type-system)
+- [Recording](https://engineers.sg/video/leveraging-swift-s-type-system-ios-conf-sg-2016--1219)
+
+#### Leveraging Swift's Type System
+
+- 360iDev 2016, Denver
+- August 2016
+- [Slides](https://speakerdeck.com/benjamin_encz/leveraging-swifts-type-system)
+
+#### Turning UIKit Inside Out
+
+- AltConf 2016, London
+- June 2016
+- [Slides](https://speakerdeck.com/benjamin_encz/turning-uikit-inside-out)
+- [Recording](https://realm.io/news/altconf-benji-encz-uikit-inside-out-declarative-programming/)
 
 #### Turning UIKit Inside Out
 

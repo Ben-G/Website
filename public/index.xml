@@ -2146,13 +2146,38 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
 &lt;h2 id=&#34;upcoming:991f6edce4c158f0d781901c75294628&#34;&gt;Upcoming&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Turning UIKit Inside Out&lt;/strong&gt; @ AltConf, June 2016&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Leveraging and Enhancing Swift&amp;rsquo;s Type System&lt;/strong&gt; @ 360iDev, August 2016&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Unreasonable Effectiveness Of Declarative Code&lt;/strong&gt; @ Swift Summit, November 2016&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&#34;2016:991f6edce4c158f0d781901c75294628&#34;&gt;2016&lt;/h2&gt;
 
+&lt;h4 id=&#34;leveraging-swift-s-type-system:991f6edce4c158f0d781901c75294628&#34;&gt;Leveraging Swift&amp;rsquo;s Type System&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;iOS Conf SG, Singapore&lt;/li&gt;
+&lt;li&gt;October 2016&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://speakerdeck.com/benjamin_encz/leveraging-swifts-type-system&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://engineers.sg/video/leveraging-swift-s-type-system-ios-conf-sg-2016--1219&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;leveraging-swift-s-type-system-1:991f6edce4c158f0d781901c75294628&#34;&gt;Leveraging Swift&amp;rsquo;s Type System&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;360iDev 2016, Denver&lt;/li&gt;
+&lt;li&gt;August 2016&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://speakerdeck.com/benjamin_encz/leveraging-swifts-type-system&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
 &lt;h4 id=&#34;turning-uikit-inside-out:991f6edce4c158f0d781901c75294628&#34;&gt;Turning UIKit Inside Out&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;AltConf 2016, London&lt;/li&gt;
+&lt;li&gt;June 2016&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://speakerdeck.com/benjamin_encz/turning-uikit-inside-out&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://realm.io/news/altconf-benji-encz-uikit-inside-out-declarative-programming/&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;turning-uikit-inside-out-1:991f6edce4c158f0d781901c75294628&#34;&gt;Turning UIKit Inside Out&lt;/h4&gt;
 
 &lt;ul&gt;
 &lt;li&gt;iOSCon 2016, London&lt;/li&gt;
