@@ -6,8 +6,52 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 31 Oct 2016 22:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Mon, 14 Nov 2016 22:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Understanding Data Race Detection by Implementing it in Swift</title>
+      <link>http://blog.benjamin-encz.de/post/understanding-data-race-detection-by-implementing-in-swift/</link>
+      <pubDate>Mon, 14 Nov 2016 22:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/understanding-data-race-detection-by-implementing-in-swift/</guid>
+      <description>&lt;p&gt;TL;DR: In order to learn more about how Thread Sanitizer&amp;rsquo;s data race detection works I&amp;rsquo;ve implemented a very simple version in Swift. &lt;a href=&#34;https://github.com/Ben-G/DataRaceDetector&#34;&gt;You can find it on GitHub&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;We all know concurrency is hard. It&amp;rsquo;s easy to make mistakes when attempting to synchronize access to shared resources and the resulting issues are often extremely hard to reproduce and debug.&lt;/p&gt;
+
+&lt;p&gt;So I was very excited when I learned about data race detection in LLVM&amp;rsquo;s Thread Sanitizer in this year&amp;rsquo;s WWDC Session 412.&lt;/p&gt;
+
+&lt;p&gt;Thread Sanitizer is a runtime analyzer that (among other things) detects the potential for data races. It ships with Xcode 8 and supports C++, Objective-C and Swift &amp;gt;= 3.0.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;(In case you haven&amp;rsquo;t heard the term data race before: a data race is a condition in concurrent code where multiple threads read/write to/from a shared memory location without being synchronized by some locking mechanism. These races can lead to crashes or unexpected behavior).&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The astonishing aspect of Thread Sanitizer is that it detects the potential for data races without needing them to actually occur. This means you&amp;rsquo;ll no longer need to run your app or your tests hundreds of times trying to reproduce data races.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;What&amp;rsquo;s the secret sauce that makes this possible?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Thread Sanitizer was originally developed by Google, and they published a paper that describes the algorithm in detail &lt;a href=&#34;http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/35604.pdf&#34;&gt;here&lt;/a&gt; (if you&amp;rsquo;re not a fan of reading dense papers that include formal logic, rather stick with this blog post and the Swift code on GitHub).&lt;/p&gt;
+
+&lt;p&gt;The data race detection uses a general algorithm named &lt;a href=&#34;https://en.wikipedia.org/wiki/Vector_clock&#34;&gt;vector clock&lt;/a&gt;. In WWDC Session 412 an Apple engineer does a great job at describing the general algorithm in simple terms. &lt;a href=&#34;[https://developer.apple.com/videos/play/wwdc2016/412/?time=993](https://developer.apple.com/videos/play/wwdc2016/412/?time=993&#34;&gt;Here&amp;rsquo;s the relevant part of the session&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Here&amp;rsquo;s the gist of how it works:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;When run with Thread Sanitizer, LLVM instruments your code such that all accesses to memory locations are recorded. With this recording, Thread Sanitizer keeps track which memory locations have been accessed by which threads.&lt;/p&gt;
+
+&lt;p&gt;Each thread stores a counter for each memory location (that&amp;rsquo;s the &lt;em&gt;vector clock&lt;/em&gt;) that gets increased every time the thread accesses the memory location. Whenever an access to a memory location occurs, the counter of the currently active thread is also stored in storage that is associated with the memory location. Thus the memory location has the latest values of the counters of all threads that have ever accessed it.&lt;/p&gt;
+
+&lt;p&gt;A thread does not only keep track of its own counter value; it also stores the counter values of all the other threads that are accessing the same memory location (in practice there&amp;rsquo;s an upper bound to the amount of threads that are tracked to avoid excessive memory consumption). However, a thread only gets access to the counter values of other threads when a synchronization event occurs (i.e. when a mutex or a serial dispatch queue is used) before a value is accessed.&lt;/p&gt;
+
+&lt;p&gt;This aspect of the algorithm can be used to detect data races when a memory location is being accessed. The algorithm compares the counters for &lt;em&gt;all&lt;/em&gt; threads that are stored alongside the memory location with the counters of all threads that are stored as part of the &lt;em&gt;currently active thread&lt;/em&gt;. If any of the values are out of sync, we have detected the potential for a data race, since we can assume that the currently active thread has concurrently accessed a shared memory location without using a synchronization mechanism.&lt;/p&gt;
+
+&lt;p&gt;This description skips over some details that you can find in my Swift implementation and its documentation.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Implementation in Swift:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;As a fun little exercise that helped me understand this algorithm better, I&amp;rsquo;ve implemented a simplified &lt;a href=&#34;https://github.com/Ben-G/DataRaceDetector&#34;&gt;data race detection algorithm in Swift. You can find it on GitHub&lt;/a&gt;. I&amp;rsquo;ve added test cases and a whole bunch of documentation, so that I&amp;rsquo;ll be able to remember how this thing works a few weeks from now. If you&amp;rsquo;re curious to learn more about the details of the algorithm they might be interesting to you, too!&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Apple Isn&#39;t Doomed Quite Yet</title>
@@ -2176,16 +2220,6 @@ context(&amp;quot;when #download is called multiple times with the same URL&amp;
 &lt;p&gt;In my free time I enjoy hiking the beatiful Bay Area, travelling and watching soccer.&lt;/p&gt;
 
 &lt;p&gt;I love getting touch with new folks, so &lt;a href=&#34;https://twitter.com/benjaminencz&#34;&gt;let me know&lt;/a&gt; if there&amp;rsquo;s anything you want to chat about.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Projects</title>
-      <link>http://blog.benjamin-encz.de/projects/</link>
-      <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/projects/</guid>
-      <description>&lt;p&gt;I&amp;rsquo;ve worked on quite a few things in the last couple of years&amp;hellip;&lt;/p&gt;
 </description>
     </item>
     
