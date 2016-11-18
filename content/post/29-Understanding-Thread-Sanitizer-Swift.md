@@ -24,7 +24,7 @@ The astonishing aspect of Thread Sanitizer is that it detects the potential for 
 
 Thread Sanitizer was originally developed by Google, and they published a paper that describes the algorithm in detail [here](http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/35604.pdf) (if you're not a fan of reading dense papers that include formal logic, rather stick with this blog post and the Swift code on GitHub). 
 
-The data race detection uses a general algorithm named [vector clock](https://en.wikipedia.org/wiki/Vector_clock). In WWDC Session 412 an Apple engineer does a great job at describing the general algorithm in simple terms. [Here's the relevant part of the session]([https://developer.apple.com/videos/play/wwdc2016/412/?time=993](https://developer.apple.com/videos/play/wwdc2016/412/?time=993).
+The data race detection uses a general algorithm named [vector clock](https://en.wikipedia.org/wiki/Vector_clock). In WWDC Session 412 an Apple engineer does a great job at describing the general algorithm in simple terms. [Here's the relevant part of the session](https://developer.apple.com/videos/play/wwdc2016/412/?time=993).
 
 **Here's the gist of how it works:** 
 

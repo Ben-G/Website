@@ -6,13 +6,13 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 14 Nov 2016 22:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Fri, 18 Nov 2016 22:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Understanding Data Race Detection by Implementing it in Swift</title>
       <link>http://blog.benjamin-encz.de/post/understanding-data-race-detection-by-implementing-in-swift/</link>
-      <pubDate>Mon, 14 Nov 2016 22:24:54 -0800</pubDate>
+      <pubDate>Fri, 18 Nov 2016 22:24:54 -0800</pubDate>
       
       <guid>http://blog.benjamin-encz.de/post/understanding-data-race-detection-by-implementing-in-swift/</guid>
       <description>&lt;p&gt;TL;DR: In order to learn more about how Thread Sanitizer&amp;rsquo;s data race detection works I&amp;rsquo;ve implemented a very simple version in Swift. &lt;a href=&#34;https://github.com/Ben-G/DataRaceDetector&#34;&gt;You can find it on GitHub&lt;/a&gt;.&lt;/p&gt;
@@ -33,7 +33,7 @@
 
 &lt;p&gt;Thread Sanitizer was originally developed by Google, and they published a paper that describes the algorithm in detail &lt;a href=&#34;http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/35604.pdf&#34;&gt;here&lt;/a&gt; (if you&amp;rsquo;re not a fan of reading dense papers that include formal logic, rather stick with this blog post and the Swift code on GitHub).&lt;/p&gt;
 
-&lt;p&gt;The data race detection uses a general algorithm named &lt;a href=&#34;https://en.wikipedia.org/wiki/Vector_clock&#34;&gt;vector clock&lt;/a&gt;. In WWDC Session 412 an Apple engineer does a great job at describing the general algorithm in simple terms. &lt;a href=&#34;[https://developer.apple.com/videos/play/wwdc2016/412/?time=993](https://developer.apple.com/videos/play/wwdc2016/412/?time=993&#34;&gt;Here&amp;rsquo;s the relevant part of the session&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The data race detection uses a general algorithm named &lt;a href=&#34;https://en.wikipedia.org/wiki/Vector_clock&#34;&gt;vector clock&lt;/a&gt;. In WWDC Session 412 an Apple engineer does a great job at describing the general algorithm in simple terms. &lt;a href=&#34;https://developer.apple.com/videos/play/wwdc2016/412/?time=993&#34;&gt;Here&amp;rsquo;s the relevant part of the session&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Here&amp;rsquo;s the gist of how it works:&lt;/strong&gt;&lt;/p&gt;
 
