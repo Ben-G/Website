@@ -81,7 +81,7 @@ Flux is a very lightweight architectural pattern that Facebook uses for client-s
 
 The pattern can be described best alongside a diagram that shows the different flux components:
 
-![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux_Original.png)
+![](./Flux_Original.png)
 
 In the Flux architecture a **store** is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will send a change event to all views that subscribed to the store. The **view** receives changes only through this one interface that is called by the store.
 
@@ -104,7 +104,7 @@ These constraints make designing, developing and debugging new features a lot ea
 
 For the PlanGrid iOS app we have deviated slightly from the Flux reference implementation. We enforce that each store has an observable `state` property. Unlike in the original Flux implementation we don't emit a change event when a store updates. Instead views observe the `state` property of the store. Whenever the views observe a state change, they update themselves in response:
 
-![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux.png)
+![](./Flux.png)
 
 This is a very subtle deviation from the Flux reference implementation, but covering it is helpful for the upcoming sections.
 
@@ -135,7 +135,7 @@ Let's dive a little bit deeper into some of the implementation details of featur
 
 As an example throughout the next couple of sections we'll use a feature that's used in production within the PlanGrid app. The feature allows users to filter annotations on a blueprint:
 
-![](https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/filter_screenshot.png)
+![](./filter_screenshot.png)
 
 The feature we'll discuss lives in the popover that's presented on the left hand side of the screenshot.
 
@@ -151,7 +151,7 @@ struct AnnotationFilterState {
     let shareStatusFilters: [RepresentableAnnotationFilter]
     let issueFilters: [RepresentableAnnotationFilter]
     let generalFilters: [RepresentableAnnotationFilter]
-
+    
     var selectedFilterGroup: AnnotationFilterGroupType? = nil
     /// Indicates whether any filter is active right now
     var isFiltering: Bool = false
@@ -174,18 +174,18 @@ struct AnnotationFilteringActions {
     struct ToggleFilterAction: AnyAction {
         let filter: AnnotationFilterType
     }
-
+    
     /// Navigates to details of a filter group.
     struct EnterFilterGroup: AnyAction {
         let filterGroup: AnnotationFilterGroupType
     }
-
+    
     /// Leaves detail view of a filter group.
     struct LeaveFilterGroup: AnyAction { }
-
+    
     /// Disables all filters.
     struct ResetFilters: AnyAction { }
-
+    
     /// Disables all filters within a filter group.
     struct ResetFiltersInGroup: AnyAction {
         let filterGroup: AnnotationFilterGroupType
@@ -209,7 +209,7 @@ As a concrete example we can take a look at how the `AnnotationFilterStore` hand
 func handleToggleFilterAction(toggleFilterAction: AnnotationFilteringActions.ToggleFilterAction) {
     var filter = toggleFilterAction.filter
     filter.enabled = !filter.enabled
-
+    
     // Check for issue specific filters
     if filter is IssueAssignedToFilter ||
         filter is IssueStatusAnnotationFilter ||
@@ -222,7 +222,7 @@ func handleToggleFilterAction(toggleFilterAction: AnnotationFilteringActions.Tog
                     issueTypeFilter?.enabled = true
             }
     }
-
+    
     self._applyFilter()
 }
 {{< /highlight >}}
@@ -243,7 +243,7 @@ func _applyFilter() {
     self._state.value?.isFiltering = self._annotationFilterService.allFilterGroups.reduce(false) { isFiltering, filterGroup in
         isFiltering || (filterGroup.activeFilterCount() > 0)
     }
-
+    
     // Phantom state update to refresh the cell state, technically not needed since filters are reference types
     // and previous statement already triggers a state update.
     self._state.value = self._state.value
@@ -323,16 +323,16 @@ func _bind(compositeDisposable: CompositeDisposable) {
 	    .on(event: { [weak self] _ in
 	        self?.tableViewDataSource.refreshViews()
 	    })
-
+	
 	compositeDisposable += self.store.state
 	    .ignoreNil()
 	    .take(1)
 	    .startWithNext { [weak self] _ in
 	        self?.tableView.reloadData()
 	    }
-
+	
 	 compositeDisposable += self.navigationItem.rightBarButtonItem!.racEnabled <~ self.store.state
-            .map { $0?.isFiltering ?? false }
+	        .map { $0?.isFiltering ?? false }
 }
 {{< /highlight >}}
 
@@ -354,25 +354,25 @@ func tableViewModelForState(state: AnnotationFilterState) -> FluxTableViewModel 
         headerHeight: nil,
         cellViewModels: AnnotationFilterViewProvider.cellViewModelsForGroup([state.hideEverythingFilter])
     )
-
+    
     let shareStatusSection = FluxTableViewModel.SectionModel(
         headerTitle: "annotation_filters.share_status_section.title".translate(),
         headerHeight: 28,
         cellViewModels: AnnotationFilterViewProvider.cellViewModelsForGroup(state.shareStatusFilters)
     )
-
+    
     let issueFilterSection = FluxTableViewModel.SectionModel(
         headerTitle: "annotation_filters.issues_section.title".translate(),
         headerHeight: 28,
         cellViewModels: AnnotationFilterViewProvider.cellViewModelsForGroup(state.issueFilters)
     )
-
+    
     let generalFilterSection = FluxTableViewModel.SectionModel(
         headerTitle: "annotation_filters.general_section.title".translate(),
         headerHeight: 28,
         cellViewModels: AnnotationFilterViewProvider.cellViewModelsForGroup(state.generalFilters)
     )
-
+    
     return FluxTableViewModel(sectionModels: [
         hideEverythingSection,
         shareStatusSection,
@@ -437,26 +437,26 @@ describe("toggling a filter") {
         let toggleFilterAction = AnnotationFilteringActions.ToggleFilterAction(filter: hideAllFilter)
         annotationFilterStore._handleActions(toggleFilterAction)
     }
-
+    
     it("toggles the selected filter") {
         expect(hideAllFilter.enabled).to(beTrue())
     }
-
+    
     it("enables filtering mode") {
         expect(annotationFilterStore._state.value?.isFiltering).to(beTrue())
     }
-
+    
     context("when subsequently resetting filters") {
-
+    
         beforeEach {
             annotationFilterStore._handleActions(AnnotationFilteringActions.ResetFilters())
         }
-
+    
         it("deactivates previously active filters and stops filter mode") {
             expect(hideAllFilter.enabled).to(beFalse())
             expect(annotationFilterStore._state.value?.isFiltering).to(beFalse())
         }
-
+    
     }
 }
 {{< /highlight >}}

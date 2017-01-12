@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" Convenient Error Handling in Swift &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
+  	<meta property="og:url" content="http://blog.benjamin-encz.de/convenient-error-handling-in-swift" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2015-11-18T22:24:54-08:00" />
+
+    
+    
+
+    <div id="navigation-bar">
+  <a href="http://blog.benjamin-encz.de/">Blog</a>
+  <a href="http://blog.benjamin-encz.de/about">About</a>
+  <a href="http://blog.benjamin-encz.de/speaking">Speaking</a>
+  
+</div>
+
+
+  <title>
+     Convenient Error Handling in Swift &middot;  [Thinking inside a large box];
+  </title>
+
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="apple-touch-icon" href="http://blog.benjamin-encz.de/images/apple-touch-icon.png" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/navigation_bar.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/base_style_tweaks.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata" />
+
+    
+      
+          <link href="http://blog.benjamin-encz.de/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.15" />
+
+    <link rel="canonical" href="http://blog.benjamin-encz.de/convenient-error-handling-in-swift" />
+
+    
+
+    
+</head>
+<body class="nav-closed">
+
+  
+
+ <div class="site-wrapper">
+
+
+
+
+	<header class="main-header tag-head" style="background-image: url(http://blog.benjamin-encz.de/images/japan-backdrop.jpg)">
+
+<nav class="main-nav overlay clearfix">
+  
+      <a class="menu-button" href="http://blog.benjamin-encz.de/" style="float: left;">&lt; Home</a>
+  
+  
+    
+      <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+    
+  
+</nav>
+<div class="vertical">
+    <div class="main-header-content inner">
+        <a href="http://blog.benjamin-encz.de/" style="text-decoration: none;"><h1 class="page-title">[Thinking inside a large box];</h1></a>
+        <h2 class="page-description">
+            
+        </h2>
+    </div>
+</div>
+</header>
+
+
+    
+
+
+</header>
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+    <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
+        <h1 class="post-title">Convenient Error Handling in Swift</h1>
+        <small></small>
+
+        <section class="post-meta">
+        
+          <time class="post-date" datetime="2015-11-18T22:24:54-08:00">
+            Nov 18, 2015
+          </time>
+        
+         
+        </section>
+    </header>
+
+    <section class="post-content">
+
+
+
+
+<p>Swift 2 introduced an error handling mechanism that includes <a href="link to my post">backwards compatibility with Objective-C</a>.</p>
+
+<p><strong>This is great news, the new mechanism is a lot stricter.</strong> Long gone are the days in which one could ignore errors by lavishly throwing <code>nil</code> at methods that expect a pointer to an <code>NSError</code> variable.</p>
+
+<h1 id="does-every-error-deserve-an-individual-catch:85608b12dd7d2681711facf6cd0f8c5a">Does Every Error Deserve an Individual Catch?</h1>
+
+<p>Swift will require you to provide an error handler when you call a method that <code>throws</code>, unless you resort to the <code>try?</code> or <code>try!</code> operator. Here&rsquo;s an example of <code>try!</code>:</p>
+
+<pre><code>try! NSString(contentsOfFile: &quot;doesNotExist&quot;, encoding: NSUTF8StringEncoding)
+</code></pre>
+
+<p>Using this unfaithful approach an unexpectedly occurring error will cause a crash. You should only use <code>try!</code> if your app cannot continue to work sensibly if the attempted operation fails - i.e. if you fail load the database model for your application from disk.</p>
+
+<p>Alternatively you can use <code>try?</code>, which will transform the result of the operation you are performing into an optional. A successful operation will yield a value, a failed operation will yield <code>nil</code>:</p>
+
+<pre><code>let data = try? NSString(contentsOfFile: &quot;doesNotExist&quot;, encoding: NSUTF8StringEncoding)
+</code></pre>
+
+<p>With this approach all details of an error that occurred will be swallowed entirely which is suboptimal in many cases as well.</p>
+
+<p><strong>But is it worth it writing a custom error handler for every error producing function you call? I don&rsquo;t think so.</strong></p>
+
+<p>Many kinds of errors deserve your full attention, you can write code to recover from them or, at the very least, notify the user about unexpected behavior with a meaningful error message.</p>
+
+<p>Other errors are less suitable for custom error handlers. You cannot recover from them with reasonable effort and they don&rsquo;t affect the user experience. The user will not want to be informed about them. Here are examples of errors that, in my opinion, fall into this category:</p>
+
+<ul>
+<li>Caching a downloaded image on disk fails</li>
+<li>Your app cannot connect to the ad service you are using</li>
+</ul>
+
+<p>Depending on the complexity of your app, there might be hundreds of such operations.</p>
+
+<p>Even though you can&rsquo;t recover from these errors, you should definitely keep track of them through some sort of logging mechanism! How can this be done without writing many individual error handlers?</p>
+
+<h1 id="a-good-compromise:85608b12dd7d2681711facf6cd0f8c5a">A Good Compromise?</h1>
+
+<p>Can we strike a balance between convenience and due diligence? I believe so. In my latest side project I implemented a default error handler that deals with errors that, for one reason or another, don&rsquo;t deserve a custom error handler.</p>
+
+<p>This error handler doesn&rsquo;t swallow the error completely. Instead, it logs the errors using my analytics service. This behavior is useful for any type of error that might occur in my app. It&rsquo;s the largest common denominator of error handling.</p>
+
+<p>This is what using the API looks like:</p>
+
+<pre><code>let errorHandler = ErrorHandler()
+
+let fileContent = errorHandler.wrap {
+    return try NSString(contentsOfFile: &quot;doesNotExist&quot;, encoding: NSUTF8StringEncoding)
+}
+</code></pre>
+
+<p>Here are the main characteristics:</p>
+
+<ul>
+<li>We wrap the call to call to the error producing function, along with the <code>try</code> keyword, into a closure that gets handed to <code>errorHandler.wrap</code></li>
+<li>If the closure returns a value, then <code>errorHandler.wrap</code> will pass it through to its caller</li>
+<li><code>errorHandler.wrap</code> always returns an optional type, indicating that the wrapped operation might fail and return <code>nil</code></li>
+</ul>
+
+<p>In the above example the <code>fileContent</code> variable has a type of <code>String?</code>.  We can use this variable in subsequent operations. While we need to check if the optional contains a value before using it, we can ignore the details of a potential error that was thrown. In this case <code>errorHandler.wrap</code> acts as a glorified version of <code>try?</code>.</p>
+
+<p>In most cases I use the default error handler when calling functions without a return value. In these cases the value of the error handler becomes more obvious:</p>
+
+<pre><code>[...]
+let errorHandler = ErrorHandler()
+
+errorHandler.wrap {
+	try cache.storeImage(image)
+}
+</code></pre>
+
+<p>We can perform a failable operation without writing any code that deals with errors or optional return values, while still capturing details about errors that might occur.</p>
+
+<h1 id="implementation-of-the-default-error-handler:85608b12dd7d2681711facf6cd0f8c5a">Implementation of the Default Error Handler</h1>
+
+<p>The implementation of the error handler is very slim, here&rsquo;s the entire code:</p>
+
+<pre><code>class ErrorHandler {
+
+    func wrap&lt;ReturnType&gt;(@noescape f: () throws -&gt; ReturnType?) -&gt; ReturnType? {
+        do {
+            return try f()
+        } catch let error {
+            logError(error)
+            return nil
+        }
+    }
+
+    func logError(error: ErrorType) {
+        let stackSymbols = NSThread.callStackSymbols()
+        print(&quot;Error: \(error) \n Stack Symbols: \(stackSymbols)&quot;)
+    }
+
+}
+</code></pre>
+
+<p>The <code>wrap</code> function takes a function that can <code>throw</code> and that can provide a return type. It executes the function within a <code>do</code>/<code>try</code> block. If the operation is successful it returns the return value of the function. If an error occurs the catch block calls the <code>logError</code> function and then returns <code>nil</code>.</p>
+
+<p>The <code>logError</code> function should be customized to your needs - as an example I am printing the current stack trace along with the error message. In a production environment you would likely want to log these messages using an analytics service such as Fabric or Mixpanel.</p>
+
+<h1 id="conclusion:85608b12dd7d2681711facf6cd0f8c5a">Conclusion</h1>
+
+<p>Good error handling is incredibly important for a good user experience - I wanted to make the process as easy as possible. Now my analytics dashboard will inform me about any unhandled error that occurs in production. Going from there I can improve error handling in my apps by adding custom handlers for the most frequent errors.</p>
+
+<p>I definitely encourage you and myself to handle as many errors as sensible individually - but I believe there&rsquo;s a large number of potential errors that are suitable for this generic error handling scheme.</p>
+
+<p>You can find the Source Code for this blog post <a href="https://github.com/Ben-G/DefaultErrorHandlerSwift">on GitHub</a>.</p>
+
+<p>How do you tackle error handling? I would love to hear from you!</p>
+
+<h2 id="acknowledgements:85608b12dd7d2681711facf6cd0f8c5a">Acknowledgements</h2>
+
+<ul>
+<li>Thanks to <a href="https://github.com/antitypical/Result/blob/master/Result/Result.swift#L153-L159"><code>Result.materialize</code></a> for inspiring my <code>wrap</code> function</li>
+<li>Thanks to <a href="https://twitter.com/morganchen96">morganchen96</a> and <a href="https://twitter.com/Javi">javi</a> for providing feedback on drafts of this post</li>
+</ul>
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+  
+
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a> (<a href="http://grnh.se/8fcutd">We're hiring!</a>)<br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Convenient%20Error%20Handling%20in%20Swift&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2fconvenient-error-handling-in-swift"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2fconvenient-error-handling-in-swift"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2fconvenient-error-handling-in-swift"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
+
+    
+
+<span id="comment_section"></span>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/convenient-error-handling-in-swift\/';
+
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/blog.benjamin-encz.de\/convenient-error-handling-in-swift';
+    }
+  }
+
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/index.js"></script>
+    
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-48608026-1', 'benjamin-encz.de');
+      ga('send', 'pageview');
+    </script>
+</body>
+</html>
+

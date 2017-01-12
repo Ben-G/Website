@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" Declarative API Design in Swift &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
+  	<meta property="og:url" content="http://blog.benjamin-encz.de/declarative-api-design-in-swift" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2016-10-03T10:24:54-08:00" />
+
+    
+    
+
+    <div id="navigation-bar">
+  <a href="http://blog.benjamin-encz.de/">Blog</a>
+  <a href="http://blog.benjamin-encz.de/about">About</a>
+  <a href="http://blog.benjamin-encz.de/speaking">Speaking</a>
+  
+</div>
+
+
+  <title>
+     Declarative API Design in Swift &middot;  [Thinking inside a large box];
+  </title>
+
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="apple-touch-icon" href="http://blog.benjamin-encz.de/images/apple-touch-icon.png" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/navigation_bar.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/base_style_tweaks.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata" />
+
+    
+      
+          <link href="http://blog.benjamin-encz.de/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.15" />
+
+    <link rel="canonical" href="http://blog.benjamin-encz.de/declarative-api-design-in-swift" />
+
+    
+
+    
+</head>
+<body class="nav-closed">
+
+  
+
+ <div class="site-wrapper">
+
+
+
+
+	<header class="main-header tag-head" style="background-image: url(http://blog.benjamin-encz.de/images/japan-backdrop.jpg)">
+
+<nav class="main-nav overlay clearfix">
+  
+      <a class="menu-button" href="http://blog.benjamin-encz.de/" style="float: left;">&lt; Home</a>
+  
+  
+    
+      <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+    
+  
+</nav>
+<div class="vertical">
+    <div class="main-header-content inner">
+        <a href="http://blog.benjamin-encz.de/" style="text-decoration: none;"><h1 class="page-title">[Thinking inside a large box];</h1></a>
+        <h2 class="page-description">
+            
+        </h2>
+    </div>
+</div>
+</header>
+
+
+    
+
+
+</header>
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+    <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
+        <h1 class="post-title">Declarative API Design in Swift</h1>
+        <small></small>
+
+        <section class="post-meta">
+        
+          <time class="post-date" datetime="2016-10-03T10:24:54-08:00">
+            Oct 3, 2016
+          </time>
+        
+         
+        </section>
+    </header>
+
+    <section class="post-content">
+
+
+
+
+<p>In my first real job as an iOS developer I built an XML parser and a simple layout engine - both had in common that they had a declarative interface. The parsers was driven by a <code>.plist</code> file that mapped XML elements to Objective-C classes. The layout engine allowed you to describe layouts in an HTML-like language (this was before AutoLayout &amp; CollectionViews existed).</p>
+
+<p>Though neither of these libraries were even close to perfect, they showed me four main advantages of declarative code:</p>
+
+<ul>
+<li><strong>Separation of concerns</strong>: The parts of the code that are written in a declarative style only declare an intent, without having any understanding of the underlying implementation. Separation of concerns happens naturally.</li>
+<li><strong>Less repeated code</strong>: A declarative system shares a common implementation. Most of the code is configuration. No risk of repeating implementation details.</li>
+<li><strong>Exceptional API design</strong>: Declarative APIs allow consumers to configure an existing implementation instead of providing their own one. The API surface can be kept minimal.</li>
+<li><strong>Readability</strong>: Signal to noise ratio of declarative code is great!</li>
+</ul>
+
+<p>These days I write most of my code in Swift which lends itself well for a declarative programming style<sup class="footnote-ref" id="fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:1"><a rel="footnote" href="#fn:b989f8f58ed8c5aa5f8ff74af770fe9e:1">1</a></sup>.</p>
+
+<p>The majority of types I define are simple structs that either describe a piece of data or an intent. Separate types, typically generic classes, are then responsible for consuming these intents and implementing the necessary work. We also use this approach throughout all new Swift code we&rsquo;re writing in the PlanGrid app. It has had a huge impact on code readability and developer efficiency.</p>
+
+<p>Today I want to discuss an API from the PlanGrid app, that used to be implemented using <code>NSOperationQueue</code> and since has been moved to a more declarative approach - discussing this API should demonstrate the various benefits of a declarative programming style.</p>
+
+<h2 id="building-a-declarative-request-sequence-in-swift:b989f8f58ed8c5aa5f8ff74af770fe9e">Building a Declarative Request Sequence in Swift</h2>
+
+<p>The API that we&rsquo;ve re-written is responsible for syncing local changes (that might have occurred offline) with our API server. I won&rsquo;t go into details of the change tracking approach, but will instead only discuss the generation &amp; execution of network requests.</p>
+
+<p>For this post I want to focus on one particular request type: uploading locally generated images. Due to various reasons (outside of the scope of this blog post) three separate requests are involved in uploading an image:</p>
+
+<ol>
+<li>Request to API Server. API Server responds with information for an image upload to AWS.</li>
+<li>Image Upload to AWS (using information from previous request).</li>
+<li>Request to API Server to confirm completed upload.</li>
+</ol>
+
+<p>Since we have a few upload tasks that involve such request sequences, we decided to model this as a type and support in our upload infrastructure.</p>
+
+<h3 id="defining-the-request-sequence-protocol:b989f8f58ed8c5aa5f8ff74af770fe9e">Defining the Request Sequence Protocol</h3>
+
+<p>We decided to introduce a separate type that is only responsible for describing a sequence of network requests. That type is consumed by our uploader class which turns the descriptions into actual network requests (the uploader itself won&rsquo;t be discussed as part of this post).</p>
+
+<p>The following type captures the essence of our control flow: we have a sequences of requests. Each request might depend on the result of the previous request.</p>
+
+<p><em>Note: Some types names might seem a little odd, but they mostly follow an app-specific ontology (e.g. Operation). Others should simply be renamed; still waiting for that refactor capability for Swift code&hellip;</em></p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">typealias</span> <span style="color: #000000">PreviousRequestTuple</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">(</span>
+	<span style="color: #000000">request</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">,</span> 
+	<span style="color: #000000">response</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #3465a4">NSURLResponse</span><span style="color: #000000; font-weight: bold">,</span> 
+	<span style="color: #000000">responseBody</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">JsonValue</span><span style="color: #000000; font-weight: bold">?</span>
+<span style="color: #000000; font-weight: bold">)</span>
+
+<span style="color: #8f5902; font-style: italic">/// A sequence of push requests required to sync this operation with the server.</span>
+<span style="color: #8f5902; font-style: italic">/// As soon as a request of this sequence completes, </span>
+<span style="color: #8f5902; font-style: italic">/// `PushSyncQueueManager` will poll the sequence for the next request.</span>
+<span style="color: #8f5902; font-style: italic">/// If `nil` is returned for the `nextRequest` then </span>
+<span style="color: #8f5902; font-style: italic">/// this sequence is considered complete.</span>
+<span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">protocol</span> <span style="color: #000000">OperationRequestSequence</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000; font-weight: bold">{</span>
+    <span style="color: #8f5902; font-style: italic">/// When this method returns `nil` the entire `OperationRequestSequence` </span>
+    <span style="color: #8f5902; font-style: italic">/// is considered completed.</span>
+    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">nextRequest</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previousRequest</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+
+
+<p>When asking the request sequence to generate a request, by calling the <code>nextRequest:</code> method, we provide a reference to previous request, a <code>NSURLResponse</code> and if available the JSON response body. Each request might result in a subsequent request (returns a new <code>PushRequest</code>), no subsequent request (returns <code>nil</code>) or an in an error in case the previous request didn&rsquo;t provide the response that is necessary to continue (in which case the request sequence <code>throws</code>).</p>
+
+<p>It&rsquo;s worth noting that <code>PushRequest</code> isn&rsquo;t an ideal name for the return type of this method. The type is only a description of a request (endpoint, HTTP method, etc.), it doesn&rsquo;t perform any work on its own. That&rsquo;s an important aspect of this declarative design.</p>
+
+<p>You might also have noticed that the protocol comes with a <code>class</code> requirement. We made this decision after realizing that the <code>OperationRequestSequence</code> is a stateful type. It needs to be able to capture and use results from previous requests (the third request might need to access the response from the first request). While this could have been modeled with a struct with <code>mutating</code> methods, that approach made the code in the uploader a fair bit more complex (correctly re-assigning mutated struct values can require some boilerplate code).</p>
+
+<p>After implementing the first request sequence based on the <code>OperationRequestSequence</code> protocol, we noticed that it often would be more convenient to simply provide an array of chained requests instead of implementing the <code>nextRequest</code> method. We added an <code>ArrayRequestSequence</code> protocol that provides a default implementation based on an array of requests:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">// If each requests implements the signature of the `nextRequest` method itself,</span>
+<span style="color: #8f5902; font-style: italic">// we can provide an implementation of `nextRequest` that simply composes all</span>
+<span style="color: #8f5902; font-style: italic">// requests in the `requests` array by iterating over them.</span>
+<span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">typealias</span> <span style="color: #000000">RequestContinuation</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span>
+
+<span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">protocol</span> <span style="color: #000000">ArrayRequestSequence</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">OperationRequestSequence</span> <span style="color: #000000; font-weight: bold">{</span>
+    <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">currentRequestIndex</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Int</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #204a87; font-weight: bold">get</span> <span style="color: #204a87; font-weight: bold">set</span> <span style="color: #000000; font-weight: bold">}</span>
+    <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">requests</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">RequestContinuation</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #204a87; font-weight: bold">get</span> <span style="color: #000000; font-weight: bold">}</span>
+<span style="color: #000000; font-weight: bold">}</span>
+
+<span style="color: #204a87; font-weight: bold">extension</span> <span style="color: #000000">ArrayRequestSequence</span> <span style="color: #000000; font-weight: bold">{</span>
+    <span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">nextRequest</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">currentRequestIndex</span> <span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">requests</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #3465a4">count</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #204a87; font-weight: bold">nil</span> <span style="color: #000000; font-weight: bold">}</span>
+
+    	<span style="color: #8f5902; font-style: italic">// Iterate over all requests in the requests array. </span>
+    	<span style="color: #8f5902; font-style: italic">// Pass result from previous request to next one.</span>
+        <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">nextRequest</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">try</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">requests</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">currentRequestIndex</span><span style="color: #000000; font-weight: bold">](</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">)</span>
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">currentRequestIndex</span> <span style="color: #ce5c00; font-weight: bold">+=</span> <span style="color: #0000cf; font-weight: bold">1</span>
+        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">nextRequest</span>
+    <span style="color: #000000; font-weight: bold">}</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+
+
+<p>At this point it became almost trivial to define a new upload sequence.</p>
+
+<h3 id="implementing-the-request-sequence-protocol:b989f8f58ed8c5aa5f8ff74af770fe9e">Implementing the Request Sequence Protocol</h3>
+
+<p>As an example, let&rsquo;s take a look at the upload sequence for uploading snapshots (snapshots in PlanGrid capture a blueprint + annotations in an image that can be exported):</p>
+
+<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">/// Describes a sequence of requests for uploading a snapshot.</span>
+<span style="color: #204a87; font-weight: bold">final</span> <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">SnapshotUploadRequestSequence</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">ArrayRequestSequence</span> <span style="color: #000000; font-weight: bold">{</span>
+
+    <span style="color: #8f5902; font-style: italic">// Removed boilerplate initializer &amp; </span>
+    <span style="color: #8f5902; font-style: italic">// instance variable definition code...</span>
+
+    <span style="color: #8f5902; font-style: italic">// This is the definition of the request sequence</span>
+    <span style="color: #204a87; font-weight: bold">lazy</span> <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">requests</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">RequestContinuation</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000; font-weight: bold">[</span>
+            <span style="color: #8f5902; font-style: italic">// 1. Get AWS Upload Package from API</span>
+            <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_allocationRequest</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #8f5902; font-style: italic">// 2. Upload Snapshot to AWS</span>
+            <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_awsUploadRequest</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #8f5902; font-style: italic">// 3. Confirm Upload with API</span>
+            <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_metadataRequest</span>
+        <span style="color: #000000; font-weight: bold">]</span>
+    <span style="color: #000000; font-weight: bold">}()</span>
+
+    <span style="color: #8f5902; font-style: italic">// It follows the detailed definition of the individual requests:</span>
+
+    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">_allocationRequest</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">{</span>
+    	<span style="color: #8f5902; font-style: italic">// Generate an API request for this file upload</span>
+    	<span style="color: #8f5902; font-style: italic">// Pass file size in JSON format in the request body</span>
+        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">PushInMemoryRequestDescription</span><span style="color: #000000; font-weight: bold">(</span>
+            <span style="color: #000000">relativeURL</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">ApiEndpoints</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotAllocation</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">value</span><span style="color: #000000; font-weight: bold">),</span>
+            <span style="color: #000000">httpMethod</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">POST</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">jsonBody</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">JsonValue</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">values</span><span style="color: #000000; font-weight: bold">:</span>
+                <span style="color: #000000; font-weight: bold">[</span>
+                    <span style="color: #4e9a06">&quot;filesize&quot;</span> <span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">imageUploadDescription</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">fullFileSize</span>
+                <span style="color: #000000; font-weight: bold">]</span>
+            <span style="color: #000000; font-weight: bold">),</span>
+            <span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">requestIdentifier</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">SnapshotUploadRequestSequence</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">allocationRequest</span>
+        <span style="color: #000000; font-weight: bold">)</span>
+    <span style="color: #000000; font-weight: bold">}</span>
+
+    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">_awsUploadRequest</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">{</span>
+    	<span style="color: #8f5902; font-style: italic">// Check for presence of AWS allocation data in response body</span>
+        <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">allocationData</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">responseBody</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span>
+            <span style="color: #000000">throw</span> <span style="color: #000000">ImageCreationOperationError</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">MissingAllocationData</span>
+        <span style="color: #000000; font-weight: bold">}</span>
+	
+        <span style="color: #8f5902; font-style: italic">// Attempt to parse AWS allocation data</span>
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotAllocationData</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">try</span> <span style="color: #000000">AWSAllocationPackage</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">json</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">allocationData</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #4e9a06">&quot;snapshot&quot;</span><span style="color: #000000; font-weight: bold">])</span>
+
+        <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">snapshotAllocationData</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotAllocationData</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span>
+            <span style="color: #000000">throw</span> <span style="color: #000000">ImageCreationOperationError</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">MissingAllocationData</span>
+        <span style="color: #000000; font-weight: bold">}</span>
+
+        <span style="color: #8f5902; font-style: italic">// Get filesystem path for this snapshot</span>
+        <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">thumbImageFilePath</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #3465a4">NSURL</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">fileURLWithPath</span><span style="color: #000000; font-weight: bold">:</span>
+            <span style="color: #000000">SnapshotModel</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">pathForUid</span><span style="color: #000000; font-weight: bold">(</span>
+                <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">imageUploadDescription</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">modelUid</span><span style="color: #000000; font-weight: bold">,</span>
+                <span style="color: #000000">size</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">Full</span>
+            <span style="color: #000000; font-weight: bold">)</span>
+        <span style="color: #000000; font-weight: bold">)</span>
+
+        <span style="color: #8f5902; font-style: italic">// Generate a multipart/form-data request</span>
+        <span style="color: #8f5902; font-style: italic">// that uploads the image to AWS</span>
+        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">AWSMultiPartRequestDescription</span><span style="color: #000000; font-weight: bold">(</span>
+            <span style="color: #000000">targetURL</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">snapshotAllocationData</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">targetUrl</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">httpMethod</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">POST</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">fileURL</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">thumbImageFilePath</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">filename</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">snapshotAllocationData</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">filename</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">requestIdentifier</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">SnapshotUploadRequestSequence</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotAWS</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">formParameters</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">snapshotAllocationData</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">fields</span>
+        <span style="color: #000000; font-weight: bold">)</span>
+    <span style="color: #000000; font-weight: bold">}</span>
+
+    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">_metadataRequest</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #8f5902; font-style: italic">// Generate an API request to confirm the completed upload</span>
+        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">PushInMemoryRequestDescription</span><span style="color: #000000; font-weight: bold">(</span>
+            <span style="color: #000000">relativeURL</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">ApiEndpoints</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotAllocation</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">value</span><span style="color: #000000; font-weight: bold">),</span>
+            <span style="color: #000000">httpMethod</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">PUT</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">jsonBody</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotMetadata</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">,</span>
+            <span style="color: #000000">requestIdentifier</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">SnapshotUploadRequestSequence</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">metadataRequest</span>
+        <span style="color: #000000; font-weight: bold">)</span>
+    <span style="color: #000000; font-weight: bold">}</span>
+
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+</p>
+
+<p>A few things should stand out in this implementation:</p>
+
+<ul>
+<li>It has almost no imperative code. Most code describes network request based on instance variables and previous requests.</li>
+<li>It doesn&rsquo;t call the networking layer, nor does it have any knowledge of the type that actually performs the upload. It just describes the intent of each request. In fact, the code has no observable side effects at all, it only mutates internal state.</li>
+<li>There is almost no error handling code here. The responsibility of this type is only to handle errors specific to this request sequence (e.g. missing required data from a previous request). All other errors are generically handled in the networking layer.</li>
+<li>We are using separate types (<code>PushInMemoryRequestDescription</code>/<code>AWSMultipartRequestDescription</code>) to model requests to our API vs. requests to AWS. Our uploader switches over these types and uses a different <code>NSURLSessionConfiguration</code> for each. This way we don&rsquo;t send our API auth token to AWS.</li>
+</ul>
+
+<p>I won&rsquo;t discuss the entire code in detail, but I hope this sample shows the various advantages of a declarative approach that I mentioned earlier:</p>
+
+<ul>
+<li><strong>Separation of concerns</strong>: this type has the single responsibility of describing a sequence of requests.</li>
+<li><strong>Less repeated code</strong>: this type only contains code for describing a request sequence; we&rsquo;re not at risk of repeating any network communication / error handling code.</li>
+<li><strong>Exceptional API design</strong>: this API places as little burden as possible onto the developer. They only need to implement a simple protocol that produces a subsequent request description based on the result of a previous request.</li>
+<li><strong>Readability</strong>: once again, the code listing above is extremely focused; there&rsquo;s no need to skim over boilerplate code to find the intention. That said, to understand this code quickly, some familiarity with our abstractions is required.</li>
+</ul>
+
+<p>How does this compare to our previous solution that was using <code>NSOperationQueue</code>?</p>
+
+<h3 id="what-about-nsoperationqueue:b989f8f58ed8c5aa5f8ff74af770fe9e">What About NSOperationQueue?</h3>
+
+<p>The solution using an <code>NSOperationQueue</code> was a lot less concise, so there&rsquo;s no good way to present its code in this blog post. We can still discuss the issues that the approach had on a high level.</p>
+
+<p><strong>Separation of concerns</strong> was a lot harder to come by. Instead of simply describing a request sequence, the NSOperations in the NSOperationQueue themselves were responsible for kicking off a network request. This promptly introduced a bunch of other responsibilities such as request cancellation and error handling. While similar code had been implemented in other places that dealt with creating upload requests there was no good way of sharing that implementation. Subclassing wasn&rsquo;t an option since most upload requests were modeled as a single <code>NSOperation</code>, while this upload request sequence was modeled as an <code>NSOperation</code> that wrapped an <code>NSOperationQueue</code>.</p>
+
+<p>The <strong>signal/noise ratio</strong> of the NSOperationQueue based solution was a lot worse. The code was littered with references to the network layer and with <code>NSOperation</code> specific code, such as the <code>main</code> and operation f methods.</p>
+
+<p>The <strong>API was a lot worse to deal with for developers</strong>. Instead of simply implementing a protocol, as in the new Swift solution, one needed to understand a set of conventions. While most conventions were documented there was no way of enforcing them programmatically.</p>
+
+<p>Among other issues, this resulted in some bugs around error reporting for network requests. In order to avoid each operation implementing its own error reporting code, it was handled in a central location. The error handling code would run whenever a operation finished. The code would check for the presence of a value in the <code>error</code> property of the operation. In order to report an error a developer needed to set the <code>error</code> property on the <code>NSOperation</code> subclass before the operation completed. Since this was a non-obvious convention (that wasn&rsquo;t well documented) a bunch of new code forgot to set that property. This resulted in a decent amount of unreported errors.</p>
+
+<p>TL;DR: we&rsquo;re glad that we&rsquo;re now able to provide a more explicit API that results in code that is easier to read.</p>
+
+<h2 id="conclusion:b989f8f58ed8c5aa5f8ff74af770fe9e">Conclusion</h2>
+
+<p>Using a declarative programming approach has had a huge impact on our codebase and our productivity. We can provide constrained APIs that can be only used in one way and don&rsquo;t leave a lot of room for error. We can avoid subclassing as a means of polymorphism and instead implement generic types that are controlled by declarative code. We can write code with excellent signal to noise ratio. The declarative code we write is extremely easy to test (to the point where even testing enthusiasts might deem tests unnecessary). So what are the downsides, if any?</p>
+
+<p>Firstly, there&rsquo;s some cost associated with understanding our custom abstractions. However, the cost can be mitigated by careful API design, and by providing tests that serve as example implementations.</p>
+
+<p>Secondly, and more importantly, declarative programming isn&rsquo;t always applicable. You need a problem that is solved multiple times throughout your codebase in a very similar way. If you try to apply declarative programming principles to code that needs a high degree of customization, you&rsquo;ve built the wrong abstraction and will end up with convoluted semi-declarative code. As with any abstraction, introducing it too early will cause harm.</p>
+
+<p>There&rsquo;s one last observation I&rsquo;d like to squeeze into this post: <strong>Declarative APIs place more burden onto the API developer and less onto the API consumer</strong>. In order to provide a declarative API a developer needs to be able to isolate the interface strictly from the implementation details; this is a lot less true for imperative APIs. React and GraphQL have demonstrated that the simplicity of declarative APIs can enable a great developer experience while making it easier for development teams to write coherent code at scale.</p>
+
+<p>Soon after I started working on apps I naively wondered why we couldn&rsquo;t just build them by configuring pre-existing components, without writing much, if any, custom code. Libraries like React and GraphQL have made this future a little more likely. I think this is just a first step, and going forward we&rsquo;ll see more sophisticated libraries hide their complexity by providing simple, declarative, interfaces.</p>
+
+<p>And hopefully, some day, we&rsquo;ll get a declarative UI library for building iOS apps<sup class="footnote-ref" id="fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:2"><a rel="footnote" href="#fn:b989f8f58ed8c5aa5f8ff74af770fe9e:2">2</a></sup>.</p>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:b989f8f58ed8c5aa5f8ff74af770fe9e:1">I&rsquo;ll use the term <em>declarative programming</em> even though its <a href="https://existentialtype.wordpress.com/2013/07/18/what-if-anything-is-a-declarative-language/">definition is disputed</a>. So far I&rsquo;ve liked the definition in <a href="https://awelonblue.wordpress.com/2012/01/12/defining-declarative/">this post</a> the most. It identifies the following characteristics of declarative code: Idempotent, Commutative, Concurrent (declarations hold at overlapping times), Reactive (meaning is context dependent). Overall this is a fairly theoretical (yet relevant debate) that I&rsquo;ll might cover in a future post - this post is going to be more pragmatic.
+ <a class="footnote-return" href="#fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:1"><sup>[return]</sup></a></li>
+<li id="fn:b989f8f58ed8c5aa5f8ff74af770fe9e:2">Comparing React&rsquo;s declarative API to UIKit&rsquo;s imperative one is an interesting lense for looking at the general trade-offs between declarative/imperative APIs, I&rsquo;ve done that in my <a href="https://realm.io/news/altconf-benji-encz-uikit-inside-out-declarative-programming/">2016 Alt Conf Talk</a>. As part of that talk I experimented with what a <a href="https://github.com/Ben-G/UILib">React like API wrapper for UIKit</a> would look like.
+ <a class="footnote-return" href="#fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:2"><sup>[return]</sup></a></li>
+</ol>
+</div>
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+  
+
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a> (<a href="http://grnh.se/8fcutd">We're hiring!</a>)<br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Declarative%20API%20Design%20in%20Swift&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2fdeclarative-api-design-in-swift"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2fdeclarative-api-design-in-swift"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2fdeclarative-api-design-in-swift"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
+
+    
+
+<span id="comment_section"></span>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/declarative-api-design-in-swift\/';
+
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/blog.benjamin-encz.de\/declarative-api-design-in-swift';
+    }
+  }
+
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/index.js"></script>
+    
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-48608026-1', 'benjamin-encz.de');
+      ga('send', 'pageview');
+    </script>
+</body>
+</html>
+

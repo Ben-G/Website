@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" Beware the UIKit Visitors! &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
+  	<meta property="og:url" content="http://blog.benjamin-encz.de/disassembling-uikit-tintcolor-visitor" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2016-05-10T12:24:54-08:00" />
+
+    
+    
+
+    <div id="navigation-bar">
+  <a href="http://blog.benjamin-encz.de/">Blog</a>
+  <a href="http://blog.benjamin-encz.de/about">About</a>
+  <a href="http://blog.benjamin-encz.de/speaking">Speaking</a>
+  
+</div>
+
+
+  <title>
+     Beware the UIKit Visitors! &middot;  [Thinking inside a large box];
+  </title>
+
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="apple-touch-icon" href="http://blog.benjamin-encz.de/images/apple-touch-icon.png" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/navigation_bar.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/base_style_tweaks.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata" />
+
+    
+      
+          <link href="http://blog.benjamin-encz.de/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.15" />
+
+    <link rel="canonical" href="http://blog.benjamin-encz.de/disassembling-uikit-tintcolor-visitor" />
+
+    
+
+    
+</head>
+<body class="nav-closed">
+
+  
+
+ <div class="site-wrapper">
+
+
+
+
+	<header class="main-header tag-head" style="background-image: url(http://blog.benjamin-encz.de/images/japan-backdrop.jpg)">
+
+<nav class="main-nav overlay clearfix">
+  
+      <a class="menu-button" href="http://blog.benjamin-encz.de/" style="float: left;">&lt; Home</a>
+  
+  
+    
+      <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+    
+  
+</nav>
+<div class="vertical">
+    <div class="main-header-content inner">
+        <a href="http://blog.benjamin-encz.de/" style="text-decoration: none;"><h1 class="page-title">[Thinking inside a large box];</h1></a>
+        <h2 class="page-description">
+            
+        </h2>
+    </div>
+</div>
+</header>
+
+
+    
+
+
+</header>
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+    <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
+        <h1 class="post-title">Beware the UIKit Visitors!</h1>
+        <small></small>
+
+        <section class="post-meta">
+        
+          <time class="post-date" datetime="2016-05-10T12:24:54-08:00">
+            May 10, 2016
+          </time>
+        
+         
+        </section>
+    </header>
+
+    <section class="post-content">
+
+
+
+
+<p></p>
+
+<h4 id="investigating-the-cause-of-quadratic-time-complexity-when-adding-subviews-in-uikit:bd21c6a2ef964e87977ff56934e088c5">Investigating the Cause of Quadratic Time Complexity When Adding Subviews in UIKit</h4>
+
+<p><del>Yesterday</del> Two weeks ago we identified a performance regression in the PlanGrid app, when entering a view that dynamically adds a large amount of subviews.</p>
+
+<p>I started this blog post back then, but was recently motivated to finish it quickly by seeing other developers running into this issue as well:</p>
+
+<p><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">My discovery for the day is iOS has an O(n^2) cost to add a subview so never have too many subviews on a view or performance goes to shit</p>&mdash; Rupert H (@rpy) <a href="https://twitter.com/rpy/status/729550705137090560">May 9, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
+
+<p>For this blog post I wanted to isolate this issue from our code base. I was able to reproduce the issue with this minimal example inside of a blank <code>UIViewController</code>:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">override</span> <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">viewDidAppear</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">animated</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Bool</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #204a87; font-weight: bold">super</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">viewDidAppear</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">animated</span><span style="color: #000000; font-weight: bold">)</span>
+
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">view</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">tintColor</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">blueColor</span><span style="color: #000000; font-weight: bold">()</span>
+
+        <span style="color: #204a87; font-weight: bold">for</span> <span style="color: #000000">i</span> <span style="color: #204a87; font-weight: bold">in</span> <span style="color: #0000cf; font-weight: bold">1.</span><span style="color: #000000; font-weight: bold">.&lt;</span><span style="color: #0000cf; font-weight: bold">10000</span> <span style="color: #000000; font-weight: bold">{</span>
+            <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">view</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #3465a4">UIView</span><span style="color: #000000; font-weight: bold">()</span>
+            <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">view</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">addSubview</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">view</span><span style="color: #000000; font-weight: bold">)</span>
+        <span style="color: #000000; font-weight: bold">}</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+
+
+<p>The above example is obviously extreme, but it reveals an interesting performance issue: when setting a <code>tintColor</code> on a parent view, and not setting an explicit color on child views the performance of <code>addSubview</code> reduces itself drastically with a large amount of added subviews.</p>
+
+<p>Here&rsquo;s what I could identify within Instrument&rsquo;s time profiler:
+<img src="https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/tint-color-visitor-highlight.png" alt="" /></p>
+
+<p>A majority of the time is adding subviews is spent within <code>[_UITintColorVisitor _visitView:]</code>. In this example it&rsquo;s 64% of the time; and the proportion only increases with the amount of subviews we&rsquo;re adding.</p>
+
+<p>We like our custom tint color; but not enough to justify such an impact on performance. <strong>By deactivating the custom tint color we bring the overall run time of <code>viewDidAppear</code> from our example project from over 700ms down to ~10ms.</strong></p>
+
+<p>The same affect can be accomplished by specifying the <code>tintColor</code> on each view we&rsquo;re adding, which stops the expensive <code>_UITintColorVisitor</code> from stopping by too often.</p>
+
+<h2 id="digging-into-uikit:bd21c6a2ef964e87977ff56934e088c5">Digging into UIKit</h2>
+
+<p>Finding a workaround for this issue is only half of the fun. Let&rsquo;s try to find out what is causing these poor performance characteristics in the first place. We can start by taking a closer look at the time profiler output:</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/focus-tint-color-visitor.png" alt="" /></p>
+
+<p>We can see that the app doesn&rsquo;t spend too much time in <code>[_UITintColor _visitView]</code> itself. The majority of the time is consumed by <code>objc_msgSend</code> which indicates that this method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we&rsquo;re spending a lot of time in <code>[NSArray containsObject:]</code> which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).</p>
+
+<h3 id="breakpoints-in-framework-functions:bd21c6a2ef964e87977ff56934e088c5">Breakpoints in Framework Functions</h3>
+
+<p>We can start by setting a breakpoint within the <code>[_UITintColor _visitView]</code> method; that will give us an idea of how often that method is called.</p>
+
+<p>We can do that by setting a breakpoint early in our program to bring up the lldb console (alternatively we could use lldb from the terminal). Then we can enter the following command to set a breakpoint:</p>
+
+<pre><code>(lldb) b -[_UITintColorVisitor _visitView:]
+</code></pre>
+
+<p>Now we can continue execution; soon we should trap into our breakpoint:</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-breakpoint.png" alt="" /></p>
+
+<p>Checking how often this method is called, I quickly identified that the amount of calls grows with the amount of subviews we have added. As a next step I wanted to see which views exactly are being visited. For that we need to dive into a little bit of assembly code.</p>
+
+<h3 id="inspecting-the-assembly-code:bd21c6a2ef964e87977ff56934e088c5">Inspecting the Assembly Code</h3>
+
+<p>When stepping into the breakpoint in <code>-[_UITintColorVisitor _visitView:]</code> you are greeted with a cryptic wall of assembly code. I started out with very barebones knowledge of understanding/investigating complex assembly code, but this bug forced me to learn some tricks that hopefully are useful to you as well!</p>
+
+<h4 id="running-the-example-app-on-32-bit-mode:bd21c6a2ef964e87977ff56934e088c5">Running the Example App on 32-Bit Mode</h4>
+
+<p><strong>Update:</strong> <em>I have gotten feedback from multiple readers, that Hopper works just as well in 64-Bit mode, and actually makes accessing arguments easier. For my next disassembly adventure I will try 64 instead of 32-Bit.</em></p>
+
+<p>As a first step, let&rsquo;s ensure that our app runs in <strong>32-Bit</strong> mode in the simulator. This architecture is known as <strong>i386</strong>. We choose to run the app in 32-Bit mode since i386 has a simpler way of passing function arguments (which will come in handy shortly). In Xcode 7 the easiest way to run on the i386 architecture is to select the <em>iPad 2</em> simulator.</p>
+
+<p>With this setup in place, we can now inspect which views are visited from within our breakpoint in <code>-[_UITintColorVisitor _visitView:]</code>. Looking at the method signature we can see that this method takes on argument: the view that is being visited. That&rsquo;s the information that we would like to inspect further. In addition to that explicit argument every method call in Objective-C receives <code>self</code> as the first and the <code>selector</code> as the second implicit argument.</p>
+
+<h4 id="printing-function-arguments-in-assembly:bd21c6a2ef964e87977ff56934e088c5">Printing Function Arguments in Assembly</h4>
+
+<p>By using <a href="https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/">this handy reference</a> we can look up where these arguments are stored when a method is called (the reference is old and refers <code>gdb</code> instead of <code>lldb</code>, but the info is still up to date.). The order of these arguments is part of what we call a &ldquo;calling convention&rdquo;. It states that on a i386 architecture function arguments are passed as follows:</p>
+
+<ul>
+<li>Before prologue:
+
+<ul>
+<li>*($esp+4n) ➡ arg(n)<br /></li>
+</ul></li>
+<li>After prologue:
+
+<ul>
+<li>*($ebp+8+4n) ➡ arg(n)</li>
+</ul></li>
+</ul>
+
+<p>The <em>n</em> here refers to the index of the argument.</p>
+
+<p>Without getting into too much detail at this point: the &ldquo;prologue&rdquo; is a sequence at the beginning of a function call that configures the stack pointer and different stack variables. The variable locations for our function arguments are different before and after the prologue (<a href="http://arigrant.com/blog/2014/2/18/chisels-print-invocation-command">this blog post</a> by Ari Grant has a good description for what the function prologue and epilogue do). All arguments are offset from the base address that is stored in the <code>esp</code> register.</p>
+
+<p>For now we&rsquo;ll use the addresses before the prologue, since we&rsquo;ll access the arguments as soon as we trap into our breakpoint at the beginning of the <code>-[_UITintColorVisitor _visitView:]</code> method.</p>
+
+<p>When we reach that breakpoint we can print all 3 arguments to our function call as following:</p>
+
+<pre><code>(lldb) po *(id *)($esp+4)
+&lt;_UITintColorVisitor: 0xc502540&gt;
+
+(lldb) po *(SEL *)($esp+8)
+&quot;_visitView:&quot;
+
+(lldb) po *(id *)($esp+12)
+&lt;UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = &lt;CALayer: 0xc1176d0&gt;&gt;
+</code></pre>
+
+<p>Now we can use this new ability to print the visited view every time we step into our breakpoint, by calling: <code>po *(id *)($esp+12)</code> (alternatively you can also use a <a href="http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based">breakpoint command</a>).</p>
+
+<p>Using this technique I identified that after a new subview is added, the parent view and all of its children are passed to calls of <code>-[_UITintColorVisitor _visitView:]</code>. For each added view UIKit will iterate all of its siblings.</p>
+
+<p>Why exactly is that happening? I have not yet been able to track it down definitely, but I have a bunch more clues that I&rsquo;d like to share.</p>
+
+<h4 id="let-the-guesswork-begin:bd21c6a2ef964e87977ff56934e088c5">Let the Guesswork begin</h4>
+
+<p>Since we want to know why the <code>_UITintColorVisitor</code> is called so frequently, it makes sense to start by investigating the backtrace. We can do this with the <code>bt</code> lldb command that we can invoke while halted in a breakpoint:</p>
+
+<pre><code>(lldb) bt
+* thread #1: tid = 0x156ea9, 0x00e4b61c UIKit`-[_UITintColorVisitor _visitView:], queue = 'com.apple.main-thread', stop reason = breakpoint 9.1
+  * frame #0: 0x00e4b61c UIKit`-[_UITintColorVisitor _visitView:]
+    frame #1: 0x00e4bfbb UIKit`_UIViewVisitorEntertainVisitors + 107
+    frame #2: 0x00e4af30 UIKit`_UIViewVisitorRecursivelyEntertainDescendingVisitors + 162
+    frame #3: 0x00e4a8ca UIKit`_UIViewVisitorEntertainDescendingTrackingVisitors + 705
+    frame #4: 0x00e4a2be UIKit`_UIViewVisitorEntertainHierarchyTrackingVisitors + 58
+    frame #5: 0x00a9ce3f UIKit`__45-[UIView(Hierarchy) _postMovedFromSuperview:]_block_invoke + 268
+    frame #6: 0x005b1440 Foundation`-[NSISEngine withBehaviors:performModifications:] + 150
+    frame #7: 0x005b491c Foundation`-[NSISEngine withAutomaticOptimizationDisabled:] + 48
+    frame #8: 0x00a9cce4 UIKit`-[UIView(Hierarchy) _postMovedFromSuperview:] + 521
+    frame #9: 0x00aac7f1 UIKit`-[UIView(Internal) _addSubview:positioned:relativeTo:] + 2367
+    frame #10: 0x00a9acc8 UIKit`-[UIView(Hierarchy) addSubview:] + 56
+    frame #11: 0x00002be9 ExampleApp`ViewController.viewDidAppear(animated=false, self=0x0c72cce0) -&gt; () + 825 at ViewController.swift:40
+    frame #12: 0x00002cbf ExampleApp`@objc ViewController.viewDidAppear(Bool) -&gt; () + 63 at ViewController.swift:0
+    [...]
+</code></pre>
+
+<p>Up until <code>frame #11</code> we&rsquo;re only seeing code that is necessary to set up the example project. <code>frame #10</code> is the actual starting point for our investigation. It is called whenever a new subview is added and it eventually results in a call to the <code>_UITintColorVisitor</code>.</p>
+
+<p>What is interesting is that <code>addSubview</code> is only ever called on our root view, but the <code>_UITintColorVisitor</code> is called for all of the subviews of that root view. The cause of this problem must lie somewhere between <code>frame #11</code> and <code>frame #0</code>.</p>
+
+<p>At this point it was not obvious to me why all views were being caused to be visited; at the very end of the next section I might have a likely answer to that question&hellip;</p>
+
+<h4 id="digging-deeper:bd21c6a2ef964e87977ff56934e088c5">Digging Deeper</h4>
+
+<p>Since I hit a dead end in identifying why all subviews in the view hierarchy were constantly being revisited, I decided to investigate another interesting aspect about this problem that profiler had revealed.</p>
+
+<p>Earlier we identified that about 25% of the total time is taken up in calls to <code>[NSArray containsObject:]</code> which is called as part of the implementation of <code>[_UITintColorVisitor visitView:]</code>. I have used <a href="http://www.hopperapp.com/">Hopper Disassembler</a> to try to understand why that&rsquo;s the case. A disassembler can translate a binary (in machine code) back into assembly instructions which enables us to explore some of the inner workings of closed source software. This is useful, e.g. to explore issues in Apple&rsquo;s UIKit framework.</p>
+
+<p>If you have never used Hopper before, but would like to follow along, I would recommend reading this <a href="http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction">brief introduction</a>.</p>
+
+<p>Hopper has a handy feature that can generate pseudo code from the disassembled binary, which makes it somewhat easier to try and grasp the control flow of a program (if, like me, you&rsquo;re mostly unfamiliar with assembly code).</p>
+
+<p>By browsing throught the pseudo code generated by Hopper I could identify the section of <code>[_UITintColorVisitor _visitView:]</code> that calls <code>containsObject</code>:</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-pseudo-code.png" alt="" /></p>
+
+<p>I also stepped through the assembly code that corresponds to this pseudo code in the debugger. As part of that effort I identified a few things that are relevant to this snippet:</p>
+
+<ul>
+<li>One <code>_UITintColorVisitor</code> instance is used to visit all views (at least in this simple example with only one view hierarchy)</li>
+<li>The <code>_UITintColorVisitor</code> has a few properties that are persisted between the different invocations of <code>visitView:</code>. Here&rsquo;s an overview of all properties found in Hopper:
+<img src="https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/tint-color-visitor-properties.png" alt="" /></li>
+</ul>
+
+<p>From stepping through the assembly code and investigating different registries I could identify that in the above pseudo code <code>eax</code> refers to the <code>_originalVisitedView</code> and <code>edi</code> refers to the view that is currently being visited.</p>
+
+<p>This means, that as soon as a <code>_UITintColorVisitor</code> has an original visited view (which is true after it visited its first view), the outlined code checks if the <code>subviews</code> array of the <code>originalVisitedView</code> contains the currently visited view. This check scans the full array of subviews; in cases where the <code>originalVisitedView</code> is our root view, the cost of this operation grows linearly with the amount of added subviews.</p>
+
+<p>I investigated this further by creating another breakpoint in UIKit at the point where this check takes place. When disassembling the 32-Bit slice of UIKit and running the app in 32-Bit mode, the address offsets align nicely. By stepping into the breakpoint in <code>-[_UITintColorVisitor visitView:]</code> I could compare the assembly addresses in the debugger and in Hopper and identify that the addresses match up when replacing the <code>495</code> in the hopper address with <code>0xe4b</code>. The relative addresses within UIKit are constant, only the base address at which the framework is loaded is dynamic:</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/address-align.png" alt="" /></p>
+
+<p>Once we know the memory address offset we can create breakpoints in lldb based on addresses in Hopper.</p>
+
+<p>Knowing this, I created a new breakpoint based on the <code>loc_4956fd</code> in Hopper like this:</p>
+
+<pre><code>b 0xe4b6fd
+</code></pre>
+
+<p>Within the breakpoint I printed both the <code>eax</code> register and the <code>_originalVisitedView</code> of <code>self</code> (which is stored in the <code>ebx</code> register):</p>
+
+<pre><code>(lldb) po $eax
+&lt;UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = &lt;CALayer: 0xc1176d0&gt;&gt;
+
+(lldb) po [$ebx valueForKey:@&quot;_originalVisitedView&quot;]
+&lt;UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = &lt;CALayer: 0xc1176d0&gt;&gt;
+</code></pre>
+
+<p>With this approach I identified that with the current sample code, <code>eax</code> <strong>always refers to the root view</strong>. This means we are iterating over all subviews of the root view, N times for each subview that is added.</p>
+
+<p>I&rsquo;m no expert in complexity analysis but it appears that the total cost of <code>[_UITintColor visitView:]</code> sums up to <code>n^2</code>:</p>
+
+<p>(<strong>n</strong> invocations of <code>[_UITintColor visitView:]</code>) * (<strong>n</strong> cost of iterating all subviews) where <strong>n</strong> = amount of added subviews</p>
+
+<p><strong>But why do we have these two code paths outlined above in the first place</strong>? Why do we need to check if the currently visited view is a subview of the original visited view?</p>
+
+<p>In both cases, whether it is a subview or not, we end up calling: <code>___34-[_UITintColorVisitor _visitView:]_block_invoke</code>. In the case of the currently visited view being a subview of the original visited view, we pass two arguments to the block, in the other case we pass only one.</p>
+
+<p>Before moving on, here&rsquo;s an annotated version of the method we just investigated:
+<img src="https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-pseudo-code-annotated.png" alt="" /></p>
+
+<p>Now let&rsquo;s take a look at the block that is being invoked from here. By double-clicking onto the call to the block in Hopper, we can jump into the called block. It looks as following:</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/called-block.png" alt="" /></p>
+
+<p>We can see that this block receives two arguments. Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block using lldb:</p>
+
+<pre><code>(lldb) b 0xe4b7ee
+</code></pre>
+
+<p>By investigating the registers I found out that <code>ebx</code> refers to the <code>UIView</code> instance that is being visited and <code>*(esi + 0x14)</code> refers to the tint color visitor.
+The code seems to switch over the <code>_reasons</code> property of the <code>[_UITintColorVisitor]</code> and over some properties of the visited view.</p>
+
+<p>After stepping through the function prologue we can investigate the relevant values:</p>
+
+<pre><code>po [*(id *)($esi+0x14) valueForKey:@&quot;_reasons&quot;]
+1
+</code></pre>
+
+<p>The <code>_reasons</code> property seems to store a bitmask value. Our bitmask is set to <code>1</code>. The first <code>if</code> statment in the pseudo code checks if the <code>1</code> bit of the bitmask is set. A further condition is that the view&rsquo;s <code>_interactionTintColor</code> needs to be <code>nil</code> (this check likely explains why setting an explicit <code>tintColor</code> on a view fixes our performance issue). Since both conditions are met, we execute the body of the first <code>if</code> block.</p>
+
+<p>Inside of the <code>if</code> block we finally find a key that might help solve this puzzle:</p>
+
+<pre><code>[ebx _setAncestorDefinesTintColor:eax];
+</code></pre>
+
+<p>Here UIKit is marking this view, noting that its parent is defining a tint color. I&rsquo;m assuming that this flag is what registers this view in some way to be visited by the <code>_UITintColorVisitor</code>, since we are passing it as an argument to the <code>_setAncestorDefinesTintColor</code> method.</p>
+
+<p>The big question remains why this is flag is set every single time the view is visited and not only in cases where the subview has moved in the view hierarchy or when the parent view changes its tint color. Another interesting question is why the <code>superview</code> property of the visited view is not used instead of iterating over the array of subviews of the parent view. Both of these mysteries will most likely remain unsolved.</p>
+
+<p>However, our new findings help explain the two code paths in the piece of code that calls into this block (which we examined earlier):</p>
+
+<p><img src="https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-pseudo-code.png" alt="" /></p>
+
+<p>If the currently visited view is not a child view of the original visited view, we don&rsquo;t pass a second argument to this block; which is equivalent to passing <code>nil</code>. This means that <code>ebx</code> will be <code>nil</code>, which in turn means we will never call <code>[ebx _setAncestorDefinesTintColor:eax];</code>.</p>
+
+<h1 id="conclusion:bd21c6a2ef964e87977ff56934e088c5">Conclusion</h1>
+
+<p>When I started out diving into this issue I was almost entirely clueless about how to interpret complex disassembled code - now I&rsquo;m still mostly clueless. However, I learned a few very handy tricks along the way:</p>
+
+<ul>
+<li>I learned how to set breakpoints in private methods &amp; and at any address within the assembly code.</li>
+<li>I learned about the i386 and Objective-C calling conventions, e.g. which arguments are stored in which registers.</li>
+<li>I learned that the addresses in Hopper match the addresses in the actual framework code (besides a base pointers offset depending on where UIKit is loaded into memory). In hindsight this sounds obvious but it definitely was not the case when starting out. <a href="http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction">This article</a> was very helpful in getting more comfortable with working with lldb in UIKit alongside of Hopper.</li>
+</ul>
+
+<p>These three tools allowed me to explore the code paths &amp; relevant variables a lot faster which in turn made it a lot easier (yet still hard) to get a grasp of what was going on.</p>
+
+<p>In the end I didn&rsquo;t find a definite answer on how this issue could be fixed, but I found a lot of clues about how the current visitor pattern is implemented and I think I got fairly close to the underlying issue.</p>
+
+<p>Most importantly I learned how to be more efficient at exploring the inner workings of closed source frameworks which will surely come in handy in future! Attempting to reverse engineer code can be very intimidating and the learning curve is really steep. I hope some day when I have a better grasp myself I can share a beginner friendly guide on all of this!</p>
+
+<hr />
+
+<p>Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar: <a href="https://openradar.appspot.com/radar?id=4963594483531776">25934331</a> (fingers crossed)!</p>
+
+<p>I also recommend the following helpful articles for getting started with reverse engineering closed source Cocoa code:</p>
+
+<ul>
+<li>This article was a great introduction to the very basics of using Hopper and lldb side by side: <a href="http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction">Hopper + lldb for iOS Developers: A Gentle Introduction</a></li>
+<li>Very good discussion of function prologue and epilogue as well as calling conventions: <a href="http://arigrant.com/blog/2014/2/18/chisels-print-invocation-command">Printing Objective-C Invocations in LLDB</a></li>
+<li><a href="http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html">x86 Register Overview</a></li>
+<li><a href="https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/">x86 + ObjC Calling Conventions</a></li>
+<li><a href="http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based">Breakpoint Commands in lldb</a></li>
+<li>Another post on calling conventions in Objective-C by Jeff Hui, recommended by<a href="https://twitter.com/rpy">@rpy</a>: <a href="https://www.jeffhui.net/2014/03-reverse-engineering-objective-c.html">Reverse Engineering Objective-C</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+  
+
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a> (<a href="http://grnh.se/8fcutd">We're hiring!</a>)<br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Beware%20the%20UIKit%20Visitors%21&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2fdisassembling-uikit-tintcolor-visitor"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2fdisassembling-uikit-tintcolor-visitor"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2fdisassembling-uikit-tintcolor-visitor"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
+
+    
+
+<span id="comment_section"></span>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/disassembling-uikit-tintcolor-visitor\/';
+
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/blog.benjamin-encz.de\/disassembling-uikit-tintcolor-visitor';
+    }
+  }
+
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/index.js"></script>
+    
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-48608026-1', 'benjamin-encz.de');
+      ga('send', 'pageview');
+    </script>
+</body>
+</html>
+

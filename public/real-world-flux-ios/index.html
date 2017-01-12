@@ -7,7 +7,7 @@
 
   	<meta property="og:title" content=" Real World Flux Architecture on iOS &middot;  [Thinking inside a large box];" />
   	<meta property="og:site_name" content="[Thinking inside a large box];" />
-  	<meta property="og:url" content="http://blog.benjamin-encz.de/post/real-world-flux-ios/" />
+  	<meta property="og:url" content="http://blog.benjamin-encz.de/real-world-flux-ios" />
 
     
   	<meta property="og:type" content="article" />
@@ -49,7 +49,7 @@
     
     <meta name="generator" content="Hugo 0.15" />
 
-    <link rel="canonical" href="http://blog.benjamin-encz.de/post/real-world-flux-ios/" />
+    <link rel="canonical" href="http://blog.benjamin-encz.de/real-world-flux-ios" />
 
     
 
@@ -127,11 +127,11 @@
 
 <p>I&rsquo;m attempting to describe large parts of our Flux implementation by discussing code that is in production today. If you&rsquo;re only interested in the high level conclusion you can skip the middle part of this post.</p>
 
-<h2 id="why-we-transitioned-away-from-mvc:d680e8a854a7cbad6d490c445cba2eba">Why We Transitioned Away from MVC</h2>
+<h2 id="why-we-transitioned-away-from-mvc:f68a385428b3fd94e51f72ad1f78204c">Why We Transitioned Away from MVC</h2>
 
 <p>To put our decision into context I want to describe some of the challenges the PlanGrid app faces. Some of them are unique to enterprise software, others should apply to most iOS apps.</p>
 
-<h3 id="we-have-all-the-state:d680e8a854a7cbad6d490c445cba2eba">We Have All the State</h3>
+<h3 id="we-have-all-the-state:f68a385428b3fd94e51f72ad1f78204c">We Have All the State</h3>
 
 <p>PlanGrid is a fairly complex iOS app. It allows users to view blueprints and to collaborate on them using different types of annotations, issues and attachments (and a lot of other stuff that requires industry specific knowledge).</p>
 
@@ -139,7 +139,7 @@
 
 <p>The PlanGrid app runs on both iPad and iPhone, but its UI is optimized to make use of the larger available space on tablets. This means that unlike many iPhone apps we often present multiple view controllers at a time. These view controllers tend to share a decent amount of state.</p>
 
-<h3 id="the-state-of-state-management:d680e8a854a7cbad6d490c445cba2eba">The State of State Management</h3>
+<h3 id="the-state-of-state-management:f68a385428b3fd94e51f72ad1f78204c">The State of State Management</h3>
 
 <p>All of this means that our app puts a lot of effort into managing state. Any mutation within the app results in more or less the following steps:</p>
 
@@ -167,7 +167,7 @@
 
 <p>All of these approaches can be valid in different scenarios. However, this menu of different options is a big source of inconsistencies in a large codebase that has grown over multiple years.</p>
 
-<h3 id="freedom-is-dangerous:d680e8a854a7cbad6d490c445cba2eba">Freedom is Dangerous</h3>
+<h3 id="freedom-is-dangerous:f68a385428b3fd94e51f72ad1f78204c">Freedom is Dangerous</h3>
 
 <p>Classic MVC only advocates the separation of data and its representation. With the lack of other architectural guidance, everything else is left up to individual developers.</p>
 
@@ -179,7 +179,7 @@
 
 <p>Thorough code reviews &amp; style guides can only do so much, many of these architectural issues start with small inconsistencies and take a long time to evolve into serious problems. With well defined patterns in place it is a lot easier to detect deviations early.</p>
 
-<h3 id="an-architectural-pattern-for-state-management:d680e8a854a7cbad6d490c445cba2eba">An Architectural Pattern for State Management</h3>
+<h3 id="an-architectural-pattern-for-state-management:f68a385428b3fd94e51f72ad1f78204c">An Architectural Pattern for State Management</h3>
 
 <p>One of our most important goals during refactoring the PlanGrid app was putting clear patterns &amp; best practices in place. This would allow future features to be written in a more consistent way and make onboarding of new engineers a lot more efficient.</p>
 
@@ -196,13 +196,13 @@
 
 <p>It seemed that Flux would be a great fit for solving many of the issues we were experiencing.</p>
 
-<h2 id="a-brief-intro-to-flux:d680e8a854a7cbad6d490c445cba2eba">A Brief Intro to Flux</h2>
+<h2 id="a-brief-intro-to-flux:f68a385428b3fd94e51f72ad1f78204c">A Brief Intro to Flux</h2>
 
 <p>Flux is a very lightweight architectural pattern that Facebook uses for client-side web applications. Even though there is a <a href="https://github.com/facebook/flux">reference implementation</a>, Facebook emphasizes that the ideas of the Flux pattern are a lot more relevant than this particular implementation.</p>
 
 <p>The pattern can be described best alongside a diagram that shows the different flux components:</p>
 
-<p><img src="./Flux_Original.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux_Original.png" alt="" /></p>
 
 <p>In the Flux architecture a <strong>store</strong> is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will send a change event to all views that subscribed to the store. The <strong>view</strong> receives changes only through this one interface that is called by the store.</p>
 
@@ -223,17 +223,17 @@ The stores register with the dispatcher and let it know which actions they are i
 
 <p>These constraints make designing, developing and debugging new features a lot easier.</p>
 
-<h2 id="flux-in-plangrid-for-ios:d680e8a854a7cbad6d490c445cba2eba">Flux in PlanGrid for iOS</h2>
+<h2 id="flux-in-plangrid-for-ios:f68a385428b3fd94e51f72ad1f78204c">Flux in PlanGrid for iOS</h2>
 
 <p>For the PlanGrid iOS app we have deviated slightly from the Flux reference implementation. We enforce that each store has an observable <code>state</code> property. Unlike in the original Flux implementation we don&rsquo;t emit a change event when a store updates. Instead views observe the <code>state</code> property of the store. Whenever the views observe a state change, they update themselves in response:</p>
 
-<p><img src="./Flux.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux.png" alt="" /></p>
 
 <p>This is a very subtle deviation from the Flux reference implementation, but covering it is helpful for the upcoming sections.</p>
 
 <p>With an understanding of the basics of the Flux architecture, let&rsquo;s dive into some of the implementation details and questions we needed to answer while implementing Flux in the PlanGrid app.</p>
 
-<h3 id="what-is-the-scope-of-a-store:d680e8a854a7cbad6d490c445cba2eba">What is the Scope of a Store?</h3>
+<h3 id="what-is-the-scope-of-a-store:f68a385428b3fd94e51f72ad1f78204c">What is the Scope of a Store?</h3>
 
 <p>The scope of each individual store is a very interesting question that quickly comes up when using the Flux pattern.</p>
 
@@ -254,17 +254,17 @@ The stores register with the dispatcher and let it know which actions they are i
 
 <p>We are currently in the process of implementing our first <em>shared state stores</em> and are still deciding the best way to model the multiple dependencies of different views onto these types of stores.</p>
 
-<h3 id="implementing-a-feature-using-the-flux-pattern:d680e8a854a7cbad6d490c445cba2eba">Implementing a Feature Using the Flux Pattern</h3>
+<h3 id="implementing-a-feature-using-the-flux-pattern:f68a385428b3fd94e51f72ad1f78204c">Implementing a Feature Using the Flux Pattern</h3>
 
 <p>Let&rsquo;s dive a little bit deeper into some of the implementation details of features that are built with the Flux pattern.</p>
 
 <p>As an example throughout the next couple of sections we&rsquo;ll use a feature that&rsquo;s used in production within the PlanGrid app. The feature allows users to filter annotations on a blueprint:</p>
 
-<p><img src="./filter_screenshot.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/filter_screenshot.png" alt="" /></p>
 
 <p>The feature we&rsquo;ll discuss lives in the popover that&rsquo;s presented on the left hand side of the screenshot.</p>
 
-<h4 id="step-1-defining-the-state:d680e8a854a7cbad6d490c445cba2eba">Step 1: Defining the State</h4>
+<h4 id="step-1-defining-the-state:f68a385428b3fd94e51f72ad1f78204c">Step 1: Defining the State</h4>
 
 <p>Usually I begin implementing a new feature by determining the relevant state for it. The state represents everything the UI needs to know in order to render the representation of a certain feature.</p>
 
@@ -275,7 +275,7 @@ The stores register with the dispatcher and let it know which actions they are i
     <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">shareStatusFilters</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">RepresentableAnnotationFilter</span><span style="color: #000000; font-weight: bold">]</span>
     <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">issueFilters</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">RepresentableAnnotationFilter</span><span style="color: #000000; font-weight: bold">]</span>
     <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">generalFilters</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">RepresentableAnnotationFilter</span><span style="color: #000000; font-weight: bold">]</span>
-    
+
     <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">selectedFilterGroup</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnnotationFilterGroupType</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">nil</span>
     <span style="color: #8f5902; font-style: italic">/// Indicates whether any filter is active right now</span>
     <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">isFiltering</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Bool</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">false</span>
@@ -288,7 +288,7 @@ The stores register with the dispatcher and let it know which actions they are i
 <p>This state is exactly tailored to the needs of the UI. The list of filters is rendered in a table view. The selected filter group is used to present/hide the details
 of an individually selected filter group. And the <code>isFiltering</code> flag is used to determine whether or not a button to clear all filters should be enabled or disabled in the UI.</p>
 
-<h4 id="step-2-defining-the-actions:d680e8a854a7cbad6d490c445cba2eba">Step 2: Defining the Actions</h4>
+<h4 id="step-2-defining-the-actions:f68a385428b3fd94e51f72ad1f78204c">Step 2: Defining the Actions</h4>
 
 <p>After defining the shape of the state for a certain feature I usually think about the different state mutations in the next step. In the Flux architecture state mutations are modeled in the form of actions that describe which state change is intended. For the annotation filter feature the list of actions is fairly short:</p>
 
@@ -298,18 +298,18 @@ of an individually selected filter group. And the <code>isFiltering</code> flag 
     <span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">ToggleFilterAction</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnyAction</span> <span style="color: #000000; font-weight: bold">{</span>
         <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">filter</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnnotationFilterType</span>
     <span style="color: #000000; font-weight: bold">}</span>
-    
+
     <span style="color: #8f5902; font-style: italic">/// Navigates to details of a filter group.</span>
     <span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">EnterFilterGroup</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnyAction</span> <span style="color: #000000; font-weight: bold">{</span>
         <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">filterGroup</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnnotationFilterGroupType</span>
     <span style="color: #000000; font-weight: bold">}</span>
-    
+
     <span style="color: #8f5902; font-style: italic">/// Leaves detail view of a filter group.</span>
     <span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">LeaveFilterGroup</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnyAction</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #000000; font-weight: bold">}</span>
-    
+
     <span style="color: #8f5902; font-style: italic">/// Disables all filters.</span>
     <span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">ResetFilters</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnyAction</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #000000; font-weight: bold">}</span>
-    
+
     <span style="color: #8f5902; font-style: italic">/// Disables all filters within a filter group.</span>
     <span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">ResetFiltersInGroup</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnyAction</span> <span style="color: #000000; font-weight: bold">{</span>
         <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">filterGroup</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnnotationFilterGroupType</span>
@@ -320,7 +320,7 @@ of an individually selected filter group. And the <code>isFiltering</code> flag 
 
 <p>Even without an in-depth understanding of the feature it should be somewhat understandable which state transitions these actions initiate. One of the many benefits of the Flux architecture is that this list of actions is an exhaustive overview of all state changes that can be triggered for this particular feature.</p>
 
-<h4 id="step-3-implement-the-response-to-actions-in-the-store:d680e8a854a7cbad6d490c445cba2eba">Step 3: Implement the Response to Actions in the Store</h4>
+<h4 id="step-3-implement-the-response-to-actions-in-the-store:f68a385428b3fd94e51f72ad1f78204c">Step 3: Implement the Response to Actions in the Store</h4>
 
 <p>In this step we implement the core business logic of a feature. I personally tend to implement this step using TDD, which I&rsquo;ll discuss a little later. The implementation of a store can be summarized as following:</p>
 
@@ -335,7 +335,7 @@ of an individually selected filter group. And the <code>isFiltering</code> flag 
 <div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">handleToggleFilterAction</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">toggleFilterAction</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnnotationFilteringActions</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">ToggleFilterAction</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
     <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">filter</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">toggleFilterAction</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #3465a4">filter</span>
     <span style="color: #3465a4">filter</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">enabled</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #ce5c00; font-weight: bold">!</span><span style="color: #3465a4">filter</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">enabled</span>
-    
+
     <span style="color: #8f5902; font-style: italic">// Check for issue specific filters</span>
     <span style="color: #204a87; font-weight: bold">if</span> <span style="color: #3465a4">filter</span> <span style="color: #204a87; font-weight: bold">is</span> <span style="color: #000000">IssueAssignedToFilter</span> <span style="color: #ce5c00; font-weight: bold">||</span>
         <span style="color: #3465a4">filter</span> <span style="color: #204a87; font-weight: bold">is</span> <span style="color: #000000">IssueStatusAnnotationFilter</span> <span style="color: #ce5c00; font-weight: bold">||</span>
@@ -348,7 +348,7 @@ of an individually selected filter group. And the <code>isFiltering</code> flag 
                     <span style="color: #000000">issueTypeFilter</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">enabled</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">true</span>
             <span style="color: #000000; font-weight: bold">}</span>
     <span style="color: #000000; font-weight: bold">}</span>
-    
+
     <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_applyFilter</span><span style="color: #000000; font-weight: bold">()</span>
 <span style="color: #000000; font-weight: bold">}</span>
 </pre></div>
@@ -369,7 +369,7 @@ The <code>ToggleFilterAction</code> carries information about which specific fil
     <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_state</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">value</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">isFiltering</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_annotationFilterService</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">allFilterGroups</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #3465a4">reduce</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">false</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #000000">isFiltering</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">filterGroup</span> <span style="color: #204a87; font-weight: bold">in</span>
         <span style="color: #000000">isFiltering</span> <span style="color: #ce5c00; font-weight: bold">||</span> <span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">filterGroup</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">activeFilterCount</span><span style="color: #000000; font-weight: bold">()</span> <span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #0000cf; font-weight: bold">0</span><span style="color: #000000; font-weight: bold">)</span>
     <span style="color: #000000; font-weight: bold">}</span>
-    
+
     <span style="color: #8f5902; font-style: italic">// Phantom state update to refresh the cell state, technically not needed since filters are reference types</span>
     <span style="color: #8f5902; font-style: italic">// and previous statement already triggers a state update.</span>
     <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_state</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">value</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_state</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">value</span>
@@ -408,7 +408,7 @@ Since we&rsquo;re using reference types here, we perform a phantom state update 
 
 <p>Let&rsquo;s move on to discussing how the UI receives state updates from the store.</p>
 
-<h4 id="step-4-binding-the-ui-to-the-store:d680e8a854a7cbad6d490c445cba2eba">Step 4: Binding the UI to the Store</h4>
+<h4 id="step-4-binding-the-ui-to-the-store:f68a385428b3fd94e51f72ad1f78204c">Step 4: Binding the UI to the Store</h4>
 
 <p>One of the core Flux concepts is that an automatic UI update is triggered whenever a state update occurs. This ensures that the UI always represents the latest state and makes away with any code that is required to maintain these updates manually. This step is very similar to the bindings of a View to the ViewModel in the MVVM architecture.</p>
 
@@ -451,16 +451,16 @@ This allows store subscribers to receive state updates but doesn&rsquo;t allow t
 	    <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">on</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">event</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #204a87; font-weight: bold">weak</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #204a87; font-weight: bold">_</span> <span style="color: #204a87; font-weight: bold">in</span>
 	        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">tableViewDataSource</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">refreshViews</span><span style="color: #000000; font-weight: bold">()</span>
 	    <span style="color: #000000; font-weight: bold">})</span>
-	
+
 	<span style="color: #000000">compositeDisposable</span> <span style="color: #ce5c00; font-weight: bold">+=</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">store</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">state</span>
 	    <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">ignoreNil</span><span style="color: #000000; font-weight: bold">()</span>
 	    <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">take</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #0000cf; font-weight: bold">1</span><span style="color: #000000; font-weight: bold">)</span>
 	    <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">startWithNext</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #204a87; font-weight: bold">weak</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #204a87; font-weight: bold">_</span> <span style="color: #204a87; font-weight: bold">in</span>
 	        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">tableView</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">reloadData</span><span style="color: #000000; font-weight: bold">()</span>
 	    <span style="color: #000000; font-weight: bold">}</span>
-	
+
 	 <span style="color: #000000">compositeDisposable</span> <span style="color: #ce5c00; font-weight: bold">+=</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">navigationItem</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">rightBarButtonItem</span><span style="color: #000000; font-weight: bold">!.</span><span style="color: #000000">racEnabled</span> <span style="color: #ce5c00; font-weight: bold">&lt;~</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">store</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">state</span>
-	        <span style="color: #000000; font-weight: bold">.</span><span style="color: #3465a4">map</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #000000">$0</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">isFiltering</span> <span style="color: #000000; font-weight: bold">??</span> <span style="color: #204a87; font-weight: bold">false</span> <span style="color: #000000; font-weight: bold">}</span>
+            <span style="color: #000000; font-weight: bold">.</span><span style="color: #3465a4">map</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #000000">$0</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">isFiltering</span> <span style="color: #000000; font-weight: bold">??</span> <span style="color: #204a87; font-weight: bold">false</span> <span style="color: #000000; font-weight: bold">}</span>
 <span style="color: #000000; font-weight: bold">}</span>
 </pre></div>
 </p>
@@ -482,25 +482,25 @@ This allows store subscribers to receive state updates but doesn&rsquo;t allow t
         <span style="color: #000000">headerHeight</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">nil</span><span style="color: #000000; font-weight: bold">,</span>
         <span style="color: #000000">cellViewModels</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnnotationFilterViewProvider</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">cellViewModelsForGroup</span><span style="color: #000000; font-weight: bold">([</span><span style="color: #000000">state</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">hideEverythingFilter</span><span style="color: #000000; font-weight: bold">])</span>
     <span style="color: #000000; font-weight: bold">)</span>
-    
+
     <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">shareStatusSection</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">FluxTableViewModel</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">SectionModel</span><span style="color: #000000; font-weight: bold">(</span>
         <span style="color: #000000">headerTitle</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #4e9a06">&quot;annotation_filters.share_status_section.title&quot;</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">translate</span><span style="color: #000000; font-weight: bold">(),</span>
         <span style="color: #000000">headerHeight</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #0000cf; font-weight: bold">28</span><span style="color: #000000; font-weight: bold">,</span>
         <span style="color: #000000">cellViewModels</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnnotationFilterViewProvider</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">cellViewModelsForGroup</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">state</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">shareStatusFilters</span><span style="color: #000000; font-weight: bold">)</span>
     <span style="color: #000000; font-weight: bold">)</span>
-    
+
     <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">issueFilterSection</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">FluxTableViewModel</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">SectionModel</span><span style="color: #000000; font-weight: bold">(</span>
         <span style="color: #000000">headerTitle</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #4e9a06">&quot;annotation_filters.issues_section.title&quot;</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">translate</span><span style="color: #000000; font-weight: bold">(),</span>
         <span style="color: #000000">headerHeight</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #0000cf; font-weight: bold">28</span><span style="color: #000000; font-weight: bold">,</span>
         <span style="color: #000000">cellViewModels</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnnotationFilterViewProvider</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">cellViewModelsForGroup</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">state</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">issueFilters</span><span style="color: #000000; font-weight: bold">)</span>
     <span style="color: #000000; font-weight: bold">)</span>
-    
+
     <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">generalFilterSection</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">FluxTableViewModel</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">SectionModel</span><span style="color: #000000; font-weight: bold">(</span>
         <span style="color: #000000">headerTitle</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #4e9a06">&quot;annotation_filters.general_section.title&quot;</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">translate</span><span style="color: #000000; font-weight: bold">(),</span>
         <span style="color: #000000">headerHeight</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #0000cf; font-weight: bold">28</span><span style="color: #000000; font-weight: bold">,</span>
         <span style="color: #000000">cellViewModels</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">AnnotationFilterViewProvider</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">cellViewModelsForGroup</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">state</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">generalFilters</span><span style="color: #000000; font-weight: bold">)</span>
     <span style="color: #000000; font-weight: bold">)</span>
-    
+
     <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">FluxTableViewModel</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">sectionModels</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span>
         <span style="color: #000000">hideEverythingSection</span><span style="color: #000000; font-weight: bold">,</span>
         <span style="color: #000000">shareStatusSection</span><span style="color: #000000; font-weight: bold">,</span>
@@ -526,7 +526,7 @@ This allows store subscribers to receive state updates but doesn&rsquo;t allow t
 
 <p>With these UI bindings in place, we&rsquo;ve discussed the last part of implementing a Flux feature. Since I covered a lot I want to give a quick recap before moving on to discussing the testing approach for Flux features.</p>
 
-<h4 id="implementation-recap:d680e8a854a7cbad6d490c445cba2eba">Implementation Recap</h4>
+<h4 id="implementation-recap:f68a385428b3fd94e51f72ad1f78204c">Implementation Recap</h4>
 
 <p>When implementing a Flux feature I will typically split the work into the following segments:</p>
 
@@ -541,7 +541,7 @@ This allows store subscribers to receive state updates but doesn&rsquo;t allow t
 
 <p>Let&rsquo;s move on to discuss how to test Flux features.</p>
 
-<h3 id="writing-tests:d680e8a854a7cbad6d490c445cba2eba">Writing Tests</h3>
+<h3 id="writing-tests:f68a385428b3fd94e51f72ad1f78204c">Writing Tests</h3>
 
 <p>One of the main benefits of the Flux architecture is that it separates concerns strictly. This makes it really easy to test the business logic and large parts of the UI code.</p>
 
@@ -552,7 +552,7 @@ This allows store subscribers to receive state updates but doesn&rsquo;t allow t
 <li>The view model providers (these are our React-like functions that produce a description of the UI based on an input state).</li>
 </ol>
 
-<h4 id="testing-stores:d680e8a854a7cbad6d490c445cba2eba">Testing Stores</h4>
+<h4 id="testing-stores:f68a385428b3fd94e51f72ad1f78204c">Testing Stores</h4>
 
 <p>Testing stores is typically very simple. We can drive interactions with the store by passing in actions and we can observe the state changes by either subscribing to the store or by observing the internal <code>_state</code> property in our tests.</p>
 
@@ -569,26 +569,26 @@ This allows store subscribers to receive state updates but doesn&rsquo;t allow t
         <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">toggleFilterAction</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">AnnotationFilteringActions</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">ToggleFilterAction</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #3465a4">filter</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">hideAllFilter</span><span style="color: #000000; font-weight: bold">)</span>
         <span style="color: #000000">annotationFilterStore</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_handleActions</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">toggleFilterAction</span><span style="color: #000000; font-weight: bold">)</span>
     <span style="color: #000000; font-weight: bold">}</span>
-    
+
     <span style="color: #000000">it</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #4e9a06">&quot;toggles the selected filter&quot;</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
         <span style="color: #000000">expect</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">hideAllFilter</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">enabled</span><span style="color: #000000; font-weight: bold">).</span><span style="color: #000000">to</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">beTrue</span><span style="color: #000000; font-weight: bold">())</span>
     <span style="color: #000000; font-weight: bold">}</span>
-    
+
     <span style="color: #000000">it</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #4e9a06">&quot;enables filtering mode&quot;</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
         <span style="color: #000000">expect</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotationFilterStore</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_state</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">value</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">isFiltering</span><span style="color: #000000; font-weight: bold">).</span><span style="color: #000000">to</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">beTrue</span><span style="color: #000000; font-weight: bold">())</span>
     <span style="color: #000000; font-weight: bold">}</span>
-    
+
     <span style="color: #000000">context</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #4e9a06">&quot;when subsequently resetting filters&quot;</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
-    
+
         <span style="color: #000000">beforeEach</span> <span style="color: #000000; font-weight: bold">{</span>
             <span style="color: #000000">annotationFilterStore</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_handleActions</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">AnnotationFilteringActions</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">ResetFilters</span><span style="color: #000000; font-weight: bold">())</span>
         <span style="color: #000000; font-weight: bold">}</span>
-    
+
         <span style="color: #000000">it</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #4e9a06">&quot;deactivates previously active filters and stops filter mode&quot;</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
             <span style="color: #000000">expect</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">hideAllFilter</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">enabled</span><span style="color: #000000; font-weight: bold">).</span><span style="color: #000000">to</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">beFalse</span><span style="color: #000000; font-weight: bold">())</span>
             <span style="color: #000000">expect</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotationFilterStore</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_state</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">value</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">isFiltering</span><span style="color: #000000; font-weight: bold">).</span><span style="color: #000000">to</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">beFalse</span><span style="color: #000000; font-weight: bold">())</span>
         <span style="color: #000000; font-weight: bold">}</span>
-    
+
     <span style="color: #000000; font-weight: bold">}</span>
 <span style="color: #000000; font-weight: bold">}</span>
 </pre></div>
@@ -600,7 +600,7 @@ This allows store subscribers to receive state updates but doesn&rsquo;t allow t
 
 <p>When implementing the business logic in a store I now mostly write my tests first. The structure of the our store code along with the behavioral Quick specs lends itself extremely well to a test driven development process.</p>
 
-<h4 id="testing-views:d680e8a854a7cbad6d490c445cba2eba">Testing Views</h4>
+<h4 id="testing-views:f68a385428b3fd94e51f72ad1f78204c">Testing Views</h4>
 
 <p>The Flux architecture combined with our declarative UI layer makes
 testing views pretty simple. Internally we are still debating the amount of
@@ -625,7 +625,7 @@ that we don&rsquo;t need additional snapshot tests.</p>
 
 <p>As we&rsquo;ve seen there are may alternatives for testing the UI, I&rsquo;m interested to see which one we (and other developers) will pick in the long term.</p>
 
-<h2 id="conclusion:d680e8a854a7cbad6d490c445cba2eba">Conclusion</h2>
+<h2 id="conclusion:f68a385428b3fd94e51f72ad1f78204c">Conclusion</h2>
 
 <p>After diving into many implementation details I&rsquo;d like to close with high level summary of our experience so far.</p>
 
@@ -689,21 +689,21 @@ that we don&rsquo;t need additional snapshot tests.</p>
     <section class="author">
         <h4>Benjamin Encz</h4>
         <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
-        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a> (<a href="https://jobs.lever.co/plangrid?lever-via=SzsN-_Jgq1">We're hiring!</a>)<br></p>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a> (<a href="http://grnh.se/8fcutd">We're hiring!</a>)<br></p>
     </section>
 
     
     <section class="share">
       <h4>Share this post</h4>
-      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Real%20World%20Flux%20Architecture%20on%20iOS&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2freal-world-flux-ios%2f"
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Real%20World%20Flux%20Architecture%20on%20iOS&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2freal-world-flux-ios"
           onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
           <span class="hidden">Twitter</span>
       </a>
-      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2freal-world-flux-ios%2f"
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2freal-world-flux-ios"
           onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
           <span class="hidden">Facebook</span>
       </a>
-      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2freal-world-flux-ios%2f"
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2freal-world-flux-ios"
          onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
           <span class="hidden">Google+</span>
       </a>
@@ -727,7 +727,7 @@ that we don&rsquo;t need additional snapshot tests.</p>
         
         disqus_url = undefined;
     } else {
-        disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/real-world-flux-ios\/';
+        disqus_url = 'http:\/\/blog.benjamin-encz.de\/real-world-flux-ios';
     }
   }
 
