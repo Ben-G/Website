@@ -60,6 +60,8 @@ Unless Uber is working on some unpublished new products that entirely change the
 
 But then again, I might be missing something that the investors are seeing?
 
+*You can also discuss [this post on Hacker News.](https://news.ycombinator.com/item?id=13437414)*
+
 [^1]: [A post on nakedcapatlism](http://www.nakedcapitalism.com/2016/11/can-uber-ever-deliver-part-one-understanding-ubers-bleak-operating-economics.html#_edn3) has shared the leaked financials. Note, that it appears [that losses of Uber in China are included in these financials](https://twitter.com/EricNewcomer/status/804470392123363328), even though the article claims the opposite.
 [^2]: [Uber Loses at Least $1.2 Billion in First Half of 2016](https://www.bloomberg.com/news/articles/2016-08-25/uber-loses-at-least-1-2-billion-in-first-half-of-2016)
 [^3]: [The Economist explains: Why airlines make such meagre profits](http://www.economist.com/blogs/economist-explains/2014/02/economist-explains-5)
