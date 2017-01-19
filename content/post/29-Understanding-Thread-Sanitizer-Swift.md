@@ -3,7 +3,7 @@ date = "2016-11-18T22:24:54-08:00"
 draft = false
 title = "Understanding Data Race Detection by Implementing it in Swift"
 slug = "understanding-data-race-detection-by-implementing-in-swift"
-disqus_url = "http://blog.benjamin-encz.de/post/[.DS_Store](https://github.com/Ben-G/ThreadSanitizerSimulator/blob/full-implementation/.DS_Store)/"
+disqus_url = "http://blog.benjamin-encz.de/post/understanding-data-race-detection-by-implementing-in-swift/"
 +++
 
 TL;DR: In order to learn more about how Thread Sanitizer's data race detection works I've implemented a very simple version in Swift. [You can find it on GitHub](https://github.com/Ben-G/DataRaceDetector).
