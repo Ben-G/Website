@@ -32,7 +32,7 @@ In this example we wouldn't be able to expose the type to Objective-C, because e
 
 {{< highlight swift >}}
 enum CheckoutOption {
-  case creditCard(Int
+  case creditCard(Int)
   case paypal(String)
 }
 
@@ -137,7 +137,7 @@ cart.items = @[@"TV"];
 [cart setCheckoutOptionToPayPalWithEmail:@"test@test.com"];
 {{< /highlight >}}
 
-We could now pass this instance to Swift code and the receiver could use the
+We can now pass this instance to Swift code and the receiver can use the
 underlying Swift type, stored within the bridged type, with all of its rich language features.
 
 The principles outlined above are also used for the Swift

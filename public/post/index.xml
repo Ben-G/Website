@@ -6,13 +6,13 @@
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 12 Feb 2017 22:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Tue, 14 Feb 2017 22:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Bridging Swift Types to Objective-C</title>
       <link>http://blog.benjamin-encz.de/post/bridging-swift-types-to-objective-c/</link>
-      <pubDate>Sun, 12 Feb 2017 22:24:54 -0800</pubDate>
+      <pubDate>Tue, 14 Feb 2017 22:24:54 -0800</pubDate>
       
       <guid>http://blog.benjamin-encz.de/post/bridging-swift-types-to-objective-c/</guid>
       <description>
@@ -42,7 +42,7 @@
 &lt;p&gt;In this example we wouldn&amp;rsquo;t be able to expose the type to Objective-C, because enums with associated types can&amp;rsquo;t be bridged.&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;enum&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;CheckoutOption&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-  &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;creditCard&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;
+  &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;creditCard&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
   &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;paypal&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
@@ -148,7 +148,7 @@ will depend on your use case.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;We could now pass this instance to Swift code and the receiver could use the
+&lt;p&gt;We can now pass this instance to Swift code and the receiver can use the
 underlying Swift type, stored within the bridged type, with all of its rich language features.&lt;/p&gt;
 
 &lt;p&gt;The principles outlined above are also used for the Swift

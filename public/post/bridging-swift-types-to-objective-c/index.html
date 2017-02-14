@@ -12,7 +12,7 @@
     
   	<meta property="og:type" content="article" />
 
-    <meta property="og:article:published_time" content="2017-02-12T22:24:54-08:00" />
+    <meta property="og:article:published_time" content="2017-02-14T22:24:54-08:00" />
 
     
     
@@ -110,8 +110,8 @@
 
         <section class="post-meta">
         
-          <time class="post-date" datetime="2017-02-12T22:24:54-08:00">
-            Feb 12, 2017
+          <time class="post-date" datetime="2017-02-14T22:24:54-08:00">
+            Feb 14, 2017
           </time>
         
          
@@ -148,7 +148,7 @@
 <p>In this example we wouldn&rsquo;t be able to expose the type to Objective-C, because enums with associated types can&rsquo;t be bridged.</p>
 
 <div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">enum</span> <span style="color: #000000">CheckoutOption</span> <span style="color: #000000; font-weight: bold">{</span>
-  <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">creditCard</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87">Int</span>
+  <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">creditCard</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87">Int</span><span style="color: #000000; font-weight: bold">)</span>
   <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">paypal</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87">String</span><span style="color: #000000; font-weight: bold">)</span>
 <span style="color: #000000; font-weight: bold">}</span>
 
@@ -254,7 +254,7 @@ will depend on your use case.</p>
 </pre></div>
 </p>
 
-<p>We could now pass this instance to Swift code and the receiver could use the
+<p>We can now pass this instance to Swift code and the receiver can use the
 underlying Swift type, stored within the bridged type, with all of its rich language features.</p>
 
 <p>The principles outlined above are also used for the Swift
