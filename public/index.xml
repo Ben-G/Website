@@ -6,8 +6,163 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 19 Jan 2017 22:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Sun, 12 Feb 2017 22:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Bridging Swift Types to Objective-C</title>
+      <link>http://blog.benjamin-encz.de/post/bridging-swift-types-to-objective-c/</link>
+      <pubDate>Sun, 12 Feb 2017 22:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/bridging-swift-types-to-objective-c/</guid>
+      <description>
+
+&lt;p&gt;At PlanGrid we started adopting Swift prior to the 1.0 release. Despite the tooling problems you&amp;rsquo;re probably familiar with, we&amp;rsquo;re still excited Swift users and have written almost all new code since the summer of 2014 in Swift. We are doing that within a large legacy codebase so more than 50% of our application code is still in Objective-C. As in many projects Swift and Objective-C need to co-exist.&lt;/p&gt;
+
+&lt;p&gt;Throwing an &lt;code&gt;@objc&lt;/code&gt; onto our new Swift types would have been the easiest way to interop with Objective-C. However, many Swift features aren&amp;rsquo;t bridgable and we quickly noticed that this approach would water down our Swift code to Objective-C code with a different syntax (no structs, enums with associated values, default arguments, etc.).&lt;/p&gt;
+
+&lt;h2 id=&#34;a-recipe-for-bridging-swift-types:7f9788483f7bdff88f178bf8178831fb&#34;&gt;A Recipe for Bridging Swift Types&lt;/h2&gt;
+
+&lt;p&gt;We decided to create separate types that would be responsible for bridging our Swift types to Objective-C (and vice versa). These types wrap around the Swift types and take care of translating language concepts where necessary.&lt;/p&gt;
+
+&lt;p&gt;We came up with a simple recipe for creating these bridged types:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Create a new type called &lt;code&gt;_ObjC{type_name}&lt;/code&gt; and rename that type for Objective-C using the &lt;code&gt;@objc&lt;/code&gt; annotation.&lt;/li&gt;
+&lt;li&gt;Create an initializer that takes the Swift type.&lt;/li&gt;
+&lt;li&gt;Create a public read, private write property to store the underlying Swift type.&lt;/li&gt;
+&lt;li&gt;Expose getters, setters and methods that reflect the members of the underlying Swift type and implement them by calling to the underlying Swift type.&lt;/li&gt;
+&lt;li&gt;If the type needs to have an initializer thats visible in Objective-C implement that initializer by constructing the underlying Swift type.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;bridging-example:7f9788483f7bdff88f178bf8178831fb&#34;&gt;Bridging Example&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s take a look at an example of bridging Swift types to Objective-C with the method described above. Below we have a shopping cart type and a checkout options type.&lt;/p&gt;
+
+&lt;p&gt;In this example we wouldn&amp;rsquo;t be able to expose the type to Objective-C, because enums with associated types can&amp;rsquo;t be bridged.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;enum&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;CheckoutOption&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;creditCard&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;
+  &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;paypal&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ShoppingCart&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;checkoutOption&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;CheckoutOption&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt;
+  &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;items&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
+
+  &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;items&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;],&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;checkoutOption&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;CheckoutOption&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;items&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;items&lt;/span&gt;
+      &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;checkoutOption&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;checkoutOption&lt;/span&gt;
+  &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Since we&amp;rsquo;re anticipating our entire codebase to move to Swift over time, we shouldn&amp;rsquo;t compromise our new types for bridgeability. Instead, let&amp;rsquo;s create a wrapper type:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;@objc&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ShoppingCart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;final&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;_ObjCShoppingCart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;NSObject&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// The underlying Swift type is stored in the bridged type. This way&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Swift code that consumes the bridged Objective-C type can pull out and&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// use the underlying Swift type.  &lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;set&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;shoppingCart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ShoppingCart&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;items&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;])&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// All initializers construct the underlying Swift type&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;shoppingCart&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ShoppingCart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;items&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;items&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// This initializer allows Swift code to create a bridged value and pass&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// it to Objective-C code.&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;shoppingCart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ShoppingCart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;shoppingCart&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;shoppingCart&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Computed properties are implemented based on properties of the&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// underlying Swift type.&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;items&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;get&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;shoppingCart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;items&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;set&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;shoppingCart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;items&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;newValue&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Properties and methods can translate language features where needed.&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// E.g. turn enums with associated types into distinct Objective-C types.&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;checkoutOption&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Any&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;guard&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;checkoutOption&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;shoppingCart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;checkoutOption&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;;&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;switch&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;checkoutOption&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;creditCard&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ccNumber&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;):&lt;/span&gt;
+            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;_ObjCCheckoutOptionCreditCard&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ccNumber&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;paypal&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;email&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;):&lt;/span&gt;
+            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;_ObjCCheckoutOptionPaypal&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;email&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// We can also provide convenience methods for Objective-C. Like the following&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// two methods that allow setting enums with associated values from Objective-C.&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;setCheckoutOptionToCreditCard&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;withCCNumber&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ccNumber&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;shoppingCart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;checkoutOption&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;creditCard&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ccNumber&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;setCheckoutOptionToPayPal&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;withEmail&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;email&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;shoppingCart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;checkoutOption&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;paypal&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;email&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;@objc&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;CheckoutOptionCreditCard&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;final&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;_ObjCCheckoutOptionCreditCard&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;NSObject&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;creditCardNumber&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ccNumber&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;creditCardNumber&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ccNumber&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;@objc&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;CheckoutOptionPaypal&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;final&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;_ObjCCheckoutOptionPaypal&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;NSObject&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;email&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;
+
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;email&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;email&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;email&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;This example is pretty verbose, since we&amp;rsquo;re expressing the cases of our enums
+as Objective-C types. How thorough you want to map Swift types to Objective-C
+will depend on your use case.&lt;/p&gt;
+
+&lt;p&gt;Now this type can be used from Objective-C:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ShoppingCart&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;cart&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ShoppingCart&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;alloc&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #f57900&#34;&gt;initWithItems&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;@[&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;@&amp;quot;TV&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;@&amp;quot;Book&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;];&lt;/span&gt;
+&lt;span style=&#34;color: #000000&#34;&gt;cart&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;items&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;@[&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;@&amp;quot;TV&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;;&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;cart&lt;/span&gt; &lt;span style=&#34;color: #f57900&#34;&gt;setCheckoutOptionToPayPalWithEmail&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;@&amp;quot;test@test.com&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;];&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;We could now pass this instance to Swift code and the receiver could use the
+underlying Swift type, stored within the bridged type, with all of its rich language features.&lt;/p&gt;
+
+&lt;p&gt;The principles outlined above are also used for the Swift
+Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href=&#34;https://github.com/apple/swift/blob/adc54c8a4d13fbebfeb68244bac401ef2528d6d0/stdlib/public/SDK/Foundation/Calendar.swift#L143-L150&#34;&gt;see Calendar.swift&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Last September my friend Russ Bishop proposed exposing the &lt;code&gt;_ObjectiveCBridgeable&lt;/code&gt; protocol as part of the standard library. That proposal has been deferred but if it&amp;rsquo;s implemented it will further formalize a recipe for bridging types between Swift and Objective-C and potentially other languages?&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;We agree that it would be valuable to give library authors the ability to bridge their own types from Objective-C into Swift using the same mechanisms as Foundation. However, we lack the confidence and implementation experience to commit to _ObjectiveCBridgeable in its current form as public API. In its current form, as its name suggests, the protocol was designed to accommodate the specific needs of bridging Objective-C object types to Swift value types. In the future, we may want to bridge with other platforms, including C++ value types or other object systems such as COM, GObject, JVM, or CLR. It isn&amp;rsquo;t clear at this point whether these would be served by a generalization of the existing mechanism, or by bespoke bridging protocols tailored to each case. This is a valuable area to explore, but we feel that it is too early at this point to accept our current design as public API.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/apple/swift-evolution/blob/master/proposals/0058-objectivecbridgeable.md&#34;&gt;Swift Evolution Proposal: Allow Swift types to provide custom Objective-C representations&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Why I don&#39;t Believe in Uber&#39;s Success</title>
@@ -2190,91 +2345,6 @@ func performTaskWithUser(user: User) {
 &lt;p&gt;I&amp;rsquo;m very interested in hearing whether this is useful to you &amp;amp; how it could be improved!&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;To learn how to use this you should head to GitHub&lt;/a&gt;!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>How I Write Swift Specs With Quick</title>
-      <link>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</link>
-      <pubDate>Wed, 24 Feb 2016 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</guid>
-      <description>
-
-&lt;p&gt;I&amp;rsquo;ve recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of &lt;code&gt;it&lt;/code&gt; blocks. This &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69&#34;&gt;seems to be common among many code bases that use Quick/Nimble&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;I felt that I could gain more readability by focusing on testing expectations within in &lt;code&gt;it&lt;/code&gt; blocks and driving the test code outside.&lt;/p&gt;
-
-&lt;p&gt;I now structure most of my tests in the following way:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;A &lt;code&gt;describe&lt;/code&gt; or &lt;code&gt;context&lt;/code&gt; block describes the scenario under test&lt;/li&gt;
-&lt;li&gt;The &lt;code&gt;beforeEach&lt;/code&gt; block contains code to implement the scenario&lt;/li&gt;
-&lt;li&gt;The &lt;code&gt;it&lt;/code&gt; block only validates expectations&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;The result looks somewhat like this, though I have emitted variable declarations in outer scopes for brevity:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;// describe the scenario under test
-context(&amp;quot;when #download is called multiple times with the same URL&amp;quot;) {
-
-	// variables which will be used from `it` blocks
-	var downloadDescription: DownloadDescription!
-
-    beforeEach {
-    	// code to drive the scenario
-        downloadDescription = DownloadDescription(
-            url: NSURL(string: &amp;quot;http://test.com/download&amp;quot;)!,
-            priority: 500,
-            downloadLocation: NSURL(string: &amp;quot;file://&amp;quot;)!
-        )
-
-        (1..&amp;lt;10).forEach { _ in
-            downloadManager.downloadAsset(downloadDescription)
-        }
-    }
-
-    // Multiple expectations for that scenario:
-
-    it(&amp;quot;only asks the downloader to download the asset once&amp;quot;) {
-        expect(mockDownloader.receivedCallsToStartDownload)
-        .to(haveCount(1))
-    }
-
-    it(&amp;quot;keeps the ongoing download enqueued&amp;quot;) {
-        expect(downloadManager.queue)
-        .to(contain(downloadDescription))
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;For me it is a lot easier to read these tests, the expectations are clearly separated from the code that drives the test.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;This approach has two minor drawbacks:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;The &lt;code&gt;it&lt;/code&gt; block needs to reference variables that are set from within the &lt;code&gt;beforeEach&lt;/code&gt; block. We therefore need to declare more variables in the &lt;code&gt;context&lt;/code&gt;/&lt;code&gt;describe&lt;/code&gt; scope which adds some visual clutter.&lt;/li&gt;
-&lt;li&gt;Having the code that drives the test in &lt;code&gt;beforeEach&lt;/code&gt; might look a little awkward at first, as most testing frameworks use these hooks to set up a shared test environment; not to drive the test code.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;future-improvements:90f0e2cd696d535cbf87455e17a8085e&#34;&gt;Future Improvements?&lt;/h2&gt;
-
-&lt;p&gt;In future it might be nice to be able to place the test driving code directly in the &lt;code&gt;context&lt;/code&gt; block. Something along these lines:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;context(&amp;quot;when multiplying two numbers&amp;quot;) {
-	let i = 2 * 2
-
-    it(&amp;quot;stores the correct result&amp;quot;) {
-    	expect(i).to(equal(4))
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I believe this isn&amp;rsquo;t possible, because Quick can&amp;rsquo;t register the top-level code within &lt;code&gt;context&lt;/code&gt; block to run as part of the tests, though I haven&amp;rsquo;t looked at the implementation in detail.&lt;/p&gt;
-
-&lt;p&gt;This would mitigate the two drawbacks of my current approach and improve the readability of the specs a little more.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;For now I&amp;rsquo;m happy with the &lt;code&gt;beforeEach&lt;/code&gt; approach.&lt;/strong&gt; How do you write your Swift test suites?&lt;/p&gt;
 </description>
     </item>
     
