@@ -10,7 +10,7 @@ Don't get me wrong, Email is a great tool and an evergreen in everyone's communi
 
 <!--more-->
 
-![Pile of letters](http://puu.sh/7idbF.jpg)
+![Pile of letters](pile_of_letters.jpg)
 
 When it comes to work I mostly face problems that can be better solved by domain specific software. I assign and receive tasks or track and report progress, for example. This is where I try to avoid Email as often as I can.
 
@@ -42,7 +42,7 @@ At MakeGamesWithUs we use *Gmail*. I started looking for tools that would provid
 Unfortunately none of the existing Gmail<->Asana integrations looked simple enough to use. However, I found a great tool that provides task management directly in your Gmail inbox:  [ActiveInbox](http://www.activeinboxhq.com/).
 
 > Because emails aren't letters,
-they're tasks
+> they're tasks
 
 This clever slogan convinced me to try ActiveInbox out.
 
