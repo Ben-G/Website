@@ -125,7 +125,7 @@
 
 <p>For the impatient reader:</p>
 
-<h1 id="tl-dr:7d6cd9aa87721e34fde537cfc5c1034a">TL;DR</h1>
+<h1 id="tl-dr:f38631c06dc52d51e25323771c266097">TL;DR</h1>
 
 <ul>
 <li>The <code>ErrorType</code> protocol has hidden requirements that are automatically fullfilled if you use an <code>enum</code> to implement the protocol</li>
@@ -135,7 +135,7 @@
 <li><a href="https://github.com/Ben-G/FunWithErrors">GitHub project with examples</a></li>
 </ul>
 
-<h1 id="fun-with-errors:7d6cd9aa87721e34fde537cfc5c1034a">Fun With Errors</h1>
+<h1 id="fun-with-errors:f38631c06dc52d51e25323771c266097">Fun With Errors</h1>
 
 <p>Recently I&rsquo;ve spent some time looking into the new error handling mechanism in Swift in depth. I&rsquo;ve especially focused on its interoperability with Objective-C which is documented fairly lightly as of now (Xcode 7 Beta 4).</p>
 
@@ -156,11 +156,11 @@
 }
 </code></pre>
 
-<h2 id="hidden-protocol-requirements:7d6cd9aa87721e34fde537cfc5c1034a">Hidden Protocol Requirements</h2>
+<h2 id="hidden-protocol-requirements:f38631c06dc52d51e25323771c266097">Hidden Protocol Requirements</h2>
 
 <p>The error message revealed two hidden protocol requirements:</p>
 
-<p><img src="https://www.dropbox.com/s/rlx8vruu9ecdqko/error.png?dl=1" alt="image" /></p>
+<p><img src="error.png" alt="image" /></p>
 
 <p>This means the actual protocol definition for <code>ErrorType</code> looks like this:</p>
 
@@ -210,7 +210,7 @@
 
 <p>Nothing too exciting here, but an interesting look under the covers. Next, let&rsquo;s see how Objective-C&rsquo;s <code>NSError</code> works with Swift&rsquo;s error handling.</p>
 
-<h2 id="throwing-from-objective-c:7d6cd9aa87721e34fde537cfc5c1034a">Throwing From Objective-C</h2>
+<h2 id="throwing-from-objective-c:f38631c06dc52d51e25323771c266097">Throwing From Objective-C</h2>
 
 <p>Let&rsquo;s build the simplest throwing Objective-C method following this rule in the documentation:</p>
 
@@ -218,7 +218,7 @@
 <p>If the last non-block parameter of an Objective-C method is of type <code>NSError **</code>, Swift replaces it with the throws keyword, to indicate that the method can throw an error.</p>
 </blockquote>
 
-<h3 id="methods-that-return-void:7d6cd9aa87721e34fde537cfc5c1034a">Methods That Return <code>void</code></h3>
+<h3 id="methods-that-return-void:f38631c06dc52d51e25323771c266097">Methods That Return <code>void</code></h3>
 
 <p>This is a simple Objective-C class that has a method that should throw:</p>
 
@@ -231,13 +231,13 @@
 
 <p>However, when calling this method from Swift we need to provide an <code>NSErrorPointer</code> and the method does not throw:</p>
 
-<p><img src="https://www.dropbox.com/s/zz8ev7j00vxz21k/doesntThrow.png?dl=1" alt="image" /></p>
+<p><img src="doesntThrow.png" alt="image" /></p>
 
 <p>For some reason the automatic translation promised by Swift is not working in this case.</p>
 
 <p>After mutating the method signature multiple times, I found out that the method is <strong>only translated to Swift&rsquo;s error handling mechanism if it returns an Objective-C object or a boolean value</strong>.</p>
 
-<h3 id="methods-that-return-objective-c-objects-or-boolean-values:7d6cd9aa87721e34fde537cfc5c1034a">Methods That Return Objective-C Objects or Boolean Values</h3>
+<h3 id="methods-that-return-objective-c-objects-or-boolean-values:f38631c06dc52d51e25323771c266097">Methods That Return Objective-C Objects or Boolean Values</h3>
 
 <p>This method for example:</p>
 
@@ -246,7 +246,7 @@
 
 <p>Can be used from Swift as expected:</p>
 
-<p><img src="https://www.dropbox.com/s/dqoauugwun16t4k/doesThrow.png?dl=1" alt="image" /></p>
+<p><img src="doesThrow.png" alt="image" /></p>
 
 <p>So let&rsquo;s provide a simple implementation for this method to see how we can catch the thrown <code>NSError</code> in Swift:</p>
 
@@ -302,7 +302,7 @@
 
 <p>Source: <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/ErrorHandling/ErrorHandling.html">Programming with Objective-C | Dealing with Errors</a></p>
 
-<h2 id="summary:7d6cd9aa87721e34fde537cfc5c1034a">Summary</h2>
+<h2 id="summary:f38631c06dc52d51e25323771c266097">Summary</h2>
 
 <p>As of today (Xcode 7 Beta 4) the interopability between Swift&rsquo;s error handling and Objective-C is lacking some documentation. Here are some interesting findings discussed throughout the blog post:</p>
 

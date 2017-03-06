@@ -25,6 +25,11 @@ use Rack::Rewrite do
         r301      "/#{post}/",    "/post/#{post}"
         r301      "/#{post}",    "/post/#{post}"
     }
+
+    # Replace relative local links with looks up in the static assets directory.
+    # This enables using relative image paths locally and on GitHub, while using
+    # references to the static page in production.
+    r301 %r{(.*)post/(.*)/(.*.(jpg|jpeg|png))}, '/assets/post-assets/$2/$3'
 end
 
 use Rack::TryStatic,

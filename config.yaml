@@ -1,0 +1,19 @@
+baseurl: "http://blog.benjamin-encz.de/"
+# baseurl: "http://localhost:9292/"
+relativeURLs: true
+canonifyURLs: true
+languageCode: "en-us"
+title: "[Thinking inside a large box];"
+
+pygmentsUseClasses: false
+pygmentsStyle: "tango"
+disqusShortname: "benjaminencz"
+
+permalinks:
+  post: post/:slug/
+
+params:
+    cover: "images/japan-backdrop.jpg"
+    githubName: "Ben-G"
+    twitterName: "benjaminencz"
+    stylesheets: ["highlight.css"]

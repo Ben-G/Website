@@ -125,7 +125,7 @@
 
 <p>We are back to another episode of discussing generics, protocols with associated types and some type system limitations in Swift 2. This time we will dive into an interesting workaround that the infamous <a href="https://twitter.com/jckarter">jckarter</a> has taught me. We will also discuss how this workaround might become unnecessary through enhanced existential support in future Swift versions. But what are existentials anyway?</p>
 
-<h2 id="existentials-in-swift:66f71b701ececee95a5057b67030251d">Existentials in Swift</h2>
+<h2 id="existentials-in-swift:f38631c06dc52d51e25323771c266097">Existentials in Swift</h2>
 
 <p>Generally speaking existentials allow us to define type variables using type requirements. We can use these type variables throughout our program without knowing which concrete underlying type implements the requirements.</p>
 
@@ -150,7 +150,7 @@
 
 <p>In many ways existentials are very similar to generics. Why would we choose one over the other? My friend Russ Bishop has covered this in detail in a blog post on existentials &amp; generics - <a href="http://www.russbishop.net/swift-associated-types-cont">if you&rsquo;re curious about the details you should go read it</a>!</p>
 
-<h2 id="bridging-between-existentials-and-generics:66f71b701ececee95a5057b67030251d">Bridging Between Existentials and Generics</h2>
+<h2 id="bridging-between-existentials-and-generics:f38631c06dc52d51e25323771c266097">Bridging Between Existentials and Generics</h2>
 
 <p>In an <a href="http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/">earlier blog post</a> I pointed out some incompatibilities between type information that is statically known at compile time (Generics) and type information that is dynamically available at runtime (Existentials).</p>
 
@@ -204,7 +204,7 @@ Ideally we would want to do something like the following (which is syntactically
 
 <p>Some potential, future improvements to Swift could make this possible, but for now we cannot dynamically refer to the type of the existential (<code>element.Self</code>) and use it as a generic type parameter.</p>
 
-<h2 id="the-workaround:66f71b701ececee95a5057b67030251d">The Workaround</h2>
+<h2 id="the-workaround:f38631c06dc52d51e25323771c266097">The Workaround</h2>
 
 <p>The <code>.Self</code> member, which would refer to the concrete type of the existential doesn&rsquo;t exist in Swift 2. However, we can access the concrete type of the existential using <code>Self</code> from within protocols &amp; protocol extensions.</p>
 
@@ -234,7 +234,7 @@ Ideally we would want to do something like the following (which is syntactically
 <p>From within the protocol extension we can successfully use the underlying type of the existential (<code>Self</code>) as a generic type parameter.
 Even though the inverted control flow is anything but beautiful, this workaround can be useful to bridge the gap between existentials and generics.</p>
 
-<h2 id="the-future-is-bright:66f71b701ececee95a5057b67030251d">The Future is Bright</h2>
+<h2 id="the-future-is-bright:f38631c06dc52d51e25323771c266097">The Future is Bright</h2>
 
 <p>Among many other critical improvements, the changes suggested by the <a href="https://github.com/austinzheng/swift-evolution/blob/az-existentials/proposals/XXXX-enhanced-existentials.md">enhanced existential proposal <strong>draft</strong></a> would eliminate this workaround by allowing to refer to the underlying type of an existential via <code>.Self</code> and making it possible to use that type as a generic type parameter.</p>
 

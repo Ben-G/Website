@@ -129,7 +129,7 @@ The topic came up again this week as part of an issue with ReactiveCocoa and Map
 <p><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Apple DTS “explicitly stated that main queue and the main thread are not the same thing, have subtle differences”. <a href="https://t.co/YxAbqkvtse">https://t.co/YxAbqkvtse</a></p>&mdash; Ole Begemann (@olebegemann) <a href="https://twitter.com/olebegemann/status/738656134731599872">June 3, 2016</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
 
-<h2 id="the-problem:997ed369e26584277379d51208fcfef8">The Problem</h2>
+<h2 id="the-problem:f38631c06dc52d51e25323771c266097">The Problem</h2>
 
 <p>When interacting with certain frameworks, e.g. UIKit, we need to ensure that all calls into the framework happen from the main thread.
 Typically we have some sort of check to determine whether our code is already executing on the main thread or whether we are on a background thread and actively need to dispatch to the main thread.</p>
@@ -143,7 +143,7 @@ Typically we have some sort of check to determine whether our code is already ex
 </pre></div>
 
 
-<h2 id="the-easy-solution:997ed369e26584277379d51208fcfef8">The Easy Solution</h2>
+<h2 id="the-easy-solution:f38631c06dc52d51e25323771c266097">The Easy Solution</h2>
 
 <p>The easiest way to check if we are currently executing on the main thread is using <code>NSThread.isMainThread()</code> - GCD lacks a similarly convenient API for checking if we are running on the main queue, so many developers use the <code>NSThread</code> API instead. Our updated function will look somewhat like this:</p>
 
@@ -166,7 +166,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 
 <p>This works in most cases, <a href="https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2635#issuecomment-170215083">until it doesn&rsquo;t</a>. Here&rsquo;s the excerpt from the issue on the ReactiveCocoa repo:
-<img src="https://raw.githubusercontent.com/Ben-G/HugoBlog/master/public/assets/mainqueue-mainthread/rac_issue_queue_thread.png" alt="" /></p>
+<img src="rac_issue_queue_thread.png" alt="" /></p>
 
 <p><strong>The underlying problem is that the <code>VektorKit</code> API is checking if it is being called on the main queue instead of checking that it is running on the main thread.</strong> This issue has also been filed as a <a href="http://www.openradar.me/24025596">radar</a>.</p>
 
@@ -176,7 +176,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 <p>It is surprisingly easy to get a non-main queue to execute on the main thread. While doing some research for this post I found a commit to <code>libdispatch</code> that <a href="https://libdispatch.macosforge.org/trac/changeset/156">ensures that blocks dispatched with <code>dispatch_sync</code> are always executed on the current thread</a>. This means if you use <code>dispatch_sync</code> to dispatch a block from the main queue to a concurrent background queue, the code executing on the background queue will actually be executed on the main thread. While this might not be entirely intuitive, it makes sense: since the main queue needs to wait until the dispatched block completed, the main thread will be available to process blocks from queues other than the main queue.</p>
 
-<h2 id="the-safer-solution:997ed369e26584277379d51208fcfef8">The Safer Solution</h2>
+<h2 id="the-safer-solution:f38631c06dc52d51e25323771c266097">The Safer Solution</h2>
 
 <p>Technically I think this is a MapKit / VektorKit bug, Apple&rsquo;s UI frameworks typically guarantee to work correctly when being called from the main thread, no part of the documentation mentions that code needs to be executed on the main queue.</p>
 
@@ -226,7 +226,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 <p>The function above will now not only check that we&rsquo;re running on the main thread, but also ensure we&rsquo;re on the main queue.</p>
 
-<h2 id="conclusion:997ed369e26584277379d51208fcfef8">Conclusion</h2>
+<h2 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h2>
 
 <p>By combining GCD and Cocoa&rsquo;s <code>NSThread</code> API we are drilling through the abstraction that CGD should provide in the first place. APIs that fully rely on GCD and ignore the presence of the underlying threads can run into problems if you call them on the main thread but not the main queue. This means, especially when calling into other frameworks, we should prefer using <code>dispatch_queue_set_specific</code> and <code>dispatch_get_specific</code> to check if our code is running on the main queue over using <code>NSThread.isMainThread()</code>.</p>
 

@@ -134,13 +134,13 @@
 <li><strong>Readability</strong>: Signal to noise ratio of declarative code is great!</li>
 </ul>
 
-<p>These days I write most of my code in Swift which lends itself well for a declarative programming style<sup class="footnote-ref" id="fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:1"><a rel="footnote" href="#fn:b989f8f58ed8c5aa5f8ff74af770fe9e:1">1</a></sup>.</p>
+<p>These days I write most of my code in Swift which lends itself well for a declarative programming style<sup class="footnote-ref" id="fnref:f38631c06dc52d51e25323771c266097:1"><a rel="footnote" href="#fn:f38631c06dc52d51e25323771c266097:1">1</a></sup>.</p>
 
 <p>The majority of types I define are simple structs that either describe a piece of data or an intent. Separate types, typically generic classes, are then responsible for consuming these intents and implementing the necessary work. We also use this approach throughout all new Swift code we&rsquo;re writing in the PlanGrid app. It has had a huge impact on code readability and developer efficiency.</p>
 
 <p>Today I want to discuss an API from the PlanGrid app, that used to be implemented using <code>NSOperationQueue</code> and since has been moved to a more declarative approach - discussing this API should demonstrate the various benefits of a declarative programming style.</p>
 
-<h2 id="building-a-declarative-request-sequence-in-swift:b989f8f58ed8c5aa5f8ff74af770fe9e">Building a Declarative Request Sequence in Swift</h2>
+<h2 id="building-a-declarative-request-sequence-in-swift:f38631c06dc52d51e25323771c266097">Building a Declarative Request Sequence in Swift</h2>
 
 <p>The API that we&rsquo;ve re-written is responsible for syncing local changes (that might have occurred offline) with our API server. I won&rsquo;t go into details of the change tracking approach, but will instead only discuss the generation &amp; execution of network requests.</p>
 
@@ -154,7 +154,7 @@
 
 <p>Since we have a few upload tasks that involve such request sequences, we decided to model this as a type and support in our upload infrastructure.</p>
 
-<h3 id="defining-the-request-sequence-protocol:b989f8f58ed8c5aa5f8ff74af770fe9e">Defining the Request Sequence Protocol</h3>
+<h3 id="defining-the-request-sequence-protocol:f38631c06dc52d51e25323771c266097">Defining the Request Sequence Protocol</h3>
 
 <p>We decided to introduce a separate type that is only responsible for describing a sequence of network requests. That type is consumed by our uploader class which turns the descriptions into actual network requests (the uploader itself won&rsquo;t be discussed as part of this post).</p>
 
@@ -215,7 +215,7 @@
 
 <p>At this point it became almost trivial to define a new upload sequence.</p>
 
-<h3 id="implementing-the-request-sequence-protocol:b989f8f58ed8c5aa5f8ff74af770fe9e">Implementing the Request Sequence Protocol</h3>
+<h3 id="implementing-the-request-sequence-protocol:f38631c06dc52d51e25323771c266097">Implementing the Request Sequence Protocol</h3>
 
 <p>As an example, let&rsquo;s take a look at the upload sequence for uploading snapshots (snapshots in PlanGrid capture a blueprint + annotations in an image that can be exported):</p>
 
@@ -327,7 +327,7 @@
 
 <p>How does this compare to our previous solution that was using <code>NSOperationQueue</code>?</p>
 
-<h3 id="what-about-nsoperationqueue:b989f8f58ed8c5aa5f8ff74af770fe9e">What About NSOperationQueue?</h3>
+<h3 id="what-about-nsoperationqueue:f38631c06dc52d51e25323771c266097">What About NSOperationQueue?</h3>
 
 <p>The solution using an <code>NSOperationQueue</code> was a lot less concise, so there&rsquo;s no good way to present its code in this blog post. We can still discuss the issues that the approach had on a high level.</p>
 
@@ -341,7 +341,7 @@
 
 <p>TL;DR: we&rsquo;re glad that we&rsquo;re now able to provide a more explicit API that results in code that is easier to read.</p>
 
-<h2 id="conclusion:b989f8f58ed8c5aa5f8ff74af770fe9e">Conclusion</h2>
+<h2 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h2>
 
 <p>Using a declarative programming approach has had a huge impact on our codebase and our productivity. We can provide constrained APIs that can be only used in one way and don&rsquo;t leave a lot of room for error. We can avoid subclassing as a means of polymorphism and instead implement generic types that are controlled by declarative code. We can write code with excellent signal to noise ratio. The declarative code we write is extremely easy to test (to the point where even testing enthusiasts might deem tests unnecessary). So what are the downsides, if any?</p>
 
@@ -353,16 +353,16 @@
 
 <p>Soon after I started working on apps I naively wondered why we couldn&rsquo;t just build them by configuring pre-existing components, without writing much, if any, custom code. Libraries like React and GraphQL have made this future a little more likely. I think this is just a first step, and going forward we&rsquo;ll see more sophisticated libraries hide their complexity by providing simple, declarative, interfaces.</p>
 
-<p>And hopefully, some day, we&rsquo;ll get a declarative UI library for building iOS apps<sup class="footnote-ref" id="fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:2"><a rel="footnote" href="#fn:b989f8f58ed8c5aa5f8ff74af770fe9e:2">2</a></sup>.</p>
+<p>And hopefully, some day, we&rsquo;ll get a declarative UI library for building iOS apps<sup class="footnote-ref" id="fnref:f38631c06dc52d51e25323771c266097:2"><a rel="footnote" href="#fn:f38631c06dc52d51e25323771c266097:2">2</a></sup>.</p>
 <div class="footnotes">
 
 <hr />
 
 <ol>
-<li id="fn:b989f8f58ed8c5aa5f8ff74af770fe9e:1">I&rsquo;ll use the term <em>declarative programming</em> even though its <a href="https://existentialtype.wordpress.com/2013/07/18/what-if-anything-is-a-declarative-language/">definition is disputed</a>. So far I&rsquo;ve liked the definition in <a href="https://awelonblue.wordpress.com/2012/01/12/defining-declarative/">this post</a> the most. It identifies the following characteristics of declarative code: Idempotent, Commutative, Concurrent (declarations hold at overlapping times), Reactive (meaning is context dependent). Overall this is a fairly theoretical (yet relevant debate) that I&rsquo;ll might cover in a future post - this post is going to be more pragmatic.
- <a class="footnote-return" href="#fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:1"><sup>[return]</sup></a></li>
-<li id="fn:b989f8f58ed8c5aa5f8ff74af770fe9e:2">Comparing React&rsquo;s declarative API to UIKit&rsquo;s imperative one is an interesting lense for looking at the general trade-offs between declarative/imperative APIs, I&rsquo;ve done that in my <a href="https://realm.io/news/altconf-benji-encz-uikit-inside-out-declarative-programming/">2016 Alt Conf Talk</a>. As part of that talk I experimented with what a <a href="https://github.com/Ben-G/UILib">React like API wrapper for UIKit</a> would look like.
- <a class="footnote-return" href="#fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:2"><sup>[return]</sup></a></li>
+<li id="fn:f38631c06dc52d51e25323771c266097:1">I&rsquo;ll use the term <em>declarative programming</em> even though its <a href="https://existentialtype.wordpress.com/2013/07/18/what-if-anything-is-a-declarative-language/">definition is disputed</a>. So far I&rsquo;ve liked the definition in <a href="https://awelonblue.wordpress.com/2012/01/12/defining-declarative/">this post</a> the most. It identifies the following characteristics of declarative code: Idempotent, Commutative, Concurrent (declarations hold at overlapping times), Reactive (meaning is context dependent). Overall this is a fairly theoretical (yet relevant debate) that I&rsquo;ll might cover in a future post - this post is going to be more pragmatic.
+ <a class="footnote-return" href="#fnref:f38631c06dc52d51e25323771c266097:1"><sup>[return]</sup></a></li>
+<li id="fn:f38631c06dc52d51e25323771c266097:2">Comparing React&rsquo;s declarative API to UIKit&rsquo;s imperative one is an interesting lense for looking at the general trade-offs between declarative/imperative APIs, I&rsquo;ve done that in my <a href="https://realm.io/news/altconf-benji-encz-uikit-inside-out-declarative-programming/">2016 Alt Conf Talk</a>. As part of that talk I experimented with what a <a href="https://github.com/Ben-G/UILib">React like API wrapper for UIKit</a> would look like.
+ <a class="footnote-return" href="#fnref:f38631c06dc52d51e25323771c266097:2"><sup>[return]</sup></a></li>
 </ol>
 </div>
 

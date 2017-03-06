@@ -21,7 +21,7 @@
 
 &lt;p&gt;Throwing an &lt;code&gt;@objc&lt;/code&gt; onto our new Swift types would have been the easiest way to interop with Objective-C. However, many Swift features aren&amp;rsquo;t bridgable and we quickly noticed that this approach would water down our Swift code to Objective-C code with a different syntax (no structs, enums with associated values, default arguments, etc.).&lt;/p&gt;
 
-&lt;h2 id=&#34;a-recipe-for-bridging-swift-types:7f9788483f7bdff88f178bf8178831fb&#34;&gt;A Recipe for Bridging Swift Types&lt;/h2&gt;
+&lt;h2 id=&#34;a-recipe-for-bridging-swift-types:f38631c06dc52d51e25323771c266097&#34;&gt;A Recipe for Bridging Swift Types&lt;/h2&gt;
 
 &lt;p&gt;We decided to create separate types that would be responsible for bridging our Swift types to Objective-C (and vice versa). These types wrap around the Swift types and take care of translating language concepts where necessary.&lt;/p&gt;
 
@@ -35,7 +35,7 @@
 &lt;li&gt;If the type needs to have an initializer thats visible in Objective-C implement that initializer by constructing the underlying Swift type.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2 id=&#34;bridging-example:7f9788483f7bdff88f178bf8178831fb&#34;&gt;Bridging Example&lt;/h2&gt;
+&lt;h2 id=&#34;bridging-example:f38631c06dc52d51e25323771c266097&#34;&gt;Bridging Example&lt;/h2&gt;
 
 &lt;p&gt;Let&amp;rsquo;s take a look at an example of bridging Swift types to Objective-C with the method described above. Below we have a shopping cart type and a checkout options type.&lt;/p&gt;
 
@@ -178,7 +178,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;&lt;strong&gt;Why would you believe Uber won&amp;rsquo;t be successful? They are growing extremely fast, both in the US and internationally.&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;Uber&amp;rsquo;s growth is fueled by subsidies, both for riders and drivers. From the financials that have been leaked so far we can see that Uber is generating a huge and growing loss&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:572a621f19f2c166f4012f2a43318fb1:1&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:572a621f19f2c166f4012f2a43318fb1:1&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;Uber&amp;rsquo;s growth is fueled by subsidies, both for riders and drivers. From the financials that have been leaked so far we can see that Uber is generating a huge and growing loss&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:f38631c06dc52d51e25323771c266097:1&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:f38631c06dc52d51e25323771c266097:1&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
 
 &lt;p&gt;The leaked financials only show Uber&amp;rsquo;s results on a company level - a loss of $2 billion in 2015. This includes various subsidies, marketing costs and Uber&amp;rsquo;s gigantic losses it generated in China in 2015.  As a result, they don&amp;rsquo;t allow us to calculate by exactly how much Uber is subsidizing its service.&lt;/p&gt;
 
@@ -186,7 +186,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;These subsidies are not only causing a loss for Uber, they are also distorting the potential customer base. More people are riding with Uber than with regular Taxis because it&amp;rsquo;s significantly cheaper. If Uber would increase the prices their growth would slow significantly.&lt;/p&gt;
 
-&lt;p&gt;Drivers are also heavily subsidized&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:572a621f19f2c166f4012f2a43318fb1:2&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:572a621f19f2c166f4012f2a43318fb1:2&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;. Additionally, again from anecdotal evidence and from the &lt;a href=&#34;https://www.cnet.com/news/uber-drivers-demand-better-pay-in-nation-wide-protest/&#34;&gt;driver protests last year&lt;/a&gt;, it seems obvious that many drivers are miscalculating their earnings often ignoring tax, insurance and wear &amp;amp; tear implications of using their personal car. This means it will cost Uber even more to attract drivers in future.&lt;/p&gt;
+&lt;p&gt;Drivers are also heavily subsidized&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:f38631c06dc52d51e25323771c266097:2&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:f38631c06dc52d51e25323771c266097:2&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;. Additionally, again from anecdotal evidence and from the &lt;a href=&#34;https://www.cnet.com/news/uber-drivers-demand-better-pay-in-nation-wide-protest/&#34;&gt;driver protests last year&lt;/a&gt;, it seems obvious that many drivers are miscalculating their earnings often ignoring tax, insurance and wear &amp;amp; tear implications of using their personal car. This means it will cost Uber even more to attract drivers in future.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Fair enough, but this is how startups work, right? They generate a loss in order to grow. Once they are a huge business that can leverage network effects, economies of scale or a monopoly position they switch gears and become profitable.&lt;/strong&gt;&lt;/p&gt;
 
@@ -204,7 +204,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;Car manufacturers have been working in this area for decades and other, better funded, technology companies, like Google, are competing as well. I think it&amp;rsquo;s safe to say that many companies will have access to self-driving car technology. At that point it seems very likely that some cars with self-driving technology will be sold to the public (Tesla is already doing this).&lt;/p&gt;
 
-&lt;p&gt;Now self-driving cars are a commodity, just like airplanes, that can be acquired by any Uber competitor. In this scenario I don&amp;rsquo;t see how Uber can generate reasonable profits. If they are turning a large profit in any given market it will be easy for competitors with sufficient capital to enter that market and compete on price. At this point the ride sharing business looks a lot like the airline business, with meager profit margins of less than 1%&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:572a621f19f2c166f4012f2a43318fb1:3&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:572a621f19f2c166f4012f2a43318fb1:3&#34;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Now self-driving cars are a commodity, just like airplanes, that can be acquired by any Uber competitor. In this scenario I don&amp;rsquo;t see how Uber can generate reasonable profits. If they are turning a large profit in any given market it will be easy for competitors with sufficient capital to enter that market and compete on price. At this point the ride sharing business looks a lot like the airline business, with meager profit margins of less than 1%&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:f38631c06dc52d51e25323771c266097:3&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:f38631c06dc52d51e25323771c266097:3&#34;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
 
 &lt;p&gt;As soon as self-driving technology is ready for the mass market, I don’t see any network effects or proprietary technology that make Uber’s business defensible against competitors.&lt;/p&gt;
 
@@ -214,7 +214,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;Assuming Uber continues to build a large network of drivers &amp;amp; riders they might be able to offer shared rides that are cheap &lt;em&gt;and&lt;/em&gt; generate a profit. When Uber Pool works well, it becomes a viable alternative to using public transportation or to owning your own car. Does this outlook justify Uber&amp;rsquo;s latest valuation of $68 billion?&lt;/p&gt;
 
-&lt;p&gt;Without running the numbers myself, I doubt it&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:572a621f19f2c166f4012f2a43318fb1:4&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:572a621f19f2c166f4012f2a43318fb1:4&#34;&gt;4&lt;/a&gt;&lt;/sup&gt;. And I can&amp;rsquo;t imagine investors would be satisfied with Uber focusing on becoming a ride-sharing company. So Uber might be in a similar situation to Twitter - it could offer a good, profitable service if it weren&amp;rsquo;t for it&amp;rsquo;s sky high valuation and ambition.&lt;/p&gt;
+&lt;p&gt;Without running the numbers myself, I doubt it&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:f38631c06dc52d51e25323771c266097:4&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:f38631c06dc52d51e25323771c266097:4&#34;&gt;4&lt;/a&gt;&lt;/sup&gt;. And I can&amp;rsquo;t imagine investors would be satisfied with Uber focusing on becoming a ride-sharing company. So Uber might be in a similar situation to Twitter - it could offer a good, profitable service if it weren&amp;rsquo;t for it&amp;rsquo;s sky high valuation and ambition.&lt;/p&gt;
 
 &lt;p&gt;I certainly think there is room for a company that offers cheap shared rides based on a large network of drivers and riders and a good matching algorithm. At this point it seems like that needs to be a company with a smaller valuation and smaller ambitions.&lt;/p&gt;
 
@@ -228,14 +228,14 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 &lt;hr /&gt;
 
 &lt;ol&gt;
-&lt;li id=&#34;fn:572a621f19f2c166f4012f2a43318fb1:1&#34;&gt;&lt;a href=&#34;http://www.nakedcapitalism.com/2016/11/can-uber-ever-deliver-part-one-understanding-ubers-bleak-operating-economics.html#_edn3&#34;&gt;A post on nakedcapatlism&lt;/a&gt; has shared the leaked financials. Note, that it appears &lt;a href=&#34;https://twitter.com/EricNewcomer/status/804470392123363328&#34;&gt;that losses of Uber in China are included in these financials&lt;/a&gt;, even though the article claims the opposite.
- &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:572a621f19f2c166f4012f2a43318fb1:1&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;li id=&#34;fn:572a621f19f2c166f4012f2a43318fb1:2&#34;&gt;&lt;a href=&#34;https://www.bloomberg.com/news/articles/2016-08-25/uber-loses-at-least-1-2-billion-in-first-half-of-2016&#34;&gt;Uber Loses at Least $1.2 Billion in First Half of 2016&lt;/a&gt;
- &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:572a621f19f2c166f4012f2a43318fb1:2&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;li id=&#34;fn:572a621f19f2c166f4012f2a43318fb1:3&#34;&gt;&lt;a href=&#34;http://www.economist.com/blogs/economist-explains/2014/02/economist-explains-5&#34;&gt;The Economist explains: Why airlines make such meagre profits&lt;/a&gt;
- &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:572a621f19f2c166f4012f2a43318fb1:3&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;li id=&#34;fn:572a621f19f2c166f4012f2a43318fb1:4&#34;&gt;Fivethirtyeight took a shot at analzying &lt;a href=&#34;https://fivethirtyeight.com/features/uber-isnt-worth-17-billion/&#34;&gt;Uber&amp;rsquo;s valuation from 2014 in light of the size of the global taxi business&lt;/a&gt;. Based on these numbers Uber would need to increase the size of its target market significantly to justify its current valuation (to ~5x-10x of the taxi business today, depending on how much it can increase its market share at the same time).
- &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:572a621f19f2c166f4012f2a43318fb1:4&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&#34;fn:f38631c06dc52d51e25323771c266097:1&#34;&gt;&lt;a href=&#34;http://www.nakedcapitalism.com/2016/11/can-uber-ever-deliver-part-one-understanding-ubers-bleak-operating-economics.html#_edn3&#34;&gt;A post on nakedcapatlism&lt;/a&gt; has shared the leaked financials. Note, that it appears &lt;a href=&#34;https://twitter.com/EricNewcomer/status/804470392123363328&#34;&gt;that losses of Uber in China are included in these financials&lt;/a&gt;, even though the article claims the opposite.
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:f38631c06dc52d51e25323771c266097:1&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&#34;fn:f38631c06dc52d51e25323771c266097:2&#34;&gt;&lt;a href=&#34;https://www.bloomberg.com/news/articles/2016-08-25/uber-loses-at-least-1-2-billion-in-first-half-of-2016&#34;&gt;Uber Loses at Least $1.2 Billion in First Half of 2016&lt;/a&gt;
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:f38631c06dc52d51e25323771c266097:2&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&#34;fn:f38631c06dc52d51e25323771c266097:3&#34;&gt;&lt;a href=&#34;http://www.economist.com/blogs/economist-explains/2014/02/economist-explains-5&#34;&gt;The Economist explains: Why airlines make such meagre profits&lt;/a&gt;
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:f38631c06dc52d51e25323771c266097:3&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&#34;fn:f38631c06dc52d51e25323771c266097:4&#34;&gt;Fivethirtyeight took a shot at analzying &lt;a href=&#34;https://fivethirtyeight.com/features/uber-isnt-worth-17-billion/&#34;&gt;Uber&amp;rsquo;s valuation from 2014 in light of the size of the global taxi business&lt;/a&gt;. Based on these numbers Uber would need to increase the size of its target market significantly to justify its current valuation (to ~5x-10x of the taxi business today, depending on how much it can increase its market share at the same time).
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:f38631c06dc52d51e25323771c266097:4&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -297,7 +297,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;I personally have only been following Apple more or less closely since 2012. From this position I feel like I&amp;rsquo;m able to view the state of Apple from a mainstream consumer&amp;rsquo;s angle. From that vantage point it seems like Apple has made mistakes, but it is not doomed quite yet.&lt;/p&gt;
 
-&lt;h2 id=&#34;what-has-changed:e8c640405ea6d997eb27107cface5d12&#34;&gt;What Has Changed?&lt;/h2&gt;
+&lt;h2 id=&#34;what-has-changed:f38631c06dc52d51e25323771c266097&#34;&gt;What Has Changed?&lt;/h2&gt;
 
 &lt;p&gt;What struck me the most about the MacBook announcement was the seemingly obvious product design mistakes that Apple made. To me this was a first for Apple. In the past I used to describe my affection to Apple and its products like this:&lt;/p&gt;
 
@@ -315,7 +315,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;From the perspective of a mainstream consumer these things stand out to me the most. Out of the box, Apple hardware is no longer well integrated. And Apple&amp;rsquo;s product lineup is confusing, even to people that follow the company fairly closely. More importantly, Apple is no longer the company that avoids obvious mistakes; what does that mean for future products?&lt;/p&gt;
 
-&lt;h2 id=&#34;pricing-quality:e8c640405ea6d997eb27107cface5d12&#34;&gt;Pricing &amp;amp; Quality&lt;/h2&gt;
+&lt;h2 id=&#34;pricing-quality:f38631c06dc52d51e25323771c266097&#34;&gt;Pricing &amp;amp; Quality&lt;/h2&gt;
 
 &lt;p&gt;There are two further trends that worry me. While Apple hasn&amp;rsquo;t discontinued the MacBook Air, it seems like they will in the near future. This would remove the $999 entry level Apple Notebook. I assume that Apple will try to increase profits by making the MacBook the new entry level notebook, which currently stands at $1299. The price hike doesn&amp;rsquo;t end there. Since additional adapters are required and the power cord extension no longer ships out of the box you can easily expect another $100-$200 in cost.&lt;/p&gt;
 
@@ -327,7 +327,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;Steve Jobs used to frequently point out that Apple was guided strictly by the customer&amp;rsquo;s opinion. If they like it they buy it, if not, they don&amp;rsquo;t. I think this feedback loop no longer exists in the same form. In many segments Apple has become the dominant company. For many customers buying Apple is the default and it takes a strong reason to leave the ecosystem. Thus for the most loyal and important customers the buying decisions will be a lagging indicator for Apple. Once the loyal fans leave the platform it will probably be too late to respond.&lt;/p&gt;
 
-&lt;h2 id=&#34;not-doomed-quite-yet:e8c640405ea6d997eb27107cface5d12&#34;&gt;Not Doomed Quite Yet&lt;/h2&gt;
+&lt;h2 id=&#34;not-doomed-quite-yet:f38631c06dc52d51e25323771c266097&#34;&gt;Not Doomed Quite Yet&lt;/h2&gt;
 
 &lt;p&gt;I think the biggest point in favor of Apple is that it still doesn&amp;rsquo;t have very strong competitors fighting for its core audience. While the quality of product design and software might have declined, for many it&amp;rsquo;s still leaps and bounds ahead of other companies. It might just be the legacy of Steve Jobs, but most of Apple&amp;rsquo;s products are still the closest you can get to &lt;em&gt;&amp;ldquo;it just works&amp;rdquo;&lt;/em&gt;.&lt;/p&gt;
 
@@ -360,13 +360,13 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 &lt;li&gt;&lt;strong&gt;Readability&lt;/strong&gt;: Signal to noise ratio of declarative code is great!&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;These days I write most of my code in Swift which lends itself well for a declarative programming style&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:1&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:b989f8f58ed8c5aa5f8ff74af770fe9e:1&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;These days I write most of my code in Swift which lends itself well for a declarative programming style&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:f38631c06dc52d51e25323771c266097:1&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:f38631c06dc52d51e25323771c266097:1&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
 
 &lt;p&gt;The majority of types I define are simple structs that either describe a piece of data or an intent. Separate types, typically generic classes, are then responsible for consuming these intents and implementing the necessary work. We also use this approach throughout all new Swift code we&amp;rsquo;re writing in the PlanGrid app. It has had a huge impact on code readability and developer efficiency.&lt;/p&gt;
 
 &lt;p&gt;Today I want to discuss an API from the PlanGrid app, that used to be implemented using &lt;code&gt;NSOperationQueue&lt;/code&gt; and since has been moved to a more declarative approach - discussing this API should demonstrate the various benefits of a declarative programming style.&lt;/p&gt;
 
-&lt;h2 id=&#34;building-a-declarative-request-sequence-in-swift:b989f8f58ed8c5aa5f8ff74af770fe9e&#34;&gt;Building a Declarative Request Sequence in Swift&lt;/h2&gt;
+&lt;h2 id=&#34;building-a-declarative-request-sequence-in-swift:f38631c06dc52d51e25323771c266097&#34;&gt;Building a Declarative Request Sequence in Swift&lt;/h2&gt;
 
 &lt;p&gt;The API that we&amp;rsquo;ve re-written is responsible for syncing local changes (that might have occurred offline) with our API server. I won&amp;rsquo;t go into details of the change tracking approach, but will instead only discuss the generation &amp;amp; execution of network requests.&lt;/p&gt;
 
@@ -380,7 +380,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;Since we have a few upload tasks that involve such request sequences, we decided to model this as a type and support in our upload infrastructure.&lt;/p&gt;
 
-&lt;h3 id=&#34;defining-the-request-sequence-protocol:b989f8f58ed8c5aa5f8ff74af770fe9e&#34;&gt;Defining the Request Sequence Protocol&lt;/h3&gt;
+&lt;h3 id=&#34;defining-the-request-sequence-protocol:f38631c06dc52d51e25323771c266097&#34;&gt;Defining the Request Sequence Protocol&lt;/h3&gt;
 
 &lt;p&gt;We decided to introduce a separate type that is only responsible for describing a sequence of network requests. That type is consumed by our uploader class which turns the descriptions into actual network requests (the uploader itself won&amp;rsquo;t be discussed as part of this post).&lt;/p&gt;
 
@@ -441,7 +441,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;At this point it became almost trivial to define a new upload sequence.&lt;/p&gt;
 
-&lt;h3 id=&#34;implementing-the-request-sequence-protocol:b989f8f58ed8c5aa5f8ff74af770fe9e&#34;&gt;Implementing the Request Sequence Protocol&lt;/h3&gt;
+&lt;h3 id=&#34;implementing-the-request-sequence-protocol:f38631c06dc52d51e25323771c266097&#34;&gt;Implementing the Request Sequence Protocol&lt;/h3&gt;
 
 &lt;p&gt;As an example, let&amp;rsquo;s take a look at the upload sequence for uploading snapshots (snapshots in PlanGrid capture a blueprint + annotations in an image that can be exported):&lt;/p&gt;
 
@@ -553,7 +553,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;How does this compare to our previous solution that was using &lt;code&gt;NSOperationQueue&lt;/code&gt;?&lt;/p&gt;
 
-&lt;h3 id=&#34;what-about-nsoperationqueue:b989f8f58ed8c5aa5f8ff74af770fe9e&#34;&gt;What About NSOperationQueue?&lt;/h3&gt;
+&lt;h3 id=&#34;what-about-nsoperationqueue:f38631c06dc52d51e25323771c266097&#34;&gt;What About NSOperationQueue?&lt;/h3&gt;
 
 &lt;p&gt;The solution using an &lt;code&gt;NSOperationQueue&lt;/code&gt; was a lot less concise, so there&amp;rsquo;s no good way to present its code in this blog post. We can still discuss the issues that the approach had on a high level.&lt;/p&gt;
 
@@ -567,7 +567,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;TL;DR: we&amp;rsquo;re glad that we&amp;rsquo;re now able to provide a more explicit API that results in code that is easier to read.&lt;/p&gt;
 
-&lt;h2 id=&#34;conclusion:b989f8f58ed8c5aa5f8ff74af770fe9e&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;h2 id=&#34;conclusion:f38631c06dc52d51e25323771c266097&#34;&gt;Conclusion&lt;/h2&gt;
 
 &lt;p&gt;Using a declarative programming approach has had a huge impact on our codebase and our productivity. We can provide constrained APIs that can be only used in one way and don&amp;rsquo;t leave a lot of room for error. We can avoid subclassing as a means of polymorphism and instead implement generic types that are controlled by declarative code. We can write code with excellent signal to noise ratio. The declarative code we write is extremely easy to test (to the point where even testing enthusiasts might deem tests unnecessary). So what are the downsides, if any?&lt;/p&gt;
 
@@ -579,16 +579,16 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;Soon after I started working on apps I naively wondered why we couldn&amp;rsquo;t just build them by configuring pre-existing components, without writing much, if any, custom code. Libraries like React and GraphQL have made this future a little more likely. I think this is just a first step, and going forward we&amp;rsquo;ll see more sophisticated libraries hide their complexity by providing simple, declarative, interfaces.&lt;/p&gt;
 
-&lt;p&gt;And hopefully, some day, we&amp;rsquo;ll get a declarative UI library for building iOS apps&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:2&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:b989f8f58ed8c5aa5f8ff74af770fe9e:2&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;And hopefully, some day, we&amp;rsquo;ll get a declarative UI library for building iOS apps&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:f38631c06dc52d51e25323771c266097:2&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:f38631c06dc52d51e25323771c266097:2&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
 
 &lt;hr /&gt;
 
 &lt;ol&gt;
-&lt;li id=&#34;fn:b989f8f58ed8c5aa5f8ff74af770fe9e:1&#34;&gt;I&amp;rsquo;ll use the term &lt;em&gt;declarative programming&lt;/em&gt; even though its &lt;a href=&#34;https://existentialtype.wordpress.com/2013/07/18/what-if-anything-is-a-declarative-language/&#34;&gt;definition is disputed&lt;/a&gt;. So far I&amp;rsquo;ve liked the definition in &lt;a href=&#34;https://awelonblue.wordpress.com/2012/01/12/defining-declarative/&#34;&gt;this post&lt;/a&gt; the most. It identifies the following characteristics of declarative code: Idempotent, Commutative, Concurrent (declarations hold at overlapping times), Reactive (meaning is context dependent). Overall this is a fairly theoretical (yet relevant debate) that I&amp;rsquo;ll might cover in a future post - this post is going to be more pragmatic.
- &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:1&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;li id=&#34;fn:b989f8f58ed8c5aa5f8ff74af770fe9e:2&#34;&gt;Comparing React&amp;rsquo;s declarative API to UIKit&amp;rsquo;s imperative one is an interesting lense for looking at the general trade-offs between declarative/imperative APIs, I&amp;rsquo;ve done that in my &lt;a href=&#34;https://realm.io/news/altconf-benji-encz-uikit-inside-out-declarative-programming/&#34;&gt;2016 Alt Conf Talk&lt;/a&gt;. As part of that talk I experimented with what a &lt;a href=&#34;https://github.com/Ben-G/UILib&#34;&gt;React like API wrapper for UIKit&lt;/a&gt; would look like.
- &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:b989f8f58ed8c5aa5f8ff74af770fe9e:2&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&#34;fn:f38631c06dc52d51e25323771c266097:1&#34;&gt;I&amp;rsquo;ll use the term &lt;em&gt;declarative programming&lt;/em&gt; even though its &lt;a href=&#34;https://existentialtype.wordpress.com/2013/07/18/what-if-anything-is-a-declarative-language/&#34;&gt;definition is disputed&lt;/a&gt;. So far I&amp;rsquo;ve liked the definition in &lt;a href=&#34;https://awelonblue.wordpress.com/2012/01/12/defining-declarative/&#34;&gt;this post&lt;/a&gt; the most. It identifies the following characteristics of declarative code: Idempotent, Commutative, Concurrent (declarations hold at overlapping times), Reactive (meaning is context dependent). Overall this is a fairly theoretical (yet relevant debate) that I&amp;rsquo;ll might cover in a future post - this post is going to be more pragmatic.
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:f38631c06dc52d51e25323771c266097:1&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&#34;fn:f38631c06dc52d51e25323771c266097:2&#34;&gt;Comparing React&amp;rsquo;s declarative API to UIKit&amp;rsquo;s imperative one is an interesting lense for looking at the general trade-offs between declarative/imperative APIs, I&amp;rsquo;ve done that in my &lt;a href=&#34;https://realm.io/news/altconf-benji-encz-uikit-inside-out-declarative-programming/&#34;&gt;2016 Alt Conf Talk&lt;/a&gt;. As part of that talk I experimented with what a &lt;a href=&#34;https://github.com/Ben-G/UILib&#34;&gt;React like API wrapper for UIKit&lt;/a&gt; would look like.
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:f38631c06dc52d51e25323771c266097:2&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
 </description>
@@ -616,15 +616,15 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;I also have a somewhat special relationship to tools. I remember how, as a student, complicated tooling almost deterred me from a career in software development - &amp;ldquo;If I can&amp;rsquo;t even get a J2EE app configured and running, I probably shouldn&amp;rsquo;t be a software developer&amp;rdquo;. This post is some form of self-therapy&amp;hellip;&lt;/p&gt;
 
-&lt;h2 id=&#34;migrating-to-xcode-8:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;Migrating to Xcode 8&lt;/h2&gt;
+&lt;h2 id=&#34;migrating-to-xcode-8:f38631c06dc52d51e25323771c266097&#34;&gt;Migrating to Xcode 8&lt;/h2&gt;
 
 &lt;p&gt;This is a somewhat chronological sequence of various issues I encountered when updating our CI server to work (again) with Xcode 8.&lt;/p&gt;
 
-&lt;h4 id=&#34;1-broken-code-signing:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;1. Broken Code Signing&lt;/h4&gt;
+&lt;h4 id=&#34;1-broken-code-signing:f38631c06dc52d51e25323771c266097&#34;&gt;1. Broken Code Signing&lt;/h4&gt;
 
 &lt;p&gt;Xcode 8 set out to fix one of the major tool annoyances that developers encounter: code signing. The &amp;ldquo;Fix issue&amp;rdquo; button has been removed and automatic code signing has been overhauled. You can enable it with a simple checkbox (which will trigger Xcode to generate provisioning profiles automatically):&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/auto_sign.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;auto_sign.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;However, this option is not compatible with &lt;code&gt;xcodebuild&lt;/code&gt;. I haven&amp;rsquo;t dug into the details, but when this option is checked you need to be signed into a development team so I believe the feature cannot be used on a CI machine from the command line.&lt;/p&gt;
 
@@ -642,13 +642,13 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;&lt;strong&gt;Takeaway 1:&lt;/strong&gt; It would be great if Apple would have documented if/how automatic signing should be used with &lt;code&gt;xcodebuild&lt;/code&gt;. But admittedly our use case for changing bundle identifiers dynamically is a little unconventional (we could just have separate targets).&lt;/p&gt;
 
-&lt;h4 id=&#34;2-ruby-issues:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;2. Ruby Issues&lt;/h4&gt;
+&lt;h4 id=&#34;2-ruby-issues:f38631c06dc52d51e25323771c266097&#34;&gt;2. Ruby Issues&lt;/h4&gt;
 
 &lt;p&gt;At this point I was investigating our &lt;code&gt;buid_deploy_latest&lt;/code&gt; lane, which runs whenever we merge to &lt;code&gt;dev&lt;/code&gt;. It creates a build, ships it to HockeyApp, runs the test suite and reports code coverage to codecov.&lt;/p&gt;
 
 &lt;p&gt;This lane was failing on both steps (archiving &amp;amp; testing) on CI, while it was passing locally. This was the error message in the CI build log:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/ruby_crash.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;ruby_crash.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In the past, &lt;code&gt;Exit status: 65&lt;/code&gt; mostly meant codesigning issues, so I spent some time investigating in the wrong direction here. The log was claiming that a build script failure was failing the build. In particular the script that uploads our dSYM to Bugsnag.&lt;/p&gt;
 
@@ -662,7 +662,7 @@ Foundation overlay to create Swift wrappers around Objective-C types (&lt;a href
 
 &lt;p&gt;Luckily these logs contained a lot more details on the failed script phase:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/ruby_crash_details.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;ruby_crash_details.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The following line stands out as the root cause of the script failure:&lt;/p&gt;
 
@@ -680,30 +680,30 @@ I&amp;rsquo;m tapping a little in the dark if this version mismatch is actually 
 
 &lt;p&gt;&lt;strong&gt;Takeaway 2:&lt;/strong&gt; Read xcodebuild&amp;rsquo;s error messages exactly and believe them even though they can be misleading sometimes. Probably should also pin the ruby version used locally and on CI using &lt;code&gt;RVM&lt;/code&gt; or &lt;code&gt;chruby&lt;/code&gt; to avoid such mismatches in future (though this would increase the time for spinning up a new machine on Bitrise). I will also need to investigate further why this issue started ocurring after switching to the Xcode 8 toolchain. So far I&amp;rsquo;m assuming the Bitrise image was updated as part of the Xcode update and installed a newer version of ruby.&lt;/p&gt;
 
-&lt;h4 id=&#34;3-xcode-test-manager-timeouts:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;3. Xcode Test Manager Timeouts&lt;/h4&gt;
+&lt;h4 id=&#34;3-xcode-test-manager-timeouts:f38631c06dc52d51e25323771c266097&#34;&gt;3. Xcode Test Manager Timeouts&lt;/h4&gt;
 
 &lt;p&gt;This one is still a complete mystery to me. At this point I can run all lanes on fastlane locally. I can run &lt;code&gt;xcodebuild test&lt;/code&gt; on Bitrise. However, running tests via fastlane on Bitrise is still failing. The failure only occurs in this combination. I&amp;rsquo;ve opened tickets with both tools - I&amp;rsquo;m aware that likely no one will feel responsible for fixing this since both tools work in isolation. But maybe someone else finds these issues useful? (&lt;a href=&#34;https://github.com/bitrise-io/bitrise.io/issues/66&#34;&gt;Bitrise&lt;/a&gt;, &lt;a href=&#34;https://github.com/fastlane/fastlane/issues/6111&#34;&gt;fastlane&lt;/a&gt;)&lt;/p&gt;
 
 &lt;p&gt;On the surface (looking at xcodebuild output piped to fastlane/xcpretty) the error reporting is again very limited: &lt;code&gt;**TEST FAILED** and&lt;/code&gt;Exit status: 65`:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/test-hangs.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;test-hangs.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I again resorted to investigating the &lt;code&gt;xcactivitylog&lt;/code&gt; files; this time for the test activity instead of the build activity. From there it became pretty obvious what is happening:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/test-hangs-details.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;test-hangs-details.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;For some reason the communication between &lt;code&gt;testmanagerd&lt;/code&gt;, Xcode and the Simulator is broken and timing out, which eventually causes the test suite to fail. For now my patience is over and I&amp;rsquo;ve replaced this particular fastlane step with a manual call to &lt;code&gt;xcodebuild test&lt;/code&gt;. I&amp;rsquo;m planning on filing a radar, though I feel bad for not really having a reproduction case.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Takeaway 3:&lt;/strong&gt; Interop between various tools is the worst. If you encounter issues that only occur when you combine multiple tools, it is very hard to narrow down the root cause. In this case it seems like an &lt;code&gt;xcodebuild&lt;/code&gt; bug. Why is it only happening when using fastlane on Bitrise? I don&amp;rsquo;t know (yet?).&lt;/p&gt;
 
-&lt;h4 id=&#34;4-github-request-timeouts-hockeyapp-deploy-failure:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;4. GitHub Request Timeouts &amp;amp;  HockeyApp Deploy Failure&lt;/h4&gt;
+&lt;h4 id=&#34;4-github-request-timeouts-hockeyapp-deploy-failure:f38631c06dc52d51e25323771c266097&#34;&gt;4. GitHub Request Timeouts &amp;amp;  HockeyApp Deploy Failure&lt;/h4&gt;
 
 &lt;p&gt;Various builds would fail due to GitHub request timeouts that caused CocoaPods to fail. Sometimes uploads from Bitrise to HockeyApp would fail as well. Nothing to learn here, just want to demonstrate the amount of pain I went through:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/hockey-deploy-failed.png&#34; alt=&#34;&#34; /&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/github_timeout.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;hockey-deploy-failed.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;github_timeout.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;conclusion:2e81d9f000ef3ae5966238c2b9bf864a&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;h2 id=&#34;conclusion:f38631c06dc52d51e25323771c266097&#34;&gt;Conclusion&lt;/h2&gt;
 
 &lt;p&gt;I should probably accept that our tools are complex and fragile and that a significant portion of my job responsibility is simply to keep things running as various tools change over time.&lt;/p&gt;
 
@@ -723,8 +723,8 @@ I&amp;rsquo;m tapping a little in the dark if this version mismatch is actually 
 
 &lt;p&gt;Couldn&amp;rsquo;t stop myself from adding these, too&amp;hellip;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/last_two.png&#34; alt=&#34;&#34; /&gt;
-&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/broken-toolchain/last_one.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;last_two.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;last_one.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -738,7 +738,7 @@ I&amp;rsquo;m tapping a little in the dark if this version mismatch is actually 
 
 &lt;p&gt;We are back to another episode of discussing generics, protocols with associated types and some type system limitations in Swift 2. This time we will dive into an interesting workaround that the infamous &lt;a href=&#34;https://twitter.com/jckarter&#34;&gt;jckarter&lt;/a&gt; has taught me. We will also discuss how this workaround might become unnecessary through enhanced existential support in future Swift versions. But what are existentials anyway?&lt;/p&gt;
 
-&lt;h2 id=&#34;existentials-in-swift:66f71b701ececee95a5057b67030251d&#34;&gt;Existentials in Swift&lt;/h2&gt;
+&lt;h2 id=&#34;existentials-in-swift:f38631c06dc52d51e25323771c266097&#34;&gt;Existentials in Swift&lt;/h2&gt;
 
 &lt;p&gt;Generally speaking existentials allow us to define type variables using type requirements. We can use these type variables throughout our program without knowing which concrete underlying type implements the requirements.&lt;/p&gt;
 
@@ -763,7 +763,7 @@ I&amp;rsquo;m tapping a little in the dark if this version mismatch is actually 
 
 &lt;p&gt;In many ways existentials are very similar to generics. Why would we choose one over the other? My friend Russ Bishop has covered this in detail in a blog post on existentials &amp;amp; generics - &lt;a href=&#34;http://www.russbishop.net/swift-associated-types-cont&#34;&gt;if you&amp;rsquo;re curious about the details you should go read it&lt;/a&gt;!&lt;/p&gt;
 
-&lt;h2 id=&#34;bridging-between-existentials-and-generics:66f71b701ececee95a5057b67030251d&#34;&gt;Bridging Between Existentials and Generics&lt;/h2&gt;
+&lt;h2 id=&#34;bridging-between-existentials-and-generics:f38631c06dc52d51e25323771c266097&#34;&gt;Bridging Between Existentials and Generics&lt;/h2&gt;
 
 &lt;p&gt;In an &lt;a href=&#34;http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/&#34;&gt;earlier blog post&lt;/a&gt; I pointed out some incompatibilities between type information that is statically known at compile time (Generics) and type information that is dynamically available at runtime (Existentials).&lt;/p&gt;
 
@@ -817,7 +817,7 @@ Ideally we would want to do something like the following (which is syntactically
 
 &lt;p&gt;Some potential, future improvements to Swift could make this possible, but for now we cannot dynamically refer to the type of the existential (&lt;code&gt;element.Self&lt;/code&gt;) and use it as a generic type parameter.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-workaround:66f71b701ececee95a5057b67030251d&#34;&gt;The Workaround&lt;/h2&gt;
+&lt;h2 id=&#34;the-workaround:f38631c06dc52d51e25323771c266097&#34;&gt;The Workaround&lt;/h2&gt;
 
 &lt;p&gt;The &lt;code&gt;.Self&lt;/code&gt; member, which would refer to the concrete type of the existential doesn&amp;rsquo;t exist in Swift 2. However, we can access the concrete type of the existential using &lt;code&gt;Self&lt;/code&gt; from within protocols &amp;amp; protocol extensions.&lt;/p&gt;
 
@@ -847,7 +847,7 @@ Ideally we would want to do something like the following (which is syntactically
 &lt;p&gt;From within the protocol extension we can successfully use the underlying type of the existential (&lt;code&gt;Self&lt;/code&gt;) as a generic type parameter.
 Even though the inverted control flow is anything but beautiful, this workaround can be useful to bridge the gap between existentials and generics.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-future-is-bright:66f71b701ececee95a5057b67030251d&#34;&gt;The Future is Bright&lt;/h2&gt;
+&lt;h2 id=&#34;the-future-is-bright:f38631c06dc52d51e25323771c266097&#34;&gt;The Future is Bright&lt;/h2&gt;
 
 &lt;p&gt;Among many other critical improvements, the changes suggested by the &lt;a href=&#34;https://github.com/austinzheng/swift-evolution/blob/az-existentials/proposals/XXXX-enhanced-existentials.md&#34;&gt;enhanced existential proposal &lt;strong&gt;draft&lt;/strong&gt;&lt;/a&gt; would eliminate this workaround by allowing to refer to the underlying type of an existential via &lt;code&gt;.Self&lt;/code&gt; and making it possible to use that type as a generic type parameter.&lt;/p&gt;
 
@@ -881,11 +881,11 @@ Even though the inverted control flow is anything but beautiful, this workaround
 
 &lt;p&gt;I&amp;rsquo;m attempting to describe large parts of our Flux implementation by discussing code that is in production today. If you&amp;rsquo;re only interested in the high level conclusion you can skip the middle part of this post.&lt;/p&gt;
 
-&lt;h2 id=&#34;why-we-transitioned-away-from-mvc:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Why We Transitioned Away from MVC&lt;/h2&gt;
+&lt;h2 id=&#34;why-we-transitioned-away-from-mvc:f38631c06dc52d51e25323771c266097&#34;&gt;Why We Transitioned Away from MVC&lt;/h2&gt;
 
 &lt;p&gt;To put our decision into context I want to describe some of the challenges the PlanGrid app faces. Some of them are unique to enterprise software, others should apply to most iOS apps.&lt;/p&gt;
 
-&lt;h3 id=&#34;we-have-all-the-state:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;We Have All the State&lt;/h3&gt;
+&lt;h3 id=&#34;we-have-all-the-state:f38631c06dc52d51e25323771c266097&#34;&gt;We Have All the State&lt;/h3&gt;
 
 &lt;p&gt;PlanGrid is a fairly complex iOS app. It allows users to view blueprints and to collaborate on them using different types of annotations, issues and attachments (and a lot of other stuff that requires industry specific knowledge).&lt;/p&gt;
 
@@ -893,7 +893,7 @@ Even though the inverted control flow is anything but beautiful, this workaround
 
 &lt;p&gt;The PlanGrid app runs on both iPad and iPhone, but its UI is optimized to make use of the larger available space on tablets. This means that unlike many iPhone apps we often present multiple view controllers at a time. These view controllers tend to share a decent amount of state.&lt;/p&gt;
 
-&lt;h3 id=&#34;the-state-of-state-management:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;The State of State Management&lt;/h3&gt;
+&lt;h3 id=&#34;the-state-of-state-management:f38631c06dc52d51e25323771c266097&#34;&gt;The State of State Management&lt;/h3&gt;
 
 &lt;p&gt;All of this means that our app puts a lot of effort into managing state. Any mutation within the app results in more or less the following steps:&lt;/p&gt;
 
@@ -921,7 +921,7 @@ Even though the inverted control flow is anything but beautiful, this workaround
 
 &lt;p&gt;All of these approaches can be valid in different scenarios. However, this menu of different options is a big source of inconsistencies in a large codebase that has grown over multiple years.&lt;/p&gt;
 
-&lt;h3 id=&#34;freedom-is-dangerous:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Freedom is Dangerous&lt;/h3&gt;
+&lt;h3 id=&#34;freedom-is-dangerous:f38631c06dc52d51e25323771c266097&#34;&gt;Freedom is Dangerous&lt;/h3&gt;
 
 &lt;p&gt;Classic MVC only advocates the separation of data and its representation. With the lack of other architectural guidance, everything else is left up to individual developers.&lt;/p&gt;
 
@@ -933,7 +933,7 @@ Even though the inverted control flow is anything but beautiful, this workaround
 
 &lt;p&gt;Thorough code reviews &amp;amp; style guides can only do so much, many of these architectural issues start with small inconsistencies and take a long time to evolve into serious problems. With well defined patterns in place it is a lot easier to detect deviations early.&lt;/p&gt;
 
-&lt;h3 id=&#34;an-architectural-pattern-for-state-management:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;An Architectural Pattern for State Management&lt;/h3&gt;
+&lt;h3 id=&#34;an-architectural-pattern-for-state-management:f38631c06dc52d51e25323771c266097&#34;&gt;An Architectural Pattern for State Management&lt;/h3&gt;
 
 &lt;p&gt;One of our most important goals during refactoring the PlanGrid app was putting clear patterns &amp;amp; best practices in place. This would allow future features to be written in a more consistent way and make onboarding of new engineers a lot more efficient.&lt;/p&gt;
 
@@ -950,13 +950,13 @@ Even though the inverted control flow is anything but beautiful, this workaround
 
 &lt;p&gt;It seemed that Flux would be a great fit for solving many of the issues we were experiencing.&lt;/p&gt;
 
-&lt;h2 id=&#34;a-brief-intro-to-flux:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;A Brief Intro to Flux&lt;/h2&gt;
+&lt;h2 id=&#34;a-brief-intro-to-flux:f38631c06dc52d51e25323771c266097&#34;&gt;A Brief Intro to Flux&lt;/h2&gt;
 
 &lt;p&gt;Flux is a very lightweight architectural pattern that Facebook uses for client-side web applications. Even though there is a &lt;a href=&#34;https://github.com/facebook/flux&#34;&gt;reference implementation&lt;/a&gt;, Facebook emphasizes that the ideas of the Flux pattern are a lot more relevant than this particular implementation.&lt;/p&gt;
 
 &lt;p&gt;The pattern can be described best alongside a diagram that shows the different flux components:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux_Original.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;Flux_Original.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In the Flux architecture a &lt;strong&gt;store&lt;/strong&gt; is the single source of truth for a certain part of the app. Whenever the state in the store updates, it will send a change event to all views that subscribed to the store. The &lt;strong&gt;view&lt;/strong&gt; receives changes only through this one interface that is called by the store.&lt;/p&gt;
 
@@ -977,17 +977,17 @@ The stores register with the dispatcher and let it know which actions they are i
 
 &lt;p&gt;These constraints make designing, developing and debugging new features a lot easier.&lt;/p&gt;
 
-&lt;h2 id=&#34;flux-in-plangrid-for-ios:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Flux in PlanGrid for iOS&lt;/h2&gt;
+&lt;h2 id=&#34;flux-in-plangrid-for-ios:f38631c06dc52d51e25323771c266097&#34;&gt;Flux in PlanGrid for iOS&lt;/h2&gt;
 
 &lt;p&gt;For the PlanGrid iOS app we have deviated slightly from the Flux reference implementation. We enforce that each store has an observable &lt;code&gt;state&lt;/code&gt; property. Unlike in the original Flux implementation we don&amp;rsquo;t emit a change event when a store updates. Instead views observe the &lt;code&gt;state&lt;/code&gt; property of the store. Whenever the views observe a state change, they update themselves in response:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/Flux.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;Flux.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This is a very subtle deviation from the Flux reference implementation, but covering it is helpful for the upcoming sections.&lt;/p&gt;
 
 &lt;p&gt;With an understanding of the basics of the Flux architecture, let&amp;rsquo;s dive into some of the implementation details and questions we needed to answer while implementing Flux in the PlanGrid app.&lt;/p&gt;
 
-&lt;h3 id=&#34;what-is-the-scope-of-a-store:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;What is the Scope of a Store?&lt;/h3&gt;
+&lt;h3 id=&#34;what-is-the-scope-of-a-store:f38631c06dc52d51e25323771c266097&#34;&gt;What is the Scope of a Store?&lt;/h3&gt;
 
 &lt;p&gt;The scope of each individual store is a very interesting question that quickly comes up when using the Flux pattern.&lt;/p&gt;
 
@@ -1008,31 +1008,31 @@ The stores register with the dispatcher and let it know which actions they are i
 
 &lt;p&gt;We are currently in the process of implementing our first &lt;em&gt;shared state stores&lt;/em&gt; and are still deciding the best way to model the multiple dependencies of different views onto these types of stores.&lt;/p&gt;
 
-&lt;h3 id=&#34;implementing-a-feature-using-the-flux-pattern:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Implementing a Feature Using the Flux Pattern&lt;/h3&gt;
+&lt;h3 id=&#34;implementing-a-feature-using-the-flux-pattern:f38631c06dc52d51e25323771c266097&#34;&gt;Implementing a Feature Using the Flux Pattern&lt;/h3&gt;
 
 &lt;p&gt;Let&amp;rsquo;s dive a little bit deeper into some of the implementation details of features that are built with the Flux pattern.&lt;/p&gt;
 
 &lt;p&gt;As an example throughout the next couple of sections we&amp;rsquo;ll use a feature that&amp;rsquo;s used in production within the PlanGrid app. The feature allows users to filter annotations on a blueprint:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/Website/master/static/assets/flux-post/filter_screenshot.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;filter_screenshot.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The feature we&amp;rsquo;ll discuss lives in the popover that&amp;rsquo;s presented on the left hand side of the screenshot.&lt;/p&gt;
 
-&lt;h4 id=&#34;step-1-defining-the-state:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Step 1: Defining the State&lt;/h4&gt;
+&lt;h4 id=&#34;step-1-defining-the-state:f38631c06dc52d51e25323771c266097&#34;&gt;Step 1: Defining the State&lt;/h4&gt;
 
 &lt;p&gt;Usually I begin implementing a new feature by determining the relevant state for it. The state represents everything the UI needs to know in order to render the representation of a certain feature.&lt;/p&gt;
 
 &lt;p&gt;Let&amp;rsquo;s dive right into our example by taking a look at the state for the annotation filter feature shown above:&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterState&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hideEverythingFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;RepresentableAnnotationFilter&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;shareStatusFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;RepresentableAnnotationFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;issueFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;RepresentableAnnotationFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;generalFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;RepresentableAnnotationFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hideEverythingFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;RepresentableAnnotationFilter&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;shareStatusFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;RepresentableAnnotationFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;issueFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;RepresentableAnnotationFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;generalFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;RepresentableAnnotationFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
 
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;selectedFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterGroupType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;
-    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Indicates whether any filter is active right now&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Bool&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;selectedFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterGroupType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Indicates whether any filter is active right now&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Bool&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -1042,39 +1042,39 @@ The stores register with the dispatcher and let it know which actions they are i
 &lt;p&gt;This state is exactly tailored to the needs of the UI. The list of filters is rendered in a table view. The selected filter group is used to present/hide the details
 of an individually selected filter group. And the &lt;code&gt;isFiltering&lt;/code&gt; flag is used to determine whether or not a button to clear all filters should be enabled or disabled in the UI.&lt;/p&gt;
 
-&lt;h4 id=&#34;step-2-defining-the-actions:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Step 2: Defining the Actions&lt;/h4&gt;
+&lt;h4 id=&#34;step-2-defining-the-actions:f38631c06dc52d51e25323771c266097&#34;&gt;Step 2: Defining the Actions&lt;/h4&gt;
 
 &lt;p&gt;After defining the shape of the state for a certain feature I usually think about the different state mutations in the next step. In the Flux architecture state mutations are modeled in the form of actions that describe which state change is intended. For the annotation filter feature the list of actions is fairly short:&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
 
-    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Enables/disables a filter.&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterType&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Enables/disables a filter.&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterType&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Navigates to details of a filter group.&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;EnterFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterGroupType&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Navigates to details of a filter group.&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;EnterFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterGroupType&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Leaves detail view of a filter group.&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;LeaveFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Leaves detail view of a filter group.&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;LeaveFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Disables all filters.&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ResetFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Disables all filters.&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ResetFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Disables all filters within a filter group.&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ResetFiltersInGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterGroupType&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;/// Disables all filters within a filter group.&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;ResetFiltersInGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnyAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterGroupType&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Even without an in-depth understanding of the feature it should be somewhat understandable which state transitions these actions initiate. One of the many benefits of the Flux architecture is that this list of actions is an exhaustive overview of all state changes that can be triggered for this particular feature.&lt;/p&gt;
 
-&lt;h4 id=&#34;step-3-implement-the-response-to-actions-in-the-store:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Step 3: Implement the Response to Actions in the Store&lt;/h4&gt;
+&lt;h4 id=&#34;step-3-implement-the-response-to-actions-in-the-store:f38631c06dc52d51e25323771c266097&#34;&gt;Step 3: Implement the Response to Actions in the Store&lt;/h4&gt;
 
 &lt;p&gt;In this step we implement the core business logic of a feature. I personally tend to implement this step using TDD, which I&amp;rsquo;ll discuss a little later. The implementation of a store can be summarized as following:&lt;/p&gt;
 
@@ -1087,23 +1087,23 @@ of an individually selected filter group. And the &lt;code&gt;isFiltering&lt;/co
 &lt;p&gt;As a concrete example we can take a look at how the &lt;code&gt;AnnotationFilterStore&lt;/code&gt; handles the &lt;code&gt;toggleFilterAction&lt;/code&gt;:&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;handleToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filter&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;
-    &lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;!&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filter&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;
+&lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;!&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt;
 
-    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Check for issue specific filters&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;IssueAssignedToFilter&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;||&lt;/span&gt;
-        &lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;IssueStatusAnnotationFilter&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;||&lt;/span&gt;
-        &lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;IssueAssignedToFilter&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;||&lt;/span&gt;
-        &lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;IssueUnassignedFilter&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-            &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// if no annotation types are filtered, activate the issue/punchItem type&lt;/span&gt;
-            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;issueTypeFilter&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationTypeFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;issueTypeFilter&lt;/span&gt;
-            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationTypeFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;activeFilterCount&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;||&lt;/span&gt;
-                &lt;span style=&#34;color: #000000&#34;&gt;issueTypeFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-                    &lt;span style=&#34;color: #000000&#34;&gt;issueTypeFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;true&lt;/span&gt;
-            &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Check for issue specific filters&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;IssueAssignedToFilter&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;||&lt;/span&gt;
+    &lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;IssueStatusAnnotationFilter&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;||&lt;/span&gt;
+    &lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;IssueAssignedToFilter&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;||&lt;/span&gt;
+    &lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;IssueUnassignedFilter&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// if no annotation types are filtered, activate the issue/punchItem type&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;issueTypeFilter&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationTypeFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;issueTypeFilter&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationTypeFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;activeFilterCount&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;||&lt;/span&gt;
+            &lt;span style=&#34;color: #000000&#34;&gt;issueTypeFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+                &lt;span style=&#34;color: #000000&#34;&gt;issueTypeFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;true&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_applyFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_applyFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -1118,15 +1118,15 @@ The &lt;code&gt;ToggleFilterAction&lt;/code&gt; carries information about which 
 &lt;p&gt;At the end of the method we&amp;rsquo;re calling the &lt;code&gt;_applyFilter()&lt;/code&gt; method. This is a shared method that is used by multiple action handlers:&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;_applyFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;applyFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;applyFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
 
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;allFilterGroups&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;reduce&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;activeFilterCount&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;allFilterGroups&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;reduce&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;activeFilterCount&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Phantom state update to refresh the cell state, technically not needed since filters are reference types&lt;/span&gt;
-    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// and previous statement already triggers a state update.&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Phantom state update to refresh the cell state, technically not needed since filters are reference types&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// and previous statement already triggers a state update.&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -1162,7 +1162,7 @@ Since we&amp;rsquo;re using reference types here, we perform a phantom state upd
 
 &lt;p&gt;Let&amp;rsquo;s move on to discussing how the UI receives state updates from the store.&lt;/p&gt;
 
-&lt;h4 id=&#34;step-4-binding-the-ui-to-the-store:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Step 4: Binding the UI to the Store&lt;/h4&gt;
+&lt;h4 id=&#34;step-4-binding-the-ui-to-the-store:f38631c06dc52d51e25323771c266097&#34;&gt;Step 4: Binding the UI to the Store&lt;/h4&gt;
 
 &lt;p&gt;One of the core Flux concepts is that an automatic UI update is triggered whenever a state update occurs. This ensures that the UI always represents the latest state and makes away with any code that is required to maintain these updates manually. This step is very similar to the bindings of a View to the ViewModel in the MVVM architecture.&lt;/p&gt;
 
@@ -1195,26 +1195,26 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;p&gt;Let&amp;rsquo;s again take a look at some real world code (in this case it is slightly shortened) from the annotation filter feature. This code lives in the &lt;code&gt;AnnotationFilterViewController&lt;/code&gt;:&lt;/p&gt;
 
 &lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;_bind&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;compositeDisposable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;CompositeDisposable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-	&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// On every state update, recalculate the cells for this table view and provide them to&lt;/span&gt;
-	&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// the data source.&lt;/span&gt;
-	&lt;span style=&#34;color: #000000&#34;&gt;compositeDisposable&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableViewDataSource&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableViewModel&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;lt;~&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;store&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;
-	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ignoreNil&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
-	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;weak&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt;
-	        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationFilterViewProvider&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableViewModelForState&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;$0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;on&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;event&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;weak&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt;
-	        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableViewDataSource&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;refreshViews&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
-	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;})&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// On every state update, recalculate the cells for this table view and provide them to&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// the data source.&lt;/span&gt;
+&lt;span style=&#34;color: #000000&#34;&gt;compositeDisposable&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableViewDataSource&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableViewModel&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;lt;~&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;store&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;
+  &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ignoreNil&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+  &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;weak&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt;
+      &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationFilterViewProvider&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableViewModelForState&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;$0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+  &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;on&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;event&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;weak&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt;
+      &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableViewDataSource&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;refreshViews&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+  &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;})&lt;/span&gt;
 
-	&lt;span style=&#34;color: #000000&#34;&gt;compositeDisposable&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;store&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;
-	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ignoreNil&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
-	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;take&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;startWithNext&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;weak&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt;
-	        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableView&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;reloadData&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
-	    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000&#34;&gt;compositeDisposable&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;store&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;
+  &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ignoreNil&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+  &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;take&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+  &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;startWithNext&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;weak&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt;
+      &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tableView&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;reloadData&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+  &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-	 &lt;span style=&#34;color: #000000&#34;&gt;compositeDisposable&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;navigationItem&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;rightBarButtonItem&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;!.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;racEnabled&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;lt;~&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;store&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;
-            &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;??&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000&#34;&gt;compositeDisposable&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;navigationItem&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;rightBarButtonItem&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;!.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;racEnabled&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;lt;~&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;store&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;??&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
@@ -1231,36 +1231,36 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 
 &lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;tableViewModelForState&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterState&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
 
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hideEverythingSection&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;SectionModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;headerTitle&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;headerHeight&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;cellViewModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterViewProvider&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;cellViewModelsForGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;([&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;hideEverythingFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;])&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hideEverythingSection&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;SectionModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;headerTitle&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;headerHeight&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;cellViewModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterViewProvider&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;cellViewModelsForGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;([&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;hideEverythingFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;])&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
 
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;shareStatusSection&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;SectionModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;headerTitle&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;annotation_filters.share_status_section.title&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;translate&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(),&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;headerHeight&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;28&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;cellViewModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterViewProvider&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;cellViewModelsForGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;shareStatusFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;shareStatusSection&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;SectionModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;headerTitle&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;annotation_filters.share_status_section.title&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;translate&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(),&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;headerHeight&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;28&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;cellViewModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterViewProvider&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;cellViewModelsForGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;shareStatusFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
 
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;issueFilterSection&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;SectionModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;headerTitle&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;annotation_filters.issues_section.title&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;translate&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(),&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;headerHeight&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;28&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;cellViewModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterViewProvider&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;cellViewModelsForGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;issueFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;issueFilterSection&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;SectionModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;headerTitle&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;annotation_filters.issues_section.title&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;translate&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(),&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;headerHeight&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;28&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;cellViewModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterViewProvider&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;cellViewModelsForGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;issueFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
 
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;generalFilterSection&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;SectionModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;headerTitle&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;annotation_filters.general_section.title&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;translate&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(),&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;headerHeight&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;28&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;cellViewModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterViewProvider&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;cellViewModelsForGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;generalFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;generalFilterSection&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;SectionModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;headerTitle&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;annotation_filters.general_section.title&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;translate&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(),&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;headerHeight&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;28&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;cellViewModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterViewProvider&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;cellViewModelsForGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;generalFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
 
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;sectionModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;hideEverythingSection&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;shareStatusSection&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;issueFilterSection&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;generalFilterSection&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;])&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;FluxTableViewModel&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;sectionModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;hideEverythingSection&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;shareStatusSection&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;issueFilterSection&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;generalFilterSection&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;])&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
@@ -1272,7 +1272,7 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;p&gt;Other binding code is a lot simpler, e.g. the code that enables/disables the &amp;ldquo;Clear Filter&amp;rdquo; button based on the &lt;code&gt;isFiltering&lt;/code&gt; state:&lt;/p&gt;
 
 &lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;compositeDisposable&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;+=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;navigationItem&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;rightBarButtonItem&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;!.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;racEnabled&lt;/span&gt; &lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;lt;~&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;store&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;state&lt;/span&gt;
-            &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;??&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;map&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;$0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;??&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;false&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
@@ -1280,7 +1280,7 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 
 &lt;p&gt;With these UI bindings in place, we&amp;rsquo;ve discussed the last part of implementing a Flux feature. Since I covered a lot I want to give a quick recap before moving on to discussing the testing approach for Flux features.&lt;/p&gt;
 
-&lt;h4 id=&#34;implementation-recap:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Implementation Recap&lt;/h4&gt;
+&lt;h4 id=&#34;implementation-recap:f38631c06dc52d51e25323771c266097&#34;&gt;Implementation Recap&lt;/h4&gt;
 
 &lt;p&gt;When implementing a Flux feature I will typically split the work into the following segments:&lt;/p&gt;
 
@@ -1295,7 +1295,7 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 
 &lt;p&gt;Let&amp;rsquo;s move on to discuss how to test Flux features.&lt;/p&gt;
 
-&lt;h3 id=&#34;writing-tests:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Writing Tests&lt;/h3&gt;
+&lt;h3 id=&#34;writing-tests:f38631c06dc52d51e25323771c266097&#34;&gt;Writing Tests&lt;/h3&gt;
 
 &lt;p&gt;One of the main benefits of the Flux architecture is that it separates concerns strictly. This makes it really easy to test the business logic and large parts of the UI code.&lt;/p&gt;
 
@@ -1306,7 +1306,7 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 &lt;li&gt;The view model providers (these are our React-like functions that produce a description of the UI based on an input state).&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h4 id=&#34;testing-stores:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Testing Stores&lt;/h4&gt;
+&lt;h4 id=&#34;testing-stores:f38631c06dc52d51e25323771c266097&#34;&gt;Testing Stores&lt;/h4&gt;
 
 &lt;p&gt;Testing stores is typically very simple. We can drive interactions with the store by passing in actions and we can observe the state changes by either subscribing to the store or by observing the internal &lt;code&gt;_state&lt;/code&gt; property in our tests.&lt;/p&gt;
 
@@ -1316,34 +1316,34 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 
 &lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;describe&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;toggling a filter&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
 
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;!&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilterType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;!&lt;/span&gt;
+
+&lt;span style=&#34;color: #000000&#34;&gt;beforeEach&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;hideAllFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_handleActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #000000&#34;&gt;it&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;toggles the selected filter&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beTrue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #000000&#34;&gt;it&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;enables filtering mode&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beTrue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #000000&#34;&gt;context&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;when subsequently resetting filters&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
 
     &lt;span style=&#34;color: #000000&#34;&gt;beforeEach&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;annotationFilterService&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;hideAllFilterGroup&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;filters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt;
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ToggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #3465a4&#34;&gt;filter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_handleActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;toggleFilterAction&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_handleActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ResetFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
     &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-    &lt;span style=&#34;color: #000000&#34;&gt;it&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;toggles the selected filter&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beTrue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;it&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;deactivates previously active filters and stops filter mode&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beFalse&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+        &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beFalse&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
     &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 
-    &lt;span style=&#34;color: #000000&#34;&gt;it&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;enables filtering mode&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beTrue&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-
-    &lt;span style=&#34;color: #000000&#34;&gt;context&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;when subsequently resetting filters&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-
-        &lt;span style=&#34;color: #000000&#34;&gt;beforeEach&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-            &lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_handleActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;AnnotationFilteringActions&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;ResetFilters&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
-        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-
-        &lt;span style=&#34;color: #000000&#34;&gt;it&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;deactivates previously active filters and stops filter mode&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-            &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;hideAllFilter&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;enabled&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beFalse&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
-            &lt;span style=&#34;color: #000000&#34;&gt;expect&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;annotationFilterStore&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;_state&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isFiltering&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;beFalse&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
-        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
@@ -1354,7 +1354,7 @@ This allows store subscribers to receive state updates but doesn&amp;rsquo;t all
 
 &lt;p&gt;When implementing the business logic in a store I now mostly write my tests first. The structure of the our store code along with the behavioral Quick specs lends itself extremely well to a test driven development process.&lt;/p&gt;
 
-&lt;h4 id=&#34;testing-views:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Testing Views&lt;/h4&gt;
+&lt;h4 id=&#34;testing-views:f38631c06dc52d51e25323771c266097&#34;&gt;Testing Views&lt;/h4&gt;
 
 &lt;p&gt;The Flux architecture combined with our declarative UI layer makes
 testing views pretty simple. Internally we are still debating the amount of
@@ -1379,7 +1379,7 @@ that we don&amp;rsquo;t need additional snapshot tests.&lt;/p&gt;
 
 &lt;p&gt;As we&amp;rsquo;ve seen there are may alternatives for testing the UI, I&amp;rsquo;m interested to see which one we (and other developers) will pick in the long term.&lt;/p&gt;
 
-&lt;h2 id=&#34;conclusion:f68a385428b3fd94e51f72ad1f78204c&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;h2 id=&#34;conclusion:f38631c06dc52d51e25323771c266097&#34;&gt;Conclusion&lt;/h2&gt;
 
 &lt;p&gt;After diving into many implementation details I&amp;rsquo;d like to close with high level summary of our experience so far.&lt;/p&gt;
 
@@ -1436,7 +1436,7 @@ that we don&amp;rsquo;t need additional snapshot tests.&lt;/p&gt;
 
 &lt;p&gt;A very brief summary of changes &amp;amp; impressions from WWDC 2016 Day One.&lt;/p&gt;
 
-&lt;h2 id=&#34;opening-up-ios:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Opening up iOS&lt;/h2&gt;
+&lt;h2 id=&#34;opening-up-ios:f38631c06dc52d51e25323771c266097&#34;&gt;Opening up iOS&lt;/h2&gt;
 
 &lt;p&gt;The most notable changes to iOS were the addition of many APIs and Extension points. Apple wants to allow developers to build apps that integrate stronger with system services:&lt;/p&gt;
 
@@ -1447,7 +1447,7 @@ that we don&amp;rsquo;t need additional snapshot tests.&lt;/p&gt;
 &lt;li&gt;Via &lt;a href=&#34;https://developer.apple.com/maps/&#34;&gt;Map Extensions&lt;/a&gt;, Apple Maps is now open to third party integrations as well&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;xcode-extensions:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Xcode Extensions&lt;/h2&gt;
+&lt;h2 id=&#34;xcode-extensions:f38631c06dc52d51e25323771c266097&#34;&gt;Xcode Extensions&lt;/h2&gt;
 
 &lt;p&gt;Xcode 8 comes with support for Extensions. For now these extensions will be limited to the source editor itself. At the same time Apple is shutting down &lt;a href=&#34;http://alcatraz.io/&#34;&gt;Alcatraz&lt;/a&gt;:&lt;/p&gt;
 
@@ -1456,27 +1456,27 @@ that we don&amp;rsquo;t need additional snapshot tests.&lt;/p&gt;
 
 &lt;p&gt;I&amp;rsquo;m still glad to see an official (albeit for the time limited) API for building Xcode extensions. From the presentation it seemed clear that Apple wants to expand the scope of Xcode extensions quickly.&lt;/p&gt;
 
-&lt;h2 id=&#34;new-apple-filesystem:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;New Apple Filesystem&lt;/h2&gt;
+&lt;h2 id=&#34;new-apple-filesystem:f38631c06dc52d51e25323771c266097&#34;&gt;New Apple Filesystem&lt;/h2&gt;
 
 &lt;p&gt;While this won&amp;rsquo;t affect most developers a lot, this is still an important step in modernizing Apple&amp;rsquo;s Operating Systems and it will have benefits for users, such as much faster backups and copy-on-write clones. Ars Technica has a good writeup on the key features of &lt;a href=&#34;http://arstechnica.com/apple/2016/06/digging-into-the-dev-documentation-for-apfs-apples-new-file-system/&#34;&gt;APFS&lt;/a&gt;. Apple has also published a &lt;a href=&#34;https://developer.apple.com/library/prerelease/content/documentation/FileManagement/Conceptual/APFS_Guide/NewFeatures/NewFeatures.html#//apple_ref/doc/uid/TP40016999-CH3-SW1&#34;&gt;guide&lt;/a&gt; that announces a release in 2017 and mentions that while there is no open source implementation for now, the APFS volume format specification will be published.&lt;/p&gt;
 
 &lt;p&gt;If you&amp;rsquo;re curios why Apple needed a new file system you can read this blog post about some of the issues with the current &lt;a href=&#34;https://t.co/wB40yheV39&#34;&gt;HFS+ file system&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h2 id=&#34;swift-playgrounds-on-ipad:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Swift Playgrounds on iPad&lt;/h2&gt;
+&lt;h2 id=&#34;swift-playgrounds-on-ipad:f38631c06dc52d51e25323771c266097&#34;&gt;Swift Playgrounds on iPad&lt;/h2&gt;
 
 &lt;p&gt;The new Swift Playgrounds app for iPad promises to be a great educational tool and demonstrates the emphasize that Apple has been putting on Swift as a beginner friendly language. The app will be open to third party educational content.&lt;/p&gt;
 
 &lt;p&gt;Besides the compiler the app is also entirely written in Swift, which most likely makes it the largest in house Swift project at Apple to date.&lt;/p&gt;
 
-&lt;h2 id=&#34;xcode-memory-graph-debugger:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Xcode Memory Graph Debugger&lt;/h2&gt;
+&lt;h2 id=&#34;xcode-memory-graph-debugger:f38631c06dc52d51e25323771c266097&#34;&gt;Xcode Memory Graph Debugger&lt;/h2&gt;
 
 &lt;p&gt;This feature, announced during the State of the Union, had the largest &lt;em&gt;WOW&lt;/em&gt; effect. Xcode 8 ships with a memory graph debugger that allows halting a program and inspecting a memory management graph at runtime. This will make tracking down retain cycles a lot easier in future.&lt;/p&gt;
 
-&lt;h2 id=&#34;logging-api:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Logging API&lt;/h2&gt;
+&lt;h2 id=&#34;logging-api:f38631c06dc52d51e25323771c266097&#34;&gt;Logging API&lt;/h2&gt;
 
 &lt;p&gt;Apple has released a new &lt;a href=&#34;https://developer.apple.com/reference/os/1891852-logging&#34;&gt;logging system&lt;/a&gt;. It&amp;rsquo;s great to see such an important issue tackled by a first party API.&lt;/p&gt;
 
-&lt;h2 id=&#34;surprises-machine-learning-server-side-swift:95912072f1fe7b71c7be6f84c3b33b21&#34;&gt;Surprises: Machine Learning &amp;amp; Server Side Swift&lt;/h2&gt;
+&lt;h2 id=&#34;surprises-machine-learning-server-side-swift:f38631c06dc52d51e25323771c266097&#34;&gt;Surprises: Machine Learning &amp;amp; Server Side Swift&lt;/h2&gt;
 
 &lt;p&gt;To me, two surprises on the WWDC session schedule were:&lt;/p&gt;
 
@@ -1510,7 +1510,7 @@ The topic came up again this week as part of an issue with ReactiveCocoa and Map
 &lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Apple DTS “explicitly stated that main queue and the main thread are not the same thing, have subtle differences”. &lt;a href=&#34;https://t.co/YxAbqkvtse&#34;&gt;https://t.co/YxAbqkvtse&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ole Begemann (@olebegemann) &lt;a href=&#34;https://twitter.com/olebegemann/status/738656134731599872&#34;&gt;June 3, 2016&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;the-problem:997ed369e26584277379d51208fcfef8&#34;&gt;The Problem&lt;/h2&gt;
+&lt;h2 id=&#34;the-problem:f38631c06dc52d51e25323771c266097&#34;&gt;The Problem&lt;/h2&gt;
 
 &lt;p&gt;When interacting with certain frameworks, e.g. UIKit, we need to ensure that all calls into the framework happen from the main thread.
 Typically we have some sort of check to determine whether our code is already executing on the main thread or whether we are on a background thread and actively need to dispatch to the main thread.&lt;/p&gt;
@@ -1524,7 +1524,7 @@ Typically we have some sort of check to determine whether our code is already ex
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2 id=&#34;the-easy-solution:997ed369e26584277379d51208fcfef8&#34;&gt;The Easy Solution&lt;/h2&gt;
+&lt;h2 id=&#34;the-easy-solution:f38631c06dc52d51e25323771c266097&#34;&gt;The Easy Solution&lt;/h2&gt;
 
 &lt;p&gt;The easiest way to check if we are currently executing on the main thread is using &lt;code&gt;NSThread.isMainThread()&lt;/code&gt; - GCD lacks a similarly convenient API for checking if we are running on the main queue, so many developers use the &lt;code&gt;NSThread&lt;/code&gt; API instead. Our updated function will look somewhat like this:&lt;/p&gt;
 
@@ -1547,7 +1547,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 
 &lt;p&gt;This works in most cases, &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2635#issuecomment-170215083&#34;&gt;until it doesn&amp;rsquo;t&lt;/a&gt;. Here&amp;rsquo;s the excerpt from the issue on the ReactiveCocoa repo:
-&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/public/assets/mainqueue-mainthread/rac_issue_queue_thread.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;img src=&#34;rac_issue_queue_thread.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;The underlying problem is that the &lt;code&gt;VektorKit&lt;/code&gt; API is checking if it is being called on the main queue instead of checking that it is running on the main thread.&lt;/strong&gt; This issue has also been filed as a &lt;a href=&#34;http://www.openradar.me/24025596&#34;&gt;radar&lt;/a&gt;.&lt;/p&gt;
 
@@ -1557,7 +1557,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;It is surprisingly easy to get a non-main queue to execute on the main thread. While doing some research for this post I found a commit to &lt;code&gt;libdispatch&lt;/code&gt; that &lt;a href=&#34;https://libdispatch.macosforge.org/trac/changeset/156&#34;&gt;ensures that blocks dispatched with &lt;code&gt;dispatch_sync&lt;/code&gt; are always executed on the current thread&lt;/a&gt;. This means if you use &lt;code&gt;dispatch_sync&lt;/code&gt; to dispatch a block from the main queue to a concurrent background queue, the code executing on the background queue will actually be executed on the main thread. While this might not be entirely intuitive, it makes sense: since the main queue needs to wait until the dispatched block completed, the main thread will be available to process blocks from queues other than the main queue.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-safer-solution:997ed369e26584277379d51208fcfef8&#34;&gt;The Safer Solution&lt;/h2&gt;
+&lt;h2 id=&#34;the-safer-solution:f38631c06dc52d51e25323771c266097&#34;&gt;The Safer Solution&lt;/h2&gt;
 
 &lt;p&gt;Technically I think this is a MapKit / VektorKit bug, Apple&amp;rsquo;s UI frameworks typically guarantee to work correctly when being called from the main thread, no part of the documentation mentions that code needs to be executed on the main queue.&lt;/p&gt;
 
@@ -1607,7 +1607,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;The function above will now not only check that we&amp;rsquo;re running on the main thread, but also ensure we&amp;rsquo;re on the main queue.&lt;/p&gt;
 
-&lt;h2 id=&#34;conclusion:997ed369e26584277379d51208fcfef8&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;h2 id=&#34;conclusion:f38631c06dc52d51e25323771c266097&#34;&gt;Conclusion&lt;/h2&gt;
 
 &lt;p&gt;By combining GCD and Cocoa&amp;rsquo;s &lt;code&gt;NSThread&lt;/code&gt; API we are drilling through the abstraction that CGD should provide in the first place. APIs that fully rely on GCD and ignore the presence of the underlying threads can run into problems if you call them on the main thread but not the main queue. This means, especially when calling into other frameworks, we should prefer using &lt;code&gt;dispatch_queue_set_specific&lt;/code&gt; and &lt;code&gt;dispatch_get_specific&lt;/code&gt; to check if our code is running on the main queue over using &lt;code&gt;NSThread.isMainThread()&lt;/code&gt;.&lt;/p&gt;
 
@@ -1629,7 +1629,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;&lt;/p&gt;
 
-&lt;h4 id=&#34;investigating-the-cause-of-quadratic-time-complexity-when-adding-subviews-in-uikit:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Investigating the Cause of Quadratic Time Complexity When Adding Subviews in UIKit&lt;/h4&gt;
+&lt;h4 id=&#34;investigating-the-cause-of-quadratic-time-complexity-when-adding-subviews-in-uikit:f38631c06dc52d51e25323771c266097&#34;&gt;Investigating the Cause of Quadratic Time Complexity When Adding Subviews in UIKit&lt;/h4&gt;
 
 &lt;p&gt;&lt;del&gt;Yesterday&lt;/del&gt; Two weeks ago we identified a performance regression in the PlanGrid app, when entering a view that dynamically adds a large amount of subviews.&lt;/p&gt;
 
@@ -1656,7 +1656,7 @@ Typically we have some sort of check to determine whether our code is already ex
 &lt;p&gt;The above example is obviously extreme, but it reveals an interesting performance issue: when setting a &lt;code&gt;tintColor&lt;/code&gt; on a parent view, and not setting an explicit color on child views the performance of &lt;code&gt;addSubview&lt;/code&gt; reduces itself drastically with a large amount of added subviews.&lt;/p&gt;
 
 &lt;p&gt;Here&amp;rsquo;s what I could identify within Instrument&amp;rsquo;s time profiler:
-&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/tint-color-visitor-highlight.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;img src=&#34;tint-color-visitor-highlight.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;A majority of the time is adding subviews is spent within &lt;code&gt;[_UITintColorVisitor _visitView:]&lt;/code&gt;. In this example it&amp;rsquo;s 64% of the time; and the proportion only increases with the amount of subviews we&amp;rsquo;re adding.&lt;/p&gt;
 
@@ -1664,15 +1664,15 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;The same affect can be accomplished by specifying the &lt;code&gt;tintColor&lt;/code&gt; on each view we&amp;rsquo;re adding, which stops the expensive &lt;code&gt;_UITintColorVisitor&lt;/code&gt; from stopping by too often.&lt;/p&gt;
 
-&lt;h2 id=&#34;digging-into-uikit:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Digging into UIKit&lt;/h2&gt;
+&lt;h2 id=&#34;digging-into-uikit:f38631c06dc52d51e25323771c266097&#34;&gt;Digging into UIKit&lt;/h2&gt;
 
 &lt;p&gt;Finding a workaround for this issue is only half of the fun. Let&amp;rsquo;s try to find out what is causing these poor performance characteristics in the first place. We can start by taking a closer look at the time profiler output:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/focus-tint-color-visitor.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;focus-tint-color-visitor.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We can see that the app doesn&amp;rsquo;t spend too much time in &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; itself. The majority of the time is consumed by &lt;code&gt;objc_msgSend&lt;/code&gt; which indicates that this method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we&amp;rsquo;re spending a lot of time in &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).&lt;/p&gt;
 
-&lt;h3 id=&#34;breakpoints-in-framework-functions:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Breakpoints in Framework Functions&lt;/h3&gt;
+&lt;h3 id=&#34;breakpoints-in-framework-functions:f38631c06dc52d51e25323771c266097&#34;&gt;Breakpoints in Framework Functions&lt;/h3&gt;
 
 &lt;p&gt;We can start by setting a breakpoint within the &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; method; that will give us an idea of how often that method is called.&lt;/p&gt;
 
@@ -1683,15 +1683,15 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;Now we can continue execution; soon we should trap into our breakpoint:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-breakpoint.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;visit-view-breakpoint.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Checking how often this method is called, I quickly identified that the amount of calls grows with the amount of subviews we have added. As a next step I wanted to see which views exactly are being visited. For that we need to dive into a little bit of assembly code.&lt;/p&gt;
 
-&lt;h3 id=&#34;inspecting-the-assembly-code:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Inspecting the Assembly Code&lt;/h3&gt;
+&lt;h3 id=&#34;inspecting-the-assembly-code:f38631c06dc52d51e25323771c266097&#34;&gt;Inspecting the Assembly Code&lt;/h3&gt;
 
 &lt;p&gt;When stepping into the breakpoint in &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt; you are greeted with a cryptic wall of assembly code. I started out with very barebones knowledge of understanding/investigating complex assembly code, but this bug forced me to learn some tricks that hopefully are useful to you as well!&lt;/p&gt;
 
-&lt;h4 id=&#34;running-the-example-app-on-32-bit-mode:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Running the Example App on 32-Bit Mode&lt;/h4&gt;
+&lt;h4 id=&#34;running-the-example-app-on-32-bit-mode:f38631c06dc52d51e25323771c266097&#34;&gt;Running the Example App on 32-Bit Mode&lt;/h4&gt;
 
 &lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; &lt;em&gt;I have gotten feedback from multiple readers, that Hopper works just as well in 64-Bit mode, and actually makes accessing arguments easier. For my next disassembly adventure I will try 64 instead of 32-Bit.&lt;/em&gt;&lt;/p&gt;
 
@@ -1699,7 +1699,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;With this setup in place, we can now inspect which views are visited from within our breakpoint in &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt;. Looking at the method signature we can see that this method takes on argument: the view that is being visited. That&amp;rsquo;s the information that we would like to inspect further. In addition to that explicit argument every method call in Objective-C receives &lt;code&gt;self&lt;/code&gt; as the first and the &lt;code&gt;selector&lt;/code&gt; as the second implicit argument.&lt;/p&gt;
 
-&lt;h4 id=&#34;printing-function-arguments-in-assembly:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Printing Function Arguments in Assembly&lt;/h4&gt;
+&lt;h4 id=&#34;printing-function-arguments-in-assembly:f38631c06dc52d51e25323771c266097&#34;&gt;Printing Function Arguments in Assembly&lt;/h4&gt;
 
 &lt;p&gt;By using &lt;a href=&#34;https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/&#34;&gt;this handy reference&lt;/a&gt; we can look up where these arguments are stored when a method is called (the reference is old and refers &lt;code&gt;gdb&lt;/code&gt; instead of &lt;code&gt;lldb&lt;/code&gt;, but the info is still up to date.). The order of these arguments is part of what we call a &amp;ldquo;calling convention&amp;rdquo;. It states that on a i386 architecture function arguments are passed as follows:&lt;/p&gt;
 
@@ -1740,7 +1740,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;Why exactly is that happening? I have not yet been able to track it down definitely, but I have a bunch more clues that I&amp;rsquo;d like to share.&lt;/p&gt;
 
-&lt;h4 id=&#34;let-the-guesswork-begin:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Let the Guesswork begin&lt;/h4&gt;
+&lt;h4 id=&#34;let-the-guesswork-begin:f38631c06dc52d51e25323771c266097&#34;&gt;Let the Guesswork begin&lt;/h4&gt;
 
 &lt;p&gt;Since we want to know why the &lt;code&gt;_UITintColorVisitor&lt;/code&gt; is called so frequently, it makes sense to start by investigating the backtrace. We can do this with the &lt;code&gt;bt&lt;/code&gt; lldb command that we can invoke while halted in a breakpoint:&lt;/p&gt;
 
@@ -1768,7 +1768,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;At this point it was not obvious to me why all views were being caused to be visited; at the very end of the next section I might have a likely answer to that question&amp;hellip;&lt;/p&gt;
 
-&lt;h4 id=&#34;digging-deeper:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Digging Deeper&lt;/h4&gt;
+&lt;h4 id=&#34;digging-deeper:f38631c06dc52d51e25323771c266097&#34;&gt;Digging Deeper&lt;/h4&gt;
 
 &lt;p&gt;Since I hit a dead end in identifying why all subviews in the view hierarchy were constantly being revisited, I decided to investigate another interesting aspect about this problem that profiler had revealed.&lt;/p&gt;
 
@@ -1780,14 +1780,14 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;By browsing throught the pseudo code generated by Hopper I could identify the section of &lt;code&gt;[_UITintColorVisitor _visitView:]&lt;/code&gt; that calls &lt;code&gt;containsObject&lt;/code&gt;:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I also stepped through the assembly code that corresponds to this pseudo code in the debugger. As part of that effort I identified a few things that are relevant to this snippet:&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;One &lt;code&gt;_UITintColorVisitor&lt;/code&gt; instance is used to visit all views (at least in this simple example with only one view hierarchy)&lt;/li&gt;
 &lt;li&gt;The &lt;code&gt;_UITintColorVisitor&lt;/code&gt; has a few properties that are persisted between the different invocations of &lt;code&gt;visitView:&lt;/code&gt;. Here&amp;rsquo;s an overview of all properties found in Hopper:
-&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/tint-color-visitor-properties.png&#34; alt=&#34;&#34; /&gt;&lt;/li&gt;
+&lt;img src=&#34;tint-color-visitor-properties.png&#34; alt=&#34;&#34; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;From stepping through the assembly code and investigating different registries I could identify that in the above pseudo code &lt;code&gt;eax&lt;/code&gt; refers to the &lt;code&gt;_originalVisitedView&lt;/code&gt; and &lt;code&gt;edi&lt;/code&gt; refers to the view that is currently being visited.&lt;/p&gt;
@@ -1796,7 +1796,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;p&gt;I investigated this further by creating another breakpoint in UIKit at the point where this check takes place. When disassembling the 32-Bit slice of UIKit and running the app in 32-Bit mode, the address offsets align nicely. By stepping into the breakpoint in &lt;code&gt;-[_UITintColorVisitor visitView:]&lt;/code&gt; I could compare the assembly addresses in the debugger and in Hopper and identify that the addresses match up when replacing the &lt;code&gt;495&lt;/code&gt; in the hopper address with &lt;code&gt;0xe4b&lt;/code&gt;. The relative addresses within UIKit are constant, only the base address at which the framework is loaded is dynamic:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/address-align.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;address-align.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Once we know the memory address offset we can create breakpoints in lldb based on addresses in Hopper.&lt;/p&gt;
 
@@ -1825,11 +1825,11 @@ Typically we have some sort of check to determine whether our code is already ex
 &lt;p&gt;In both cases, whether it is a subview or not, we end up calling: &lt;code&gt;___34-[_UITintColorVisitor _visitView:]_block_invoke&lt;/code&gt;. In the case of the currently visited view being a subview of the original visited view, we pass two arguments to the block, in the other case we pass only one.&lt;/p&gt;
 
 &lt;p&gt;Before moving on, here&amp;rsquo;s an annotated version of the method we just investigated:
-&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-pseudo-code-annotated.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;img src=&#34;visit-view-pseudo-code-annotated.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Now let&amp;rsquo;s take a look at the block that is being invoked from here. By double-clicking onto the call to the block in Hopper, we can jump into the called block. It looks as following:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/called-block.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;called-block.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We can see that this block receives two arguments. Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block using lldb:&lt;/p&gt;
 
@@ -1858,11 +1858,11 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
 
 &lt;p&gt;However, our new findings help explain the two code paths in the piece of code that calls into this block (which we examined earlier):&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/Ben-G/HugoBlog/master/static/assets/visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;If the currently visited view is not a child view of the original visited view, we don&amp;rsquo;t pass a second argument to this block; which is equivalent to passing &lt;code&gt;nil&lt;/code&gt;. This means that &lt;code&gt;ebx&lt;/code&gt; will be &lt;code&gt;nil&lt;/code&gt;, which in turn means we will never call &lt;code&gt;[ebx _setAncestorDefinesTintColor:eax];&lt;/code&gt;.&lt;/p&gt;
 
-&lt;h1 id=&#34;conclusion:bd21c6a2ef964e87977ff56934e088c5&#34;&gt;Conclusion&lt;/h1&gt;
+&lt;h1 id=&#34;conclusion:f38631c06dc52d51e25323771c266097&#34;&gt;Conclusion&lt;/h1&gt;
 
 &lt;p&gt;When I started out diving into this issue I was almost entirely clueless about how to interpret complex disassembled code - now I&amp;rsquo;m still mostly clueless. However, I learned a few very handy tricks along the way:&lt;/p&gt;
 
@@ -1954,7 +1954,7 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
 
 &lt;p&gt;In this example we have three different types: &amp;ldquo;user&amp;rdquo;, &amp;ldquo;car&amp;rdquo; and &amp;ldquo;phone&amp;rdquo;, that can occur anywhere throughout the JSON array. In order to use one of the JSON mapping libraries we would need to inspect each individual element in this list, identify it&amp;rsquo;s type, and then call the initializer of the respective Swift type.&lt;/p&gt;
 
-&lt;h2 id=&#34;dynamically-mapping-json-entities-and-types:bf293cba123ff2f8b761ea95baf2f08c&#34;&gt;Dynamically Mapping JSON Entities and Types&lt;/h2&gt;
+&lt;h2 id=&#34;dynamically-mapping-json-entities-and-types:f38631c06dc52d51e25323771c266097&#34;&gt;Dynamically Mapping JSON Entities and Types&lt;/h2&gt;
 
 &lt;p&gt;In Objective-C it would be fairly easy to solve this problem automatically. We can rely on the Objective-C runtime to dynamically look up a class by its name and create the relevant instance for each entity we find in the JSON array.&lt;/p&gt;
 
@@ -2072,7 +2072,7 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 
 &lt;p&gt;Static type checking occurs at compile time and dynamic type checking happens at run time. Each of these two stages come with a different, partially incompatible, toolset.&lt;/p&gt;
 
-&lt;h2 id=&#34;compile-time-type-checking:7523e14371168feae6a10e37d5f0382f&#34;&gt;Compile Time Type Checking&lt;/h2&gt;
+&lt;h2 id=&#34;compile-time-type-checking:f38631c06dc52d51e25323771c266097&#34;&gt;Compile Time Type Checking&lt;/h2&gt;
 
 &lt;p&gt;Compile time type checking (or static type checking) operates on the Swift source code. The Swift compiler looks at explicitly stated and inferred types and ensures correctness of our type constraints.&lt;/p&gt;
 
@@ -2114,7 +2114,7 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 
 &lt;p&gt;Since Swift&amp;rsquo;s static type system offers these powerful tools we try to verify as much as possible at compile time. However, in same cases run time type verification is necessary.&lt;/p&gt;
 
-&lt;h2 id=&#34;run-time-type-checking:7523e14371168feae6a10e37d5f0382f&#34;&gt;Run Time Type Checking&lt;/h2&gt;
+&lt;h2 id=&#34;run-time-type-checking:f38631c06dc52d51e25323771c266097&#34;&gt;Run Time Type Checking&lt;/h2&gt;
 
 &lt;p&gt;In some unfortunate cases relying on static type checking is not possible. The most common example is reading data from an outside resource (network, database, etc.). In such cases the data and thus the type information is not part of the source code, therefore we cannot prove to the static type checker that our data has a specific type (since the static type checker can only operate on type information it can extract from our source code).&lt;/p&gt;
 
@@ -2140,7 +2140,7 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 
 &lt;p&gt;However, if we try to use this approach to call a function that defines arguments as generic constraints, we run into issues&amp;hellip;&lt;/p&gt;
 
-&lt;h2 id=&#34;combining-dynamic-and-static-type-checking:7523e14371168feae6a10e37d5f0382f&#34;&gt;Combining Dynamic and Static Type Checking&lt;/h2&gt;
+&lt;h2 id=&#34;combining-dynamic-and-static-type-checking:f38631c06dc52d51e25323771c266097&#34;&gt;Combining Dynamic and Static Type Checking&lt;/h2&gt;
 
 &lt;p&gt;Continuing the earlier &lt;code&gt;printHumanName&lt;/code&gt; example, let&amp;rsquo;s assume we have received data from a network request, and we need to call the &lt;code&gt;printHumanName&lt;/code&gt; method - if the dynamically detected type allows us to do that.&lt;/p&gt;
 
@@ -2162,7 +2162,7 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 
 &lt;p&gt;For now, we need a workaround.&lt;/p&gt;
 
-&lt;h3 id=&#34;workarounds:7523e14371168feae6a10e37d5f0382f&#34;&gt;Workarounds&lt;/h3&gt;
+&lt;h3 id=&#34;workarounds:f38631c06dc52d51e25323771c266097&#34;&gt;Workarounds&lt;/h3&gt;
 
 &lt;p&gt;In the past I&amp;rsquo;ve used one of these two approaches:&lt;/p&gt;
 
@@ -2205,7 +2205,7 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 
 &lt;p&gt;The solution of the &amp;ldquo;type erased&amp;rdquo; function that accept an &lt;code&gt;Any&lt;/code&gt; argument isn&amp;rsquo;t really nice either; but in practice I have used similar approaches in cases where other code guarantees that the function will be called with the correct type, but there wasn&amp;rsquo;t a way of expressing that within Swift&amp;rsquo;s type system.&lt;/p&gt;
 
-&lt;h2 id=&#34;conclusion:7523e14371168feae6a10e37d5f0382f&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;h2 id=&#34;conclusion:f38631c06dc52d51e25323771c266097&#34;&gt;Conclusion&lt;/h2&gt;
 
 &lt;p&gt;The examples above are extremely simplified, but I hope they demonstrate the issues that can arise from differences in compile time and run time type checking. The key takeaways are:&lt;/p&gt;
 
@@ -2261,7 +2261,7 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 
 &lt;p&gt;Let&amp;rsquo;s assume our branch&amp;rsquo;s commit log is in the following state (printed by using &lt;code&gt;git log&lt;/code&gt;):&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/1_initial_log.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;1_initial_log.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We have a bunch of intermediate commits for stages in which our code was not working as expected ending with a commit that indicates that our feature/bug fix is complete.&lt;/p&gt;
 
@@ -2278,27 +2278,27 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 
 &lt;p&gt;This will bring up the following screen:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/2_git_rebase.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;2_git_rebase.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;You can now see the 3 commits you are about to rewrite. There are many different commands available, we are only going to use &lt;code&gt;squash&lt;/code&gt; for now.&lt;/p&gt;
 
 &lt;p&gt;Type an &lt;code&gt;s&lt;/code&gt; for &lt;code&gt;squash&lt;/code&gt; in front of the commits that you want to squash together. In our example we choose the final commit along with one intermediate commit to be squashed into the first intermediate commit (this will turn 3 commits into one):&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/3_git_rebase_squash.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;3_git_rebase_squash.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Then close the text editor. Next, git will bring up a screen that will allow you to choose some details for each rebasing step. In our example we only have a single step - the one in which we merge 3 commits into one.&lt;/p&gt;
 
 &lt;p&gt;Git will allow you to change the commit message for this new squashed commit. It starts out by showing you the messages of all commits it is about to squash:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/4_git_rebase_step.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;4_git_rebase_step.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Now you can choose a new, descriptive, commit message:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/5_git_rebase_new_message.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;5_git_rebase_new_message.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Close the text editor by saving, and you&amp;rsquo;re done. If you take a look at the new commit history via &lt;code&gt;git log&lt;/code&gt;, you should see the following output:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/6_git_rebase_done.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;6_git_rebase_done.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;A clean commit history that is ready to merge!&lt;/p&gt;
 </description>
