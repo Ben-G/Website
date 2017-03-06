@@ -6,8 +6,100 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Feb 2017 22:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Sun, 05 Mar 2017 22:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Surprises in Profiling Multi-Core Performance with Instruments</title>
+      <link>http://blog.benjamin-encz.de/post/profiling-multicore-performance-instruments/</link>
+      <pubDate>Sun, 05 Mar 2017 22:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/profiling-multicore-performance-instruments/</guid>
+      <description>
+
+&lt;p&gt;&lt;strong&gt;Short version:&lt;/strong&gt; When profiling code that should run on multiple cores in parallel, CPU utilization of multiple cores isn&amp;rsquo;t a good indicator as a single thread might utilize multiple cores at (almost) the same time.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;It&amp;rsquo;s rare that iOS apps need to optimize code to run in parallel. Usually the only performance concern is to not block the UI thread.&lt;/p&gt;
+
+&lt;p&gt;Our team just completed a large data migration in which we could significantly improve performance by running code in parallel on multiple cores. On the way I learnt a few interesting details about Instruments and ARM processors that felt worth sharing.&lt;/p&gt;
+
+&lt;h2 id=&#34;switch-core-switch:f38631c06dc52d51e25323771c266097&#34;&gt;Switch Core, Switch&lt;/h2&gt;
+
+&lt;p&gt;When I started profiling the code with the Time Profiler instrument I noticed that a single thread was using almost 100% of CPU time. This indicated that the task was CPU bound and potentially could be sped up if I could parallelize some parts of the required work.&lt;/p&gt;
+
+&lt;p&gt;In it&amp;rsquo;s guide &lt;a href=&#34;https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/InstrumentsUserGuide/MeasuringCPUUse.html&#34;&gt;&lt;em&gt;Measure CPU Use&lt;/em&gt;&lt;/a&gt;, Apple recommends using a special view in Time Profiler that breaks down the utlization of individual cores.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Use the CPU strategy usage view to compare core usage over given time periods. Effective core concurrency improves an app’s performance. Look for unbalanced core usage. If a single core has areas of heavy usage while other cores remain quiet, that can indicate areas that need greater optimization.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;For the purpose of this blog post I built a very simple app that performs a CPU heavy task.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s the Time Profiler trace of that example app, the worker thread consumes almost 100% of CPU time.:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;100_percent_cpu.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Surprisingly, the &lt;em&gt;CPU Data&lt;/em&gt; View shows a graph that suggests that this code is already executing across both cores of my iPad Pro:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;CPU_data_tab.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I knew that a single thread could not be executed in parallel. Reading the guide more closely would have saved me a few minutes of confusion:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;When zoomed out, activity may appear to be occurring on multiple threads, but a closer inspection may reveal otherwise. Therefore, be sure to zoom in on the track pane when examining core usage.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Indeed, zooming in very far, reveals that execution of the main thread jumps between both cores, but never happens in parallel on both cores:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;multicore_main_thread.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The System Trace instrument provides a more detailed breakdown of which processes are being executed on which core. This screenshot shows the example app process (highlighted with red boxes) jumping between both cores:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;system_trace_example.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;more-interrupts-more-core-bouncing:f38631c06dc52d51e25323771c266097&#34;&gt;More Interrupts, More Core Bouncing&lt;/h2&gt;
+
+&lt;p&gt;Since the migration code in the PlanGrid app was not entirely CPU bound, but was also interacting with our local DB we would see a lot more interrupts and as a result a lot more core switches:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;more_interrupts.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I was surprised to learn about these frequent core switches, since my understanding was that they incur a fairly high performance overhead. A technology called &lt;a href=&#34;http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.den0024a/ch14s01s02.html&#34;&gt;&lt;em&gt;Symmetric Multi-Processing&lt;/em&gt;&lt;/a&gt; (SMP) eliminates that overhead by using memory that is shared across all cores of a multi-chip system.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Each core in the cluster has the same view of memory and of shared hardware. Any application, process, or task can run on any core and the operating system scheduler can dynamically migrate tasks between cores to achieve optimal system load. A multi-threaded application can run on several cores at once. The operating system can hide much of the complexity from applications.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Apparently SMP is standard on all modern chips.&lt;/p&gt;
+
+&lt;h2 id=&#34;profiling-parallel-execution-the-right-way:f38631c06dc52d51e25323771c266097&#34;&gt;Profiling Parallel Execution The Right Way&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;As shown above, core utilization isn&amp;rsquo;t a great way to measure whether or not your code is running efficiently accross multiple cores.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;em&gt;Thread Data&lt;/em&gt; view in the Time Profiler instrument is a lot more useful for that. It clearly shows that the entire work for the sample project is bound to single thread - which means it cannot be executed in parallel:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;thread_data.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s what the graph above looks like when &lt;strong&gt;changing the sample project to run parts of the work parallel&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;over_100_percent_cpu.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The graph now shows a CPU utilization of over 100% and indicates that the work is performed on two different threads in parallel.&lt;/p&gt;
+
+&lt;p&gt;The system trace will now also reveal that the code is running in parallel on two cores:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;parallel_sys_trace.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you profile parallelized code that involves locking you should also &lt;a href=&#34;https://www.bignerdranch.com/blog/rock-heads/&#34;&gt;make sure to turn on the &lt;em&gt;Record Waiting Threads&lt;/em&gt; option in the Time Profiler&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Concurrency is hard - but parallelism might be harder?&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Also, did you know that the &lt;a href=&#34;https://en.wikipedia.org/wiki/Apple_A8X&#34;&gt;A8X processor&lt;/a&gt; of the iPad Air 2 has three cores? I didn&amp;rsquo;t until I found out through profiling!&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Bridging Swift Types to Objective-C</title>
@@ -2301,50 +2393,6 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 &lt;p&gt;&lt;img src=&#34;6_git_rebase_done.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;A clean commit history that is ready to merge!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Validated: A Swift μ-Library for Somewhat Dependent Types</title>
-      <link>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
-      <pubDate>Thu, 25 Feb 2016 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
-      <description>&lt;p&gt;Today I built &amp;amp; published a μ-library that makes it easier to leverage Swift&amp;rsquo;s type checking system for program verification: &lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;Validated&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;All Swift developers already use the type system to avoid basic type mismatches (e.g. passing an &lt;code&gt;Int&lt;/code&gt; where a &lt;code&gt;String&lt;/code&gt; is expected), this capability is built into the languge itself.&lt;/p&gt;
-
-&lt;p&gt;A type system can however help verifying more than just the abscence of these simple errors. This requires that developers express constraints and semantics of their programs in types. &lt;strong&gt;&lt;code&gt;Validated&lt;/code&gt; provides a simple way to lift requirements about values into the type system.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Here&amp;rsquo;s an example from the GitHub Readme:&lt;/p&gt;
-
-&lt;p&gt;You might have a function in your code that only knows how to work with a &lt;code&gt;User&lt;/code&gt; value when the user is logged in. Usually you will implement this requirement in code &amp;amp; add documentation, but you don&amp;rsquo;t have an easy way of expressing this invariant in the type signature:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-swift&#34;&gt;/// Please ever only call with a logged-in user!
-func performTaskWithUser(user: User) {
-    precondition(
-    	user.loggedIn,
-    	&amp;quot;It is illegal to call this method with a logged out user!&amp;quot;
-    )
-
-	// ...
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Using Validated you can quickly create a new type that describes this requirement in the type system. That makes it impossible to call the function with a logged-out user and it makes the method signature express your invariant (instead of relying on documentation):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-swift&#34;&gt;func performTaskWithUser(user: LoggedInUser) {
-	// ...
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;In short: &lt;code&gt;Validated&lt;/code&gt; allows you to create new types, by taking existing types and adding validations to them. These new types can be used throughout your APIs to express expectations not only about types, but also about values.&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;m very interested in hearing whether this is useful to you &amp;amp; how it could be improved!&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;To learn how to use this you should head to GitHub&lt;/a&gt;!&lt;/p&gt;
 </description>
     </item>
     

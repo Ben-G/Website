@@ -107,6 +107,46 @@
             
             
                 
+                <a href='../../../post/swift-error-handling-and-objective-c-interop-in-depth/#comment_section'>
+                    <span class='disqus-comment-count' data-disqus-url='http://blog.benjamin-encz.de/swift-error-handling-and-objective-c-interop-in-depth/'>Comments</span>
+                </a>
+            
+        </span>
+        <h2 class="post-title"><a href="../../../post/swift-error-handling-and-objective-c-interop-in-depth/">Swift Error Handling and Objective-C Interop in Depth</a></h2>
+    </header>
+    <section class="post-excerpt">
+        <p><p>For the impatient reader:</p>
+
+<h1 id="tl-dr:f38631c06dc52d51e25323771c266097">TL;DR</h1>
+
+<ul>
+<li>The <code>ErrorType</code> protocol has hidden requirements that are automatically fullfilled if you use an <code>enum</code> to implement the protocol</li>
+<li>Objective-C methods can only be translated to Swift&rsquo;s error handling mechanism if they return Objective-C objects or boolean values</li>
+<li>Swift will invoke the <code>catch</code> block if the Objective-C method returns <code>nil</code>/<code>false</code>, independent of whether an <code>NSError</code> was produced or not</li>
+<li>If an Objective-C method produces an <code>NSError</code> <em>and</em> returns a value the <code>catch</code> blocks is not invoked and the error cannot be retrieved</li>
+<li><a href="https://github.com/Ben-G/FunWithErrors">GitHub project with examples</a></li>
+</ul>
+ <a class="read-more" href="../../../post/swift-error-handling-and-objective-c-interop-in-depth/" style="color:gray; font-size: smaller;">Read More...</a></p>
+    </section>
+    <footer class="post-meta">
+        
+        
+        
+        
+        <time class="post-date" datetime="2015-07-23T22:24:54-08:00">
+            23 Jul 2015
+        </time>
+    </footer>
+</article>
+
+	
+	   
+<article class="post post">
+    <header class="post-header">
+        <span class="post-meta">
+            
+            
+                
                 <a href='../../../post/ios-9-detects-cycles-in-layout-trees/#comment_section'>
                     <span class='disqus-comment-count' data-disqus-url='http://blog.benjamin-encz.de/ios-9-detects-cycles-in-layout-trees/'>Comments</span>
                 </a>
@@ -378,36 +418,6 @@
         
         <time class="post-date" datetime="2014-05-28T22:24:54-08:00">
             28 May 2014
-        </time>
-    </footer>
-</article>
-
-	
-	   
-<article class="post post">
-    <header class="post-header">
-        <span class="post-meta">
-            
-            
-                
-                <a href='../../../post/seamless-serialization-objectivec/#comment_section'>
-                    <span class='disqus-comment-count' data-disqus-url='http://blog.benjamin-encz.de/seamless-serialization-objectivec/'>Comments</span>
-                </a>
-            
-        </span>
-        <h2 class="post-title"><a href="../../../post/seamless-serialization-objectivec/">Automatic serialization in Objective-C</a></h2>
-    </header>
-    <section class="post-excerpt">
-        <p><p>Recently I worked on a tutorial that required me to serialize a large amount of objects. This is a common use case in many games - if the user quits the game and reopens it you want to restore the entire game state.</p>
- <a class="read-more" href="../../../post/seamless-serialization-objectivec/" style="color:gray; font-size: smaller;">Read More...</a></p>
-    </section>
-    <footer class="post-meta">
-        
-        
-        
-        
-        <time class="post-date" datetime="2014-04-02T22:24:54-08:00">
-            2 Apr 2014
         </time>
     </footer>
 </article>
