@@ -127,7 +127,7 @@
 
 <p>Let&rsquo;s assume our branch&rsquo;s commit log is in the following state (printed by using <code>git log</code>):</p>
 
-<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/1_initial_log.png" alt="" /></p>
+<p><img src="1_initial_log.png" alt="" /></p>
 
 <p>We have a bunch of intermediate commits for stages in which our code was not working as expected ending with a commit that indicates that our feature/bug fix is complete.</p>
 
@@ -144,27 +144,27 @@
 
 <p>This will bring up the following screen:</p>
 
-<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/2_git_rebase.png" alt="" /></p>
+<p><img src="2_git_rebase.png" alt="" /></p>
 
 <p>You can now see the 3 commits you are about to rewrite. There are many different commands available, we are only going to use <code>squash</code> for now.</p>
 
 <p>Type an <code>s</code> for <code>squash</code> in front of the commits that you want to squash together. In our example we choose the final commit along with one intermediate commit to be squashed into the first intermediate commit (this will turn 3 commits into one):</p>
 
-<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/3_git_rebase_squash.png" alt="" /></p>
+<p><img src="3_git_rebase_squash.png" alt="" /></p>
 
 <p>Then close the text editor. Next, git will bring up a screen that will allow you to choose some details for each rebasing step. In our example we only have a single step - the one in which we merge 3 commits into one.</p>
 
 <p>Git will allow you to change the commit message for this new squashed commit. It starts out by showing you the messages of all commits it is about to squash:</p>
 
-<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/4_git_rebase_step.png" alt="" /></p>
+<p><img src="4_git_rebase_step.png" alt="" /></p>
 
 <p>Now you can choose a new, descriptive, commit message:</p>
 
-<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/5_git_rebase_new_message.png" alt="" /></p>
+<p><img src="5_git_rebase_new_message.png" alt="" /></p>
 
 <p>Close the text editor by saving, and you&rsquo;re done. If you take a look at the new commit history via <code>git log</code>, you should see the following output:</p>
 
-<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Rebase/6_git_rebase_done.png" alt="" /></p>
+<p><img src="6_git_rebase_done.png" alt="" /></p>
 
 <p>A clean commit history that is ready to merge!</p>
 

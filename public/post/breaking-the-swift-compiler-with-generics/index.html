@@ -150,7 +150,7 @@ extension ArrayDataSource : UITableViewDataSource {
 
 <p>A class that takes an array and implements <code>UITableViewDataSource</code> using the content of that array (an idea that&rsquo;s discussed in <a href="http://www.objc.io/issue-1/lighter-view-controllers.html">objc.io issue #1</a>).</p>
 
-<h1 id="the-error:ad4d4ff830a667f9bf3648d7b19cfe5c">The Error</h1>
+<h1 id="the-error:f38631c06dc52d51e25323771c266097">The Error</h1>
 
 <p>As you can see I didn&rsquo;t get very far before running into the compiler error. When you compile the above code (in Xcode 6.1.1 or Xcode 6.3) you&rsquo;ll see the following error message:</p>
 
@@ -159,9 +159,9 @@ extension ArrayDataSource : UITableViewDataSource {
 
 <p>Along with a nice stack trace from swift compiler:</p>
 
-<p><img src="https://dl.dropboxusercontent.com/u/13528538/Blog/Swift_Crash.png" alt="" /></p>
+<p><img src="Swift_Crash.png" alt="" /></p>
 
-<h1 id="finding-a-generic-reproducable-example:ad4d4ff830a667f9bf3648d7b19cfe5c">Finding a generic reproducable example</h1>
+<h1 id="finding-a-generic-reproducable-example:f38631c06dc52d51e25323771c266097">Finding a generic reproducable example</h1>
 
 <p>Since this issue exists in both Xcode 6.1.1 and Xcode 6.3 I wanted to file a bug report to make sure this gets resolved in future. I played around with different ways to fix the issue, here are two simple ones that worked:</p>
 

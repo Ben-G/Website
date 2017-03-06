@@ -125,7 +125,7 @@
 
 <p>Recently I worked on a tutorial that required me to serialize a large amount of objects. This is a common use case in many games - if the user quits the game and reopens it you want to restore the entire game state.</p>
 
-<p><img src="http://puu.sh/7U79T.png" alt="image" /></p>
+<p><img src="7U79T.png" alt="image" /></p>
 
 <p>As you may know the <code>NSCoding</code> protocol is responsible for marking Objects to be encodable and decodable. Without using third party tools you need to implement <code>encodeWithCoder:</code> and <code>decodeWithCoder</code> manually. You need two lines of code for every property of your object, one for writing it and for reading it. It is nice that Cocoa provides the flexibility to do this manually, but honestly in most cases you just want to go with a default serialization.</p>
 
@@ -133,15 +133,15 @@
 
 <p><a href="https://github.com/nicklockwood/AutoCoding">Autocoding</a> to the rescue!</p>
 
-<h1 id="autocoding:6a58c9cd7366117c519c359294bd5b9e">Autocoding</h1>
+<h1 id="autocoding:f38631c06dc52d51e25323771c266097">Autocoding</h1>
 
 <p><a href="https://github.com/nicklockwood/AutoCoding">Autocoding</a> is a great little utility that makes serialization in Objective-C a breeze. It is a lightweight framework that adds a category to <code>NSObject</code>.</p>
 
-<h2 id="installation:6a58c9cd7366117c519c359294bd5b9e">Installation</h2>
+<h2 id="installation:f38631c06dc52d51e25323771c266097">Installation</h2>
 
 <p>Simply add <em>Autocoding.m</em> and <em>Autocoding.h</em> to your project.</p>
 
-<h2 id="example-usage:6a58c9cd7366117c519c359294bd5b9e">Example Usage</h2>
+<h2 id="example-usage:f38631c06dc52d51e25323771c266097">Example Usage</h2>
 
 <p>AutoCoding&rsquo;s category adds a very convenient <code>writeToFile:</code> method to <code>NSObject</code>. Once you added Autocoding to your project you can call it on basically any object (there are a few exceptions stated in detail on the GitHub page). Example of writing an object to disk:</p>
 

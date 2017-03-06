@@ -131,7 +131,7 @@
 
 <p>In this brief write-up I want to discuss how to set up multiple Bitbucket accounts with different associated SSH Keys.</p>
 
-<h2 id="two-bitbucket-ssh-keys-on-one-machine:641c6294d4c21efa1578d7a06f188378">Two Bitbucket SSH keys on one machine</h2>
+<h2 id="two-bitbucket-ssh-keys-on-one-machine:f38631c06dc52d51e25323771c266097">Two Bitbucket SSH keys on one machine</h2>
 
 <p>The key for setting up the SSH client to use multiple SSH keys for the same service is the SSH config file which resides in: <code>~/.ssh/config</code></p>
 
@@ -148,7 +148,7 @@
 
 <p>Terminal will prompt you for a file name for that new key - you can choose one that identifies the key as a work SSH key (e.g. company name). Now you have a second SSH key and can add that one to your work account on Bitbucket.</p>
 
-<h2 id="serving-the-right-key:641c6294d4c21efa1578d7a06f188378">Serving the right key</h2>
+<h2 id="serving-the-right-key:f38631c06dc52d51e25323771c266097">Serving the right key</h2>
 
 <p>Now one problem remains. If you clone a Bitbucket repository, authenticating with SSH, SSH will by default always serve the <code>id_rsa</code> key which is associated with your personal account - that means you still won&rsquo;t be able to authenticate yourself with your work account and won&rsquo;t be able to interact with work repositories using SSH authentication.</p>
 
@@ -169,7 +169,7 @@
 
 <p>The second option should mostly be preferred.</p>
 
-<h2 id="using-host-alias-names:641c6294d4c21efa1578d7a06f188378">Using host alias names</h2>
+<h2 id="using-host-alias-names:f38631c06dc52d51e25323771c266097">Using host alias names</h2>
 
 <p>We&rsquo;ve just seen that the SSH client determines the SSH key based on the host name. That means we need two different host names for <code>bitbucket.org</code> depending on whether we want to use the personal or private account. Luckily the SSH config file lets us declare host aliases in the following way:</p>
 

@@ -127,7 +127,7 @@
 
 <p>Throwing an <code>@objc</code> onto our new Swift types would have been the easiest way to interop with Objective-C. However, many Swift features aren&rsquo;t bridgable and we quickly noticed that this approach would water down our Swift code to Objective-C code with a different syntax (no structs, enums with associated values, default arguments, etc.).</p>
 
-<h2 id="a-recipe-for-bridging-swift-types:7f9788483f7bdff88f178bf8178831fb">A Recipe for Bridging Swift Types</h2>
+<h2 id="a-recipe-for-bridging-swift-types:f38631c06dc52d51e25323771c266097">A Recipe for Bridging Swift Types</h2>
 
 <p>We decided to create separate types that would be responsible for bridging our Swift types to Objective-C (and vice versa). These types wrap around the Swift types and take care of translating language concepts where necessary.</p>
 
@@ -141,7 +141,7 @@
 <li>If the type needs to have an initializer thats visible in Objective-C implement that initializer by constructing the underlying Swift type.</li>
 </ol>
 
-<h2 id="bridging-example:7f9788483f7bdff88f178bf8178831fb">Bridging Example</h2>
+<h2 id="bridging-example:f38631c06dc52d51e25323771c266097">Bridging Example</h2>
 
 <p>Let&rsquo;s take a look at an example of bridging Swift types to Objective-C with the method described above. Below we have a shopping cart type and a checkout options type.</p>
 
