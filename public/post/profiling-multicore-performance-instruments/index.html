@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" Surprises in Profiling Multi-Core Performance with Instruments &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
+  	<meta property="og:url" content="http://blog.benjamin-encz.de/post/profiling-multicore-performance-instruments/" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2017-03-05T22:24:54-08:00" />
+
+    
+    
+
+    <div id="navigation-bar">
+  <a href="http://blog.benjamin-encz.de/">Blog</a>
+  <a href="http://blog.benjamin-encz.de/about">About</a>
+  <a href="http://blog.benjamin-encz.de/speaking">Speaking</a>
+  
+</div>
+
+
+  <title>
+     Surprises in Profiling Multi-Core Performance with Instruments &middot;  [Thinking inside a large box];
+  </title>
+
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="apple-touch-icon" href="http://blog.benjamin-encz.de/images/apple-touch-icon.png" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/navigation_bar.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/base_style_tweaks.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata" />
+
+    
+      
+          <link href="http://blog.benjamin-encz.de/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.15" />
+
+    <link rel="canonical" href="http://blog.benjamin-encz.de/post/profiling-multicore-performance-instruments/" />
+
+    
+
+    
+</head>
+<body class="nav-closed">
+
+  
+
+ <div class="site-wrapper">
+
+
+
+
+	<header class="main-header tag-head" style="background-image: url(http://blog.benjamin-encz.de/images/japan-backdrop.jpg)">
+
+<nav class="main-nav overlay clearfix">
+  
+      <a class="menu-button" href="http://blog.benjamin-encz.de/" style="float: left;">&lt; Home</a>
+  
+  
+    
+      <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+    
+  
+</nav>
+<div class="vertical">
+    <div class="main-header-content inner">
+        <a href="http://blog.benjamin-encz.de/" style="text-decoration: none;"><h1 class="page-title">[Thinking inside a large box];</h1></a>
+        <h2 class="page-description">
+            
+        </h2>
+    </div>
+</div>
+</header>
+
+
+    
+
+
+</header>
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+    <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
+        <h1 class="post-title">Surprises in Profiling Multi-Core Performance with Instruments</h1>
+        <small></small>
+
+        <section class="post-meta">
+        
+          <time class="post-date" datetime="2017-03-05T22:24:54-08:00">
+            Mar 5, 2017
+          </time>
+        
+         
+        </section>
+    </header>
+
+    <section class="post-content">
+
+
+
+
+<p><strong>Short version:</strong> When profiling code that should run on multiple cores in parallel, CPU utilization of multiple cores isn&rsquo;t a good indicator as a single thread might utilize multiple cores at (almost) the same time.</p>
+
+<hr />
+
+<p>It&rsquo;s rare that iOS apps need to optimize code to run in parallel. Usually the only performance concern is to not block the UI thread.</p>
+
+<p>Our team just completed a large data migration in which we could significantly improve performance by running code in parallel on multiple cores. On the way I learnt a few interesting details about Instruments and ARM processors that felt worth sharing.</p>
+
+<h2 id="switch-core-switch:f38631c06dc52d51e25323771c266097">Switch Core, Switch</h2>
+
+<p>When I started profiling the code with the Time Profiler instrument I noticed that a single thread was using almost 100% of CPU time. This indicated that the task was CPU bound and potentially could be sped up if I could parallelize some parts of the required work.</p>
+
+<p>In it&rsquo;s guide <a href="https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/InstrumentsUserGuide/MeasuringCPUUse.html"><em>Measure CPU Use</em></a>, Apple recommends using a special view in Time Profiler that breaks down the utlization of individual cores.</p>
+
+<blockquote>
+<p>Use the CPU strategy usage view to compare core usage over given time periods. Effective core concurrency improves an app’s performance. Look for unbalanced core usage. If a single core has areas of heavy usage while other cores remain quiet, that can indicate areas that need greater optimization.</p>
+</blockquote>
+
+<p>For the purpose of this blog post I built a very simple app that performs a CPU heavy task.</p>
+
+<p>Here&rsquo;s the Time Profiler trace of that example app, the worker thread consumes almost 100% of CPU time.:</p>
+
+<p><img src="100_percent_cpu.png" alt="" /></p>
+
+<p>Surprisingly, the <em>CPU Data</em> View shows a graph that suggests that this code is already executing across both cores of my iPad Pro:</p>
+
+<p><img src="CPU_data_tab.png" alt="" /></p>
+
+<p>I knew that a single thread could not be executed in parallel. Reading the guide more closely would have saved me a few minutes of confusion:</p>
+
+<blockquote>
+<p>When zoomed out, activity may appear to be occurring on multiple threads, but a closer inspection may reveal otherwise. Therefore, be sure to zoom in on the track pane when examining core usage.</p>
+</blockquote>
+
+<p>Indeed, zooming in very far, reveals that execution of the main thread jumps between both cores, but never happens in parallel on both cores:</p>
+
+<p><img src="multicore_main_thread.png" alt="" /></p>
+
+<p>The System Trace instrument provides a more detailed breakdown of which processes are being executed on which core. This screenshot shows the example app process (highlighted with red boxes) jumping between both cores:</p>
+
+<p><img src="system_trace_example.png" alt="" /></p>
+
+<h2 id="more-interrupts-more-core-bouncing:f38631c06dc52d51e25323771c266097">More Interrupts, More Core Bouncing</h2>
+
+<p>Since the migration code in the PlanGrid app was not entirely CPU bound, but was also interacting with our local DB we would see a lot more interrupts and as a result a lot more core switches:</p>
+
+<p><img src="more_interrupts.jpg" alt="" /></p>
+
+<p>I was surprised to learn about these frequent core switches, since my understanding was that they incur a fairly high performance overhead. A technology called <a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.den0024a/ch14s01s02.html"><em>Symmetric Multi-Processing</em></a> (SMP) eliminates that overhead by using memory that is shared across all cores of a multi-chip system.</p>
+
+<blockquote>
+<p>Each core in the cluster has the same view of memory and of shared hardware. Any application, process, or task can run on any core and the operating system scheduler can dynamically migrate tasks between cores to achieve optimal system load. A multi-threaded application can run on several cores at once. The operating system can hide much of the complexity from applications.</p>
+</blockquote>
+
+<p>Apparently SMP is standard on all modern chips.</p>
+
+<h2 id="profiling-parallel-execution-the-right-way:f38631c06dc52d51e25323771c266097">Profiling Parallel Execution The Right Way</h2>
+
+<p><strong>As shown above, core utilization isn&rsquo;t a great way to measure whether or not your code is running efficiently accross multiple cores.</strong></p>
+
+<p>The <em>Thread Data</em> view in the Time Profiler instrument is a lot more useful for that. It clearly shows that the entire work for the sample project is bound to single thread - which means it cannot be executed in parallel:</p>
+
+<p><img src="thread_data.png" alt="" /></p>
+
+<p>Here&rsquo;s what the graph above looks like when <strong>changing the sample project to run parts of the work parallel</strong>:</p>
+
+<p><img src="over_100_percent_cpu.png" alt="" /></p>
+
+<p>The graph now shows a CPU utilization of over 100% and indicates that the work is performed on two different threads in parallel.</p>
+
+<p>The system trace will now also reveal that the code is running in parallel on two cores:</p>
+
+<p><img src="parallel_sys_trace.png" alt="" /></p>
+
+<p>If you profile parallelized code that involves locking you should also <a href="https://www.bignerdranch.com/blog/rock-heads/">make sure to turn on the <em>Record Waiting Threads</em> option in the Time Profiler</a>.</p>
+
+<p>Concurrency is hard - but parallelism might be harder?</p>
+
+<hr />
+
+<p>Also, did you know that the <a href="https://en.wikipedia.org/wiki/Apple_A8X">A8X processor</a> of the iPad Air 2 has three cores? I didn&rsquo;t until I found out through profiling!</p>
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+  
+
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a> (<a href="https://jobs.lever.co/plangrid?lever-via=SzsN-_Jgq1">We're hiring!</a>)<br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Surprises%20in%20Profiling%20Multi-Core%20Performance%20with%20Instruments&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fprofiling-multicore-performance-instruments%2f"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fprofiling-multicore-performance-instruments%2f"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fprofiling-multicore-performance-instruments%2f"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
+
+    
+
+<span id="comment_section"></span>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/profiling-multicore-performance-instruments\/';
+
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/profiling-multicore-performance-instruments\/';
+    }
+  }
+
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/index.js"></script>
+    
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-48608026-1', 'benjamin-encz.de');
+      ga('send', 'pageview');
+    </script>
+</body>
+</html>
+
