@@ -17,3 +17,13 @@ Run following instructions:
 ## Deploying
 
 A `git push` to GitHub suffices. Heroku is configured to automatically deploy every push.
+
+Currently there are two heroku environments:
+
+- Production:
+  - Git: `https://git.heroku.com/benji-blog.git`
+  - Url: http://blog.benjamin-encz.de/
+- Staging:
+  - Git: `ssh://git@heroku.com/benji-blog-staging.git`
+  - Url: https://benji-blog-staging.herokuapp.com/
+
