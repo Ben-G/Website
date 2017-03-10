@@ -37,7 +37,7 @@ I enjoy sharing things I've learned and spreading ideas. Here are the talks I've
 
 #### Turning UIKit Inside Out
 
-- AltConf 2016, London
+- AltConf 2016, San Francisco
 - June 2016
 - [Slides](https://speakerdeck.com/benjamin_encz/turning-uikit-inside-out)
 - [Recording](https://realm.io/news/altconf-benji-encz-uikit-inside-out-declarative-programming/)
