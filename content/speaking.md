@@ -9,9 +9,18 @@ I enjoy sharing things I've learned and spreading ideas. Here are the talks I've
 
 ## Upcoming
 
-- **The Unreasonable Effectiveness Of Declarative Code** @ Swift Summit, November 2016
+- **Flux & Redux on Mobile** @ CRAFT Conference, Budapest, April 2017
+- **The Art of Stealing** @ MCE, Warsaw,  May 2017
+- **Workshop: Unidirectional Data Flow on iOS** @ Swift Aveiro, Aveiro, June 2017
 
 ## 2016
+
+#### The Unreasonable Effectiveness Of Declarative Code
+
+- Swift Summit, San Francisco
+- November 2016
+- [Slides](https://speakerdeck.com/benjamin_encz/the-unreasonable-effectiveness-of-declarative-code-and-the-near-future-of-programming)
+- [Recording](https://www.skilled.io/u/swiftsummit/declarative-code)
 
 #### Leveraging Swift's Type System
 
