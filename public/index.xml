@@ -6,8 +6,108 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 05 Mar 2017 22:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Sat, 18 Mar 2017 22:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Git Stats for the Curious</title>
+      <link>http://blog.benjamin-encz.de/post/git-stats-for-the-curious/</link>
+      <pubDate>Sat, 18 Mar 2017 22:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/git-stats-for-the-curious/</guid>
+      <description>
+
+&lt;p&gt;Git repositories provide a fascinating record of the history of our software projects. This post explores a variety of stats and trivia that you might be interested in for your project; and you&amp;rsquo;ll probably learn something new about git along the way.&lt;/p&gt;
+
+&lt;p&gt;Throughout this post I&amp;rsquo;ll use the &lt;a href=&#34;https://github.com/reswift/reswift&#34;&gt;ReSwift&lt;/a&gt; repo to provide example outputs for the commands.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-first-commit-to-a-git-repo:f38631c06dc52d51e25323771c266097&#34;&gt;The First Commit to a Git Repo&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;git rev-list --max-parents=0 HEAD
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Output&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;74ff536139120b246c48c274fc88430640dbd423
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;What&amp;rsquo;s in this command?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;As the &lt;a href=&#34;https://git-scm.com/docs/git-rev-list#git-rev-list---no-max-parents&#34;&gt;documentation&lt;/a&gt; points out, &lt;code&gt;—max-parents=0&lt;/code&gt; returns all root commits. This interesting &lt;a href=&#34;http://stackoverflow.com/questions/5188914/how-to-show-first-commit-by-git-log&#34;&gt;stack overflow answer&lt;/a&gt; discusses how you can end up with a repo that has multiple root commits.&lt;/p&gt;
+
+&lt;h3 id=&#34;your-first-commit-to-a-git-repo:f38631c06dc52d51e25323771c266097&#34;&gt;Your First Commit to a Git Repo&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;git log --author $(git config user.email) --format=format:%H | tail -n 1 | xargs git show
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Output&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;commit 74ff536139120b246c48c274fc88430640dbd423
+Author: Ben-G &amp;lt;Benjamin.Encz@gmail.com&amp;gt;
+Date:   Mon Dec 14 23:47:54 2015 -0800
+
+    Initial Commit
+
+diff --git a/.gitignore b/.gitignore
+[...]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;What&amp;rsquo;s in this command?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;We&amp;rsquo;re filtering the git log by commits authored by the current git user. We print the SHA-1 from each commit. We pass the result to &lt;code&gt;tail&lt;/code&gt; which provides us the last line. We then pass on the SHA-1 from the last line to &lt;code&gt;git show&lt;/code&gt;, using &lt;code&gt;xargs&lt;/code&gt;.
+Generally you can also use &lt;code&gt;git log —reverse&lt;/code&gt; to see an inverse commit log (oldest commit first), but there are &lt;a href=&#34;http://stackoverflow.com/questions/30832303/git-log-reverse-and-then-limit-the-results-to-one&#34;&gt;issues when using reverse and limit together&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;git-blame-line-count-by-author:f38631c06dc52d51e25323771c266097&#34;&gt;Git Blame Line Count By Author&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;git ls-tree -r -z --name-only HEAD -- **/*.(c|h|m|swift) | xargs -0 -n1 git blame \
+--line-porcelain HEAD |grep  &amp;quot;^author &amp;quot;|sort|uniq -c|sort -nr
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Output&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; 768 author Karl Bowden
+ 650 author Benji Encz
+ 308 author Ben-G
+ 109 author Tim Kersey
+  74 author Christian Tietze
+  38 author Malcolm Jarvis
+  17 author Jonathan Willis
+[...]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You might notice that I appear twice with a different username on that list (Benji Encz, Ben-G). However, I&amp;rsquo;ve always commited with the same email address, so with a slight modification (using &lt;code&gt;author-email&lt;/code&gt; instead of &lt;code&gt;author&lt;/code&gt;) I can fix the lines being split accross two authors:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git ls-tree -r -z --name-only HEAD -- **/*.(c|h|m|swift) | xargs -0 -n1 git blame \
+--line-porcelain HEAD |grep  &amp;quot;^author-email &amp;quot;|sort|uniq -c|sort -nr
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt; 958 author-mail &amp;lt;Benjamin.Encz@...&amp;gt;
+ 726 author-mail &amp;lt;karl@...&amp;gt;
+ 109 author-mail &amp;lt;t@...&amp;gt;
+  74 author-mail &amp;lt;christian.tietze@...&amp;gt;
+  42 author-mail &amp;lt;karl@...&amp;gt;
+  38 author-mail &amp;lt;malcolm@...&amp;gt;
+  17 author-mail &amp;lt;jondwillis@...&amp;gt;
+  [...]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;a-commit-from-a-year-ago:f38631c06dc52d51e25323771c266097&#34;&gt;A Commit from a Year Ago&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;git log --after=$(date -v-1y +&#39;%s&#39;) --format=format:%H | tail -n 1 | xargs git show
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Output&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;commit f60db5784870ca1014ffb62d460688f81bdd29af
+Author: Ben-G &amp;lt;Benjamin.Encz@gmail.com&amp;gt;
+Date:   Sat Mar 19 18:39:02 2016 -0700
+
+    [Travis] Only test against latest iOS SDK
+
+[...]
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>Surprises in Profiling Multi-Core Performance with Instruments</title>
@@ -2338,61 +2438,6 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 
 &lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/xenadu02&#34;&gt;@xenadu02&lt;/a&gt; &lt;a href=&#34;https://twitter.com/benjaminencz&#34;&gt;@benjaminencz&lt;/a&gt; Everything in the static type system is in the runtime too. Making it all available&amp;#39;s a &amp;quot;simple matter of design&amp;quot;&lt;/p&gt;&amp;mdash; Joe Groff (@jckarter) &lt;a href=&#34;https://twitter.com/jckarter/status/720661475405094913&#34;&gt;April 14, 2016&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Squashing Commits With Git Rebase: A Very Quick Guide</title>
-      <link>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</link>
-      <pubDate>Thu, 24 Mar 2016 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</guid>
-      <description>&lt;p&gt;Git&amp;rsquo;s interactive rebase is extremely useful for keeping a somewhat clear commit history. Here&amp;rsquo;s a very brief guide on how to squash multiple commits into a single one.&lt;/p&gt;
-
-&lt;p&gt;Git rebase allows you to rewrite the history of a git repository. &lt;strong&gt;Yes, you are right, this can be incredibly dangerous, therefore don&amp;rsquo;t use this technique on branches that are shared with other developers&lt;/strong&gt;. To me rebase is most useful for preparing a branch that is about to be merged into the main branch of a project.&lt;/p&gt;
-
-&lt;p&gt;Let&amp;rsquo;s assume our branch&amp;rsquo;s commit log is in the following state (printed by using &lt;code&gt;git log&lt;/code&gt;):&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;1_initial_log.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We have a bunch of intermediate commits for stages in which our code was not working as expected ending with a commit that indicates that our feature/bug fix is complete.&lt;/p&gt;
-
-&lt;p&gt;Having all of these commits in the history of a project would mean that the commit log would quickly become very difficult to read.&lt;/p&gt;
-
-&lt;p&gt;Git rebase allows us to turn these 3 intermediate commits into a single one.&lt;/p&gt;
-
-&lt;p&gt;The following command will bring you into git&amp;rsquo;s interactive rebase mode:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git rebase -i HEAD~3
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;There are different ways to choose the range of commits you want to rebase. I mostly end up using &lt;code&gt;HEAD~N&lt;/code&gt; to rewrite the latest &lt;code&gt;N&lt;/code&gt; commits.&lt;/p&gt;
-
-&lt;p&gt;This will bring up the following screen:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;2_git_rebase.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You can now see the 3 commits you are about to rewrite. There are many different commands available, we are only going to use &lt;code&gt;squash&lt;/code&gt; for now.&lt;/p&gt;
-
-&lt;p&gt;Type an &lt;code&gt;s&lt;/code&gt; for &lt;code&gt;squash&lt;/code&gt; in front of the commits that you want to squash together. In our example we choose the final commit along with one intermediate commit to be squashed into the first intermediate commit (this will turn 3 commits into one):&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;3_git_rebase_squash.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Then close the text editor. Next, git will bring up a screen that will allow you to choose some details for each rebasing step. In our example we only have a single step - the one in which we merge 3 commits into one.&lt;/p&gt;
-
-&lt;p&gt;Git will allow you to change the commit message for this new squashed commit. It starts out by showing you the messages of all commits it is about to squash:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;4_git_rebase_step.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now you can choose a new, descriptive, commit message:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;5_git_rebase_new_message.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Close the text editor by saving, and you&amp;rsquo;re done. If you take a look at the new commit history via &lt;code&gt;git log&lt;/code&gt;, you should see the following output:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;6_git_rebase_done.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;A clean commit history that is ready to merge!&lt;/p&gt;
 </description>
     </item>
     
