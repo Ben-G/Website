@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" Safely migrating millions of database records across thousands of devices &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
+  	<meta property="og:url" content="http://blog.benjamin-encz.de/post/safely-migrating-millions-of-database-records-across-thousands-of-devices/" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2017-03-20T22:24:54-08:00" />
+
+    
+    
+
+    <div id="navigation-bar">
+  <a href="http://blog.benjamin-encz.de/">Blog</a>
+  <a href="http://blog.benjamin-encz.de/about">About</a>
+  <a href="http://blog.benjamin-encz.de/speaking">Speaking</a>
+  
+</div>
+
+
+  <title>
+     Safely migrating millions of database records across thousands of devices &middot;  [Thinking inside a large box];
+  </title>
+
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="apple-touch-icon" href="http://blog.benjamin-encz.de/images/apple-touch-icon.png" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/navigation_bar.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/base_style_tweaks.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata" />
+
+    
+      
+          <link href="http://blog.benjamin-encz.de/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.15" />
+
+    <link rel="canonical" href="http://blog.benjamin-encz.de/post/safely-migrating-millions-of-database-records-across-thousands-of-devices/" />
+
+    
+
+    
+</head>
+<body class="nav-closed">
+
+  
+
+ <div class="site-wrapper">
+
+
+
+
+	<header class="main-header tag-head" style="background-image: url(http://blog.benjamin-encz.de/images/japan-backdrop.jpg)">
+
+<nav class="main-nav overlay clearfix">
+  
+      <a class="menu-button" href="http://blog.benjamin-encz.de/" style="float: left;">&lt; Home</a>
+  
+  
+    
+      <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+    
+  
+</nav>
+<div class="vertical">
+    <div class="main-header-content inner">
+        <a href="http://blog.benjamin-encz.de/" style="text-decoration: none;"><h1 class="page-title">[Thinking inside a large box];</h1></a>
+        <h2 class="page-description">
+            
+        </h2>
+    </div>
+</div>
+</header>
+
+
+    
+
+
+</header>
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+    <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
+        <h1 class="post-title">Safely migrating millions of database records across thousands of devices</h1>
+        <small></small>
+
+        <section class="post-meta">
+        
+          <time class="post-date" datetime="2017-03-20T22:24:54-08:00">
+            Mar 20, 2017
+          </time>
+        
+         
+        </section>
+    </header>
+
+    <section class="post-content">
+
+
+
+
+<p><em>This is a cross post of a piece that original appeared on <a href="https://medium.com/plangrid-technology/safely-migrating-millions-of-database-records-across-thousands-of-devices-f9ea98f941dc">the PlanGrid R&amp;D blog</a></em></p>
+
+<hr />
+
+<p>At PlanGrid we recently shipped a major release for our iOS app that required a data migration of our core record types: annotations and issues. Most app developers avoid complex migrations by re-downloading all user data. If you are a developer on a PlanGrid mobile app, you unfortunately do not have that luxury. All PlanGrid apps (iOS, Android, Windows) work entirely offline — an experience that is essential to field workers that use our app under very spotty network conditions. The amount of data stored on a device can be huge; we have users with well over 500,000 records in their local database. This means re-downloading a user’s data isn’t a viable option.</p>
+
+<p>Here’s a quick overview of the issues we faced in this release:</p>
+
+<ul>
+<li>We updated to new immutable Swift data models from old Objective-C models. These two model types were fundamentally incompatible. Feature flagging the code to support both types would have been a huge overhead (they are used widely throughout the app), so we decided to only support the new types after users updated to version 5.0.0 of the app.</li>
+<li>Since a user could launch their updated app for the first time without a network connection, we had to make sure that we could generate new models from the old models offline. This was the only way to ensure that users would not be blocked when updating to 5.0.0.</li>
+<li>We did not only update our models, but also the underlying database schema. In the old schema a large portion of the models was stored as a shapeless JSON blob. In the new schema every property of a model cleanly maps to a database column. When going to a stricter schema, there is always a risk of facing old data that doesn’t match the new schema.</li>
+</ul>
+
+<p>There are a bunch of additional challenges outside of the scope of the data migration that we’ll discuss in a future blog post.</p>
+
+<h2 id="mitigating-risk:f38631c06dc52d51e25323771c266097">Mitigating Risk</h2>
+
+<p>Especially on the iOS platform, risk mitigation is an essential part of every major release. Unlike web or backend teams, we cannot simply roll back changes that cause production issues. Unfortunately, Apple also doesn’t support a gradual rollout of a new app version (as Android does). We needed to ensure that the data migration would work reliably for all our users before we shipped the 5.0.0 release.</p>
+
+<p>After discussing various approaches we decided to roll out a “dry run” data migration in a pre-5.0.0 release. This migration would use the actual migration code, but the migrated records would not be used in the app. The migration would also not be visible to the user. Instead we would run the migration to collect various metrics:</p>
+
+<ul>
+<li>How many records does the user have in the local database?</li>
+<li>How long did the migration take?</li>
+<li>How many records were migrated successfully? How many failed? Why did some records fail to be migrated?</li>
+<li>Did the app crash during the migration?</li>
+</ul>
+
+<p>While we tested the migration extensively in-house, we knew that the sheer number of production users and the diversity of their projects, would cause issues that we wouldn’t find through our QA process.</p>
+
+<p>So we combined the rollout with a feature flag, that allowed us to quickly turn the dry-run migration off in case of issues on production projects.</p>
+
+<h2 id="shipping-the-dry-run-migration:f38631c06dc52d51e25323771c266097">Shipping the Dry Run Migration</h2>
+
+<p>In total, we only shipped two versions of our dry run migration.</p>
+
+<p>As (almost) expected, the first version caused a measurable amount of crashes that we hadn’t seen internally. We quickly turned off the feature flag and used the information from our analytics data and our crash reporter to fix the underlying issues. We also found four varieties of records that were in an invalid schema. For those four varieties, we came up with a migration path that provided sensible default values for missing or incorrect fields.</p>
+
+<p>We then rolled out a second version and verified our fixes. The data from the second roll out assured us that all of our users would be able to migrate without any crashes, data losses or corruptions — with the exception of exactly one customer (that had a local SQLite DB of a whopping 3.7 GB!).</p>
+
+<h2 id="product-ifying-the-migration:f38631c06dc52d51e25323771c266097">Product-ifying the Migration</h2>
+
+<p>Now that we had verified our migration code, it was time to finalize the migration and ship it as part of the 5.0.0 release. We used the exact code that we tested throughout the dry run migrations, except this time we would use the migrated records in production.</p>
+
+<p>Our new code was only compatible with the new schema and new models. This meant we needed to block the user from interacting with records until the migration was complete.</p>
+
+<p><img src="migration_screenshot.png" alt="" /></p>
+
+<p><em>The data migration with one of our test accounts that has 100,000 annotations and issues in its local DB.</em></p>
+
+<p>We informed the user about a one-time performance update (the new models enabled significant performance gains) and showed them how many of their records had been migrated. Based on the metrics we collected from our dry-run migration, we knew that the 90th percentile of our users would complete the migration in under one minute.</p>
+
+<h2 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h2>
+
+<p>We’ve released PlanGrid 5.0.0 about three weeks ago and well over 50% of our users have updated to 5.0.0 or higher. We’ve been monitoring the rollout closely and are extremely happy to see that the insights from our dry run migrations have held up in production. Only a single customer (you might remember, the one with the 3.7 GB SQLite database) ran into issues during the migration and they were very grateful when we immediately reached out to them.</p>
+
+<p>Feature flags and testing new code in the background in a production app can go a long way to mitigate risk. When rolling out changes like these, I’m extremely envious of backend engineers that can use awesome tools like <a href="https://github.com/github/scientist">GitHub’s scientist</a>. With a little bit of creativity we can bring some of these ideas to mobile and ensure that large migrations aren’t preceded &amp; followed by sleepless nights.</p>
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+  
+
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a> (<a href="https://jobs.lever.co/plangrid?lever-via=SzsN-_Jgq1">We're hiring!</a>)<br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Safely%20migrating%20millions%20of%20database%20records%20across%20thousands%20of%20devices&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fsafely-migrating-millions-of-database-records-across-thousands-of-devices%2f"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fsafely-migrating-millions-of-database-records-across-thousands-of-devices%2f"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fsafely-migrating-millions-of-database-records-across-thousands-of-devices%2f"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
+
+    
+
+<span id="comment_section"></span>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/safely-migrating-millions-of-database-records-across-thousands-of-devices\/';
+
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/safely-migrating-millions-of-database-records-across-thousands-of-devices\/';
+    }
+  }
+
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/index.js"></script>
+    
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-48608026-1', 'benjamin-encz.de');
+      ga('send', 'pageview');
+    </script>
+</body>
+</html>
+
