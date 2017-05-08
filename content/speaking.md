@@ -9,9 +9,17 @@ I enjoy sharing things I've learned and spreading ideas. Here are the talks I've
 
 ## Upcoming
 
-- **Flux & Redux on Mobile** @ CRAFT Conference, Budapest, April 2017
 - **The Art of Stealing** @ MCE, Warsaw,  May 2017
 - **Workshop: Unidirectional Data Flow on iOS** @ Swift Aveiro, Aveiro, June 2017
+
+## 2017
+
+#### The Art of Stealing
+
+- Craft Conference, Budapest
+- April 2017
+- [Slides](https://speakerdeck.com/benjamin_encz/flux-and-redux-on-mobile)
+- [Recording](http://www.ustream.tv/recorded/102858469)
 
 ## 2016
 
