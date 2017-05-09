@@ -14,7 +14,7 @@ I enjoy sharing things I've learned and spreading ideas. Here are the talks I've
 
 ## 2017
 
-#### The Art of Stealing
+#### Flux & Redux on Mobile
 
 - Craft Conference, Budapest
 - April 2017
