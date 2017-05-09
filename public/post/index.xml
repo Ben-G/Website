@@ -6,124 +6,8 @@
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 01 May 2017 22:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Mon, 20 Mar 2017 22:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
-    
-    <item>
-      <title>Still no Silver Bullet? Thoughts on how to achieve a magnitude improvement in developer productivity</title>
-      <link>http://blog.benjamin-encz.de/post/still-no-silver-bullet/</link>
-      <pubDate>Mon, 01 May 2017 22:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/still-no-silver-bullet/</guid>
-      <description>
-
-&lt;p&gt;Fred Brooks&amp;rsquo; Essay &amp;ldquo;No Silver Bullet&amp;rdquo; is now over 30 years old. He famously proclaimed to not see any (then) current development that would bring an order of magnitude improvement to the productivity of software developers.&lt;/p&gt;
-
-&lt;p&gt;What has happened since? Have his statements held true? And what about the future? Are there possible changes that could bring a magnitude improvement to developer productivity as we know it today?&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;h3 id=&#34;buy-vs-build:f38631c06dc52d51e25323771c266097&#34;&gt;Buy vs. Build&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;x-platform&lt;/li&gt;
-&lt;li&gt;UI Testing&lt;/li&gt;
-&lt;li&gt;Containers&lt;/li&gt;
-&lt;li&gt;NewSQL DBs&lt;/li&gt;
-&lt;li&gt;REST -&amp;gt; GraphQL&lt;/li&gt;
-&lt;li&gt;Machine Learning&lt;/li&gt;
-&lt;li&gt;Agile&lt;/li&gt;
-&lt;li&gt;Ultra scale teams (600 engs FB, 100 iOS eng at Uber)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Why not progressing:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;when starting out, doesn&amp;rsquo;t make sense to adopt best practices right away&lt;/li&gt;
-&lt;li&gt;Once you are far down the road it&amp;rsquo;s extremely hard to rectify initial debt. Only largest teams can afford parallel rewrite; almost no incremental adoption strategy..&lt;/li&gt;
-&lt;li&gt;Need to keep shipping product&lt;/li&gt;
-&lt;li&gt;Would need x-company effort to share resources that help progress state of SW dev&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Random thoughts:&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Buy vs. Build&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;We have improved here a lot. A lot of software is no longer built entirely from scratch but relies instead on standard components. These can be open source libraries or even entire SW developer products (e.g. Parse, Firebase, Realm). Assuming these off the shelf products&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;More Software is being built today than ever before&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;This is probably the main reason I feel we are repeating ourselves over and over again. There&amp;rsquo;s a tremondous amuont of software being built and it widely follows similar patterns. Mobile apps/websites that are a thin wrapper around a backend service which in turn is a thin wrapper around a DB.&lt;/p&gt;
-
-&lt;p&gt;How much code written here is truly replaceable with a common library / off-the shelf product? How can one systematically determine this number?&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Need better Open Source&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Still a hesitancy to take on dependencies for anything besides the most core libraries.&lt;/p&gt;
-
-&lt;p&gt;Open Source today:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Lots of libraries being created, often by developers in their free time
-
-&lt;ul&gt;
-&lt;li&gt;Not enough education around these libs&lt;/li&gt;
-&lt;li&gt;Not enough support/buy in by other companies&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Open Source tomorrow?:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Companies provide funding to pools of software that would provide them productivy gains&lt;/li&gt;
-&lt;li&gt;Projects in this pool would receive ongoing development efforts and great training materials/documentaiton that is required to increase adoption&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Case Study&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Want to build:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Appication that allows me to create contacts&lt;/li&gt;
-&lt;li&gt;Store info about contacts: Where did I meet? What do they do?&lt;/li&gt;
-&lt;li&gt;Allow me to set reminders for communicating with these contacts&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;How can I improve building this software by a magnitude?&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Use BAAS (Backend as a service solution?)&lt;/li&gt;
-&lt;li&gt;What about UI?&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Other thoughts&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Maybe there are enough off the shelf products, but ppl don&amp;rsquo;t want to use for other reasons? Psychological, e.g. &amp;ldquo;not invented here&amp;rdquo;.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Developer Education&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Still lacking at scale&lt;/li&gt;
-&lt;li&gt;Mostly learning by failure; learning from co-workers&lt;/li&gt;
-&lt;li&gt;Little structured learning about industry best practices&lt;/li&gt;
-&lt;li&gt;Probably main reason why same problems are solved in different, suboptimal ways over and over again?&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;How Software is Built&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Person has idea about problem they want to solve&lt;/li&gt;
-&lt;li&gt;Person can code or finds someone that can code.&lt;/li&gt;
-&lt;li&gt;Person that writes the code looks at the problem, uses their current set of skills and knowlegde to almost immediately start working on a solution. Since person is trying to solve a problem with software, they won&amp;rsquo;t take a huge amount of time to do research at this point as they want to get going.&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-    </item>
     
     <item>
       <title>Safely migrating millions of database records across thousands of devices</title>
@@ -2334,6 +2218,195 @@ At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the li
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;I hope this concept is useful to some other Swift developers as well. You can find a playground with the full example code on &lt;a href=&#34;https://github.com/Ben-G/Decoding-Heterogeneous-Collections-Swift/blob/master/Decodable.playground/Contents.swift&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Compile Time vs. Run Time Type Checking in Swift</title>
+      <link>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</link>
+      <pubDate>Wed, 13 Apr 2016 21:09:24 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</guid>
+      <description>
+
+&lt;p&gt;At some point, when learning how to use Swift&amp;rsquo;s type system, it is important to understand that Swift (like many other languages) has two different forms of type checking: static and dynamic. Today I want to briefly discuss the difference between them and why headaches might arise when we try to combine them.&lt;/p&gt;
+
+&lt;p&gt;Static type checking occurs at compile time and dynamic type checking happens at run time. Each of these two stages come with a different, partially incompatible, toolset.&lt;/p&gt;
+
+&lt;h2 id=&#34;compile-time-type-checking:f38631c06dc52d51e25323771c266097&#34;&gt;Compile Time Type Checking&lt;/h2&gt;
+
+&lt;p&gt;Compile time type checking (or static type checking) operates on the Swift source code. The Swift compiler looks at explicitly stated and inferred types and ensures correctness of our type constraints.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s a trivial example of static type checking:
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;text&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Compile Error: Cannot convert value of &lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// type &amp;#39;String&amp;#39; to specified type &amp;#39;Int&amp;#39;&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;number&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;text&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Based on the source code the type checker can decide that &lt;code&gt;text&lt;/code&gt; is not of type &lt;code&gt;Int&lt;/code&gt; - therefore it will raise a compile error.&lt;/p&gt;
+
+&lt;p&gt;Swift&amp;rsquo;s static type checker can do a lot more powerful things, e.g. verifying generic constraints:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Visitor&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Car&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
+
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Require a type that is both human and provides a name&lt;/span&gt;
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;T&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;thing&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;T&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// ...&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Compiles fine:&lt;/span&gt;
+&lt;span style=&#34;color: #000000&#34;&gt;printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Compiles fine:&lt;/span&gt;
+&lt;span style=&#34;color: #000000&#34;&gt;printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Visitor&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Compile Error: cannot invoke &amp;#39;printHumanName&amp;#39; with an &lt;/span&gt;
+&lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// argument list of type &amp;#39;(Car)&amp;#39;&lt;/span&gt;
+&lt;span style=&#34;color: #000000&#34;&gt;printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Car&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;())&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In this example, again, all of the type checking occurs at compile time, solely based on the source code. The swift compiler can verify which function calls provide arguments that match the generic constraints of the &lt;code&gt;printHumanName&lt;/code&gt; function; and for ones that don&amp;rsquo;t it can emit a compile error.&lt;/p&gt;
+
+&lt;p&gt;Since Swift&amp;rsquo;s static type system offers these powerful tools we try to verify as much as possible at compile time. However, in same cases run time type verification is necessary.&lt;/p&gt;
+
+&lt;h2 id=&#34;run-time-type-checking:f38631c06dc52d51e25323771c266097&#34;&gt;Run Time Type Checking&lt;/h2&gt;
+
+&lt;p&gt;In some unfortunate cases relying on static type checking is not possible. The most common example is reading data from an outside resource (network, database, etc.). In such cases the data and thus the type information is not part of the source code, therefore we cannot prove to the static type checker that our data has a specific type (since the static type checker can only operate on type information it can extract from our source code).&lt;/p&gt;
+
+&lt;p&gt;This means instead of being able to &lt;em&gt;define&lt;/em&gt; a type statically, we need to &lt;em&gt;verify&lt;/em&gt; a type dynamically at run time.&lt;/p&gt;
+
+&lt;p&gt;When checking types at run time we rely on the type metadata stored within the memory of all Swift instances). The only tools we have available at this stage are the &lt;code&gt;is&lt;/code&gt; and &lt;code&gt;as&lt;/code&gt; keywords that use that metadata to confirm whether or not the instance is of a certain type or conforms to a certain protocol.&lt;/p&gt;
+
+&lt;p&gt;This is what all the different Swift JSON mapping libraries do - they provide a convenient API for dynamically casting an unknown type to one that matches the type of a specified variable.&lt;/p&gt;
+
+&lt;p&gt;In many scenarios dynamic type checking enables us to integrate types that are unknown at compile time with our statically checked Swift code:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;takesHuman&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;human&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{}&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Any&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;as&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;takesHuman&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;All we need to do in order to call the function with &lt;code&gt;unknownData&lt;/code&gt; is to cast it to the argument type of the function.&lt;/p&gt;
+
+&lt;p&gt;However, if we try to use this approach to call a function that defines arguments as generic constraints, we run into issues&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;combining-dynamic-and-static-type-checking:f38631c06dc52d51e25323771c266097&#34;&gt;Combining Dynamic and Static Type Checking&lt;/h2&gt;
+
+&lt;p&gt;Continuing the earlier &lt;code&gt;printHumanName&lt;/code&gt; example, let&amp;rsquo;s assume we have received data from a network request, and we need to call the &lt;code&gt;printHumanName&lt;/code&gt; method - if the dynamically detected type allows us to do that.&lt;/p&gt;
+
+&lt;p&gt;We know that our type needs to conform to two different protocols in order to be eligible as argument for the &lt;code&gt;printHumanName&lt;/code&gt; function. So let&amp;rsquo;s check that requirement dynamically:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Any&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+
+&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;as&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Compile Error: cannot invoke &amp;#39;printHumanName&amp;#39; &lt;/span&gt;
+    &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// with an argument list of type &amp;#39;(protocol&amp;lt;HasName, HumanType&amp;gt;)&amp;#39;&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The dynamic type check in the above example actually works correctly. The body of the &lt;code&gt;if let&lt;/code&gt; block is only executed for types that conform to our two expected protocols. However, we cannot convey this to the compiler. The compiler expects a &lt;em&gt;concrete&lt;/em&gt; type (one that has a fully specified type at compile time) that conforms to &lt;code&gt;HumanType&lt;/code&gt; and &lt;code&gt;HasName&lt;/code&gt;. All we can offer is a dynamically verified type.&lt;/p&gt;
+
+&lt;p&gt;As of Swift 2.2, there is no way to get this to compile. At the end of this post I will briefly touch on which changes to Swift would likely be necessary to make this approach work.&lt;/p&gt;
+
+&lt;p&gt;For now, we need a workaround.&lt;/p&gt;
+
+&lt;h3 id=&#34;workarounds:f38631c06dc52d51e25323771c266097&#34;&gt;Workarounds&lt;/h3&gt;
+
+&lt;p&gt;In the past I&amp;rsquo;ve used one of these two approaches:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Cast &lt;code&gt;unknowndData&lt;/code&gt; to a concrete type instead of casting it to a protocol&lt;/li&gt;
+&lt;li&gt;Provide a second implementation of &lt;code&gt;printHumanName&lt;/code&gt; without generic constraints&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The concrete type solution would look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;user&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;as&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;user&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;visitor&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;as&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Visitor&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #000000&#34;&gt;printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;visitor&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Not beautiful; but it might the best possible solution in some cases.&lt;/p&gt;
+
+&lt;p&gt;A solution that involves providing a second implementation of &lt;code&gt;printHumanName&lt;/code&gt; might look like this (though there are many other possible solutions):&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;_printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;thing&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Any&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;hasName&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;thing&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;as&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;where&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;thing&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Put implementation code here&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Or call a third function that is shared between&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// both implementations of `printHumanName`&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #3465a4&#34;&gt;fatalError&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;Provided Incorrect Type&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #000000&#34;&gt;_printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In this second solution we have substituted the compile time constraints for a run time check. We cast the &lt;code&gt;Any&lt;/code&gt; type to &lt;code&gt;HasName&lt;/code&gt;, that allows us to access the relevant information for printing a name, and we include an &lt;code&gt;is&lt;/code&gt; check to verify that the type is one that conforms to &lt;code&gt;HumanType&lt;/code&gt;. We have established a dynamic type check that is equivalent to our generic constraint.&lt;/p&gt;
+
+&lt;p&gt;This way we have offered a second implementation that will run code dynamically, if an arbitrary type matches our protocol requirements. In practice I would extract the actual functionality of this function into a third function that gets called from both &lt;code&gt;printHumanName&lt;/code&gt; and &lt;code&gt;_printHumanName&lt;/code&gt; - that way we can avoid duplicate code.&lt;/p&gt;
+
+&lt;p&gt;The solution of the &amp;ldquo;type erased&amp;rdquo; function that accept an &lt;code&gt;Any&lt;/code&gt; argument isn&amp;rsquo;t really nice either; but in practice I have used similar approaches in cases where other code guarantees that the function will be called with the correct type, but there wasn&amp;rsquo;t a way of expressing that within Swift&amp;rsquo;s type system.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:f38631c06dc52d51e25323771c266097&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;The examples above are extremely simplified, but I hope they demonstrate the issues that can arise from differences in compile time and run time type checking. The key takeaways are:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The static type checker runs at compile time, operates on the source code and uses type annotations and constraints for type checking&lt;/li&gt;
+&lt;li&gt;The dynamic type checker uses run time information and casting for type checking&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;We cannot cast a an argument dynamically, in order call a function that has generic constraints&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Is there potential for adding support for this to Swift? I think we would need the ability to dynamically create &amp;amp; use a constrained metatype. One could imagine a syntax that looks somewhat like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;T&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HumanType&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;HasName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;unknownData&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;as&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;T&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+	&lt;span style=&#34;color: #000000&#34;&gt;printHumanName&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;I know too little about the Swift compiler to know if this is feasible at all. I would assume that the relative cost of implementing this is huge, compared to the benefits it would provide to a very small part of the average Swift codebase.&lt;/p&gt;
+
+&lt;p&gt;However, according to this &lt;a href=&#34;http://stackoverflow.com/questions/28124684/swift-check-if-generic-type-conforms-to-protocol&#34;&gt;Stack Overflow answer&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/Catfish_Man&#34;&gt;David Smith&lt;/a&gt;, Swift currently checks generic constraints at run time (unless the compiler generates specialized copies of a function for performance optimizations). This means the information about generic constraints is still available at run time and, at least in theory, the idea of dynamically created constrained metatypes might be possible.&lt;/p&gt;
+
+&lt;p&gt;For now it is helpful to understand the limitations of mixing static and dynamic type checking and to be aware of the possible workarounds.&lt;/p&gt;
+
+&lt;p&gt;I cannot finish this post without a fabulous quote from &lt;a href=&#34;https://twitter.com/AirspeedSwift&#34;&gt;@AirspeedSwift&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Runtime type checking and compile-time generics are like steak and ice-cream – both are nice but mixing them is a bit weird.
+- &lt;a href=&#34;http://stackoverflow.com/questions/28124684/swift-check-if-generic-type-conforms-to-protocol&#34;&gt;Source: StackOverflow.com&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;If you have corrections or general thoughts on this post, &lt;a href=&#34;https://twitter.com/benjaminencz&#34;&gt;I would love to hear from you&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Addendum&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;Russ Bishop (in the comments) and Joe Groff (on twitter) pointed out that the idea presented in this post is already being discussed as part of extending Swift&amp;rsquo;s support for generics. The twitter conversation also revealed that all compile time information is available at runtime, too. This opens the door for exciting extensions to Swift&amp;rsquo;s type system in future.&lt;/p&gt;
+
+&lt;p&gt;The relevant conversation on twitter is here:&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/xenadu02&#34;&gt;@xenadu02&lt;/a&gt; &lt;a href=&#34;https://twitter.com/benjaminencz&#34;&gt;@benjaminencz&lt;/a&gt; Everything in the static type system is in the runtime too. Making it all available&amp;#39;s a &amp;quot;simple matter of design&amp;quot;&lt;/p&gt;&amp;mdash; Joe Groff (@jckarter) &lt;a href=&#34;https://twitter.com/jckarter/status/720661475405094913&#34;&gt;April 14, 2016&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
 </description>
     </item>
     
