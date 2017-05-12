@@ -114,14 +114,14 @@ Now that we keep track of all changes, we can implement the undo/redo feature.
 
 {{< highlight swift >}}
 func undo() {
-        guard let undoRedoStep = self.undoStack.popLast() else {
-            return
-        }
-    
-        self.perform(undoRedoStep: undoRedoStep)
-    
-        self.redoStack.append(undoRedoStep.flip())
+    guard let undoRedoStep = self.undoStack.popLast() else {
+        return
     }
+
+    self.perform(undoRedoStep: undoRedoStep)
+
+    self.redoStack.append(undoRedoStep.flip())
+}
 
 func redo() {
     guard let undoRedoStep = self.redoStack.popLast() else {
