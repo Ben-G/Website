@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" A Simple Undo/Redo Implementation in Swift &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
+  	<meta property="og:url" content="http://blog.benjamin-encz.de/post/simple-undo-redo-swift/" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2017-05-11T22:24:54-08:00" />
+
+    
+    
+
+    <div id="navigation-bar">
+  <a href="http://blog.benjamin-encz.de/">Blog</a>
+  <a href="http://blog.benjamin-encz.de/about">About</a>
+  <a href="http://blog.benjamin-encz.de/speaking">Speaking</a>
+  
+</div>
+
+
+  <title>
+     A Simple Undo/Redo Implementation in Swift &middot;  [Thinking inside a large box];
+  </title>
+
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="apple-touch-icon" href="http://blog.benjamin-encz.de/images/apple-touch-icon.png" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/navigation_bar.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/base_style_tweaks.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata" />
+
+    
+      
+          <link href="http://blog.benjamin-encz.de/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.15" />
+
+    <link rel="canonical" href="http://blog.benjamin-encz.de/post/simple-undo-redo-swift/" />
+
+    
+
+    
+</head>
+<body class="nav-closed">
+
+  
+
+ <div class="site-wrapper">
+
+
+
+
+	<header class="main-header tag-head" style="background-image: url(http://blog.benjamin-encz.de/images/japan-backdrop.jpg)">
+
+<nav class="main-nav overlay clearfix">
+  
+      <a class="menu-button" href="http://blog.benjamin-encz.de/" style="float: left;">&lt; Home</a>
+  
+  
+    
+      <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+    
+  
+</nav>
+<div class="vertical">
+    <div class="main-header-content inner">
+        <a href="http://blog.benjamin-encz.de/" style="text-decoration: none;"><h1 class="page-title">[Thinking inside a large box];</h1></a>
+        <h2 class="page-description">
+            
+        </h2>
+    </div>
+</div>
+</header>
+
+
+    
+
+
+</header>
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+    <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
+        <h1 class="post-title">A Simple Undo/Redo Implementation in Swift</h1>
+        <small></small>
+
+        <section class="post-meta">
+        
+          <time class="post-date" datetime="2017-05-11T22:24:54-08:00">
+            May 11, 2017
+          </time>
+        
+         
+        </section>
+    </header>
+
+    <section class="post-content">
+
+
+
+
+<p><code>NSUndoManager</code> is a powerful API, but it is geared towards Objective-C code and relies on runtime features. This post demonstrates a simpler alternative that is better suitable for idiomatic Swift code.</p>
+
+<hr />
+
+<p>There are two fundamentally different ways to implement undo/redo:</p>
+
+<ul>
+<li>For every action, determine the counteraction and use it for the undo feature (<code>NSUndoManager</code> works this way)</li>
+<li><strong>Record the state of an entity before/after each action and implement undo as switching between these states</strong></li>
+</ul>
+
+<p>The second approach can be a lot simpler. It can be implemented generically, since there is no need to generate a counteraction for each action. The approach also works naturally with code that uses Swift value types.</p>
+
+<p>Let&rsquo;s dive right into an example implementation.</p>
+
+<h2 id="example-implementation:f38631c06dc52d51e25323771c266097">Example Implementation</h2>
+
+<p>Let&rsquo;s assume we want to implement undo/redo for annotations that are drawn onto a canvas.</p>
+
+<p><img src="Undo_Redo.png" alt="" /></p>
+
+<p>We&rsquo;re going to use the undo/redo approach in which we keep track of previous and current state for all annotations.</p>
+
+<p>At the end of the post you&rsquo;ll find a link to the full implementation. In the next few paragraphs I will outline the most important aspects.</p>
+
+<h3 id="scaffolding:f38631c06dc52d51e25323771c266097">Scaffolding</h3>
+
+<p>Here&rsquo;s a  simple Swift model for the annotation:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">Annotation</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Hashable</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87">Equatable</span> <span style="color: #000000; font-weight: bold">{</span>
+    <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">id</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">UUID</span>
+    <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">color</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">Color</span>
+    
+    <span style="color: #8f5902; font-style: italic">// ...</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+
+
+<p>We also have a state container that stores all the annotations that are currently on the canvas. Since this feature was implemented at PlanGrid where we use <a href="http://blog.benjamin-encz.de/post/real-world-flux-ios/">Flux</a>, we will also use a Flux store for this example.</p>
+
+<p>Besides storing all annotations, the store also has a reference to a database instance. The store keeps track of the in-memory state of all annotations on the canvas and it ensures that all changes are written to the database as well. To allow annotation changes, the store provides an interface for saving/deleting annotation (we&rsquo;ll get to the <code>isUndoRedo</code> argument in a moment). Lastly, the store keeps track of a stack of undo and redo steps.</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">AnnotationStore</span> <span style="color: #000000; font-weight: bold">{</span>
+
+    <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">db</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">DB</span>
+    <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">state</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">Set</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">Annotation</span><span style="color: #000000; font-weight: bold">&gt;</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">[]</span>
+    <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">undoStack</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">UndoRedoStep</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">Annotation</span><span style="color: #000000; font-weight: bold">&gt;]</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">[]</span>
+    <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">redoStack</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">UndoRedoStep</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">Annotation</span><span style="color: #000000; font-weight: bold">&gt;]</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">[]</span>
+    
+    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">save</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">Annotation</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">isUndoRedo</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Bool</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">false</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span> 
+    	<span style="color: #8f5902; font-style: italic">// ...</span>
+    <span style="color: #000000; font-weight: bold">}</span>
+    
+    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">delete</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">Annotation</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">isUndoRedo</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Bool</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">false</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
+    	<span style="color: #8f5902; font-style: italic">// ...</span>
+    <span style="color: #000000; font-weight: bold">}</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+
+
+<h3 id="undo-redo:f38631c06dc52d51e25323771c266097">Undo/Redo</h3>
+
+<p>Our Undo/Redo model is based on state changes. For each annotation that gets modified we keep track of the old and new value. This is the generic model we can use to describe an undo/redo step:</p>
+
+<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">UndoRedoStep</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">T</span><span style="color: #000000; font-weight: bold">&gt;</span> <span style="color: #000000; font-weight: bold">{</span>
+    <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">oldValue</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">T</span><span style="color: #000000; font-weight: bold">?</span>
+    <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">newValue</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">T</span><span style="color: #000000; font-weight: bold">?</span>
+    
+    <span style="color: #8f5902; font-style: italic">/// Converts and undo step into a redo step and vice-versa.</span>
+    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">flip</span><span style="color: #000000; font-weight: bold">()</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">UndoRedoStep</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">T</span><span style="color: #000000; font-weight: bold">&gt;</span> <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">UndoRedoStep</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">oldValue</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">newValue</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">newValue</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">oldValue</span><span style="color: #000000; font-weight: bold">)</span>
+    <span style="color: #000000; font-weight: bold">}</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+</p>
+
+<p>The methods that save and delete annotations, record an <code>UndoRedoStep&lt;Annotation&gt;</code> for each change and place it on the undo stack:</p>
+
+<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>  <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">save</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">Annotation</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">isUndoRedo</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Bool</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">false</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
+      <span style="color: #8f5902; font-style: italic">// Don&#39;t record undo step for actions that are performed </span>
+      <span style="color: #8f5902; font-style: italic">// as part of undo/redo.</span>
+      <span style="color: #204a87; font-weight: bold">if</span> <span style="color: #ce5c00; font-weight: bold">!</span><span style="color: #000000">isUndoRedo</span> <span style="color: #000000; font-weight: bold">{</span>
+          <span style="color: #8f5902; font-style: italic">// Fetch old value</span>
+          <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">oldValue</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">annotationById</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotationId</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">id</span><span style="color: #000000; font-weight: bold">)</span>
+          <span style="color: #8f5902; font-style: italic">// Store change on undo stack</span>
+          <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">undoStep</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">UndoRedoStep</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">oldValue</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">oldValue</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">newValue</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">)</span>
+          <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">undoStack</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">append</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">undoStep</span><span style="color: #000000; font-weight: bold">)</span>
+    
+          <span style="color: #8f5902; font-style: italic">// Reset redo stack after each user action that is not an undo/redo.</span>
+          <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">redoStack</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">[]</span>
+      <span style="color: #000000; font-weight: bold">}</span>
+    
+      <span style="color: #8f5902; font-style: italic">// Replace old with new annotation</span>
+      <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">state</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">remove</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">)</span>
+      <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">state</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #3465a4">insert</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">)</span>
+    
+      <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">db</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">saveAnnotation</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">)</span>
+  <span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+</p>
+
+<p>The deletion counterpart of this method is extremly similar, so I won&rsquo;t discuss it here.</p>
+
+<p>Now that we keep track of all changes, we can implement the undo/redo feature.</p>
+
+<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">undo</span><span style="color: #000000; font-weight: bold">()</span> <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">undoRedoStep</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">undoStack</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">popLast</span><span style="color: #000000; font-weight: bold">()</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span>
+            <span style="color: #204a87; font-weight: bold">return</span>
+        <span style="color: #000000; font-weight: bold">}</span>
+    
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">perform</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">undoRedoStep</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">undoRedoStep</span><span style="color: #000000; font-weight: bold">)</span>
+    
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">redoStack</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">append</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">undoRedoStep</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">flip</span><span style="color: #000000; font-weight: bold">())</span>
+    <span style="color: #000000; font-weight: bold">}</span>
+
+<span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">redo</span><span style="color: #000000; font-weight: bold">()</span> <span style="color: #000000; font-weight: bold">{</span>
+    <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">undoRedoStep</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">redoStack</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">popLast</span><span style="color: #000000; font-weight: bold">()</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #204a87; font-weight: bold">return</span>
+    <span style="color: #000000; font-weight: bold">}</span>
+    
+    <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">perform</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">undoRedoStep</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">undoRedoStep</span><span style="color: #000000; font-weight: bold">)</span>
+    
+    <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">undoStack</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">append</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">undoRedoStep</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">flip</span><span style="color: #000000; font-weight: bold">())</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+</p>
+
+<p>The code here is very simple. We fetch the latest undo/redo action from the stack. We perform the change recorded in that step in a separate method that is shared between undo and redo. Then we append the inverted version of the change to the opposite stack (e.g. an undo action is flipped and placed on the redo stack).</p>
+
+<p>The core of the undo/redo mechanism lives in the <code>perform(undoRedoStep:)</code> method.</p>
+
+<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">perform</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">undoRedoStep</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">UndoRedoStep</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">Annotation</span><span style="color: #000000; font-weight: bold">&gt;)</span> <span style="color: #000000; font-weight: bold">{</span>
+    <span style="color: #8f5902; font-style: italic">// Switch over the old and new value and call a store method that</span>
+    <span style="color: #8f5902; font-style: italic">// implements the transition between these values.</span>
+    <span style="color: #204a87; font-weight: bold">switch</span> <span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">undoRedoStep</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">oldValue</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">undoRedoStep</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">newValue</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
+    <span style="color: #8f5902; font-style: italic">// Old and new value are non-nil: </span>
+    <span style="color: #8f5902; font-style: italic">// we can undo by updating annotation with old value.</span>
+    <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">oldValue</span><span style="color: #000000; font-weight: bold">?,</span> <span style="color: #000000">newValue</span><span style="color: #000000; font-weight: bold">?):</span>
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">save</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">oldValue</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">isUndoRedo</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">true</span><span style="color: #000000; font-weight: bold">)</span>
+    <span style="color: #8f5902; font-style: italic">// Undo a deletion (new value is nil, old value was non-nil)</span>
+    <span style="color: #8f5902; font-style: italic">// by creating an annotation.</span>
+    <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">oldValue</span><span style="color: #000000; font-weight: bold">?,</span> <span style="color: #204a87; font-weight: bold">nil</span><span style="color: #000000; font-weight: bold">):</span>
+        <span style="color: #8f5902; font-style: italic">// Our `save` implementation also handles creates, but depending</span>
+        <span style="color: #8f5902; font-style: italic">// on your DB interface these might be separate methods.</span>
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">save</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">oldValue</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">isUndoRedo</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">true</span><span style="color: #000000; font-weight: bold">)</span>
+    <span style="color: #8f5902; font-style: italic">// Undo a creation (old value is nil, new value is non-nil) </span>
+    <span style="color: #8f5902; font-style: italic">// by deleting an annotation.</span>
+    <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">nil</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">newValue</span><span style="color: #000000; font-weight: bold">?):</span>
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">delete</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">newValue</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">isUndoRedo</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">true</span><span style="color: #000000; font-weight: bold">)</span>
+    <span style="color: #204a87; font-weight: bold">default</span><span style="color: #000000; font-weight: bold">:</span>
+        <span style="color: #3465a4">fatalError</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #4e9a06">&quot;Undo step with neither old nor new value makes no sense&quot;</span><span style="color: #000000; font-weight: bold">)</span>
+    <span style="color: #000000; font-weight: bold">}</span>
+<span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+</p>
+
+<p>We look at the old and the new value of each change. Then we call a method on the store that replaces the formerly new value with the formerly old value; that is the step that performs the undo/redo. In general we need to handle three cases:</p>
+
+<ul>
+<li>Undo creation of an annotation: can be done via deletion</li>
+<li>Undo deletion of an annotation: can be done via creation</li>
+<li>Undo the modification of an annotation: can be done by replacing existing annotation with new one</li>
+</ul>
+
+<p>The method above does this elegantly by leveraging Swift pattern matching.</p>
+
+<p>The Store API now allows us to modify annotations and undo changes:</p>
+
+<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">annotation</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">Annotation</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">color</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">red</span><span style="color: #000000; font-weight: bold">)</span>
+<span style="color: #000000">store</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">save</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #8f5902; font-style: italic">// annotation is red</span>
+
+<span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">color</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">blue</span>
+<span style="color: #000000">store</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">save</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">annotation</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #8f5902; font-style: italic">// annotation is blue</span>
+
+<span style="color: #000000">store</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">undo</span><span style="color: #000000; font-weight: bold">()</span>
+<span style="color: #3465a4">print</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">store</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">annotations</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #8f5902; font-style: italic">// prints one annotation in &quot;red&quot;</span>
+</pre></div>
+</p>
+
+<h2 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h2>
+
+<p>That&rsquo;s all there is. By leveraging Swift&rsquo;s value types we can keep track of multiple versions of an entity. We can then implement undo/redo as switching between entity states. This has the advantage that we don&rsquo;t need to generate counteractions for all user actions.</p>
+
+<p>I&rsquo;m assuming in future we will see more alternatives to Cocoa APIs that are simpler and more suitable for Swift.</p>
+
+<p>You can find a <a href="https://github.com/Ben-G/UndoRedoSwift">Playground with a fully working example here</a>.</p>
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+  
+
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a> (<a href="https://jobs.lever.co/plangrid?lever-via=SzsN-_Jgq1">We're hiring!</a>)<br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=A%20Simple%20Undo%2fRedo%20Implementation%20in%20Swift&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fsimple-undo-redo-swift%2f"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fsimple-undo-redo-swift%2f"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fsimple-undo-redo-swift%2f"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
+
+    
+
+<span id="comment_section"></span>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/simple-undo-redo-swift\/';
+
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/simple-undo-redo-swift\/';
+    }
+  }
+
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/index.js"></script>
+    
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-48608026-1', 'benjamin-encz.de');
+      ga('send', 'pageview');
+    </script>
+</body>
+</html>
+
