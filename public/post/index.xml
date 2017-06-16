@@ -6,8 +6,118 @@
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 11 May 2017 22:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Fri, 16 Jun 2017 22:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Another Small UIKit Debugging Adventure</title>
+      <link>http://blog.benjamin-encz.de/post/another-small-uikit-debugging-adventure/</link>
+      <pubDate>Fri, 16 Jun 2017 22:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/another-small-uikit-debugging-adventure/</guid>
+      <description>
+
+&lt;p&gt;Working with closed source APIs sometimes requires us to use advanced debugging techniques to track down issues that cannot be explained by our application code alone.&lt;/p&gt;
+
+&lt;p&gt;This week I had an interesting debugging session in which I learned more about the behavior of apps with multiple &lt;code&gt;UIWindows&lt;/code&gt;. These kind of posts are mostly useful for me as an attempt to retain some knowledge. But I hope this story is entertaining and useful to you too!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;the-mistery:f38631c06dc52d51e25323771c266097&#34;&gt;The Mistery&lt;/h2&gt;
+
+&lt;p&gt;At PlanGrid we recently integrated the &lt;a href=&#34;https://github.com/mapbox/Fingertips&#34;&gt;Mapbox Fingertips&lt;/a&gt; library to build a presentation mode for our app. The library allows enabling a mode in which all user touches are visualized on the screen.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;When testing the changed we noticed that, under certain circumstances, our app would no longer present &lt;code&gt;UIMenuController&lt;/code&gt; instances.&lt;/strong&gt; This happened despite the debugger showing that the following line was running:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[_menu setMenuVisible:YES animated:YES];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We found a way to reproduce the issue, but it still wasn&amp;rsquo;t clear why &lt;code&gt;UIMenuController&lt;/code&gt;s would not show up in certain situations.&lt;/p&gt;
+
+&lt;p&gt;I found a few hints around the internet. There are a surprising amount of prerequsites for menu controllers to work correctly. From &lt;a href=&#34;https://stackoverflow.com/a/23839272/1046430&#34;&gt;StackOverflow&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;The menu handler must be a UIView. If it isn&amp;rsquo;t, &lt;code&gt;-becomeFirstResponder&lt;/code&gt; fails.&lt;/li&gt;
+&lt;li&gt;The menu handler must have &lt;code&gt;userInteractionEnabled = YES&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;The menu handler must be in the view hierarchy and its &lt;code&gt;-window&lt;/code&gt; property must be the same as the window for the view in the &lt;code&gt;inView:&lt;/code&gt; argument.&lt;/li&gt;
+&lt;li&gt;You need to implement &lt;code&gt;-canBecomeFirstResponder&lt;/code&gt; and return &lt;code&gt;YES&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;You need to call &lt;code&gt;[handler becomeFirstResponder]&lt;/code&gt;, before &lt;code&gt;[menu setTargetRect:inView:]&lt;/code&gt; is called, or the latter will fail.&lt;/li&gt;
+&lt;li&gt;You need to call &lt;code&gt;[menu setTargetRect:inView]&lt;/code&gt; (at least once) and &lt;code&gt;[menu setMenuVisible:animated:]&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;However, all of these requirements were fullfilled!&lt;/p&gt;
+
+&lt;h2 id=&#34;an-insight:f38631c06dc52d51e25323771c266097&#34;&gt;An Insight&lt;/h2&gt;
+
+&lt;p&gt;After some regular inspection of variables, etc. I decided to open the view hierarchy debugger. There I noticed something interesting. When in presentation mode our app would have two &lt;code&gt;UIWindow&lt;/code&gt; instances. The &lt;code&gt;MBFingerTipWindow&lt;/code&gt;, the main application window, and the &lt;code&gt;MBFingerTipOverlayWindow&lt;/code&gt;, a second window that is used to visualize a user&amp;rsquo;s touches. I also noticed that in the case in which &lt;code&gt;UIMenuController&lt;/code&gt;s would no longer show up, the &lt;code&gt;MBFingerTipOverlayWindow&lt;/code&gt; would be they &lt;code&gt;keyWindow&lt;/code&gt; of the application. This was unexpected as typically the main application window remains the &lt;code&gt;keyWindow&lt;/code&gt; throughout the entire time an app is open.&lt;/p&gt;
+
+&lt;p&gt;By googling for &lt;code&gt;UIMenuController&lt;/code&gt; and &lt;code&gt;keyWindow&lt;/code&gt; I could find this &lt;a href=&#34;http://supereasyapps.com/blog/2014/4/17/show-the-uimenucontroller-and-display-custom-edit-menus-for-uiviewcontroller-uitableviewcontroller-and-uicollectionview-on-ios-7&#34;&gt;very helpful blog post&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The UIMenuController can only be displayed on the key window. There are times where you might use someone else&amp;rsquo;s library or framework to display a full-screen advertisement or maybe a mobile printing solution like Sincerely Ship. In these cases I have run into issues where the third-party code has changed key windows, by adding their own UIWindow and didn&amp;rsquo;t reset the key window.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This means there are 7 (not 6) prerequisites for successfully presenting a &lt;code&gt;UIMenuViewController&lt;/code&gt;!&lt;/p&gt;
+
+&lt;h2 id=&#34;leveraging-symbolic-breakpoints-the-disassembler:f38631c06dc52d51e25323771c266097&#34;&gt;Leveraging Symbolic Breakpoints &amp;amp; The Disassembler&lt;/h2&gt;
+
+&lt;p&gt;At this point I knew that for some reason the &lt;code&gt;MBFingerTipOverlayWindow&lt;/code&gt; was becoming the &lt;code&gt;keyWindow&lt;/code&gt;, which prevented the &lt;code&gt;UIMenuController&lt;/code&gt; from being presented. However, I still did not know why that was happening. Symbolic breakpoints to the rescue!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;SymbolicBreakpoint.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;With this breakpoint in place I was able to see whenever the &lt;code&gt;keyWindow&lt;/code&gt; changed. I went through our reproduction case and trapped in the symbolic breakpoint:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;SymbolicBreakpointTrap.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Stepping up through the stack I could find the place in our application code that triggered the window change:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;AlertController.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The code in the screenshot is from a &lt;a href=&#34;https://github.com/hightower/UIAlertController-Show&#34;&gt;shim&lt;/a&gt; that we added to the codebase when migrating to iOS 10. It that allowed us to retain the deprecated &lt;code&gt;UIAlertView&lt;/code&gt; API for places in which switching to &lt;code&gt;UIAlertViewController&lt;/code&gt; would have been a fair amount of work (we have a lot of alerts, but after this issue we decided to remove the shim for good).&lt;/p&gt;
+
+&lt;p&gt;The shim allows presenting a &lt;code&gt;UIAlertViewController&lt;/code&gt; by simply calling a &lt;code&gt;show&lt;/code&gt; method. That &lt;code&gt;show&lt;/code&gt; method creates a new &lt;code&gt;UIWindow&lt;/code&gt; that is presented on top of the main application window. When the alert view gets hidden, the newly created &lt;code&gt;UIWindow&lt;/code&gt; is made unvisible. As you can see in the stacktrace, this is what triggers the &lt;code&gt;keyWindow&lt;/code&gt; to change!&lt;/p&gt;
+
+&lt;p&gt;The first stacktrace screenshot shows that an internal UIKit function called &lt;code&gt;_FindNewKeyWindowIgnoringWindow&lt;/code&gt; is called immediately before they &lt;code&gt;keyWindow&lt;/code&gt; is changed.&lt;/p&gt;
+
+&lt;p&gt;Using the Hopper Disassembler we can take a peak at the implementation of that function:
+&lt;img src=&#34;FindKeyWindow.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;By looking at the pseudo code it becomes obvious that UIKit picks the &lt;strong&gt;topmost window as the new &lt;code&gt;keyWindow&lt;/code&gt; as soon as the current &lt;code&gt;keyWindow&lt;/code&gt; becomes invisible&lt;/strong&gt;. This meant that the presentation of &lt;code&gt;UIMenuController&lt;/code&gt;s would stop working after the alert shim was used, because the overlay window would mistakenly become they &lt;code&gt;keyWindow&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;At this point the fix became straightorward; we needed to remember the previous key window when presenting the alert and reset the key window correctly upon dismissal:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;override&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;open&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;viewDidDisappear&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;animated&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Bool&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;super&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;viewDidDisappear&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;animated&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
+
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;alertWindow&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;isHidden&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;true&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;alertWindow&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// After hiding the alert, make the previous &lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// key window the current key window again.&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// By default UIKit picks the top most window,&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// which might or might not be the correct&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// key window. In our case we show a tap visualization &lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// overlay window (`MBFingerTipOverlayWindow`) on top &lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// of the main window and we want to avoid that overaly&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Window to become the key window. Among other reasons,&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// setting the correct key window is&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// important as `UIMenuController`s can only be&lt;/span&gt;
+        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// presented in the key window.&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;previousKeyWindow&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;makeKey&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
+        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;previousKeyWindow&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id=&#34;conclusion:f38631c06dc52d51e25323771c266097&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;When working with closed source APIs advanced debugging and some basic reverse engineers skills can be handy once in a while - so I try to practive when I can.&lt;/p&gt;
+
+&lt;p&gt;Also, the &lt;code&gt;UIMenuController&lt;/code&gt; API is not very developer friendly!&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>A Simple Undo/Redo Implementation in Swift</title>
@@ -2250,171 +2360,6 @@ The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of 
 &lt;li&gt;&lt;a href=&#34;http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based&#34;&gt;Breakpoint Commands in lldb&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Another post on calling conventions in Objective-C by Jeff Hui, recommended by&lt;a href=&#34;https://twitter.com/rpy&#34;&gt;@rpy&lt;/a&gt;: &lt;a href=&#34;https://www.jeffhui.net/2014/03-reverse-engineering-objective-c.html&#34;&gt;Reverse Engineering Objective-C&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Decoding Heterogeneous Collections in Swift</title>
-      <link>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</link>
-      <pubDate>Tue, 03 May 2016 10:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</guid>
-      <description>
-
-&lt;p&gt;The problem of decoding Swift types from an outside data source, such as JSON, has been mostly solved. Since Swift&amp;rsquo;s release we&amp;rsquo;ve seen more than a dozen popular JSON mapping libraries pop up.&lt;/p&gt;
-
-&lt;p&gt;However, most of the libraries I&amp;rsquo;ve seen so far deal with decoding individual types, not entire collections of heterogeneous types.&lt;/p&gt;
-
-&lt;p&gt;We define how a JSON object representing a user can be mapped to a &lt;code&gt;User&lt;/code&gt; type, as in this example:&lt;/p&gt;
-
-&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Decodable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;age&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;
-
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;decode&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;AnyObject&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;throws&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;try&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
-            &lt;span style=&#34;color: #000000&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
-            &lt;span style=&#34;color: #000000&#34;&gt;age&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;
-        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;This approach requires the developer to know that a certain piece of JSON will ever only contain user objects.&lt;/p&gt;
-
-&lt;p&gt;But how can we handle heterogeneous collections like the following one?&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt; [
-  {
-      &amp;quot;type&amp;quot; : &amp;quot;user&amp;quot;,
-      &amp;quot;name&amp;quot; : &amp;quot;test&amp;quot;,
-      &amp;quot;age&amp;quot;  : 99
-  },
-  {
-      &amp;quot;type&amp;quot;  : &amp;quot;car&amp;quot;,
-      &amp;quot;color&amp;quot; : &amp;quot;green&amp;quot;
-  },
-  {
-      &amp;quot;type&amp;quot; : &amp;quot;phone&amp;quot;,
-      &amp;quot;model&amp;quot; : &amp;quot;iPhone&amp;quot;
-  },
-  {
-      &amp;quot;type&amp;quot;  : &amp;quot;car&amp;quot;,
-      &amp;quot;color&amp;quot; : &amp;quot;yellow&amp;quot;
-  },
-  {
-      &amp;quot;type&amp;quot; : &amp;quot;phone&amp;quot;,
-      &amp;quot;model&amp;quot; : &amp;quot;Anroid Device&amp;quot;
-  }
-]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;In this example we have three different types: &amp;ldquo;user&amp;rdquo;, &amp;ldquo;car&amp;rdquo; and &amp;ldquo;phone&amp;rdquo;, that can occur anywhere throughout the JSON array. In order to use one of the JSON mapping libraries we would need to inspect each individual element in this list, identify it&amp;rsquo;s type, and then call the initializer of the respective Swift type.&lt;/p&gt;
-
-&lt;h2 id=&#34;dynamically-mapping-json-entities-and-types:f38631c06dc52d51e25323771c266097&#34;&gt;Dynamically Mapping JSON Entities and Types&lt;/h2&gt;
-
-&lt;p&gt;In Objective-C it would be fairly easy to solve this problem automatically. We can rely on the Objective-C runtime to dynamically look up a class by its name and create the relevant instance for each entity we find in the JSON array.&lt;/p&gt;
-
-&lt;p&gt;In Swift we cannot rely on these run time mechanisms, but we can still create a mapping between a JSON type and a Swift type.&lt;/p&gt;
-
-&lt;p&gt;The first step is to introduce a protocol for all types that can be deserialized with our new mechanism. These types will need to fulfill two requirements:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;They need to be able to be initialized with a JSON entity&lt;/li&gt;
-&lt;li&gt;They need to provide a &lt;code&gt;typeIdentifier&lt;/code&gt; string that we can use to match the &amp;ldquo;type&amp;rdquo; identifier from our JSON example above.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Here&amp;rsquo;s what the protocol looks like in my example:&lt;/p&gt;
-
-&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;protocol&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Decodable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;typeIdentifier&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;get&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Note that I&amp;rsquo;m relying on the &lt;a href=&#34;https://github.com/Anviking/Decodable&#34;&gt;Decodable&lt;/a&gt; JSON mapping library to require the JSON initializer for me via the &lt;code&gt;Decodable&lt;/code&gt; protocol.&lt;/p&gt;
-
-&lt;p&gt;Each of the individual types will now implement this protocol. Here&amp;rsquo;s an example for the &lt;code&gt;User&lt;/code&gt; type:&lt;/p&gt;
-
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;typeIdentifier&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;user&amp;quot;&lt;/span&gt;
-
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;age&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Int&lt;/span&gt;
-
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;decode&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;AnyObject&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;throws&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;try&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;
-            &lt;span style=&#34;color: #000000&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt;
-            &lt;span style=&#34;color: #000000&#34;&gt;age&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #ce5c00; font-weight: bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;age&amp;quot;&lt;/span&gt;
-        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
-
-&lt;p&gt;This is mostly the regular JSON mapping code we&amp;rsquo;re familiar with. The only addition is the static &lt;code&gt;typeIdentifier&lt;/code&gt; member that tells us what this type is called in the JSON array.&lt;/p&gt;
-
-&lt;p&gt;We also implement this protocol for the other types represented in the JSON array (&lt;code&gt;Car&lt;/code&gt;and  &lt;code&gt;Phone&lt;/code&gt;) but I will spare you the details of that&amp;hellip;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Now to the interesting part.&lt;/strong&gt; We need a component that can take the entire, heterogeneous,  array of JSON objects, can iterate over all of them and create the correct Swift instances based on the types it finds.&lt;/p&gt;
-
-&lt;p&gt;For this example I&amp;rsquo;ve called the type &lt;code&gt;Deserializer&lt;/code&gt;. Here&amp;rsquo;s what it looks like:&lt;/p&gt;
-
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializer&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;modelLookupTable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;Type&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[:]&lt;/span&gt;
-
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;init&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;models&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;Type&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;])&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Store all types in lookup table&lt;/span&gt;
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;model&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;models&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;modelLookupTable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;model&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;typeIdentifier&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;model&lt;/span&gt;
-        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-
-    &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;deserialize&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[[&lt;/span&gt;&lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;AnyObject&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]])&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;var&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;parsedModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;Deserializable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[]&lt;/span&gt;
-
-        &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Iterate over each entity in the JSON array&lt;/span&gt;
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;jsonEntity&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;json&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-            &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Find metatype for this entity&lt;/span&gt;
-            &lt;span style=&#34;color: #000000&#34;&gt;guard&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;jsonEntity&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #4e9a06&#34;&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;as&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;continue&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-            &lt;span style=&#34;color: #000000&#34;&gt;guard&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;modelMetatype&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;modelLookupTable&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;type&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;continue&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-
-            &lt;span style=&#34;color: #8f5902; font-style: italic&#34;&gt;// Call initializer on the metatype&lt;/span&gt;
-            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;model&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;try&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;modelMetatype&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;decode&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;jsonEntity&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-                &lt;span style=&#34;color: #000000&#34;&gt;parsedModels&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;append&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;model&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-            &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;parsedModels&lt;/span&gt;
-    &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
-
-&lt;p&gt;This type gets initialized with an array of model metatypes (&lt;code&gt;[Deserializable.Type]&lt;/code&gt;). This is necessary in order for the component to know which types can appear within the JSON array it will deserialize. Since we cannot dynamically look up types at runtime, we need to require a developer to manually provide all the types as part of the &lt;code&gt;Deserializer&lt;/code&gt; setup.&lt;/p&gt;
-
-&lt;p&gt;We now store these types in a &lt;code&gt;modelLookupTable&lt;/code&gt;. This is a simple dictionary that maps from the types &lt;code&gt;typeIdentifier&lt;/code&gt; to the metatype itself. We will use this lookup table within the &lt;code&gt;deserialize&lt;/code&gt; method.&lt;/p&gt;
-
-&lt;p&gt;The &lt;code&gt;deserialize&lt;/code&gt; method takes a JSON array and returns a heterogenous list of &lt;code&gt;Deserializable&lt;/code&gt; models. The implementation iterates over each entity in the JSON array. It extracts the &amp;ldquo;type&amp;rdquo; property from each entity and uses that string to find the relevant metatype in our &lt;code&gt;modelLookupTable&lt;/code&gt;. If we can find a Swift type that matches the JSON type identifier then we will proceed and try to &lt;code&gt;decode&lt;/code&gt; that type with the current &lt;code&gt;jsonEntity&lt;/code&gt;.
-If the decoding works successfully, we add the instantiated type to the &lt;code&gt;parsedModels&lt;/code&gt; array.
-At the end of the &lt;code&gt;deserialize&lt;/code&gt; function we return the list of decoded models.&lt;/p&gt;
-
-&lt;p&gt;With all this in place, we can now create an instance of the deserializer and use it:&lt;/p&gt;
-
-&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;deserializer&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Deserializer&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;models&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;User&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Car&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;Phone&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;])&lt;/span&gt;
-&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;models&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;deserializer&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;deserialize&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;jsonArray&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-
-&lt;span style=&#34;color: #3465a4&#34;&gt;print&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;models&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;/p&gt;
-
-&lt;p&gt;The printed output will now be a list of the different instances that have been decoded:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[User(name: &amp;quot;test&amp;quot;, age: 99), Car(color: &amp;quot;green&amp;quot;), Phone(model: &amp;quot;iPhone&amp;quot;), Car(color: &amp;quot;yellow&amp;quot;), Phone(model: &amp;quot;Anroid Device&amp;quot;)]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I hope this concept is useful to some other Swift developers as well. You can find a playground with the full example code on &lt;a href=&#34;https://github.com/Ben-G/Decoding-Heterogeneous-Collections-Swift/blob/master/Decodable.playground/Contents.swift&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 </description>
     </item>
     
