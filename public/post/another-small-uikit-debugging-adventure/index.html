@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" Another Small UIKit Debugging Adventure &middot;  [Thinking inside a large box];" />
+  	<meta property="og:site_name" content="[Thinking inside a large box];" />
+  	<meta property="og:url" content="http://blog.benjamin-encz.de/post/another-small-uikit-debugging-adventure/" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2017-06-16T22:24:54-08:00" />
+
+    
+    
+
+    <div id="navigation-bar">
+  <a href="http://blog.benjamin-encz.de/">Blog</a>
+  <a href="http://blog.benjamin-encz.de/about">About</a>
+  <a href="http://blog.benjamin-encz.de/speaking">Speaking</a>
+  
+</div>
+
+
+  <title>
+     Another Small UIKit Debugging Adventure &middot;  [Thinking inside a large box];
+  </title>
+
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="apple-touch-icon" href="http://blog.benjamin-encz.de/images/apple-touch-icon.png" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/navigation_bar.css" />
+    <link rel="stylesheet" type="text/css" href="http://blog.benjamin-encz.de/css/base_style_tweaks.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata" />
+
+    
+      
+          <link href="http://blog.benjamin-encz.de/index.xml" rel="alternate" type="application/rss+xml" title="[Thinking inside a large box];" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.15" />
+
+    <link rel="canonical" href="http://blog.benjamin-encz.de/post/another-small-uikit-debugging-adventure/" />
+
+    
+
+    
+</head>
+<body class="nav-closed">
+
+  
+
+ <div class="site-wrapper">
+
+
+
+
+	<header class="main-header tag-head" style="background-image: url(http://blog.benjamin-encz.de/images/japan-backdrop.jpg)">
+
+<nav class="main-nav overlay clearfix">
+  
+      <a class="menu-button" href="http://blog.benjamin-encz.de/" style="float: left;">&lt; Home</a>
+  
+  
+    
+      <a class="menu-button icon-feed" href="">&nbsp;&nbsp;Subscribe</a>
+    
+  
+</nav>
+<div class="vertical">
+    <div class="main-header-content inner">
+        <a href="http://blog.benjamin-encz.de/" style="text-decoration: none;"><h1 class="page-title">[Thinking inside a large box];</h1></a>
+        <h2 class="page-description">
+            
+        </h2>
+    </div>
+</div>
+</header>
+
+
+    
+
+
+</header>
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+    <header class="post-header">
+      <nav class="breadcrumb">
+        
+        
+        
+      </nav>
+
+
+        <h1 class="post-title">Another Small UIKit Debugging Adventure</h1>
+        <small></small>
+
+        <section class="post-meta">
+        
+          <time class="post-date" datetime="2017-06-16T22:24:54-08:00">
+            Jun 16, 2017
+          </time>
+        
+         
+        </section>
+    </header>
+
+    <section class="post-content">
+
+
+
+
+<p>Working with closed source APIs sometimes requires us to use advanced debugging techniques to track down issues that cannot be explained by our application code alone.</p>
+
+<p>This week I had an interesting debugging session in which I learned more about the behavior of apps with multiple <code>UIWindows</code>. These kind of posts are mostly useful for me as an attempt to retain some knowledge. But I hope this story is entertaining and useful to you too!</p>
+
+<hr />
+
+<h2 id="the-mistery:f38631c06dc52d51e25323771c266097">The Mistery</h2>
+
+<p>At PlanGrid we recently integrated the <a href="https://github.com/mapbox/Fingertips">Mapbox Fingertips</a> library to build a presentation mode for our app. The library allows enabling a mode in which all user touches are visualized on the screen.</p>
+
+<p><strong>When testing the changed we noticed that, under certain circumstances, our app would no longer present <code>UIMenuController</code> instances.</strong> This happened despite the debugger showing that the following line was running:</p>
+
+<pre><code>[_menu setMenuVisible:YES animated:YES];
+</code></pre>
+
+<p>We found a way to reproduce the issue, but it still wasn&rsquo;t clear why <code>UIMenuController</code>s would not show up in certain situations.</p>
+
+<p>I found a few hints around the internet. There are a surprising amount of prerequsites for menu controllers to work correctly. From <a href="https://stackoverflow.com/a/23839272/1046430">StackOverflow</a>:</p>
+
+<blockquote>
+<ol>
+<li>The menu handler must be a UIView. If it isn&rsquo;t, <code>-becomeFirstResponder</code> fails.</li>
+<li>The menu handler must have <code>userInteractionEnabled = YES</code></li>
+<li>The menu handler must be in the view hierarchy and its <code>-window</code> property must be the same as the window for the view in the <code>inView:</code> argument.</li>
+<li>You need to implement <code>-canBecomeFirstResponder</code> and return <code>YES</code>.</li>
+<li>You need to call <code>[handler becomeFirstResponder]</code>, before <code>[menu setTargetRect:inView:]</code> is called, or the latter will fail.</li>
+<li>You need to call <code>[menu setTargetRect:inView]</code> (at least once) and <code>[menu setMenuVisible:animated:]</code>.</li>
+</ol>
+</blockquote>
+
+<p>However, all of these requirements were fullfilled!</p>
+
+<h2 id="an-insight:f38631c06dc52d51e25323771c266097">An Insight</h2>
+
+<p>After some regular inspection of variables, etc. I decided to open the view hierarchy debugger. There I noticed something interesting. When in presentation mode our app would have two <code>UIWindow</code> instances. The <code>MBFingerTipWindow</code>, the main application window, and the <code>MBFingerTipOverlayWindow</code>, a second window that is used to visualize a user&rsquo;s touches. I also noticed that in the case in which <code>UIMenuController</code>s would no longer show up, the <code>MBFingerTipOverlayWindow</code> would be they <code>keyWindow</code> of the application. This was unexpected as typically the main application window remains the <code>keyWindow</code> throughout the entire time an app is open.</p>
+
+<p>By googling for <code>UIMenuController</code> and <code>keyWindow</code> I could find this <a href="http://supereasyapps.com/blog/2014/4/17/show-the-uimenucontroller-and-display-custom-edit-menus-for-uiviewcontroller-uitableviewcontroller-and-uicollectionview-on-ios-7">very helpful blog post</a>:</p>
+
+<blockquote>
+<p>The UIMenuController can only be displayed on the key window. There are times where you might use someone else&rsquo;s library or framework to display a full-screen advertisement or maybe a mobile printing solution like Sincerely Ship. In these cases I have run into issues where the third-party code has changed key windows, by adding their own UIWindow and didn&rsquo;t reset the key window.</p>
+</blockquote>
+
+<p>This means there are 7 (not 6) prerequisites for successfully presenting a <code>UIMenuViewController</code>!</p>
+
+<h2 id="leveraging-symbolic-breakpoints-the-disassembler:f38631c06dc52d51e25323771c266097">Leveraging Symbolic Breakpoints &amp; The Disassembler</h2>
+
+<p>At this point I knew that for some reason the <code>MBFingerTipOverlayWindow</code> was becoming the <code>keyWindow</code>, which prevented the <code>UIMenuController</code> from being presented. However, I still did not know why that was happening. Symbolic breakpoints to the rescue!</p>
+
+<p><img src="SymbolicBreakpoint.png" alt="" /></p>
+
+<p>With this breakpoint in place I was able to see whenever the <code>keyWindow</code> changed. I went through our reproduction case and trapped in the symbolic breakpoint:</p>
+
+<p><img src="SymbolicBreakpointTrap.png" alt="" /></p>
+
+<p>Stepping up through the stack I could find the place in our application code that triggered the window change:</p>
+
+<p><img src="AlertController.png" alt="" /></p>
+
+<p>The code in the screenshot is from a <a href="https://github.com/hightower/UIAlertController-Show">shim</a> that we added to the codebase when migrating to iOS 10. It that allowed us to retain the deprecated <code>UIAlertView</code> API for places in which switching to <code>UIAlertViewController</code> would have been a fair amount of work (we have a lot of alerts, but after this issue we decided to remove the shim for good).</p>
+
+<p>The shim allows presenting a <code>UIAlertViewController</code> by simply calling a <code>show</code> method. That <code>show</code> method creates a new <code>UIWindow</code> that is presented on top of the main application window. When the alert view gets hidden, the newly created <code>UIWindow</code> is made unvisible. As you can see in the stacktrace, this is what triggers the <code>keyWindow</code> to change!</p>
+
+<p>The first stacktrace screenshot shows that an internal UIKit function called <code>_FindNewKeyWindowIgnoringWindow</code> is called immediately before they <code>keyWindow</code> is changed.</p>
+
+<p>Using the Hopper Disassembler we can take a peak at the implementation of that function:
+<img src="FindKeyWindow.png" alt="" /></p>
+
+<p>By looking at the pseudo code it becomes obvious that UIKit picks the <strong>topmost window as the new <code>keyWindow</code> as soon as the current <code>keyWindow</code> becomes invisible</strong>. This meant that the presentation of <code>UIMenuController</code>s would stop working after the alert shim was used, because the overlay window would mistakenly become they <code>keyWindow</code>.</p>
+
+<p>At this point the fix became straightorward; we needed to remember the previous key window when presenting the alert and reset the key window correctly upon dismissal:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">override</span> <span style="color: #000000">open</span> <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">viewDidDisappear</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">_</span> <span style="color: #000000">animated</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Bool</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
+        <span style="color: #204a87; font-weight: bold">super</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">viewDidDisappear</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">animated</span><span style="color: #000000; font-weight: bold">)</span>
+
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">alertWindow</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">isHidden</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">true</span>
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">alertWindow</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">nil</span>
+
+        <span style="color: #8f5902; font-style: italic">// After hiding the alert, make the previous </span>
+        <span style="color: #8f5902; font-style: italic">// key window the current key window again.</span>
+        <span style="color: #8f5902; font-style: italic">// By default UIKit picks the top most window,</span>
+        <span style="color: #8f5902; font-style: italic">// which might or might not be the correct</span>
+        <span style="color: #8f5902; font-style: italic">// key window. In our case we show a tap visualization </span>
+        <span style="color: #8f5902; font-style: italic">// overlay window (`MBFingerTipOverlayWindow`) on top </span>
+        <span style="color: #8f5902; font-style: italic">// of the main window and we want to avoid that overaly</span>
+        <span style="color: #8f5902; font-style: italic">// Window to become the key window. Among other reasons,</span>
+        <span style="color: #8f5902; font-style: italic">// setting the correct key window is</span>
+        <span style="color: #8f5902; font-style: italic">// important as `UIMenuController`s can only be</span>
+        <span style="color: #8f5902; font-style: italic">// presented in the key window.</span>
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">previousKeyWindow</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">makeKey</span><span style="color: #000000; font-weight: bold">()</span>
+        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">previousKeyWindow</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">nil</span>
+    <span style="color: #000000; font-weight: bold">}</span>
+</pre></div>
+
+
+<h2 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h2>
+
+<p>When working with closed source APIs advanced debugging and some basic reverse engineers skills can be handy once in a while - so I try to practive when I can.</p>
+
+<p>Also, the <code>UIMenuController</code> API is not very developer friendly!</p>
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+  
+
+      
+
+    <footer class="post-footer">
+    <section class="author">
+        <h4>Benjamin Encz</h4>
+        <p>Find me on twitter: <a href="https://twitter.com/benjaminencz">@benjaminencz</a>
+        <p>Engineer <a href="https://www.plangrid.com/en">@PlanGrid</a> (<a href="https://jobs.lever.co/plangrid?lever-via=SzsN-_Jgq1">We're hiring!</a>)<br></p>
+    </section>
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Another%20Small%20UIKit%20Debugging%20Adventure&amp;url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fanother-small-uikit-debugging-adventure%2f"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fanother-small-uikit-debugging-adventure%2f"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2fblog.benjamin-encz.de%2fpost%2fanother-small-uikit-debugging-adventure%2f"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+    
+
+</footer>
+
+
+    
+
+<span id="comment_section"></span>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+  var disqus_shortname = 'benjaminencz';
+  var disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/another-small-uikit-debugging-adventure\/';
+
+  if (disqus_url === undefined) {
+    if (window.location.hostname == "localhost") {
+        
+        disqus_url = undefined;
+    } else {
+        disqus_url = 'http:\/\/blog.benjamin-encz.de\/post\/another-small-uikit-debugging-adventure\/';
+    }
+  }
+
+  (function() {
+    if (disqus_url == '' || disqus_url == undefined) {
+        return
+    }
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">[Thinking inside a large box];</a> </section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://blog.benjamin-encz.de/js/index.js"></script>
+    
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-48608026-1', 'benjamin-encz.de');
+      ga('send', 'pageview');
+    </script>
+</body>
+</html>
+
