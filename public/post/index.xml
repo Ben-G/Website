@@ -23,7 +23,7 @@
 
 &lt;hr /&gt;
 
-&lt;h2 id=&#34;the-mistery:f38631c06dc52d51e25323771c266097&#34;&gt;The Mistery&lt;/h2&gt;
+&lt;h2 id=&#34;the-mystery:f38631c06dc52d51e25323771c266097&#34;&gt;The Mystery&lt;/h2&gt;
 
 &lt;p&gt;At PlanGrid we recently integrated the &lt;a href=&#34;https://github.com/mapbox/Fingertips&#34;&gt;Mapbox Fingertips&lt;/a&gt; library to build a presentation mode for our app. The library allows enabling a mode in which all user touches are visualized on the screen.&lt;/p&gt;
 
@@ -34,7 +34,7 @@
 
 &lt;p&gt;We found a way to reproduce the issue, but it still wasn&amp;rsquo;t clear why &lt;code&gt;UIMenuController&lt;/code&gt;s would not show up in certain situations.&lt;/p&gt;
 
-&lt;p&gt;I found a few hints around the internet. There are a surprising amount of prerequsites for menu controllers to work correctly. From &lt;a href=&#34;https://stackoverflow.com/a/23839272/1046430&#34;&gt;StackOverflow&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;I found a few hints around the internet. There are a surprising amount of prerequisites for menu controllers to work correctly. From &lt;a href=&#34;https://stackoverflow.com/a/23839272/1046430&#34;&gt;StackOverflow&lt;/a&gt;:&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;ol&gt;
@@ -47,7 +47,7 @@
 &lt;/ol&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;However, all of these requirements were fullfilled!&lt;/p&gt;
+&lt;p&gt;However, all of these requirements were fulfilled!&lt;/p&gt;
 
 &lt;h2 id=&#34;an-insight:f38631c06dc52d51e25323771c266097&#34;&gt;An Insight&lt;/h2&gt;
 
@@ -77,7 +77,7 @@
 
 &lt;p&gt;The code in the screenshot is from a &lt;a href=&#34;https://github.com/hightower/UIAlertController-Show&#34;&gt;shim&lt;/a&gt; that we added to the codebase when migrating to iOS 10. It that allowed us to retain the deprecated &lt;code&gt;UIAlertView&lt;/code&gt; API for places in which switching to &lt;code&gt;UIAlertViewController&lt;/code&gt; would have been a fair amount of work (we have a lot of alerts, but after this issue we decided to remove the shim for good).&lt;/p&gt;
 
-&lt;p&gt;The shim allows presenting a &lt;code&gt;UIAlertViewController&lt;/code&gt; by simply calling a &lt;code&gt;show&lt;/code&gt; method. That &lt;code&gt;show&lt;/code&gt; method creates a new &lt;code&gt;UIWindow&lt;/code&gt; that is presented on top of the main application window. When the alert view gets hidden, the newly created &lt;code&gt;UIWindow&lt;/code&gt; is made unvisible. As you can see in the stacktrace, this is what triggers the &lt;code&gt;keyWindow&lt;/code&gt; to change!&lt;/p&gt;
+&lt;p&gt;The shim allows presenting a &lt;code&gt;UIAlertViewController&lt;/code&gt; by simply calling a &lt;code&gt;show&lt;/code&gt; method. That &lt;code&gt;show&lt;/code&gt; method creates a new &lt;code&gt;UIWindow&lt;/code&gt; that is presented on top of the main application window. When the alert view gets hidden, the newly created &lt;code&gt;UIWindow&lt;/code&gt; is made invisible. As you can see in the stacktrace, this is what triggers the &lt;code&gt;keyWindow&lt;/code&gt; to change!&lt;/p&gt;
 
 &lt;p&gt;The first stacktrace screenshot shows that an internal UIKit function called &lt;code&gt;_FindNewKeyWindowIgnoringWindow&lt;/code&gt; is called immediately before they &lt;code&gt;keyWindow&lt;/code&gt; is changed.&lt;/p&gt;
 
@@ -86,7 +86,7 @@
 
 &lt;p&gt;By looking at the pseudo code it becomes obvious that UIKit picks the &lt;strong&gt;topmost window as the new &lt;code&gt;keyWindow&lt;/code&gt; as soon as the current &lt;code&gt;keyWindow&lt;/code&gt; becomes invisible&lt;/strong&gt;. This meant that the presentation of &lt;code&gt;UIMenuController&lt;/code&gt;s would stop working after the alert shim was used, because the overlay window would mistakenly become they &lt;code&gt;keyWindow&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;At this point the fix became straightorward; we needed to remember the previous key window when presenting the alert and reset the key window correctly upon dismissal:&lt;/p&gt;
+&lt;p&gt;At this point the fix became straightforward; we needed to remember the previous key window when presenting the alert and reset the key window correctly upon dismissal:&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;override&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;open&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;viewDidDisappear&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;_&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;animated&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Bool&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
         &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;super&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;viewDidDisappear&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;animated&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
@@ -113,7 +113,7 @@
 
 &lt;h2 id=&#34;conclusion:f38631c06dc52d51e25323771c266097&#34;&gt;Conclusion&lt;/h2&gt;
 
-&lt;p&gt;When working with closed source APIs advanced debugging and some basic reverse engineers skills can be handy once in a while - so I try to practive when I can.&lt;/p&gt;
+&lt;p&gt;When working with closed source APIs advanced debugging and some basic reverse engineers skills can be handy once in a while - so I try to practice when I can.&lt;/p&gt;
 
 &lt;p&gt;Also, the &lt;code&gt;UIMenuController&lt;/code&gt; API is not very developer friendly!&lt;/p&gt;
 </description>

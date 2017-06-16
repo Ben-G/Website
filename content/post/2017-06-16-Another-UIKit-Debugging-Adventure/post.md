@@ -14,7 +14,7 @@ This week I had an interesting debugging session in which I learned more about t
 
 ----
 
-## The Mistery
+## The Mystery
 
 At PlanGrid we recently integrated the [Mapbox Fingertips](https://github.com/mapbox/Fingertips) library to build a presentation mode for our app. The library allows enabling a mode in which all user touches are visualized on the screen.
 
@@ -26,7 +26,7 @@ At PlanGrid we recently integrated the [Mapbox Fingertips](https://github.com/ma
 
 We found a way to reproduce the issue, but it still wasn't clear why `UIMenuController`s would not show up in certain situations.
 
-I found a few hints around the internet. There are a surprising amount of prerequsites for menu controllers to work correctly. From [StackOverflow](https://stackoverflow.com/a/23839272/1046430):
+I found a few hints around the internet. There are a surprising amount of prerequisites for menu controllers to work correctly. From [StackOverflow](https://stackoverflow.com/a/23839272/1046430):
 
 > 1. The menu handler must be a UIView. If it isn't, `-becomeFirstResponder` fails.
 > 2. The menu handler must have `userInteractionEnabled = YES`
@@ -35,8 +35,7 @@ I found a few hints around the internet. There are a surprising amount of prereq
 > 5. You need to call `[handler becomeFirstResponder]`, before `[menu setTargetRect:inView:]` is called, or the latter will fail.
 > 6. You need to call `[menu setTargetRect:inView]` (at least once) and `[menu setMenuVisible:animated:]`.
 
-However, all of these requirements were fullfilled! 
-
+However, all of these requirements were fulfilled! 
 
 ## An Insight
 
@@ -64,7 +63,7 @@ Stepping up through the stack I could find the place in our application code tha
 
 The code in the screenshot is from a [shim](https://github.com/hightower/UIAlertController-Show) that we added to the codebase when migrating to iOS 10. It that allowed us to retain the deprecated `UIAlertView` API for places in which switching to `UIAlertViewController` would have been a fair amount of work (we have a lot of alerts, but after this issue we decided to remove the shim for good).
 
-The shim allows presenting a `UIAlertViewController` by simply calling a `show` method. That `show` method creates a new `UIWindow` that is presented on top of the main application window. When the alert view gets hidden, the newly created `UIWindow` is made unvisible. As you can see in the stacktrace, this is what triggers the `keyWindow` to change!
+The shim allows presenting a `UIAlertViewController` by simply calling a `show` method. That `show` method creates a new `UIWindow` that is presented on top of the main application window. When the alert view gets hidden, the newly created `UIWindow` is made invisible. As you can see in the stacktrace, this is what triggers the `keyWindow` to change!
 
 The first stacktrace screenshot shows that an internal UIKit function called `_FindNewKeyWindowIgnoringWindow` is called immediately before they `keyWindow` is changed.
 
@@ -73,7 +72,7 @@ Using the Hopper Disassembler we can take a peak at the implementation of that f
 
 By looking at the pseudo code it becomes obvious that UIKit picks the **topmost window as the new `keyWindow` as soon as the current `keyWindow` becomes invisible**. This meant that the presentation of `UIMenuController`s would stop working after the alert shim was used, because the overlay window would mistakenly become they `keyWindow`. 
 
-At this point the fix became straightorward; we needed to remember the previous key window when presenting the alert and reset the key window correctly upon dismissal:
+At this point the fix became straightforward; we needed to remember the previous key window when presenting the alert and reset the key window correctly upon dismissal:
 
 {{< highlight swift >}}
 override open func viewDidDisappear(_ animated: Bool) {
@@ -100,6 +99,6 @@ override open func viewDidDisappear(_ animated: Bool) {
 
 ## Conclusion
 
-When working with closed source APIs advanced debugging and some basic reverse engineers skills can be handy once in a while - so I try to practive when I can. 
+When working with closed source APIs advanced debugging and some basic reverse engineers skills can be handy once in a while - so I try to practice when I can. 
 
 Also, the `UIMenuController` API is not very developer friendly!
