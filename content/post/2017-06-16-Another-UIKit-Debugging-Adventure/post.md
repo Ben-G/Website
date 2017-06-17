@@ -39,7 +39,7 @@ However, all of these requirements were fulfilled!
 
 ## An Insight
 
-After some regular inspection of variables, etc. I decided to open the view hierarchy debugger. There I noticed something interesting. When in presentation mode our app would have two `UIWindow` instances. The `MBFingerTipWindow`, the main application window, and the `MBFingerTipOverlayWindow`, a second window that is used to visualize a user's touches. I also noticed that in the case in which `UIMenuController`s would no longer show up, the `MBFingerTipOverlayWindow` would be they `keyWindow` of the application. This was unexpected as typically the main application window remains the `keyWindow` throughout the entire time an app is open.
+After some regular inspection of variables, etc. I decided to open the view hierarchy debugger. There I noticed something interesting. When in presentation mode our app would have two `UIWindow` instances. The `MBFingerTipWindow`, the main application window, and the `MBFingerTipOverlayWindow`, a second window that is used to visualize a user's touches. I also noticed that in the case in which `UIMenuController`s would no longer show up, the `MBFingerTipOverlayWindow` would be the `keyWindow` of the application. This was unexpected as typically the main application window remains the `keyWindow` throughout the entire time an app is open.
 
 By googling for `UIMenuController` and `keyWindow` I could find this [very helpful blog post](http://supereasyapps.com/blog/2014/4/17/show-the-uimenucontroller-and-display-custom-edit-menus-for-uiviewcontroller-uitableviewcontroller-and-uicollectionview-on-ios-7):
 
@@ -61,16 +61,16 @@ Stepping up through the stack I could find the place in our application code tha
 
 ![](AlertController.png)
 
-The code in the screenshot is from a [shim](https://github.com/hightower/UIAlertController-Show) that we added to the codebase when migrating to iOS 10. It that allowed us to retain the deprecated `UIAlertView` API for places in which switching to `UIAlertViewController` would have been a fair amount of work (we have a lot of alerts, but after this issue we decided to remove the shim for good).
+The code in the screenshot is from a [shim](https://github.com/hightower/UIAlertController-Show) that we added to the codebase when migrating to iOS 10. It allowed us to retain the deprecated `UIAlertView` API for places in which switching to `UIAlertViewController` would have been a fair amount of work (we have a lot of alerts, but after this issue we decided to remove the shim for good).
 
 The shim allows presenting a `UIAlertViewController` by simply calling a `show` method. That `show` method creates a new `UIWindow` that is presented on top of the main application window. When the alert view gets hidden, the newly created `UIWindow` is made invisible. As you can see in the stacktrace, this is what triggers the `keyWindow` to change!
 
-The first stacktrace screenshot shows that an internal UIKit function called `_FindNewKeyWindowIgnoringWindow` is called immediately before they `keyWindow` is changed.
+The first stacktrace screenshot shows that an internal UIKit function called `_FindNewKeyWindowIgnoringWindow` is called immediately before the `keyWindow` is changed.
 
-Using the Hopper Disassembler we can take a peak at the implementation of that function:
+Using the Hopper Disassembler we can take a peek at the implementation of that function:
 ![](FindKeyWindow.png)
 
-By looking at the pseudo code it becomes obvious that UIKit picks the **topmost window as the new `keyWindow` as soon as the current `keyWindow` becomes invisible**. This meant that the presentation of `UIMenuController`s would stop working after the alert shim was used, because the overlay window would mistakenly become they `keyWindow`. 
+By looking at the pseudo code it becomes obvious that UIKit picks the **topmost window as the new `keyWindow` as soon as the current `keyWindow` becomes invisible**. This meant that the presentation of `UIMenuController`s would stop working after the alert shim was used, because the overlay window would mistakenly become the `keyWindow`. 
 
 At this point the fix became straightforward; we needed to remember the previous key window when presenting the alert and reset the key window correctly upon dismissal:
 
@@ -99,6 +99,6 @@ override open func viewDidDisappear(_ animated: Bool) {
 
 ## Conclusion
 
-When working with closed source APIs advanced debugging and some basic reverse engineers skills can be handy once in a while - so I try to practice when I can. 
+When working with closed source APIs, advanced debugging and some basic reverse engineers skills can be handy once in a while - so I try to practice when I can. 
 
 Also, the `UIMenuController` API is not very developer friendly!
