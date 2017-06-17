@@ -157,7 +157,7 @@
 
 <h2 id="an-insight:f38631c06dc52d51e25323771c266097">An Insight</h2>
 
-<p>After some regular inspection of variables, etc. I decided to open the view hierarchy debugger. There I noticed something interesting. When in presentation mode our app would have two <code>UIWindow</code> instances. The <code>MBFingerTipWindow</code>, the main application window, and the <code>MBFingerTipOverlayWindow</code>, a second window that is used to visualize a user&rsquo;s touches. I also noticed that in the case in which <code>UIMenuController</code>s would no longer show up, the <code>MBFingerTipOverlayWindow</code> would be they <code>keyWindow</code> of the application. This was unexpected as typically the main application window remains the <code>keyWindow</code> throughout the entire time an app is open.</p>
+<p>After some regular inspection of variables, etc. I decided to open the view hierarchy debugger. There I noticed something interesting. When in presentation mode our app would have two <code>UIWindow</code> instances. The <code>MBFingerTipWindow</code>, the main application window, and the <code>MBFingerTipOverlayWindow</code>, a second window that is used to visualize a user&rsquo;s touches. I also noticed that in the case in which <code>UIMenuController</code>s would no longer show up, the <code>MBFingerTipOverlayWindow</code> would be the <code>keyWindow</code> of the application. This was unexpected as typically the main application window remains the <code>keyWindow</code> throughout the entire time an app is open.</p>
 
 <p>By googling for <code>UIMenuController</code> and <code>keyWindow</code> I could find this <a href="http://supereasyapps.com/blog/2014/4/17/show-the-uimenucontroller-and-display-custom-edit-menus-for-uiviewcontroller-uitableviewcontroller-and-uicollectionview-on-ios-7">very helpful blog post</a>:</p>
 
@@ -181,16 +181,16 @@
 
 <p><img src="AlertController.png" alt="" /></p>
 
-<p>The code in the screenshot is from a <a href="https://github.com/hightower/UIAlertController-Show">shim</a> that we added to the codebase when migrating to iOS 10. It that allowed us to retain the deprecated <code>UIAlertView</code> API for places in which switching to <code>UIAlertViewController</code> would have been a fair amount of work (we have a lot of alerts, but after this issue we decided to remove the shim for good).</p>
+<p>The code in the screenshot is from a <a href="https://github.com/hightower/UIAlertController-Show">shim</a> that we added to the codebase when migrating to iOS 10. It allowed us to retain the deprecated <code>UIAlertView</code> API for places in which switching to <code>UIAlertViewController</code> would have been a fair amount of work (we have a lot of alerts, but after this issue we decided to remove the shim for good).</p>
 
 <p>The shim allows presenting a <code>UIAlertViewController</code> by simply calling a <code>show</code> method. That <code>show</code> method creates a new <code>UIWindow</code> that is presented on top of the main application window. When the alert view gets hidden, the newly created <code>UIWindow</code> is made invisible. As you can see in the stacktrace, this is what triggers the <code>keyWindow</code> to change!</p>
 
-<p>The first stacktrace screenshot shows that an internal UIKit function called <code>_FindNewKeyWindowIgnoringWindow</code> is called immediately before they <code>keyWindow</code> is changed.</p>
+<p>The first stacktrace screenshot shows that an internal UIKit function called <code>_FindNewKeyWindowIgnoringWindow</code> is called immediately before the <code>keyWindow</code> is changed.</p>
 
-<p>Using the Hopper Disassembler we can take a peak at the implementation of that function:
+<p>Using the Hopper Disassembler we can take a peek at the implementation of that function:
 <img src="FindKeyWindow.png" alt="" /></p>
 
-<p>By looking at the pseudo code it becomes obvious that UIKit picks the <strong>topmost window as the new <code>keyWindow</code> as soon as the current <code>keyWindow</code> becomes invisible</strong>. This meant that the presentation of <code>UIMenuController</code>s would stop working after the alert shim was used, because the overlay window would mistakenly become they <code>keyWindow</code>.</p>
+<p>By looking at the pseudo code it becomes obvious that UIKit picks the <strong>topmost window as the new <code>keyWindow</code> as soon as the current <code>keyWindow</code> becomes invisible</strong>. This meant that the presentation of <code>UIMenuController</code>s would stop working after the alert shim was used, because the overlay window would mistakenly become the <code>keyWindow</code>.</p>
 
 <p>At this point the fix became straightforward; we needed to remember the previous key window when presenting the alert and reset the key window correctly upon dismissal:</p>
 
@@ -219,7 +219,7 @@
 
 <h2 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h2>
 
-<p>When working with closed source APIs advanced debugging and some basic reverse engineers skills can be handy once in a while - so I try to practice when I can.</p>
+<p>When working with closed source APIs, advanced debugging and some basic reverse engineers skills can be handy once in a while - so I try to practice when I can.</p>
 
 <p>Also, the <code>UIMenuController</code> API is not very developer friendly!</p>
 
