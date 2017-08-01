@@ -6,8 +6,99 @@
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 16 Jun 2017 22:24:54 -0800</lastBuildDate>
+    <lastBuildDate>Mon, 31 Jul 2017 22:24:54 -0800</lastBuildDate>
     <atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Quick Thoughts on Prototyping Software</title>
+      <link>http://blog.benjamin-encz.de/post/quick-thoughts-prototyping-software/</link>
+      <pubDate>Mon, 31 Jul 2017 22:24:54 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/quick-thoughts-prototyping-software/</guid>
+      <description>
+
+&lt;p&gt;It&amp;rsquo;s almost the end of July and I&amp;rsquo;ve tried to keep up a schedule of blogging at least once a month. So I decided to pull a topic from the long pile of potential blog posts I&amp;rsquo;ve accumulated: &lt;strong&gt;prototyping&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;This posts focuses on using prototypes to validate technical ideas, not on creating prototypes for user testing.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;I&amp;rsquo;ve spent a lot of time in the last years improving my software prototyping skills. In this post I hope to share some quick thoughts on why I think prototyping is important and how I approach it.&lt;/p&gt;
+
+&lt;h3 id=&#34;prototypes-as-proofs:f38631c06dc52d51e25323771c266097&#34;&gt;Prototypes as Proofs&lt;/h3&gt;
+
+&lt;p&gt;My main goal when prototyping is to prove or disprove the feasibility of a proposed software product. These proofs can come in different flavors.&lt;/p&gt;
+
+&lt;h4 id=&#34;proving-effort-for-a-new-feature:f38631c06dc52d51e25323771c266097&#34;&gt;Proving Effort for a new Feature&lt;/h4&gt;
+
+&lt;p&gt;This type of proof is always relative to the amount of effort I think is acceptable for a given feature. With prototyping I try to prove that I can build a new feature within a given, typically fairly short, timeframe.&lt;/p&gt;
+
+&lt;p&gt;Both in a personal and professional context these prototypes help me decide whether or not I will pursue a feature or product.&lt;/p&gt;
+
+&lt;h4 id=&#34;proving-complex-technical-projects:f38631c06dc52d51e25323771c266097&#34;&gt;Proving Complex Technical Projects&lt;/h4&gt;
+
+&lt;p&gt;Prototypes are also ideal to validate complex technical designs for large projects. Often these projects come with elaborate specs; but in my experience these specs are not worth much if the outlined ideas haven&amp;rsquo;t been proven in a usable prototype. This is especially true for software that will interface with other systems (e.g. APIs).&lt;/p&gt;
+
+&lt;h4 id=&#34;trying-out-new-technologies:f38631c06dc52d51e25323771c266097&#34;&gt;Trying out New Technologies&lt;/h4&gt;
+
+&lt;p&gt;Every once in a while I use prototypes to evaluate new tools and technologies that have the potential to significantly improve the products I work on or the tools I work with. Typically investing just a few hours will let me evaluate whether or not a new technology is worth incorporating into a product. Mostly the answer will be &lt;em&gt;No&lt;/em&gt; but the large potential gains from a technology that &lt;em&gt;can&lt;/em&gt; be applied make it worth investing in this category.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-process-spec-milestones-prototype:f38631c06dc52d51e25323771c266097&#34;&gt;The Process: Spec ➡️ Milestones ➡️ Prototype&lt;/h3&gt;
+
+&lt;p&gt;Independent of the scale of the prototype, I always start with a spec. This spec outlines the goal of the prototype. For small projects it can be extremely brief.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s an example of a brief spec of a prototype that I built for PlanGrid. The prototype allows users to align blueprints that they want to overlay and compare:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Implement a sheet alignment feature that allows users to align two compared sheets relative to each other.&lt;/p&gt;
+
+&lt;p&gt;The feature allows selecting an area that should be used to align two sheets. In the next step the user can drag the sheets relative to each other in order to align them.&lt;/p&gt;
+
+&lt;p&gt;When the user is done, we store the determined offset such that the alignment can be applied when the sheets are compared in future.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Here are screenshots of two of the steps from the final implementation (not the prototype):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;sheet_compare_composed.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once I&amp;rsquo;ve defined the spec for a prototype, I go on to outline the relevant milestones.&lt;/p&gt;
+
+&lt;p&gt;For most prototypes this is the most important step. &lt;strong&gt;When defining milestones I try to identify the tasks that are the riskiest or which I anticipate to take the longest.&lt;/strong&gt; Once I&amp;rsquo;ve implemented these critical milestones, I&amp;rsquo;ve basically proven the feasibility of the prototype, so I try to move these milestones up as far as possible.&lt;/p&gt;
+
+&lt;p&gt;For the sheet alignment feature shown above I knew that the prototype needed the following milestones:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Provide a UI that allows users to select a focus area for sheet alignment.&lt;/li&gt;
+&lt;li&gt;Capture the selected area from both rendered sheets in order overlay them.&lt;/li&gt;
+&lt;li&gt;Provide a UI for aligning the selected areas from both sheets; this UI allows users to drag a sheet relative to another one and to save the offset once they complete that step.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I noticed that the third milestone was the core of this feature, so I decided to tackle that milestone first.&lt;/p&gt;
+
+&lt;p&gt;I ended up starting my prototype by creating a separate app that was able to render two stock images on top of each other, in different colors, and allowed a user to align these images and save the offset that they applied. This app encapsulated the entire step 3 listed above.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s a screenshot of the prototype:
+&lt;img src=&#34;prototype.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Within a few hours that app was working and I was confident that I had proven that I could build the entire feature in a reasonably short time.&lt;/p&gt;
+
+&lt;h3 id=&#34;prototyping-beyond-the-point-of-no-return:f38631c06dc52d51e25323771c266097&#34;&gt;Prototyping Beyond the Point of No Return&lt;/h3&gt;
+
+&lt;p&gt;Over the years I&amp;rsquo;ve noticed that prototyping is not only a good tool for proving feasibility or estimating effort, but also an important way to handle my psychology around building new features.&lt;/p&gt;
+
+&lt;p&gt;By focusing on the riskiest parts of the new product first and quickly proving that they are relatively easy to implement, I can overcome the inertia that often looms when facing large new tasks.&lt;/p&gt;
+
+&lt;p&gt;Once I&amp;rsquo;ve successfully implemented the riskiest portion I surpass what I consider the &amp;ldquo;point of no return&amp;rdquo; and reach a state of flow in which all other milestones of a feature become easy to implement.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:f38631c06dc52d51e25323771c266097&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Prototypes are a fantastic tool for performing the most important task of software development: breaking down a large and complex task into a series of measurable, small deliverables that add up to the final product.&lt;/p&gt;
+
+&lt;p&gt;I think most teams could spend more time prototyping to validate technical specs and to test how much effort it takes to build new features. I&amp;rsquo;m certainly trying to push myself to build more prototypes in future.&lt;/p&gt;
+
+&lt;p&gt;Leveraging tools such as Swift Playgrounds or spinning up separate applications for the core of the prototype can further speed up the development process &amp;amp; enable flow.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Another Small UIKit Debugging Adventure</title>
@@ -2083,282 +2174,6 @@ Typically we have some sort of check to determine whether our code is already ex
 
 &lt;ul&gt;
 &lt;li&gt;@&lt;a href=&#34;https://twitter.com/krzyzanowskim&#34;&gt;krzyzanowskim&lt;/a&gt; has written a &lt;a href=&#34;http://blog.krzyzanowskim.com/2016/06/03/queues-are-not-bound-to-any-specific-thread/&#34;&gt;great blog post about the relationship of threads, queues and runloops&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Beware the UIKit Visitors!</title>
-      <link>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</link>
-      <pubDate>Tue, 10 May 2016 12:24:54 -0800</pubDate>
-      
-      <guid>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</guid>
-      <description>
-
-&lt;p&gt;&lt;/p&gt;
-
-&lt;h4 id=&#34;investigating-the-cause-of-quadratic-time-complexity-when-adding-subviews-in-uikit:f38631c06dc52d51e25323771c266097&#34;&gt;Investigating the Cause of Quadratic Time Complexity When Adding Subviews in UIKit&lt;/h4&gt;
-
-&lt;p&gt;&lt;del&gt;Yesterday&lt;/del&gt; Two weeks ago we identified a performance regression in the PlanGrid app, when entering a view that dynamically adds a large amount of subviews.&lt;/p&gt;
-
-&lt;p&gt;I started this blog post back then, but was recently motivated to finish it quickly by seeing other developers running into this issue as well:&lt;/p&gt;
-
-&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;My discovery for the day is iOS has an O(n^2) cost to add a subview so never have too many subviews on a view or performance goes to shit&lt;/p&gt;&amp;mdash; Rupert H (@rpy) &lt;a href=&#34;https://twitter.com/rpy/status/729550705137090560&#34;&gt;May 9, 2016&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;For this blog post I wanted to isolate this issue from our code base. I was able to reproduce the issue with this minimal example inside of a blank &lt;code&gt;UIViewController&lt;/code&gt;:&lt;/p&gt;
-
-&lt;div class=&#34;highlight&#34; style=&#34;background: #f8f8f8&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;override&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;func&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;viewDidAppear&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;animated&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #204a87&#34;&gt;Bool&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;super&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;viewDidAppear&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;animated&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;view&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;tintColor&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;blueColor&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
-
-        &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;in&lt;/span&gt; &lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;1.&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #0000cf; font-weight: bold&#34;&gt;10000&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;{&lt;/span&gt;
-            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #000000&#34;&gt;view&lt;/span&gt; &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #3465a4&#34;&gt;UIView&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;()&lt;/span&gt;
-            &lt;span style=&#34;color: #204a87; font-weight: bold&#34;&gt;self&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;view&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;addSubview&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #000000&#34;&gt;view&lt;/span&gt;&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;)&lt;/span&gt;
-        &lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;span style=&#34;color: #000000; font-weight: bold&#34;&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;The above example is obviously extreme, but it reveals an interesting performance issue: when setting a &lt;code&gt;tintColor&lt;/code&gt; on a parent view, and not setting an explicit color on child views the performance of &lt;code&gt;addSubview&lt;/code&gt; reduces itself drastically with a large amount of added subviews.&lt;/p&gt;
-
-&lt;p&gt;Here&amp;rsquo;s what I could identify within Instrument&amp;rsquo;s time profiler:
-&lt;img src=&#34;tint-color-visitor-highlight.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;A majority of the time is adding subviews is spent within &lt;code&gt;[_UITintColorVisitor _visitView:]&lt;/code&gt;. In this example it&amp;rsquo;s 64% of the time; and the proportion only increases with the amount of subviews we&amp;rsquo;re adding.&lt;/p&gt;
-
-&lt;p&gt;We like our custom tint color; but not enough to justify such an impact on performance. &lt;strong&gt;By deactivating the custom tint color we bring the overall run time of &lt;code&gt;viewDidAppear&lt;/code&gt; from our example project from over 700ms down to ~10ms.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;The same affect can be accomplished by specifying the &lt;code&gt;tintColor&lt;/code&gt; on each view we&amp;rsquo;re adding, which stops the expensive &lt;code&gt;_UITintColorVisitor&lt;/code&gt; from stopping by too often.&lt;/p&gt;
-
-&lt;h2 id=&#34;digging-into-uikit:f38631c06dc52d51e25323771c266097&#34;&gt;Digging into UIKit&lt;/h2&gt;
-
-&lt;p&gt;Finding a workaround for this issue is only half of the fun. Let&amp;rsquo;s try to find out what is causing these poor performance characteristics in the first place. We can start by taking a closer look at the time profiler output:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;focus-tint-color-visitor.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We can see that the app doesn&amp;rsquo;t spend too much time in &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; itself. The majority of the time is consumed by &lt;code&gt;objc_msgSend&lt;/code&gt; which indicates that this method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we&amp;rsquo;re spending a lot of time in &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).&lt;/p&gt;
-
-&lt;h3 id=&#34;breakpoints-in-framework-functions:f38631c06dc52d51e25323771c266097&#34;&gt;Breakpoints in Framework Functions&lt;/h3&gt;
-
-&lt;p&gt;We can start by setting a breakpoint within the &lt;code&gt;[_UITintColor _visitView]&lt;/code&gt; method; that will give us an idea of how often that method is called.&lt;/p&gt;
-
-&lt;p&gt;We can do that by setting a breakpoint early in our program to bring up the lldb console (alternatively we could use lldb from the terminal). Then we can enter the following command to set a breakpoint:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(lldb) b -[_UITintColorVisitor _visitView:]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now we can continue execution; soon we should trap into our breakpoint:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;visit-view-breakpoint.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Checking how often this method is called, I quickly identified that the amount of calls grows with the amount of subviews we have added. As a next step I wanted to see which views exactly are being visited. For that we need to dive into a little bit of assembly code.&lt;/p&gt;
-
-&lt;h3 id=&#34;inspecting-the-assembly-code:f38631c06dc52d51e25323771c266097&#34;&gt;Inspecting the Assembly Code&lt;/h3&gt;
-
-&lt;p&gt;When stepping into the breakpoint in &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt; you are greeted with a cryptic wall of assembly code. I started out with very barebones knowledge of understanding/investigating complex assembly code, but this bug forced me to learn some tricks that hopefully are useful to you as well!&lt;/p&gt;
-
-&lt;h4 id=&#34;running-the-example-app-on-32-bit-mode:f38631c06dc52d51e25323771c266097&#34;&gt;Running the Example App on 32-Bit Mode&lt;/h4&gt;
-
-&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; &lt;em&gt;I have gotten feedback from multiple readers, that Hopper works just as well in 64-Bit mode, and actually makes accessing arguments easier. For my next disassembly adventure I will try 64 instead of 32-Bit.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;As a first step, let&amp;rsquo;s ensure that our app runs in &lt;strong&gt;32-Bit&lt;/strong&gt; mode in the simulator. This architecture is known as &lt;strong&gt;i386&lt;/strong&gt;. We choose to run the app in 32-Bit mode since i386 has a simpler way of passing function arguments (which will come in handy shortly). In Xcode 7 the easiest way to run on the i386 architecture is to select the &lt;em&gt;iPad 2&lt;/em&gt; simulator.&lt;/p&gt;
-
-&lt;p&gt;With this setup in place, we can now inspect which views are visited from within our breakpoint in &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt;. Looking at the method signature we can see that this method takes on argument: the view that is being visited. That&amp;rsquo;s the information that we would like to inspect further. In addition to that explicit argument every method call in Objective-C receives &lt;code&gt;self&lt;/code&gt; as the first and the &lt;code&gt;selector&lt;/code&gt; as the second implicit argument.&lt;/p&gt;
-
-&lt;h4 id=&#34;printing-function-arguments-in-assembly:f38631c06dc52d51e25323771c266097&#34;&gt;Printing Function Arguments in Assembly&lt;/h4&gt;
-
-&lt;p&gt;By using &lt;a href=&#34;https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/&#34;&gt;this handy reference&lt;/a&gt; we can look up where these arguments are stored when a method is called (the reference is old and refers &lt;code&gt;gdb&lt;/code&gt; instead of &lt;code&gt;lldb&lt;/code&gt;, but the info is still up to date.). The order of these arguments is part of what we call a &amp;ldquo;calling convention&amp;rdquo;. It states that on a i386 architecture function arguments are passed as follows:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Before prologue:
-
-&lt;ul&gt;
-&lt;li&gt;*($esp+4n) ➡ arg(n)&lt;br /&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;After prologue:
-
-&lt;ul&gt;
-&lt;li&gt;*($ebp+8+4n) ➡ arg(n)&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The &lt;em&gt;n&lt;/em&gt; here refers to the index of the argument.&lt;/p&gt;
-
-&lt;p&gt;Without getting into too much detail at this point: the &amp;ldquo;prologue&amp;rdquo; is a sequence at the beginning of a function call that configures the stack pointer and different stack variables. The variable locations for our function arguments are different before and after the prologue (&lt;a href=&#34;http://arigrant.com/blog/2014/2/18/chisels-print-invocation-command&#34;&gt;this blog post&lt;/a&gt; by Ari Grant has a good description for what the function prologue and epilogue do). All arguments are offset from the base address that is stored in the &lt;code&gt;esp&lt;/code&gt; register.&lt;/p&gt;
-
-&lt;p&gt;For now we&amp;rsquo;ll use the addresses before the prologue, since we&amp;rsquo;ll access the arguments as soon as we trap into our breakpoint at the beginning of the &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt; method.&lt;/p&gt;
-
-&lt;p&gt;When we reach that breakpoint we can print all 3 arguments to our function call as following:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(lldb) po *(id *)($esp+4)
-&amp;lt;_UITintColorVisitor: 0xc502540&amp;gt;
-
-(lldb) po *(SEL *)($esp+8)
-&amp;quot;_visitView:&amp;quot;
-
-(lldb) po *(id *)($esp+12)
-&amp;lt;UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = &amp;lt;CALayer: 0xc1176d0&amp;gt;&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now we can use this new ability to print the visited view every time we step into our breakpoint, by calling: &lt;code&gt;po *(id *)($esp+12)&lt;/code&gt; (alternatively you can also use a &lt;a href=&#34;http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based&#34;&gt;breakpoint command&lt;/a&gt;).&lt;/p&gt;
-
-&lt;p&gt;Using this technique I identified that after a new subview is added, the parent view and all of its children are passed to calls of &lt;code&gt;-[_UITintColorVisitor _visitView:]&lt;/code&gt;. For each added view UIKit will iterate all of its siblings.&lt;/p&gt;
-
-&lt;p&gt;Why exactly is that happening? I have not yet been able to track it down definitely, but I have a bunch more clues that I&amp;rsquo;d like to share.&lt;/p&gt;
-
-&lt;h4 id=&#34;let-the-guesswork-begin:f38631c06dc52d51e25323771c266097&#34;&gt;Let the Guesswork begin&lt;/h4&gt;
-
-&lt;p&gt;Since we want to know why the &lt;code&gt;_UITintColorVisitor&lt;/code&gt; is called so frequently, it makes sense to start by investigating the backtrace. We can do this with the &lt;code&gt;bt&lt;/code&gt; lldb command that we can invoke while halted in a breakpoint:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(lldb) bt
-* thread #1: tid = 0x156ea9, 0x00e4b61c UIKit`-[_UITintColorVisitor _visitView:], queue = &#39;com.apple.main-thread&#39;, stop reason = breakpoint 9.1
-  * frame #0: 0x00e4b61c UIKit`-[_UITintColorVisitor _visitView:]
-    frame #1: 0x00e4bfbb UIKit`_UIViewVisitorEntertainVisitors + 107
-    frame #2: 0x00e4af30 UIKit`_UIViewVisitorRecursivelyEntertainDescendingVisitors + 162
-    frame #3: 0x00e4a8ca UIKit`_UIViewVisitorEntertainDescendingTrackingVisitors + 705
-    frame #4: 0x00e4a2be UIKit`_UIViewVisitorEntertainHierarchyTrackingVisitors + 58
-    frame #5: 0x00a9ce3f UIKit`__45-[UIView(Hierarchy) _postMovedFromSuperview:]_block_invoke + 268
-    frame #6: 0x005b1440 Foundation`-[NSISEngine withBehaviors:performModifications:] + 150
-    frame #7: 0x005b491c Foundation`-[NSISEngine withAutomaticOptimizationDisabled:] + 48
-    frame #8: 0x00a9cce4 UIKit`-[UIView(Hierarchy) _postMovedFromSuperview:] + 521
-    frame #9: 0x00aac7f1 UIKit`-[UIView(Internal) _addSubview:positioned:relativeTo:] + 2367
-    frame #10: 0x00a9acc8 UIKit`-[UIView(Hierarchy) addSubview:] + 56
-    frame #11: 0x00002be9 ExampleApp`ViewController.viewDidAppear(animated=false, self=0x0c72cce0) -&amp;gt; () + 825 at ViewController.swift:40
-    frame #12: 0x00002cbf ExampleApp`@objc ViewController.viewDidAppear(Bool) -&amp;gt; () + 63 at ViewController.swift:0
-    [...]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Up until &lt;code&gt;frame #11&lt;/code&gt; we&amp;rsquo;re only seeing code that is necessary to set up the example project. &lt;code&gt;frame #10&lt;/code&gt; is the actual starting point for our investigation. It is called whenever a new subview is added and it eventually results in a call to the &lt;code&gt;_UITintColorVisitor&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;What is interesting is that &lt;code&gt;addSubview&lt;/code&gt; is only ever called on our root view, but the &lt;code&gt;_UITintColorVisitor&lt;/code&gt; is called for all of the subviews of that root view. The cause of this problem must lie somewhere between &lt;code&gt;frame #11&lt;/code&gt; and &lt;code&gt;frame #0&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;At this point it was not obvious to me why all views were being caused to be visited; at the very end of the next section I might have a likely answer to that question&amp;hellip;&lt;/p&gt;
-
-&lt;h4 id=&#34;digging-deeper:f38631c06dc52d51e25323771c266097&#34;&gt;Digging Deeper&lt;/h4&gt;
-
-&lt;p&gt;Since I hit a dead end in identifying why all subviews in the view hierarchy were constantly being revisited, I decided to investigate another interesting aspect about this problem that profiler had revealed.&lt;/p&gt;
-
-&lt;p&gt;Earlier we identified that about 25% of the total time is taken up in calls to &lt;code&gt;[NSArray containsObject:]&lt;/code&gt; which is called as part of the implementation of &lt;code&gt;[_UITintColorVisitor visitView:]&lt;/code&gt;. I have used &lt;a href=&#34;http://www.hopperapp.com/&#34;&gt;Hopper Disassembler&lt;/a&gt; to try to understand why that&amp;rsquo;s the case. A disassembler can translate a binary (in machine code) back into assembly instructions which enables us to explore some of the inner workings of closed source software. This is useful, e.g. to explore issues in Apple&amp;rsquo;s UIKit framework.&lt;/p&gt;
-
-&lt;p&gt;If you have never used Hopper before, but would like to follow along, I would recommend reading this &lt;a href=&#34;http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction&#34;&gt;brief introduction&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Hopper has a handy feature that can generate pseudo code from the disassembled binary, which makes it somewhat easier to try and grasp the control flow of a program (if, like me, you&amp;rsquo;re mostly unfamiliar with assembly code).&lt;/p&gt;
-
-&lt;p&gt;By browsing throught the pseudo code generated by Hopper I could identify the section of &lt;code&gt;[_UITintColorVisitor _visitView:]&lt;/code&gt; that calls &lt;code&gt;containsObject&lt;/code&gt;:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;I also stepped through the assembly code that corresponds to this pseudo code in the debugger. As part of that effort I identified a few things that are relevant to this snippet:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;One &lt;code&gt;_UITintColorVisitor&lt;/code&gt; instance is used to visit all views (at least in this simple example with only one view hierarchy)&lt;/li&gt;
-&lt;li&gt;The &lt;code&gt;_UITintColorVisitor&lt;/code&gt; has a few properties that are persisted between the different invocations of &lt;code&gt;visitView:&lt;/code&gt;. Here&amp;rsquo;s an overview of all properties found in Hopper:
-&lt;img src=&#34;tint-color-visitor-properties.png&#34; alt=&#34;&#34; /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;From stepping through the assembly code and investigating different registries I could identify that in the above pseudo code &lt;code&gt;eax&lt;/code&gt; refers to the &lt;code&gt;_originalVisitedView&lt;/code&gt; and &lt;code&gt;edi&lt;/code&gt; refers to the view that is currently being visited.&lt;/p&gt;
-
-&lt;p&gt;This means, that as soon as a &lt;code&gt;_UITintColorVisitor&lt;/code&gt; has an original visited view (which is true after it visited its first view), the outlined code checks if the &lt;code&gt;subviews&lt;/code&gt; array of the &lt;code&gt;originalVisitedView&lt;/code&gt; contains the currently visited view. This check scans the full array of subviews; in cases where the &lt;code&gt;originalVisitedView&lt;/code&gt; is our root view, the cost of this operation grows linearly with the amount of added subviews.&lt;/p&gt;
-
-&lt;p&gt;I investigated this further by creating another breakpoint in UIKit at the point where this check takes place. When disassembling the 32-Bit slice of UIKit and running the app in 32-Bit mode, the address offsets align nicely. By stepping into the breakpoint in &lt;code&gt;-[_UITintColorVisitor visitView:]&lt;/code&gt; I could compare the assembly addresses in the debugger and in Hopper and identify that the addresses match up when replacing the &lt;code&gt;495&lt;/code&gt; in the hopper address with &lt;code&gt;0xe4b&lt;/code&gt;. The relative addresses within UIKit are constant, only the base address at which the framework is loaded is dynamic:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;address-align.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Once we know the memory address offset we can create breakpoints in lldb based on addresses in Hopper.&lt;/p&gt;
-
-&lt;p&gt;Knowing this, I created a new breakpoint based on the &lt;code&gt;loc_4956fd&lt;/code&gt; in Hopper like this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;b 0xe4b6fd
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Within the breakpoint I printed both the &lt;code&gt;eax&lt;/code&gt; register and the &lt;code&gt;_originalVisitedView&lt;/code&gt; of &lt;code&gt;self&lt;/code&gt; (which is stored in the &lt;code&gt;ebx&lt;/code&gt; register):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(lldb) po $eax
-&amp;lt;UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = &amp;lt;CALayer: 0xc1176d0&amp;gt;&amp;gt;
-
-(lldb) po [$ebx valueForKey:@&amp;quot;_originalVisitedView&amp;quot;]
-&amp;lt;UIView: 0xc131830; frame = (0 0; 768 1024); autoresize = W+H; tintColor = UIDeviceRGBColorSpace 0 0 1 1; layer = &amp;lt;CALayer: 0xc1176d0&amp;gt;&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;With this approach I identified that with the current sample code, &lt;code&gt;eax&lt;/code&gt; &lt;strong&gt;always refers to the root view&lt;/strong&gt;. This means we are iterating over all subviews of the root view, N times for each subview that is added.&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;m no expert in complexity analysis but it appears that the total cost of &lt;code&gt;[_UITintColor visitView:]&lt;/code&gt; sums up to &lt;code&gt;n^2&lt;/code&gt;:&lt;/p&gt;
-
-&lt;p&gt;(&lt;strong&gt;n&lt;/strong&gt; invocations of &lt;code&gt;[_UITintColor visitView:]&lt;/code&gt;) * (&lt;strong&gt;n&lt;/strong&gt; cost of iterating all subviews) where &lt;strong&gt;n&lt;/strong&gt; = amount of added subviews&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;But why do we have these two code paths outlined above in the first place&lt;/strong&gt;? Why do we need to check if the currently visited view is a subview of the original visited view?&lt;/p&gt;
-
-&lt;p&gt;In both cases, whether it is a subview or not, we end up calling: &lt;code&gt;___34-[_UITintColorVisitor _visitView:]_block_invoke&lt;/code&gt;. In the case of the currently visited view being a subview of the original visited view, we pass two arguments to the block, in the other case we pass only one.&lt;/p&gt;
-
-&lt;p&gt;Before moving on, here&amp;rsquo;s an annotated version of the method we just investigated:
-&lt;img src=&#34;visit-view-pseudo-code-annotated.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now let&amp;rsquo;s take a look at the block that is being invoked from here. By double-clicking onto the call to the block in Hopper, we can jump into the called block. It looks as following:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;called-block.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We can see that this block receives two arguments. Using the address translation technique from earlier I decided to create the following breakpoint to jump into this block using lldb:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;(lldb) b 0xe4b7ee
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;By investigating the registers I found out that &lt;code&gt;ebx&lt;/code&gt; refers to the &lt;code&gt;UIView&lt;/code&gt; instance that is being visited and &lt;code&gt;*(esi + 0x14)&lt;/code&gt; refers to the tint color visitor.
-The code seems to switch over the &lt;code&gt;_reasons&lt;/code&gt; property of the &lt;code&gt;[_UITintColorVisitor]&lt;/code&gt; and over some properties of the visited view.&lt;/p&gt;
-
-&lt;p&gt;After stepping through the function prologue we can investigate the relevant values:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;po [*(id *)($esi+0x14) valueForKey:@&amp;quot;_reasons&amp;quot;]
-1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The &lt;code&gt;_reasons&lt;/code&gt; property seems to store a bitmask value. Our bitmask is set to &lt;code&gt;1&lt;/code&gt;. The first &lt;code&gt;if&lt;/code&gt; statment in the pseudo code checks if the &lt;code&gt;1&lt;/code&gt; bit of the bitmask is set. A further condition is that the view&amp;rsquo;s &lt;code&gt;_interactionTintColor&lt;/code&gt; needs to be &lt;code&gt;nil&lt;/code&gt; (this check likely explains why setting an explicit &lt;code&gt;tintColor&lt;/code&gt; on a view fixes our performance issue). Since both conditions are met, we execute the body of the first &lt;code&gt;if&lt;/code&gt; block.&lt;/p&gt;
-
-&lt;p&gt;Inside of the &lt;code&gt;if&lt;/code&gt; block we finally find a key that might help solve this puzzle:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[ebx _setAncestorDefinesTintColor:eax];
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Here UIKit is marking this view, noting that its parent is defining a tint color. I&amp;rsquo;m assuming that this flag is what registers this view in some way to be visited by the &lt;code&gt;_UITintColorVisitor&lt;/code&gt;, since we are passing it as an argument to the &lt;code&gt;_setAncestorDefinesTintColor&lt;/code&gt; method.&lt;/p&gt;
-
-&lt;p&gt;The big question remains why this is flag is set every single time the view is visited and not only in cases where the subview has moved in the view hierarchy or when the parent view changes its tint color. Another interesting question is why the &lt;code&gt;superview&lt;/code&gt; property of the visited view is not used instead of iterating over the array of subviews of the parent view. Both of these mysteries will most likely remain unsolved.&lt;/p&gt;
-
-&lt;p&gt;However, our new findings help explain the two code paths in the piece of code that calls into this block (which we examined earlier):&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;visit-view-pseudo-code.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;If the currently visited view is not a child view of the original visited view, we don&amp;rsquo;t pass a second argument to this block; which is equivalent to passing &lt;code&gt;nil&lt;/code&gt;. This means that &lt;code&gt;ebx&lt;/code&gt; will be &lt;code&gt;nil&lt;/code&gt;, which in turn means we will never call &lt;code&gt;[ebx _setAncestorDefinesTintColor:eax];&lt;/code&gt;.&lt;/p&gt;
-
-&lt;h1 id=&#34;conclusion:f38631c06dc52d51e25323771c266097&#34;&gt;Conclusion&lt;/h1&gt;
-
-&lt;p&gt;When I started out diving into this issue I was almost entirely clueless about how to interpret complex disassembled code - now I&amp;rsquo;m still mostly clueless. However, I learned a few very handy tricks along the way:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;I learned how to set breakpoints in private methods &amp;amp; and at any address within the assembly code.&lt;/li&gt;
-&lt;li&gt;I learned about the i386 and Objective-C calling conventions, e.g. which arguments are stored in which registers.&lt;/li&gt;
-&lt;li&gt;I learned that the addresses in Hopper match the addresses in the actual framework code (besides a base pointers offset depending on where UIKit is loaded into memory). In hindsight this sounds obvious but it definitely was not the case when starting out. &lt;a href=&#34;http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction&#34;&gt;This article&lt;/a&gt; was very helpful in getting more comfortable with working with lldb in UIKit alongside of Hopper.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;These three tools allowed me to explore the code paths &amp;amp; relevant variables a lot faster which in turn made it a lot easier (yet still hard) to get a grasp of what was going on.&lt;/p&gt;
-
-&lt;p&gt;In the end I didn&amp;rsquo;t find a definite answer on how this issue could be fixed, but I found a lot of clues about how the current visitor pattern is implemented and I think I got fairly close to the underlying issue.&lt;/p&gt;
-
-&lt;p&gt;Most importantly I learned how to be more efficient at exploring the inner workings of closed source frameworks which will surely come in handy in future! Attempting to reverse engineer code can be very intimidating and the learning curve is really steep. I hope some day when I have a better grasp myself I can share a beginner friendly guide on all of this!&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Thanks a lot to Russ Bishop who tracked down the original issue together with me. He has also filed a radar: &lt;a href=&#34;https://openradar.appspot.com/radar?id=4963594483531776&#34;&gt;25934331&lt;/a&gt; (fingers crossed)!&lt;/p&gt;
-
-&lt;p&gt;I also recommend the following helpful articles for getting started with reverse engineering closed source Cocoa code:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;This article was a great introduction to the very basics of using Hopper and lldb side by side: &lt;a href=&#34;http://www.bartcone.com/new-blog/2014/11/26/hopper-lldb-for-ios-developers-a-gentle-introduction&#34;&gt;Hopper + lldb for iOS Developers: A Gentle Introduction&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Very good discussion of function prologue and epilogue as well as calling conventions: &lt;a href=&#34;http://arigrant.com/blog/2014/2/18/chisels-print-invocation-command&#34;&gt;Printing Objective-C Invocations in LLDB&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.eecg.toronto.edu/~amza/www.mindsec.com/files/x86regs.html&#34;&gt;x86 Register Overview&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/&#34;&gt;x86 + ObjC Calling Conventions&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based&#34;&gt;Breakpoint Commands in lldb&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Another post on calling conventions in Objective-C by Jeff Hui, recommended by&lt;a href=&#34;https://twitter.com/rpy&#34;&gt;@rpy&lt;/a&gt;: &lt;a href=&#34;https://www.jeffhui.net/2014/03-reverse-engineering-objective-c.html&#34;&gt;Reverse Engineering Objective-C&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>
