@@ -1,5 +1,8 @@
 require 'rack/rewrite'
 require 'rack/contrib/try_static'
+require 'rack-slashenforce'
+
+use Rack::AppendTrailingSlash
 
 use Rack::Rewrite do
     [
@@ -22,8 +25,8 @@ use Rack::Rewrite do
         "how-i-write-swift-specs-with-quick",
         "validated-a-swift-m-library-for-somewhat-dependent-types permanent"
     ].each { |post|
-        r301      "/#{post}/",    "/post/#{post}"
-        r301      "/#{post}",    "/post/#{post}"
+        r301      "/#{post}/",    "/post/#{post}/"
+        r301      "/#{post}",    "/post/#{post}/"
     }
 
     # Replace relative local links with looks up in the static assets directory.
