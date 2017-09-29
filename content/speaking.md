@@ -9,10 +9,22 @@ I enjoy sharing things I've learned and spreading ideas. Here are the talks I've
 
 ## Upcoming
 
-- **The Art of Stealing** @ MCE, Warsaw,  May 2017
-- **Workshop: Unidirectional Data Flow on iOS** @ Swift Aveiro, Aveiro, June 2017
+- On a speaking break 🙂
 
 ## 2017
+
+#### Workshop: Unidirectional Data Flow on iOS
+
+- Swift Aveiro, Aveiro
+- June 2017
+- [GitHub Repo](https://github.com/Ben-G/SwiftAveiro-TicTacToe-Flux)
+
+#### The Art of Stealing
+
+- MCE, Warsaw
+- May 2017
+- [Slides](https://speakerdeck.com/benjamin_encz/the-art-of-stealing)
+- [Recording](https://www.youtube.com/watch?v=fYrj6gb8hcU&list=PL79il-55EZPuqa4mtyJmWbu8GFk8Szh0_)
 
 #### Flux & Redux on Mobile
 
