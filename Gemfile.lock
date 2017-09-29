@@ -7,6 +7,8 @@ GEM
       git-version-bump (~> 0.15)
       rack (~> 1.4)
     rack-rewrite (1.5.1)
+    rack-slashenforce (0.0.3)
+      rack
 
 PLATFORMS
   ruby
@@ -15,6 +17,7 @@ DEPENDENCIES
   rack
   rack-contrib
   rack-rewrite (~> 1.5.0)
+  rack-slashenforce
 
 BUNDLED WITH
-   1.11.0
+   1.14.6
