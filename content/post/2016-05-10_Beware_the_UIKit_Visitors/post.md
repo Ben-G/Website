@@ -91,7 +91,7 @@ By using [this handy reference](https://www.clarkcox.com/blog/2009/02/04/inspect
 
 The *n* here refers to the index of the argument.
 	
-Without getting into too much detail at this point: the "prologue" is a sequence at the beginning of a function call that configures the stack pointer and different stack variables. The variable locations for our function arguments are different before and after the prologue ([this blog post](http://arigrant.com/blog/2014/2/18/chisels-print-invocation-command) by Ari Grant has a good description for what the function prologue and epilogue do). All arguments are offset from the base address that is stored in the `esp` register.
+Without getting into too much detail at this point: the "prologue" is a sequence at the beginning of a function call that configures the stack pointer and different stack variables. The variable locations for our function arguments are different before and after the prologue ([this blog post](https://web.archive.org/web/20170112043136/arigrant.com/blog/2014/2/18/chisels-print-invocation-command) by Ari Grant has a good description for what the function prologue and epilogue do). All arguments are offset from the base address that is stored in the `esp` register.
 
 For now we'll use the addresses before the prologue, since we'll access the arguments as soon as we trap into our breakpoint at the beginning of the `-[_UITintColorVisitor _visitView:]` method.
 
