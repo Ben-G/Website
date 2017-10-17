@@ -3,8 +3,13 @@
   
   <url>
     <loc>http://blog.benjamin-encz.de/</loc>
-    <lastmod>2017-07-31T22:24:54-08:00</lastmod>
+    <lastmod>2017-10-23T22:24:54-08:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.benjamin-encz.de/post/sqlite-one-to-many-json1-extension/</loc>
+    <lastmod>2017-10-23T22:24:54-08:00</lastmod>
   </url>
   
   <url>
