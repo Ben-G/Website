@@ -41,7 +41,7 @@ Since it's hard to categorize all of the books I read neatly, I'll just go in ch
 
 ### 2. The Design of Everyday Things
 
-*Significantly broadened my view of what design is. Made me a lot more aware of bad design - which I realized I encounter ~90% of the time. Further increased my empathy towards people that need to interact with my work and made me think harder to design well.*
+*Significantly broadened my view of what design is. Made me a lot more aware of bad design - which I realized I encounter ~90% of the time. Further increased my empathy towards people that need to interact with my work and made me think harder to design well. This book is also **full of practical design advice** unfortunately way too many to summarize here.*
 
 - Design is **everywhere**, intentional or unintentional (the latter typically being very bad design). This blog post has a design (and it has many design flaws I wish to address at some point).
 
@@ -53,7 +53,30 @@ Since it's hard to categorize all of the books I read neatly, I'll just go in ch
 
   - > “Discoverability results from appropriate application of five fundamental psychological concepts covered in the next few chapters: affordances, signifiers, constraints, mappings, and feedback. But there is a sixth principle, perhaps most important of all: the conceptual model of the system.”
 
+  - >  “Conceptual models are often constructed from fragmentary evidence, with only a poor understanding of what is happening, and with a kind of naive psychology that postulates causes, mechanisms, and relationships even where there are none. Some faulty models lead to the frustrations of everyday life,”
+
 - On designs created by engineers:
 
   - > “The problem with the designs of most engineers is that they are too logical. We have to accept human behavior the way it is, not the way we would wish it to be”
 
+- Examples of bad feedback devices:
+
+  - > “Light flashes or beeps are usually more annoying than useful. They tell us that something has happened, but convey very little information about what has happened, and then nothing about what we should do about it”
+
+- Gulf of Execution - gap between a user's goal and the means to execute that goal. Good design helps close that gap.
+
+- Seven stages of action (important conceptual model for designer to understand):
+
+  - Goal (form the goal)
+  - Plan (the action)
+  - Specify (an action sequence)
+  - Perform (the action sequence)
+  - Perceive (the state of the world)
+  - Interpret (the perception)
+  - Compare (the outcome with the goal)
+
+- Use five Whys to investigate problems with a system when errors occur. On the surface the problem might seem obvious - "human error" - but burried in the details you can find relevant ideas of how to improve your design.
+
+  ​
+
+  ​
