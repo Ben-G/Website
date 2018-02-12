@@ -79,4 +79,12 @@ Since it's hard to categorize all of the books I read neatly, I'll just go in ch
 
   ​
 
-  ​
+  ### 3. Silicon Germany 
+
+  *Germany is falling behind in the digital revolution. This risks turning the German economy into a mere manufacturer of the ideas of others. The book outlines the problems in education, government regulation, consumer behavior, etc. and shows potential solutions for how to catch up. The author is the Executive VP at Axel Springer, a German media company that funds a lot of startups. He gathered his insights during multi-month trips to Silicon Valley.*
+
+  - Government regulation in Germany makes it very hard to build companies. Processes for legally starting a company take weeks (vs. instant digital set up in the US). Regulations around employment and terminations are too strict for tiny companies. 
+  - The German economy is too focused on specializations, creating silos between different professions. A highly specialized workforce is importan for high-end manufacturing, but can hinder innovation due to isolation.
+  - German companies favor risk avoidance and punish mistakes. They create processes to minimize mistakes, but this also fosters a culture of low innovation. 
+  - Business models are shifting in digital age. Producers of goods rarely make big profits. Instead its platforms that own the customer relationship and are able to elegantly solve a problem (AirBnb, Uber, etc. don't own assets). This puts the strengths of the German economy (producton of goods) at a disadvantage.
+  - Germans generally avoid investing in equities. This is especially true for equitiy in private companies. There aren't enough historic exits to fuel new companies and wealthy individuals and organizations are not considering investing in startups.
