@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/declarative-api-design-in-swift/" />
 
@@ -121,26 +121,27 @@
     <section class="post-content">
 
 
-
-
 <p>In my first real job as an iOS developer I built an XML parser and a simple layout engine - both had in common that they had a declarative interface. The parsers was driven by a <code>.plist</code> file that mapped XML elements to Objective-C classes. The layout engine allowed you to describe layouts in an HTML-like language (this was before AutoLayout &amp; CollectionViews existed).</p>
 
 <p>Though neither of these libraries were even close to perfect, they showed me four main advantages of declarative code:</p>
+
+<p></p>
 
 <ul>
 <li><strong>Separation of concerns</strong>: The parts of the code that are written in a declarative style only declare an intent, without having any understanding of the underlying implementation. Separation of concerns happens naturally.</li>
 <li><strong>Less repeated code</strong>: A declarative system shares a common implementation. Most of the code is configuration. No risk of repeating implementation details.</li>
 <li><strong>Exceptional API design</strong>: Declarative APIs allow consumers to configure an existing implementation instead of providing their own one. The API surface can be kept minimal.</li>
-<li><strong>Readability</strong>: Signal to noise ratio of declarative code is great!</li>
+<li><strong>Readability</strong>: Signal to noise ratio of declarative code is great!
+<br /></li>
 </ul>
 
-<p>These days I write most of my code in Swift which lends itself well for a declarative programming style<sup class="footnote-ref" id="fnref:f38631c06dc52d51e25323771c266097:1"><a rel="footnote" href="#fn:f38631c06dc52d51e25323771c266097:1">1</a></sup>.</p>
+<p>These days I write most of my code in Swift which lends itself well for a declarative programming style<sup class="footnote-ref" id="fnref:1"><a rel="footnote" href="#fn:1">1</a></sup>.</p>
 
 <p>The majority of types I define are simple structs that either describe a piece of data or an intent. Separate types, typically generic classes, are then responsible for consuming these intents and implementing the necessary work. We also use this approach throughout all new Swift code we&rsquo;re writing in the PlanGrid app. It has had a huge impact on code readability and developer efficiency.</p>
 
 <p>Today I want to discuss an API from the PlanGrid app, that used to be implemented using <code>NSOperationQueue</code> and since has been moved to a more declarative approach - discussing this API should demonstrate the various benefits of a declarative programming style.</p>
 
-<h2 id="building-a-declarative-request-sequence-in-swift:f38631c06dc52d51e25323771c266097">Building a Declarative Request Sequence in Swift</h2>
+<h2 id="building-a-declarative-request-sequence-in-swift">Building a Declarative Request Sequence in Swift</h2>
 
 <p>The API that we&rsquo;ve re-written is responsible for syncing local changes (that might have occurred offline) with our API server. I won&rsquo;t go into details of the change tracking approach, but will instead only discuss the generation &amp; execution of network requests.</p>
 
@@ -154,7 +155,7 @@
 
 <p>Since we have a few upload tasks that involve such request sequences, we decided to model this as a type and support in our upload infrastructure.</p>
 
-<h3 id="defining-the-request-sequence-protocol:f38631c06dc52d51e25323771c266097">Defining the Request Sequence Protocol</h3>
+<h3 id="defining-the-request-sequence-protocol">Defining the Request Sequence Protocol</h3>
 
 <p>We decided to introduce a separate type that is only responsible for describing a sequence of network requests. That type is consumed by our uploader class which turns the descriptions into actual network requests (the uploader itself won&rsquo;t be discussed as part of this post).</p>
 
@@ -162,24 +163,22 @@
 
 <p><em>Note: Some types names might seem a little odd, but they mostly follow an app-specific ontology (e.g. Operation). Others should simply be renamed; still waiting for that refactor capability for Swift code&hellip;</em></p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">typealias</span> <span style="color: #000000">PreviousRequestTuple</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">(</span>
-	<span style="color: #000000">request</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">,</span> 
-	<span style="color: #000000">response</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #3465a4">NSURLResponse</span><span style="color: #000000; font-weight: bold">,</span> 
-	<span style="color: #000000">responseBody</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">JsonValue</span><span style="color: #000000; font-weight: bold">?</span>
-<span style="color: #000000; font-weight: bold">)</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">typealias</span> <span style="color:#000">PreviousRequestTuple</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span>
+	<span style="color:#000">request</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">PushRequest</span><span style="color:#000;font-weight:bold">,</span> 
+	<span style="color:#000">response</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">NSURLResponse</span><span style="color:#000;font-weight:bold">,</span> 
+	<span style="color:#000">responseBody</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">JsonValue</span><span style="color:#000;font-weight:bold">?</span>
+<span style="color:#000;font-weight:bold">)</span>
 
-<span style="color: #8f5902; font-style: italic">/// A sequence of push requests required to sync this operation with the server.</span>
-<span style="color: #8f5902; font-style: italic">/// As soon as a request of this sequence completes, </span>
-<span style="color: #8f5902; font-style: italic">/// `PushSyncQueueManager` will poll the sequence for the next request.</span>
-<span style="color: #8f5902; font-style: italic">/// If `nil` is returned for the `nextRequest` then </span>
-<span style="color: #8f5902; font-style: italic">/// this sequence is considered complete.</span>
-<span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">protocol</span> <span style="color: #000000">OperationRequestSequence</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #8f5902; font-style: italic">/// When this method returns `nil` the entire `OperationRequestSequence` </span>
-    <span style="color: #8f5902; font-style: italic">/// is considered completed.</span>
-    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">nextRequest</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previousRequest</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-
+<span style="color:#8f5902;font-style:italic">/// A sequence of push requests required to sync this operation with the server.</span>
+<span style="color:#8f5902;font-style:italic">/// As soon as a request of this sequence completes, </span>
+<span style="color:#8f5902;font-style:italic">/// `PushSyncQueueManager` will poll the sequence for the next request.</span>
+<span style="color:#8f5902;font-style:italic">/// If `nil` is returned for the `nextRequest` then </span>
+<span style="color:#8f5902;font-style:italic">/// this sequence is considered complete.</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">protocol</span> <span style="color:#000">OperationRequestSequence</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">/// When this method returns `nil` the entire `OperationRequestSequence` </span>
+    <span style="color:#8f5902;font-style:italic">/// is considered completed.</span>
+    <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">nextRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">previousRequest</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">PreviousRequestTuple</span><span style="color:#000;font-weight:bold">?)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">PushRequest</span><span style="color:#000;font-weight:bold">?</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>When asking the request sequence to generate a request, by calling the <code>nextRequest:</code> method, we provide a reference to previous request, a <code>NSURLResponse</code> and if available the JSON response body. Each request might result in a subsequent request (returns a new <code>PushRequest</code>), no subsequent request (returns <code>nil</code>) or an in an error in case the previous request didn&rsquo;t provide the response that is necessary to continue (in which case the request sequence <code>throws</code>).</p>
 
@@ -189,123 +188,119 @@
 
 <p>After implementing the first request sequence based on the <code>OperationRequestSequence</code> protocol, we noticed that it often would be more convenient to simply provide an array of chained requests instead of implementing the <code>nextRequest</code> method. We added an <code>ArrayRequestSequence</code> protocol that provides a default implementation based on an array of requests:</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">// If each requests implements the signature of the `nextRequest` method itself,</span>
-<span style="color: #8f5902; font-style: italic">// we can provide an implementation of `nextRequest` that simply composes all</span>
-<span style="color: #8f5902; font-style: italic">// requests in the `requests` array by iterating over them.</span>
-<span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">typealias</span> <span style="color: #000000">RequestContinuation</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#8f5902;font-style:italic">// If each requests implements the signature of the `nextRequest` method itself,</span>
+<span style="color:#8f5902;font-style:italic">// we can provide an implementation of `nextRequest` that simply composes all</span>
+<span style="color:#8f5902;font-style:italic">// requests in the `requests` array by iterating over them.</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">typealias</span> <span style="color:#000">RequestContinuation</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">previous</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">PreviousRequestTuple</span><span style="color:#000;font-weight:bold">?)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">PushRequest</span><span style="color:#000;font-weight:bold">?</span>
 
-<span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">protocol</span> <span style="color: #000000">ArrayRequestSequence</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">OperationRequestSequence</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">currentRequestIndex</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Int</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #204a87; font-weight: bold">get</span> <span style="color: #204a87; font-weight: bold">set</span> <span style="color: #000000; font-weight: bold">}</span>
-    <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">requests</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">RequestContinuation</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #204a87; font-weight: bold">get</span> <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">protocol</span> <span style="color:#000">ArrayRequestSequence</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">OperationRequestSequence</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">currentRequestIndex</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Int</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#204a87;font-weight:bold">get</span> <span style="color:#204a87;font-weight:bold">set</span> <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">requests</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">RequestContinuation</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#204a87;font-weight:bold">get</span> <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 
-<span style="color: #204a87; font-weight: bold">extension</span> <span style="color: #000000">ArrayRequestSequence</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #204a87; font-weight: bold">public</span> <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">nextRequest</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">currentRequestIndex</span> <span style="color: #ce5c00; font-weight: bold">&lt;</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">requests</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #3465a4">count</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #204a87; font-weight: bold">nil</span> <span style="color: #000000; font-weight: bold">}</span>
+<span style="color:#204a87;font-weight:bold">extension</span> <span style="color:#000">ArrayRequestSequence</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">nextRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">previous</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">PreviousRequestTuple</span><span style="color:#000;font-weight:bold">?)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">PushRequest</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">guard</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">currentRequestIndex</span> <span style="color:#ce5c00;font-weight:bold">&lt;</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">requests</span><span style="color:#000;font-weight:bold">.</span><span style="color:#3465a4">count</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span> <span style="color:#000;font-weight:bold">}</span>
 
-    	<span style="color: #8f5902; font-style: italic">// Iterate over all requests in the requests array. </span>
-    	<span style="color: #8f5902; font-style: italic">// Pass result from previous request to next one.</span>
-        <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">nextRequest</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">try</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">requests</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">currentRequestIndex</span><span style="color: #000000; font-weight: bold">](</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">)</span>
-        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">currentRequestIndex</span> <span style="color: #ce5c00; font-weight: bold">+=</span> <span style="color: #0000cf; font-weight: bold">1</span>
-        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">nextRequest</span>
-    <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-
+    	<span style="color:#8f5902;font-style:italic">// Iterate over all requests in the requests array. </span>
+    	<span style="color:#8f5902;font-style:italic">// Pass result from previous request to next one.</span>
+        <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">nextRequest</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">try</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">requests</span><span style="color:#000;font-weight:bold">[</span><span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">currentRequestIndex</span><span style="color:#000;font-weight:bold">](</span><span style="color:#000">previous</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">previous</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">currentRequestIndex</span> <span style="color:#ce5c00;font-weight:bold">+=</span> <span style="color:#0000cf;font-weight:bold">1</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">nextRequest</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>At this point it became almost trivial to define a new upload sequence.</p>
 
-<h3 id="implementing-the-request-sequence-protocol:f38631c06dc52d51e25323771c266097">Implementing the Request Sequence Protocol</h3>
+<h3 id="implementing-the-request-sequence-protocol">Implementing the Request Sequence Protocol</h3>
 
 <p>As an example, let&rsquo;s take a look at the upload sequence for uploading snapshots (snapshots in PlanGrid capture a blueprint + annotations in an image that can be exported):</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #8f5902; font-style: italic">/// Describes a sequence of requests for uploading a snapshot.</span>
-<span style="color: #204a87; font-weight: bold">final</span> <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">SnapshotUploadRequestSequence</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">ArrayRequestSequence</span> <span style="color: #000000; font-weight: bold">{</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#8f5902;font-style:italic">/// Describes a sequence of requests for uploading a snapshot.</span>
+<span style="color:#204a87;font-weight:bold">final</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">SnapshotUploadRequestSequence</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ArrayRequestSequence</span> <span style="color:#000;font-weight:bold">{</span>
 
-    <span style="color: #8f5902; font-style: italic">// Removed boilerplate initializer &amp; </span>
-    <span style="color: #8f5902; font-style: italic">// instance variable definition code...</span>
+    <span style="color:#8f5902;font-style:italic">// Removed boilerplate initializer &amp; </span>
+    <span style="color:#8f5902;font-style:italic">// instance variable definition code...</span>
 
-    <span style="color: #8f5902; font-style: italic">// This is the definition of the request sequence</span>
-    <span style="color: #204a87; font-weight: bold">lazy</span> <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">requests</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">RequestContinuation</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000; font-weight: bold">[</span>
-            <span style="color: #8f5902; font-style: italic">// 1. Get AWS Upload Package from API</span>
-            <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_allocationRequest</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #8f5902; font-style: italic">// 2. Upload Snapshot to AWS</span>
-            <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_awsUploadRequest</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #8f5902; font-style: italic">// 3. Confirm Upload with API</span>
-            <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">_metadataRequest</span>
-        <span style="color: #000000; font-weight: bold">]</span>
-    <span style="color: #000000; font-weight: bold">}()</span>
+    <span style="color:#8f5902;font-style:italic">// This is the definition of the request sequence</span>
+    <span style="color:#204a87;font-weight:bold">lazy</span> <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">requests</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">RequestContinuation</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">[</span>
+            <span style="color:#8f5902;font-style:italic">// 1. Get AWS Upload Package from API</span>
+            <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">_allocationRequest</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#8f5902;font-style:italic">// 2. Upload Snapshot to AWS</span>
+            <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">_awsUploadRequest</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#8f5902;font-style:italic">// 3. Confirm Upload with API</span>
+            <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">_metadataRequest</span>
+        <span style="color:#000;font-weight:bold">]</span>
+    <span style="color:#000;font-weight:bold">}()</span>
 
-    <span style="color: #8f5902; font-style: italic">// It follows the detailed definition of the individual requests:</span>
+    <span style="color:#8f5902;font-style:italic">// It follows the detailed definition of the individual requests:</span>
 
-    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">_allocationRequest</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">{</span>
-    	<span style="color: #8f5902; font-style: italic">// Generate an API request for this file upload</span>
-    	<span style="color: #8f5902; font-style: italic">// Pass file size in JSON format in the request body</span>
-        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">PushInMemoryRequestDescription</span><span style="color: #000000; font-weight: bold">(</span>
-            <span style="color: #000000">relativeURL</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">ApiEndpoints</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotAllocation</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">value</span><span style="color: #000000; font-weight: bold">),</span>
-            <span style="color: #000000">httpMethod</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">POST</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">jsonBody</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">JsonValue</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">values</span><span style="color: #000000; font-weight: bold">:</span>
-                <span style="color: #000000; font-weight: bold">[</span>
-                    <span style="color: #4e9a06">&quot;filesize&quot;</span> <span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">imageUploadDescription</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">fullFileSize</span>
-                <span style="color: #000000; font-weight: bold">]</span>
-            <span style="color: #000000; font-weight: bold">),</span>
-            <span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">requestIdentifier</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">SnapshotUploadRequestSequence</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">allocationRequest</span>
-        <span style="color: #000000; font-weight: bold">)</span>
-    <span style="color: #000000; font-weight: bold">}</span>
+    <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">_allocationRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">previous</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">PreviousRequestTuple</span><span style="color:#000;font-weight:bold">?)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">PushRequest</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000;font-weight:bold">{</span>
+    	<span style="color:#8f5902;font-style:italic">// Generate an API request for this file upload</span>
+    	<span style="color:#8f5902;font-style:italic">// Pass file size in JSON format in the request body</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">PushInMemoryRequestDescription</span><span style="color:#000;font-weight:bold">(</span>
+            <span style="color:#000">relativeURL</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ApiEndpoints</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">snapshotAllocation</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">affectedModelUid</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">value</span><span style="color:#000;font-weight:bold">),</span>
+            <span style="color:#000">httpMethod</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">POST</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">jsonBody</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">JsonValue</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">values</span><span style="color:#000;font-weight:bold">:</span>
+                <span style="color:#000;font-weight:bold">[</span>
+                    <span style="color:#4e9a06">&#34;filesize&#34;</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">imageUploadDescription</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">fullFileSize</span>
+                <span style="color:#000;font-weight:bold">]</span>
+            <span style="color:#000;font-weight:bold">),</span>
+            <span style="color:#000">operationId</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">operationId</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">affectedModelUid</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">affectedModelUid</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">requestIdentifier</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">SnapshotUploadRequestSequence</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">allocationRequest</span>
+        <span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">_awsUploadRequest</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">{</span>
-    	<span style="color: #8f5902; font-style: italic">// Check for presence of AWS allocation data in response body</span>
-        <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">allocationData</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">?.</span><span style="color: #000000">responseBody</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span>
-            <span style="color: #000000">throw</span> <span style="color: #000000">ImageCreationOperationError</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">MissingAllocationData</span>
-        <span style="color: #000000; font-weight: bold">}</span>
+    <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">_awsUploadRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">previous</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">PreviousRequestTuple</span><span style="color:#000;font-weight:bold">?)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">PushRequest</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000;font-weight:bold">{</span>
+    	<span style="color:#8f5902;font-style:italic">// Check for presence of AWS allocation data in response body</span>
+        <span style="color:#204a87;font-weight:bold">guard</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">allocationData</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">previous</span><span style="color:#000;font-weight:bold">?.</span><span style="color:#000">responseBody</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#204a87;font-weight:bold">throw</span> <span style="color:#000">ImageCreationOperationError</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MissingAllocationData</span>
+        <span style="color:#000;font-weight:bold">}</span>
 	
-        <span style="color: #8f5902; font-style: italic">// Attempt to parse AWS allocation data</span>
-        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotAllocationData</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">try</span> <span style="color: #000000">AWSAllocationPackage</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">json</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">allocationData</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #4e9a06">&quot;snapshot&quot;</span><span style="color: #000000; font-weight: bold">])</span>
+        <span style="color:#8f5902;font-style:italic">// Attempt to parse AWS allocation data</span>
+        <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">snapshotAllocationData</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">try</span> <span style="color:#000">AWSAllocationPackage</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">json</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">allocationData</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#34;snapshot&#34;</span><span style="color:#000;font-weight:bold">])</span>
 
-        <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">snapshotAllocationData</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotAllocationData</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span>
-            <span style="color: #000000">throw</span> <span style="color: #000000">ImageCreationOperationError</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">MissingAllocationData</span>
-        <span style="color: #000000; font-weight: bold">}</span>
+        <span style="color:#204a87;font-weight:bold">guard</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">snapshotAllocationData</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">snapshotAllocationData</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#204a87;font-weight:bold">throw</span> <span style="color:#000">ImageCreationOperationError</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">MissingAllocationData</span>
+        <span style="color:#000;font-weight:bold">}</span>
 
-        <span style="color: #8f5902; font-style: italic">// Get filesystem path for this snapshot</span>
-        <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">thumbImageFilePath</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #3465a4">NSURL</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">fileURLWithPath</span><span style="color: #000000; font-weight: bold">:</span>
-            <span style="color: #000000">SnapshotModel</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">pathForUid</span><span style="color: #000000; font-weight: bold">(</span>
-                <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">imageUploadDescription</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">modelUid</span><span style="color: #000000; font-weight: bold">,</span>
-                <span style="color: #000000">size</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">Full</span>
-            <span style="color: #000000; font-weight: bold">)</span>
-        <span style="color: #000000; font-weight: bold">)</span>
+        <span style="color:#8f5902;font-style:italic">// Get filesystem path for this snapshot</span>
+        <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">thumbImageFilePath</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">NSURL</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fileURLWithPath</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#000">SnapshotModel</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">pathForUid</span><span style="color:#000;font-weight:bold">(</span>
+                <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">imageUploadDescription</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">modelUid</span><span style="color:#000;font-weight:bold">,</span>
+                <span style="color:#000">size</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">Full</span>
+            <span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000;font-weight:bold">)</span>
 
-        <span style="color: #8f5902; font-style: italic">// Generate a multipart/form-data request</span>
-        <span style="color: #8f5902; font-style: italic">// that uploads the image to AWS</span>
-        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">AWSMultiPartRequestDescription</span><span style="color: #000000; font-weight: bold">(</span>
-            <span style="color: #000000">targetURL</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">snapshotAllocationData</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">targetUrl</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">httpMethod</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">POST</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">fileURL</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">thumbImageFilePath</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">filename</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">snapshotAllocationData</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">filename</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">requestIdentifier</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">SnapshotUploadRequestSequence</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotAWS</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">formParameters</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">snapshotAllocationData</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">fields</span>
-        <span style="color: #000000; font-weight: bold">)</span>
-    <span style="color: #000000; font-weight: bold">}</span>
+        <span style="color:#8f5902;font-style:italic">// Generate a multipart/form-data request</span>
+        <span style="color:#8f5902;font-style:italic">// that uploads the image to AWS</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">AWSMultiPartRequestDescription</span><span style="color:#000;font-weight:bold">(</span>
+            <span style="color:#000">targetURL</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">snapshotAllocationData</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">targetUrl</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">httpMethod</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">POST</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">fileURL</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">thumbImageFilePath</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">filename</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">snapshotAllocationData</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">filename</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">operationId</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">operationId</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">affectedModelUid</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">affectedModelUid</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">requestIdentifier</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">SnapshotUploadRequestSequence</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">snapshotAWS</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">formParameters</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">snapshotAllocationData</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">fields</span>
+        <span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">_metadataRequest</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">previous</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">PreviousRequestTuple</span><span style="color: #000000; font-weight: bold">?)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">PushRequest</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #8f5902; font-style: italic">// Generate an API request to confirm the completed upload</span>
-        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">PushInMemoryRequestDescription</span><span style="color: #000000; font-weight: bold">(</span>
-            <span style="color: #000000">relativeURL</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">ApiEndpoints</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotAllocation</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">value</span><span style="color: #000000; font-weight: bold">),</span>
-            <span style="color: #000000">httpMethod</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">PUT</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">jsonBody</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">snapshotMetadata</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">operationId</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">affectedModelUid</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">requestIdentifier</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">SnapshotUploadRequestSequence</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">metadataRequest</span>
-        <span style="color: #000000; font-weight: bold">)</span>
-    <span style="color: #000000; font-weight: bold">}</span>
+    <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">_metadataRequest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">previous</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">PreviousRequestTuple</span><span style="color:#000;font-weight:bold">?)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">PushRequest</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#8f5902;font-style:italic">// Generate an API request to confirm the completed upload</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">PushInMemoryRequestDescription</span><span style="color:#000;font-weight:bold">(</span>
+            <span style="color:#000">relativeURL</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ApiEndpoints</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">snapshotAllocation</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">affectedModelUid</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">value</span><span style="color:#000;font-weight:bold">),</span>
+            <span style="color:#000">httpMethod</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">PUT</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">jsonBody</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">snapshotMetadata</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">operationId</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">operationId</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">affectedModelUid</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">affectedModelUid</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">requestIdentifier</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">SnapshotUploadRequestSequence</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">metadataRequest</span>
+        <span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-</p>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>A few things should stand out in this implementation:</p>
 
@@ -327,7 +322,7 @@
 
 <p>How does this compare to our previous solution that was using <code>NSOperationQueue</code>?</p>
 
-<h3 id="what-about-nsoperationqueue:f38631c06dc52d51e25323771c266097">What About NSOperationQueue?</h3>
+<h3 id="what-about-nsoperationqueue">What About NSOperationQueue?</h3>
 
 <p>The solution using an <code>NSOperationQueue</code> was a lot less concise, so there&rsquo;s no good way to present its code in this blog post. We can still discuss the issues that the approach had on a high level.</p>
 
@@ -341,7 +336,7 @@
 
 <p>TL;DR: we&rsquo;re glad that we&rsquo;re now able to provide a more explicit API that results in code that is easier to read.</p>
 
-<h2 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>Using a declarative programming approach has had a huge impact on our codebase and our productivity. We can provide constrained APIs that can be only used in one way and don&rsquo;t leave a lot of room for error. We can avoid subclassing as a means of polymorphism and instead implement generic types that are controlled by declarative code. We can write code with excellent signal to noise ratio. The declarative code we write is extremely easy to test (to the point where even testing enthusiasts might deem tests unnecessary). So what are the downsides, if any?</p>
 
@@ -353,19 +348,18 @@
 
 <p>Soon after I started working on apps I naively wondered why we couldn&rsquo;t just build them by configuring pre-existing components, without writing much, if any, custom code. Libraries like React and GraphQL have made this future a little more likely. I think this is just a first step, and going forward we&rsquo;ll see more sophisticated libraries hide their complexity by providing simple, declarative, interfaces.</p>
 
-<p>And hopefully, some day, we&rsquo;ll get a declarative UI library for building iOS apps<sup class="footnote-ref" id="fnref:f38631c06dc52d51e25323771c266097:2"><a rel="footnote" href="#fn:f38631c06dc52d51e25323771c266097:2">2</a></sup>.</p>
+<p>And hopefully, some day, we&rsquo;ll get a declarative UI library for building iOS apps<sup class="footnote-ref" id="fnref:2"><a rel="footnote" href="#fn:2">2</a></sup>.</p>
 <div class="footnotes">
 
 <hr />
 
 <ol>
-<li id="fn:f38631c06dc52d51e25323771c266097:1">I&rsquo;ll use the term <em>declarative programming</em> even though its <a href="https://existentialtype.wordpress.com/2013/07/18/what-if-anything-is-a-declarative-language/">definition is disputed</a>. So far I&rsquo;ve liked the definition in <a href="https://awelonblue.wordpress.com/2012/01/12/defining-declarative/">this post</a> the most. It identifies the following characteristics of declarative code: Idempotent, Commutative, Concurrent (declarations hold at overlapping times), Reactive (meaning is context dependent). Overall this is a fairly theoretical (yet relevant debate) that I&rsquo;ll might cover in a future post - this post is going to be more pragmatic.
- <a class="footnote-return" href="#fnref:f38631c06dc52d51e25323771c266097:1"><sup>[return]</sup></a></li>
-<li id="fn:f38631c06dc52d51e25323771c266097:2">Comparing React&rsquo;s declarative API to UIKit&rsquo;s imperative one is an interesting lense for looking at the general trade-offs between declarative/imperative APIs, I&rsquo;ve done that in my <a href="https://realm.io/news/altconf-benji-encz-uikit-inside-out-declarative-programming/">2016 Alt Conf Talk</a>. As part of that talk I experimented with what a <a href="https://github.com/Ben-G/UILib">React like API wrapper for UIKit</a> would look like.
- <a class="footnote-return" href="#fnref:f38631c06dc52d51e25323771c266097:2"><sup>[return]</sup></a></li>
+<li id="fn:1">I&rsquo;ll use the term <em>declarative programming</em> even though its <a href="https://existentialtype.wordpress.com/2013/07/18/what-if-anything-is-a-declarative-language/">definition is disputed</a>. So far I&rsquo;ve liked the definition in <a href="https://awelonblue.wordpress.com/2012/01/12/defining-declarative/">this post</a> the most. It identifies the following characteristics of declarative code: Idempotent, Commutative, Concurrent (declarations hold at overlapping times), Reactive (meaning is context dependent). Overall this is a fairly theoretical (yet relevant debate) that I&rsquo;ll might cover in a future post - this post is going to be more pragmatic.
+ <a class="footnote-return" href="#fnref:1"><sup>[return]</sup></a></li>
+<li id="fn:2">Comparing React&rsquo;s declarative API to UIKit&rsquo;s imperative one is an interesting lense for looking at the general trade-offs between declarative/imperative APIs, I&rsquo;ve done that in my <a href="https://realm.io/news/altconf-benji-encz-uikit-inside-out-declarative-programming/">2016 Alt Conf Talk</a>. As part of that talk I experimented with what a <a href="https://github.com/Ben-G/UILib">React like API wrapper for UIKit</a> would look like.
+ <a class="footnote-return" href="#fnref:2"><sup>[return]</sup></a></li>
 </ol>
 </div>
-
 
 
 

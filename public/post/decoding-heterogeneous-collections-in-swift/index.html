@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/" />
 
@@ -121,27 +121,25 @@
     <section class="post-content">
 
 
-
-
 <p>The problem of decoding Swift types from an outside data source, such as JSON, has been mostly solved. Since Swift&rsquo;s release we&rsquo;ve seen more than a dozen popular JSON mapping libraries pop up.</p>
 
 <p>However, most of the libraries I&rsquo;ve seen so far deal with decoding individual types, not entire collections of heterogeneous types.</p>
 
+<p></p>
+
 <p>We define how a JSON object representing a user can be mapped to a <code>User</code> type, as in this example:</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">User</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">Decodable</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">name</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">String</span>
-    <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">age</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Int</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000">User</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Decodable</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">String</span>
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">age</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Int</span>
 
-    <span style="color: #204a87; font-weight: bold">static</span> <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">decode</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">json</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">AnyObject</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">User</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">try</span> <span style="color: #000000">User</span><span style="color: #000000; font-weight: bold">(</span>
-            <span style="color: #000000">name</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">json</span> <span style="color: #000000; font-weight: bold">=</span><span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #4e9a06">&quot;name&quot;</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">age</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">json</span> <span style="color: #000000; font-weight: bold">=</span><span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #4e9a06">&quot;age&quot;</span>
-        <span style="color: #000000; font-weight: bold">)</span>
-    <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-
+    <span style="color:#204a87;font-weight:bold">static</span> <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">decode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">json</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">AnyObject</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">User</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">try</span> <span style="color:#000">User</span><span style="color:#000;font-weight:bold">(</span>
+            <span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">json</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#4e9a06">&#34;name&#34;</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">age</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">json</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#4e9a06">&#34;age&#34;</span>
+        <span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>This approach requires the developer to know that a certain piece of JSON will ever only contain user objects.</p>
 
@@ -174,7 +172,7 @@
 
 <p>In this example we have three different types: &ldquo;user&rdquo;, &ldquo;car&rdquo; and &ldquo;phone&rdquo;, that can occur anywhere throughout the JSON array. In order to use one of the JSON mapping libraries we would need to inspect each individual element in this list, identify it&rsquo;s type, and then call the initializer of the respective Swift type.</p>
 
-<h2 id="dynamically-mapping-json-entities-and-types:f38631c06dc52d51e25323771c266097">Dynamically Mapping JSON Entities and Types</h2>
+<h2 id="dynamically-mapping-json-entities-and-types">Dynamically Mapping JSON Entities and Types</h2>
 
 <p>In Objective-C it would be fairly easy to solve this problem automatically. We can rely on the Objective-C runtime to dynamically look up a class by its name and create the relevant instance for each entity we find in the JSON array.</p>
 
@@ -189,31 +187,27 @@
 
 <p>Here&rsquo;s what the protocol looks like in my example:</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">protocol</span> <span style="color: #000000">Deserializable</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">Decodable</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #204a87; font-weight: bold">static</span> <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">typeIdentifier</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">String</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #204a87; font-weight: bold">get</span> <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">protocol</span> <span style="color:#000">Deserializable</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Decodable</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">static</span> <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">typeIdentifier</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">String</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#204a87;font-weight:bold">get</span> <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>Note that I&rsquo;m relying on the <a href="https://github.com/Anviking/Decodable">Decodable</a> JSON mapping library to require the JSON initializer for me via the <code>Decodable</code> protocol.</p>
 
 <p>Each of the individual types will now implement this protocol. Here&rsquo;s an example for the <code>User</code> type:</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">User</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">Deserializable</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #204a87; font-weight: bold">static</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">typeIdentifier</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #4e9a06">&quot;user&quot;</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000">User</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Deserializable</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">static</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">typeIdentifier</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;user&#34;</span>
 
-    <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">name</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">String</span>
-    <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">age</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Int</span>
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">String</span>
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">age</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Int</span>
 
-    <span style="color: #204a87; font-weight: bold">static</span> <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">decode</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">json</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">AnyObject</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000">throws</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000">User</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">try</span> <span style="color: #000000">User</span><span style="color: #000000; font-weight: bold">(</span>
-            <span style="color: #000000">name</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">json</span> <span style="color: #000000; font-weight: bold">=</span><span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #4e9a06">&quot;name&quot;</span><span style="color: #000000; font-weight: bold">,</span>
-            <span style="color: #000000">age</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">json</span> <span style="color: #000000; font-weight: bold">=</span><span style="color: #ce5c00; font-weight: bold">&gt;</span> <span style="color: #4e9a06">&quot;age&quot;</span>
-        <span style="color: #000000; font-weight: bold">)</span>
-    <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-</p>
+    <span style="color:#204a87;font-weight:bold">static</span> <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">decode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">json</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">AnyObject</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000">User</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">try</span> <span style="color:#000">User</span><span style="color:#000;font-weight:bold">(</span>
+            <span style="color:#000">name</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">json</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#4e9a06">&#34;name&#34;</span><span style="color:#000;font-weight:bold">,</span>
+            <span style="color:#000">age</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">json</span> <span style="color:#000;font-weight:bold">=</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#4e9a06">&#34;age&#34;</span>
+        <span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>This is mostly the regular JSON mapping code we&rsquo;re familiar with. The only addition is the static <code>typeIdentifier</code> member that tells us what this type is called in the JSON array.</p>
 
@@ -223,36 +217,34 @@
 
 <p>For this example I&rsquo;ve called the type <code>Deserializer</code>. Here&rsquo;s what it looks like:</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">Deserializer</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #204a87; font-weight: bold">private</span> <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">modelLookupTable</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #204a87">String</span> <span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">Deserializable</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #204a87; font-weight: bold">Type</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">[:]</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000">Deserializer</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">private</span> <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">modelLookupTable</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">String</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#000">Deserializable</span><span style="color:#000;font-weight:bold">.</span><span style="color:#204a87;font-weight:bold">Type</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[:]</span>
 
-    <span style="color: #204a87; font-weight: bold">init</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">models</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">Deserializable</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #204a87; font-weight: bold">Type</span><span style="color: #000000; font-weight: bold">])</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #8f5902; font-style: italic">// Store all types in lookup table</span>
-        <span style="color: #204a87; font-weight: bold">for</span> <span style="color: #000000">model</span> <span style="color: #204a87; font-weight: bold">in</span> <span style="color: #000000">models</span> <span style="color: #000000; font-weight: bold">{</span>
-            <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">modelLookupTable</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">model</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">typeIdentifier</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">model</span>
-        <span style="color: #000000; font-weight: bold">}</span>
-    <span style="color: #000000; font-weight: bold">}</span>
+    <span style="color:#204a87;font-weight:bold">init</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">models</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">Deserializable</span><span style="color:#000;font-weight:bold">.</span><span style="color:#204a87;font-weight:bold">Type</span><span style="color:#000;font-weight:bold">])</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#8f5902;font-style:italic">// Store all types in lookup table</span>
+        <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">model</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">models</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">modelLookupTable</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">typeIdentifier</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">model</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">deserialize</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">json</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[[</span><span style="color: #204a87">String</span> <span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">AnyObject</span><span style="color: #000000; font-weight: bold">]])</span> <span style="color: #000000; font-weight: bold">-&gt;</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">Deserializable</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">parsedModels</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">Deserializable</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">[]</span>
+    <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">deserialize</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">json</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[[</span><span style="color:#204a87">String</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">AnyObject</span><span style="color:#000;font-weight:bold">]])</span> <span style="color:#000;font-weight:bold">-&gt;</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">Deserializable</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">parsedModels</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">Deserializable</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span>
 
-        <span style="color: #8f5902; font-style: italic">// Iterate over each entity in the JSON array</span>
-        <span style="color: #204a87; font-weight: bold">for</span> <span style="color: #000000">jsonEntity</span> <span style="color: #204a87; font-weight: bold">in</span> <span style="color: #000000">json</span> <span style="color: #000000; font-weight: bold">{</span>
-            <span style="color: #8f5902; font-style: italic">// Find metatype for this entity</span>
-            <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">type</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">jsonEntity</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #4e9a06">&quot;type&quot;</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #204a87; font-weight: bold">as</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #204a87">String</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #204a87; font-weight: bold">continue</span> <span style="color: #000000; font-weight: bold">}</span>
-            <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">modelMetatype</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">modelLookupTable</span><span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">type</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #204a87; font-weight: bold">continue</span> <span style="color: #000000; font-weight: bold">}</span>
+        <span style="color:#8f5902;font-style:italic">// Iterate over each entity in the JSON array</span>
+        <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">jsonEntity</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">json</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#8f5902;font-style:italic">// Find metatype for this entity</span>
+            <span style="color:#204a87;font-weight:bold">guard</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">type</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">jsonEntity</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#34;type&#34;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#204a87;font-weight:bold">as</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#204a87">String</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#204a87;font-weight:bold">continue</span> <span style="color:#000;font-weight:bold">}</span>
+            <span style="color:#204a87;font-weight:bold">guard</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">modelMetatype</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">modelLookupTable</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">type</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#204a87;font-weight:bold">continue</span> <span style="color:#000;font-weight:bold">}</span>
 
-            <span style="color: #8f5902; font-style: italic">// Call initializer on the metatype</span>
-            <span style="color: #204a87; font-weight: bold">if</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">model</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">try</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000">modelMetatype</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">decode</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">jsonEntity</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
-                <span style="color: #000000">parsedModels</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">append</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">model</span><span style="color: #000000; font-weight: bold">)</span>
-            <span style="color: #000000; font-weight: bold">}</span>
-        <span style="color: #000000; font-weight: bold">}</span>
+            <span style="color:#8f5902;font-style:italic">// Call initializer on the metatype</span>
+            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">model</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000">modelMetatype</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">decode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">jsonEntity</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+                <span style="color:#000">parsedModels</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">model</span><span style="color:#000;font-weight:bold">)</span>
+            <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#000;font-weight:bold">}</span>
 
-        <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">parsedModels</span>
-    <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-</p>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">parsedModels</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>This type gets initialized with an array of model metatypes (<code>[Deserializable.Type]</code>). This is necessary in order for the component to know which types can appear within the JSON array it will deserialize. Since we cannot dynamically look up types at runtime, we need to require a developer to manually provide all the types as part of the <code>Deserializer</code> setup.</p>
 
@@ -264,12 +256,10 @@ At the end of the <code>deserialize</code> function we return the list of decode
 
 <p>With all this in place, we can now create an instance of the deserializer and use it:</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">deserializer</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">Deserializer</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">models</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">User</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">Car</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">Phone</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">])</span>
-<span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">models</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">deserializer</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">deserialize</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">jsonArray</span><span style="color: #000000; font-weight: bold">)</span>
+<p><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">deserializer</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">Deserializer</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">models</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">User</span><span style="color:#000;font-weight:bold">.</span><span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Car</span><span style="color:#000;font-weight:bold">.</span><span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">Phone</span><span style="color:#000;font-weight:bold">.</span><span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">])</span>
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">models</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">deserializer</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">deserialize</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">jsonArray</span><span style="color:#000;font-weight:bold">)</span>
 
-<span style="color: #3465a4">print</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">models</span><span style="color: #000000; font-weight: bold">)</span>
-</pre></div>
-</p>
+<span style="color:#3465a4">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">models</span><span style="color:#000;font-weight:bold">)</span></code></pre></div></p>
 
 <p>The printed output will now be a list of the different instances that have been decoded:</p>
 
@@ -277,7 +267,6 @@ At the end of the <code>deserialize</code> function we return the list of decode
 </code></pre>
 
 <p>I hope this concept is useful to some other Swift developers as well. You can find a playground with the full example code on <a href="https://github.com/Ben-G/Decoding-Heterogeneous-Collections-Swift/blob/master/Decodable.playground/Contents.swift">GitHub</a>.</p>
-
 
 
 

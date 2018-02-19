@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/objective-c-backing-ivars-subclasses/" />
 
@@ -121,13 +121,13 @@
     <section class="post-content">
 
 
-
-
 <p>Most Objective-C developers have a fairly good understanding of properties and instance variables and how these two work together.</p>
 
 <p>Today I want to discuss an interesting case that will force you to understand the details of the relationship between instance variables and properties. In case you already know these details, this remains an interesting example of how complicated Objective-C can be every once in a while.</p>
 
-<h2 id="our-scenario:f38631c06dc52d51e25323771c266097">Our Scenario</h2>
+<p></p>
+
+<h2 id="our-scenario">Our Scenario</h2>
 
 <p>Let&rsquo;s assume we want to create a very simple <strong>ClassA</strong> with a property called <code>age</code> of type <code>NSInteger</code>:</p>
 
@@ -259,7 +259,7 @@ NSLog(@&quot;ClassA1 _age: %d&quot;, _age);
 
 <p><del>Scratch this approach</del>, and move on to option number two.</p>
 
-<h2 id="declare-in-classa-h:f38631c06dc52d51e25323771c266097">Declare in ClassA.h ?</h2>
+<h2 id="declare-in-classa-h">Declare in ClassA.h ?</h2>
 
 <p>We now know that we cannot synthesize / declare the <code>_age</code> instance variable in <em>ClassB.m</em> because we will create a new instance variable instead of using the one of our super class <em>ClassA</em>.</p>
 
@@ -316,7 +316,7 @@ NSLog(@&quot;ClassA1 _age: %d&quot;, _age);
 
 <p>Let&rsquo;s take a look at a third solution.</p>
 
-<h2 id="use-a-class-extension-in-a-separate-header-file:f38631c06dc52d51e25323771c266097">Use a class extension in a separate header file!</h2>
+<h2 id="use-a-class-extension-in-a-separate-header-file">Use a class extension in a separate header file!</h2>
 
 <p>We now know that the <code>_age</code> instance variable needs to be part of the interface of <em>ClassA</em> in order for subclasses to be able to access it.</p>
 
@@ -386,7 +386,6 @@ NSLog(@&quot;ClassA1 _age: %d&quot;, _age);
 <p><strong>This little example shows how complex some Objective-C language details are and how important it can be to undertand them.</strong></p>
 
 <p>You can find the code examples used throughout this tutorial in the <a href="https://github.com/Ben-G/Property_InstanceVariables_Inheritance">GitHub repository for this blogpost</a>.</p>
-
 
 
 

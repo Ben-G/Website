@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/bridging-swift-types-to-objective-c/" />
 
@@ -121,13 +121,13 @@
     <section class="post-content">
 
 
-
-
 <p>At PlanGrid we started adopting Swift prior to the 1.0 release. Despite the tooling problems you&rsquo;re probably familiar with, we&rsquo;re still excited Swift users and have written almost all new code since the summer of 2014 in Swift. We are doing that within a large legacy codebase so more than 50% of our application code is still in Objective-C. As in many projects Swift and Objective-C need to co-exist.</p>
+
+<p></p>
 
 <p>Throwing an <code>@objc</code> onto our new Swift types would have been the easiest way to interop with Objective-C. However, many Swift features aren&rsquo;t bridgable and we quickly noticed that this approach would water down our Swift code to Objective-C code with a different syntax (no structs, enums with associated values, default arguments, etc.).</p>
 
-<h2 id="a-recipe-for-bridging-swift-types:f38631c06dc52d51e25323771c266097">A Recipe for Bridging Swift Types</h2>
+<h2 id="a-recipe-for-bridging-swift-types">A Recipe for Bridging Swift Types</h2>
 
 <p>We decided to create separate types that would be responsible for bridging our Swift types to Objective-C (and vice versa). These types wrap around the Swift types and take care of translating language concepts where necessary.</p>
 
@@ -141,106 +141,102 @@
 <li>If the type needs to have an initializer thats visible in Objective-C implement that initializer by constructing the underlying Swift type.</li>
 </ol>
 
-<h2 id="bridging-example:f38631c06dc52d51e25323771c266097">Bridging Example</h2>
+<h2 id="bridging-example">Bridging Example</h2>
 
 <p>Let&rsquo;s take a look at an example of bridging Swift types to Objective-C with the method described above. Below we have a shopping cart type and a checkout options type.</p>
 
 <p>In this example we wouldn&rsquo;t be able to expose the type to Objective-C, because enums with associated types can&rsquo;t be bridged.</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">enum</span> <span style="color: #000000">CheckoutOption</span> <span style="color: #000000; font-weight: bold">{</span>
-  <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">creditCard</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87">Int</span><span style="color: #000000; font-weight: bold">)</span>
-  <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #000000">paypal</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87">String</span><span style="color: #000000; font-weight: bold">)</span>
-<span style="color: #000000; font-weight: bold">}</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">enum</span> <span style="color:#000">CheckoutOption</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#204a87;font-weight:bold">case</span> <span style="color:#000">creditCard</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">Int</span><span style="color:#000;font-weight:bold">)</span>
+  <span style="color:#204a87;font-weight:bold">case</span> <span style="color:#000">paypal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">String</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span>
 
-<span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">ShoppingCart</span> <span style="color: #000000; font-weight: bold">{</span>
-  <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">checkoutOption</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">CheckoutOption</span><span style="color: #000000; font-weight: bold">?</span>
-  <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">items</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #204a87">String</span><span style="color: #000000; font-weight: bold">]</span>
+<span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000">ShoppingCart</span> <span style="color:#000;font-weight:bold">{</span>
+  <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">checkoutOption</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">CheckoutOption</span><span style="color:#000;font-weight:bold">?</span>
+  <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">items</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">String</span><span style="color:#000;font-weight:bold">]</span>
 
-  <span style="color: #204a87; font-weight: bold">init</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">items</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #204a87">String</span><span style="color: #000000; font-weight: bold">],</span> <span style="color: #000000">checkoutOption</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">CheckoutOption</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">nil</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
-      <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">items</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">items</span>
-      <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">checkoutOption</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">checkoutOption</span>
-  <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-
+  <span style="color:#204a87;font-weight:bold">init</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">items</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">String</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">checkoutOption</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">CheckoutOption</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+      <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">items</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">items</span>
+      <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">checkoutOption</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">checkoutOption</span>
+  <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>Since we&rsquo;re anticipating our entire codebase to move to Swift over time, we shouldn&rsquo;t compromise our new types for bridgeability. Instead, let&rsquo;s create a wrapper type:</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">@objc</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">ShoppingCart</span><span style="color: #000000; font-weight: bold">)</span>
-<span style="color: #204a87; font-weight: bold">final</span> <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">_ObjCShoppingCart</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #3465a4">NSObject</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #8f5902; font-style: italic">// The underlying Swift type is stored in the bridged type. This way</span>
-    <span style="color: #8f5902; font-style: italic">// Swift code that consumes the bridged Objective-C type can pull out and</span>
-    <span style="color: #8f5902; font-style: italic">// use the underlying Swift type.  </span>
-    <span style="color: #204a87; font-weight: bold">private</span> <span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">set</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">shoppingCart</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">ShoppingCart</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">@objc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ShoppingCart</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">final</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">_ObjCShoppingCart</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">NSObject</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">// The underlying Swift type is stored in the bridged type. This way</span>
+    <span style="color:#8f5902;font-style:italic">// Swift code that consumes the bridged Objective-C type can pull out and</span>
+    <span style="color:#8f5902;font-style:italic">// use the underlying Swift type.  </span>
+    <span style="color:#204a87;font-weight:bold">private</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">set</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">shoppingCart</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ShoppingCart</span>
 
-    <span style="color: #204a87; font-weight: bold">init</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">items</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #204a87">String</span><span style="color: #000000; font-weight: bold">])</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #8f5902; font-style: italic">// All initializers construct the underlying Swift type</span>
-        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">shoppingCart</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">ShoppingCart</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">items</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">items</span><span style="color: #000000; font-weight: bold">)</span>
-    <span style="color: #000000; font-weight: bold">}</span>
+    <span style="color:#204a87;font-weight:bold">init</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">items</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">String</span><span style="color:#000;font-weight:bold">])</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#8f5902;font-style:italic">// All initializers construct the underlying Swift type</span>
+        <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">shoppingCart</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">ShoppingCart</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">items</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">items</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color: #8f5902; font-style: italic">// This initializer allows Swift code to create a bridged value and pass</span>
-    <span style="color: #8f5902; font-style: italic">// it to Objective-C code.</span>
-    <span style="color: #204a87; font-weight: bold">init</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">shoppingCart</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">ShoppingCart</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">shoppingCart</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">shoppingCart</span>
-    <span style="color: #000000; font-weight: bold">}</span>
+    <span style="color:#8f5902;font-style:italic">// This initializer allows Swift code to create a bridged value and pass</span>
+    <span style="color:#8f5902;font-style:italic">// it to Objective-C code.</span>
+    <span style="color:#204a87;font-weight:bold">init</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">shoppingCart</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">ShoppingCart</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">shoppingCart</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">shoppingCart</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color: #8f5902; font-style: italic">// Computed properties are implemented based on properties of the</span>
-    <span style="color: #8f5902; font-style: italic">// underlying Swift type.</span>
-    <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">items</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000; font-weight: bold">[</span><span style="color: #204a87">String</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">get</span> <span style="color: #000000; font-weight: bold">{</span>
-            <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">shoppingCart</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">items</span>
-        <span style="color: #000000; font-weight: bold">}</span>
-        <span style="color: #204a87; font-weight: bold">set</span> <span style="color: #000000; font-weight: bold">{</span>
-            <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">shoppingCart</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">items</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">newValue</span>
-        <span style="color: #000000; font-weight: bold">}</span>
-    <span style="color: #000000; font-weight: bold">}</span>
+    <span style="color:#8f5902;font-style:italic">// Computed properties are implemented based on properties of the</span>
+    <span style="color:#8f5902;font-style:italic">// underlying Swift type.</span>
+    <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">items</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#204a87">String</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">get</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">shoppingCart</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">items</span>
+        <span style="color:#000;font-weight:bold">}</span>
+        <span style="color:#204a87;font-weight:bold">set</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">shoppingCart</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">items</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">newValue</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color: #8f5902; font-style: italic">// Properties and methods can translate language features where needed.</span>
-    <span style="color: #8f5902; font-style: italic">// E.g. turn enums with associated types into distinct Objective-C types.</span>
-    <span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">checkoutOption</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Any</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #000000">guard</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">checkoutOption</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">shoppingCart</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">checkoutOption</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span>
-            <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #204a87; font-weight: bold">nil</span><span style="color: #000000; font-weight: bold">;</span>
-        <span style="color: #000000; font-weight: bold">}</span>
+    <span style="color:#8f5902;font-style:italic">// Properties and methods can translate language features where needed.</span>
+    <span style="color:#8f5902;font-style:italic">// E.g. turn enums with associated types into distinct Objective-C types.</span>
+    <span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">checkoutOption</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Any</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">guard</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">checkoutOption</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">shoppingCart</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">checkoutOption</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">nil</span><span style="color:#000;font-weight:bold">;</span>
+        <span style="color:#000;font-weight:bold">}</span>
 
-        <span style="color: #204a87; font-weight: bold">switch</span> <span style="color: #000000">checkoutOption</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">creditCard</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">ccNumber</span><span style="color: #000000; font-weight: bold">):</span>
-            <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">_ObjCCheckoutOptionCreditCard</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">ccNumber</span><span style="color: #000000; font-weight: bold">)</span>
-        <span style="color: #204a87; font-weight: bold">case</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">paypal</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">email</span><span style="color: #000000; font-weight: bold">):</span>
-            <span style="color: #204a87; font-weight: bold">return</span> <span style="color: #000000">_ObjCCheckoutOptionPaypal</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">email</span><span style="color: #000000; font-weight: bold">)</span>
-        <span style="color: #000000; font-weight: bold">}</span>
-    <span style="color: #000000; font-weight: bold">}</span>
+        <span style="color:#204a87;font-weight:bold">switch</span> <span style="color:#000">checkoutOption</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">case</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">creditCard</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ccNumber</span><span style="color:#000;font-weight:bold">):</span>
+            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">_ObjCCheckoutOptionCreditCard</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ccNumber</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#204a87;font-weight:bold">case</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">paypal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">email</span><span style="color:#000;font-weight:bold">):</span>
+            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">_ObjCCheckoutOptionPaypal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">email</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000;font-weight:bold">}</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color: #8f5902; font-style: italic">// We can also provide convenience methods for Objective-C. Like the following</span>
-    <span style="color: #8f5902; font-style: italic">// two methods that allow setting enums with associated values from Objective-C.</span>
+    <span style="color:#8f5902;font-style:italic">// We can also provide convenience methods for Objective-C. Like the following</span>
+    <span style="color:#8f5902;font-style:italic">// two methods that allow setting enums with associated values from Objective-C.</span>
 
-    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">setCheckoutOptionToCreditCard</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">withCCNumber</span> <span style="color: #000000">ccNumber</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Int</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">shoppingCart</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">checkoutOption</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">creditCard</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">ccNumber</span><span style="color: #000000; font-weight: bold">)</span>
-    <span style="color: #000000; font-weight: bold">}</span>
+    <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">setCheckoutOptionToCreditCard</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">withCCNumber</span> <span style="color:#000">ccNumber</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Int</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">shoppingCart</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">checkoutOption</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">creditCard</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ccNumber</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
 
-    <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">setCheckoutOptionToPayPal</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">withEmail</span> <span style="color: #000000">email</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">String</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">shoppingCart</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">checkoutOption</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">paypal</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">email</span><span style="color: #000000; font-weight: bold">)</span>
-    <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
+    <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">setCheckoutOptionToPayPal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">withEmail</span> <span style="color:#000">email</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">String</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">shoppingCart</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">checkoutOption</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">paypal</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">email</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 
-<span style="color: #204a87; font-weight: bold">@objc</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">CheckoutOptionCreditCard</span><span style="color: #000000; font-weight: bold">)</span>
-<span style="color: #204a87; font-weight: bold">final</span> <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">_ObjCCheckoutOptionCreditCard</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #3465a4">NSObject</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">creditCardNumber</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Int</span>
+<span style="color:#204a87;font-weight:bold">@objc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">CheckoutOptionCreditCard</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">final</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">_ObjCCheckoutOptionCreditCard</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">NSObject</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">creditCardNumber</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Int</span>
 
-    <span style="color: #204a87; font-weight: bold">init</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">_</span> <span style="color: #000000">ccNumber</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Int</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">creditCardNumber</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">ccNumber</span>
-    <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
+    <span style="color:#204a87;font-weight:bold">init</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">_</span> <span style="color:#000">ccNumber</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Int</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">creditCardNumber</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">ccNumber</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 
-<span style="color: #204a87; font-weight: bold">@objc</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">CheckoutOptionPaypal</span><span style="color: #000000; font-weight: bold">)</span>
-<span style="color: #204a87; font-weight: bold">final</span> <span style="color: #204a87; font-weight: bold">class</span> <span style="color: #000000">_ObjCCheckoutOptionPaypal</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #3465a4">NSObject</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">email</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">String</span>
+<span style="color:#204a87;font-weight:bold">@objc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">CheckoutOptionPaypal</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">final</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">_ObjCCheckoutOptionPaypal</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">NSObject</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">email</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">String</span>
 
-    <span style="color: #204a87; font-weight: bold">init</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #204a87; font-weight: bold">_</span> <span style="color: #000000">email</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">String</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">email</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">email</span>
-    <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-</p>
+    <span style="color:#204a87;font-weight:bold">init</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">_</span> <span style="color:#000">email</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">String</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">email</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">email</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>This example is pretty verbose, since we&rsquo;re expressing the cases of our enums
 as Objective-C types. How thorough you want to map Swift types to Objective-C
@@ -248,11 +244,9 @@ will depend on your use case.</p>
 
 <p>Now this type can be used from Objective-C:</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #000000">ShoppingCart</span> <span style="color: #ce5c00; font-weight: bold">*</span><span style="color: #000000">cart</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">[[</span><span style="color: #000000">ShoppingCart</span> <span style="color: #000000">alloc</span><span style="color: #000000; font-weight: bold">]</span> <span style="color: #f57900">initWithItems</span><span style="color: #000000; font-weight: bold">:</span><span style="color: #000000">@[</span><span style="color: #4e9a06">@&quot;TV&quot;</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">@&quot;Book&quot;</span><span style="color: #000000">]</span><span style="color: #000000; font-weight: bold">];</span>
-<span style="color: #000000">cart</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">items</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">@[</span><span style="color: #4e9a06">@&quot;TV&quot;</span><span style="color: #000000">]</span><span style="color: #000000; font-weight: bold">;</span>
-<span style="color: #000000; font-weight: bold">[</span><span style="color: #000000">cart</span> <span style="color: #f57900">setCheckoutOptionToPayPalWithEmail</span><span style="color: #000000; font-weight: bold">:</span><span style="color: #4e9a06">@&quot;test@test.com&quot;</span><span style="color: #000000; font-weight: bold">];</span>
-</pre></div>
-</p>
+<p><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-objc" data-lang="objc"><span style="color:#000">ShoppingCart</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">cart</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[[</span><span style="color:#000">ShoppingCart</span> <span style="color:#000">alloc</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#f57900">initWithItems</span><span style="color:#000;font-weight:bold">:</span><span style="color:#000">@[</span><span style="color:#4e9a06">@&#34;TV&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">@&#34;Book&#34;</span><span style="color:#000">]</span><span style="color:#000;font-weight:bold">];</span>
+<span style="color:#000">cart</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">items</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">@[</span><span style="color:#4e9a06">@&#34;TV&#34;</span><span style="color:#000">]</span><span style="color:#000;font-weight:bold">;</span>
+<span style="color:#000;font-weight:bold">[</span><span style="color:#000">cart</span> <span style="color:#f57900">setCheckoutOptionToPayPalWithEmail</span><span style="color:#000;font-weight:bold">:</span><span style="color:#4e9a06">@&#34;test@test.com&#34;</span><span style="color:#000;font-weight:bold">];</span></code></pre></div></p>
 
 <p>We can now pass this instance to Swift code and the receiver can use the
 underlying Swift type, stored within the bridged type, with all of its rich language features.</p>
@@ -267,7 +261,6 @@ Foundation overlay to create Swift wrappers around Objective-C types (<a href="h
 </blockquote>
 
 <p><a href="https://github.com/apple/swift-evolution/blob/master/proposals/0058-objectivecbridgeable.md">Swift Evolution Proposal: Allow Swift types to provide custom Objective-C representations</a></p>
-
 
 
 

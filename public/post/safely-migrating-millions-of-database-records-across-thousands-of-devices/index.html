@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/safely-migrating-millions-of-database-records-across-thousands-of-devices/" />
 
@@ -121,9 +121,9 @@
     <section class="post-content">
 
 
-
-
 <p><em>This is a cross post of a piece that original appeared on <a href="https://medium.com/plangrid-technology/safely-migrating-millions-of-database-records-across-thousands-of-devices-f9ea98f941dc">the PlanGrid R&amp;D blog</a></em></p>
+
+<p></p>
 
 <hr />
 
@@ -139,7 +139,7 @@
 
 <p>There are a bunch of additional challenges outside of the scope of the data migration that we’ll discuss in a future blog post.</p>
 
-<h2 id="mitigating-risk:f38631c06dc52d51e25323771c266097">Mitigating Risk</h2>
+<h2 id="mitigating-risk">Mitigating Risk</h2>
 
 <p>Especially on the iOS platform, risk mitigation is an essential part of every major release. Unlike web or backend teams, we cannot simply roll back changes that cause production issues. Unfortunately, Apple also doesn’t support a gradual rollout of a new app version (as Android does). We needed to ensure that the data migration would work reliably for all our users before we shipped the 5.0.0 release.</p>
 
@@ -156,7 +156,7 @@
 
 <p>So we combined the rollout with a feature flag, that allowed us to quickly turn the dry-run migration off in case of issues on production projects.</p>
 
-<h2 id="shipping-the-dry-run-migration:f38631c06dc52d51e25323771c266097">Shipping the Dry Run Migration</h2>
+<h2 id="shipping-the-dry-run-migration">Shipping the Dry Run Migration</h2>
 
 <p>In total, we only shipped two versions of our dry run migration.</p>
 
@@ -164,7 +164,7 @@
 
 <p>We then rolled out a second version and verified our fixes. The data from the second roll out assured us that all of our users would be able to migrate without any crashes, data losses or corruptions — with the exception of exactly one customer (that had a local SQLite DB of a whopping 3.7 GB!).</p>
 
-<h2 id="product-ifying-the-migration:f38631c06dc52d51e25323771c266097">Product-ifying the Migration</h2>
+<h2 id="product-ifying-the-migration">Product-ifying the Migration</h2>
 
 <p>Now that we had verified our migration code, it was time to finalize the migration and ship it as part of the 5.0.0 release. We used the exact code that we tested throughout the dry run migrations, except this time we would use the migrated records in production.</p>
 
@@ -176,12 +176,11 @@
 
 <p>We informed the user about a one-time performance update (the new models enabled significant performance gains) and showed them how many of their records had been migrated. Based on the metrics we collected from our dry-run migration, we knew that the 90th percentile of our users would complete the migration in under one minute.</p>
 
-<h2 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>We’ve released PlanGrid 5.0.0 about three weeks ago and well over 50% of our users have updated to 5.0.0 or higher. We’ve been monitoring the rollout closely and are extremely happy to see that the insights from our dry run migrations have held up in production. Only a single customer (you might remember, the one with the 3.7 GB SQLite database) ran into issues during the migration and they were very grateful when we immediately reached out to them.</p>
 
 <p>Feature flags and testing new code in the background in a production app can go a long way to mitigate risk. When rolling out changes like these, I’m extremely envious of backend engineers that can use awesome tools like <a href="https://github.com/github/scientist">GitHub’s scientist</a>. With a little bit of creativity we can bring some of these ideas to mobile and ensure that large migrations aren’t preceded &amp; followed by sleepless nights.</p>
-
 
 
 

@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/" />
 
@@ -121,11 +121,11 @@
     <section class="post-content">
 
 
-
-
 <p>A very brief summary of changes &amp; impressions from WWDC 2016 Day One.</p>
 
-<h2 id="opening-up-ios:f38631c06dc52d51e25323771c266097">Opening up iOS</h2>
+<p></p>
+
+<h2 id="opening-up-ios">Opening up iOS</h2>
 
 <p>The most notable changes to iOS were the addition of many APIs and Extension points. Apple wants to allow developers to build apps that integrate stronger with system services:</p>
 
@@ -136,7 +136,7 @@
 <li>Via <a href="https://developer.apple.com/maps/">Map Extensions</a>, Apple Maps is now open to third party integrations as well</li>
 </ul>
 
-<h2 id="xcode-extensions:f38631c06dc52d51e25323771c266097">Xcode Extensions</h2>
+<h2 id="xcode-extensions">Xcode Extensions</h2>
 
 <p>Xcode 8 comes with support for Extensions. For now these extensions will be limited to the source editor itself. At the same time Apple is shutting down <a href="http://alcatraz.io/">Alcatraz</a>:</p>
 
@@ -145,27 +145,27 @@
 
 <p>I&rsquo;m still glad to see an official (albeit for the time limited) API for building Xcode extensions. From the presentation it seemed clear that Apple wants to expand the scope of Xcode extensions quickly.</p>
 
-<h2 id="new-apple-filesystem:f38631c06dc52d51e25323771c266097">New Apple Filesystem</h2>
+<h2 id="new-apple-filesystem">New Apple Filesystem</h2>
 
 <p>While this won&rsquo;t affect most developers a lot, this is still an important step in modernizing Apple&rsquo;s Operating Systems and it will have benefits for users, such as much faster backups and copy-on-write clones. Ars Technica has a good writeup on the key features of <a href="http://arstechnica.com/apple/2016/06/digging-into-the-dev-documentation-for-apfs-apples-new-file-system/">APFS</a>. Apple has also published a <a href="https://developer.apple.com/library/prerelease/content/documentation/FileManagement/Conceptual/APFS_Guide/NewFeatures/NewFeatures.html#//apple_ref/doc/uid/TP40016999-CH3-SW1">guide</a> that announces a release in 2017 and mentions that while there is no open source implementation for now, the APFS volume format specification will be published.</p>
 
 <p>If you&rsquo;re curios why Apple needed a new file system you can read this blog post about some of the issues with the current <a href="https://t.co/wB40yheV39">HFS+ file system</a>.</p>
 
-<h2 id="swift-playgrounds-on-ipad:f38631c06dc52d51e25323771c266097">Swift Playgrounds on iPad</h2>
+<h2 id="swift-playgrounds-on-ipad">Swift Playgrounds on iPad</h2>
 
 <p>The new Swift Playgrounds app for iPad promises to be a great educational tool and demonstrates the emphasize that Apple has been putting on Swift as a beginner friendly language. The app will be open to third party educational content.</p>
 
 <p>Besides the compiler the app is also entirely written in Swift, which most likely makes it the largest in house Swift project at Apple to date.</p>
 
-<h2 id="xcode-memory-graph-debugger:f38631c06dc52d51e25323771c266097">Xcode Memory Graph Debugger</h2>
+<h2 id="xcode-memory-graph-debugger">Xcode Memory Graph Debugger</h2>
 
 <p>This feature, announced during the State of the Union, had the largest <em>WOW</em> effect. Xcode 8 ships with a memory graph debugger that allows halting a program and inspecting a memory management graph at runtime. This will make tracking down retain cycles a lot easier in future.</p>
 
-<h2 id="logging-api:f38631c06dc52d51e25323771c266097">Logging API</h2>
+<h2 id="logging-api">Logging API</h2>
 
 <p>Apple has released a new <a href="https://developer.apple.com/reference/os/1891852-logging">logging system</a>. It&rsquo;s great to see such an important issue tackled by a first party API.</p>
 
-<h2 id="surprises-machine-learning-server-side-swift:f38631c06dc52d51e25323771c266097">Surprises: Machine Learning &amp; Server Side Swift</h2>
+<h2 id="surprises-machine-learning-server-side-swift">Surprises: Machine Learning &amp; Server Side Swift</h2>
 
 <p>To me, two surprises on the WWDC session schedule were:</p>
 
@@ -182,7 +182,6 @@
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
 
 <p>It seems that Apple is pioneering on device machine learning which goes hand in hand with their privacy efforts (e.g. Differential Privacy). I&rsquo;m very curios to see if it possible to create great results in machine learning while maintaining users privacy.</p>
-
 
 
 
