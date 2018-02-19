@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/" />
 
@@ -121,9 +121,9 @@
     <section class="post-content">
 
 
-
-
 <p>Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at <a href="http://openradar.appspot.com/search?query=segmentation+fault+swift">Open Radar</a> there seem to be many out there)!</p>
+
+<p></p>
 
 <p>Here&rsquo;s what I was trying to implement</p>
 
@@ -150,7 +150,7 @@ extension ArrayDataSource : UITableViewDataSource {
 
 <p>A class that takes an array and implements <code>UITableViewDataSource</code> using the content of that array (an idea that&rsquo;s discussed in <a href="http://www.objc.io/issue-1/lighter-view-controllers.html">objc.io issue #1</a>).</p>
 
-<h1 id="the-error:f38631c06dc52d51e25323771c266097">The Error</h1>
+<h1 id="the-error">The Error</h1>
 
 <p>As you can see I didn&rsquo;t get very far before running into the compiler error. When you compile the above code (in Xcode 6.1.1 or Xcode 6.3) you&rsquo;ll see the following error message:</p>
 
@@ -161,7 +161,7 @@ extension ArrayDataSource : UITableViewDataSource {
 
 <p><img src="Swift_Crash.png" alt="" /></p>
 
-<h1 id="finding-a-generic-reproducable-example:f38631c06dc52d51e25323771c266097">Finding a generic reproducable example</h1>
+<h1 id="finding-a-generic-reproducable-example">Finding a generic reproducable example</h1>
 
 <p>Since this issue exists in both Xcode 6.1.1 and Xcode 6.3 I wanted to file a bug report to make sure this gets resolved in future. I played around with different ways to fix the issue, here are two simple ones that worked:</p>
 
@@ -182,7 +182,6 @@ extension D: NSObjectProtocol {}
 <p>I couldn&rsquo;t get this minimalistic example to break with any other combination of protocols and subclassing, it seems to be a problem specific to <code>NSObject</code>. If you find a more general case that causes the segmentation fault, I&rsquo;d love to hear from you.</p>
 
 <p>For now I have filed a bug report with Apple (19889552) and an <a href="http://openradar.appspot.com/19889552">Open Radar Issue</a>.</p>
-
 
 
 

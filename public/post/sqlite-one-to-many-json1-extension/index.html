@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/sqlite-one-to-many-json1-extension/" />
 
@@ -121,17 +121,17 @@
     <section class="post-content">
 
 
-
-
 <p>I&rsquo;m currently reading a great book on <a href="http://dataintensive.net/">designing data intensive applications</a>. In the earlier chapters of the book the author (one of the main contributors to Apache Kafka) discusses the history of database models and tradeoffs between document, relational and graph databases.</p>
 
 <p>He touches on interesting trend: Some of the most popular database systems such as PostgreSQL and SQlite now offer APIs to store and query JSON documents, making them multi-paradigm and bringing a lot of the benefits of document based database systems to traditionally relational ones.</p>
 
 <p>Coincidentally I&rsquo;m currently working on a feature that requires me to model a one-to-many relationship in SQlite, which lead me to try it&rsquo;s JSON support.</p>
 
+<p></p>
+
 <hr />
 
-<h2 id="trees-relations-joins-data-locality:f38631c06dc52d51e25323771c266097">Trees, relations, joins &amp; data locality</h2>
+<h2 id="trees-relations-joins-data-locality">Trees, relations, joins &amp; data locality</h2>
 
 <p>In software development (specifically in object oriented programming) developers often face an <a href="https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch">impedance mismatch</a> between the way data is modelled in code and how it is persisted on disk. Many applications map an object graph into a relational database model using some form of <a href="https://en.wikipedia.org/wiki/Object-relational_mapping">Object-relational mapping</a> system.</p>
 
@@ -141,7 +141,7 @@
 
 <p>Let&rsquo;s jump right into the practical example I am facing to demonstrate these tradeoffs.</p>
 
-<h2 id="from-one-assignee-to-multiple-assignees:f38631c06dc52d51e25323771c266097">From one assignee to multiple assignees</h2>
+<h2 id="from-one-assignee-to-multiple-assignees">From one assignee to multiple assignees</h2>
 
 <p>In my current project I&rsquo;m working extending the PlanGrid app to support multiple assignees on issues. As of today the assignee is a single field that stores a UUID which references the assigned user.</p>
 
@@ -151,7 +151,7 @@
 
 <p>The advantage of this approach is that the data is entirely <em>normalized</em>. No information about users or issues is duplicated. Additionally we can work with <code>UNIQUE</code> constraints to ensure the database doesn&rsquo;t allow the same assignee to be added to an issue multiple times. For these reason we chose to use a join table on our backend Postgres database.</p>
 
-<h3 id="modelling-relationships-in-the-ios-app:f38631c06dc52d51e25323771c266097">Modelling relationships in the iOS app</h3>
+<h3 id="modelling-relationships-in-the-ios-app">Modelling relationships in the iOS app</h3>
 
 <p>All of our mobile apps use SQlite as a local database. On iOS we&rsquo;re not using an existing ORM system, instead we have a small library for mapping Swift structs to tables. That system doesn&rsquo;t support modeling relationships. Creating a simple, intuitive API for modeling DB relationships is hard (<a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CoreData/FaultingandUniquing.html">you might have struggled to understand Core Data faults in the past</a>). Further, the query pattern of our iOS app tends to be such that we only fetch one type of record per query, which makes modeling relationships unnecessary.</p>
 
@@ -161,10 +161,8 @@
 
 <p>Here&rsquo;s the query to fetch an individual issue by its UUID:</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">SELECT</span> <span style="color: #ce5c00; font-weight: bold">*</span> <span style="color: #204a87; font-weight: bold">from</span> <span style="color: #000000">issues</span> <span style="color: #204a87; font-weight: bold">JOIN</span> <span style="color: #000000">issueassignees</span> 
-<span style="color: #204a87; font-weight: bold">ON</span> <span style="color: #000000">issueassignees</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">issue_uuid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #000000">issues</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">uuid</span> <span style="color: #204a87; font-weight: bold">where</span> <span style="color: #000000">issues</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">uuid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #4e9a06">&quot;4&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#204a87;font-weight:bold">SELECT</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">issues</span> <span style="color:#204a87;font-weight:bold">JOIN</span> <span style="color:#000">issueassignees</span> 
+<span style="color:#204a87;font-weight:bold">ON</span> <span style="color:#000">issueassignees</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">issue_uuid</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">issues</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">uuid</span> <span style="color:#204a87;font-weight:bold">where</span> <span style="color:#000">issues</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">uuid</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;4&#34;</span></code></pre></div>
 
 <p>Not too bad. But the result of this query is a lot harder to consume than in the past:</p>
 
@@ -172,7 +170,7 @@
 
 <p>Even though we queried an invididual issue, we now receive <em>two</em> result rows. That happens because of our <code>JOIN</code> statement, which leads the query to return the entire issue for each issue assignee found in the <code>issue_assignee</code> table. ORM systems do a fair amount of work under the covers to deduplicate these results and map them into a single object.</p>
 
-<h3 id="sqlite-json-support-to-the-rescue:f38631c06dc52d51e25323771c266097">SQlite JSON support to the rescue!</h3>
+<h3 id="sqlite-json-support-to-the-rescue">SQlite JSON support to the rescue!</h3>
 
 <p>As mentioned in the intro of the article, SQlite has built-in support to query columns that contain JSON documents (support was added in SQlite 3.9) through the <a href="https://sqlite.org/json1.html">JSON1 extension</a>.</p>
 
@@ -182,16 +180,12 @@
 
 <p>This approach has significantly better <em>data locality</em> for the query patterns used in the iOS app. To fetch an issue and all of its assignees we can simply use a <code>SELECT *</code> query:</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">SELECT</span> <span style="color: #ce5c00; font-weight: bold">*</span> <span style="color: #204a87; font-weight: bold">from</span> <span style="color: #000000">issues</span> <span style="color: #204a87; font-weight: bold">where</span> <span style="color: #000000">uuid</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #4e9a06">&quot;4&quot;</span><span style="color: #000000; font-weight: bold">;</span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#204a87;font-weight:bold">SELECT</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">issues</span> <span style="color:#204a87;font-weight:bold">where</span> <span style="color:#000">uuid</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;4&#34;</span><span style="color:#000;font-weight:bold">;</span></code></pre></div>
 
 <p>Thanks to the JSON1 extension we can also build queries for fetching all issues assigned to specific user, without fetching all issues into memory. To fetch all issues assigned to the user with the UUID &ldquo;7&rdquo; we can use the following query:</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">SELECT</span> <span style="color: #000000">Issues</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #ce5c00; font-weight: bold">*</span> <span style="color: #204a87; font-weight: bold">from</span> <span style="color: #000000">Issues</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">json_each</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Issues</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">assignees</span><span style="color: #000000; font-weight: bold">)</span> 
-<span style="color: #204a87; font-weight: bold">WHERE</span> <span style="color: #000000">json_extract</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">value</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #4e9a06">&#39;$.uuid&#39;</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #ce5c00; font-weight: bold">=</span> <span style="color: #4e9a06">&quot;7&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#204a87;font-weight:bold">SELECT</span> <span style="color:#000">Issues</span><span style="color:#000;font-weight:bold">.</span><span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">Issues</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">json_each</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Issues</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">assignees</span><span style="color:#000;font-weight:bold">)</span> 
+<span style="color:#204a87;font-weight:bold">WHERE</span> <span style="color:#000">json_extract</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">value</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;$.uuid&#39;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;7&#34;</span></code></pre></div>
 
 <p>When working with the JSON1 API for the first time, it took me a while to understand its components, so let&rsquo;s look at this query in detail.</p>
 
@@ -229,7 +223,7 @@
 
 <p>Similar to the join shown earlier, each assignee in the JSON aray is broken into a separate result row. However, since the assignees are now store in a JSON array, each row contains the full representation of an issue (columns in the black box), which makes deserialization a lot simpler.</p>
 
-<h3 id="the-downsides:f38631c06dc52d51e25323771c266097">The downsides</h3>
+<h3 id="the-downsides">The downsides</h3>
 
 <p>The biggest downside of using JSON1 is the lack of support of indexes on JSON based columns. In general SQlite doesn&rsquo;t support indexing on virtual tables.</p>
 
@@ -237,7 +231,7 @@
 
 <p>When using JSON in a relational database you also loose some of the other goodies you might be used to, such as foreign key constraints, unique constraints, etc. A lot of these tradeoffs are more acceptable in a derived data store (a mobile cache) than in a primary one (our backend database).</p>
 
-<h2 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>As always in programming it pays off to learn about and leverage the unique features of different paradigms (whether it&rsquo;s DBs, programming languages or 3rd-party frameworks). A lot of datbases are starting to support multiple paradigms. That is great since even data models that mostly map neatly into a relational model can sometimes benefit from storing a part of the data in a document-oriented fashion.</p>
 
@@ -248,7 +242,6 @@
 <hr />
 
 <p><em>Personal addendum: It&rsquo;s been a little quite here. I&rsquo;ve been a little busy with <a href="https://twitter.com/benjaminencz/status/904705141110013952">great personal news</a>. I&rsquo;ve also been refreshing my skills in other programming languages and technology stacks and therefore spent less time writing.</em></p>
-
 
 
 

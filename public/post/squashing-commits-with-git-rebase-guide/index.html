@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/" />
 
@@ -123,6 +123,8 @@
 
 <p>Git&rsquo;s interactive rebase is extremely useful for keeping a somewhat clear commit history. Here&rsquo;s a very brief guide on how to squash multiple commits into a single one.</p>
 
+<p></p>
+
 <p>Git rebase allows you to rewrite the history of a git repository. <strong>Yes, you are right, this can be incredibly dangerous, therefore don&rsquo;t use this technique on branches that are shared with other developers</strong>. To me rebase is most useful for preparing a branch that is about to be merged into the main branch of a project.</p>
 
 <p>Let&rsquo;s assume our branch&rsquo;s commit log is in the following state (printed by using <code>git log</code>):</p>
@@ -167,7 +169,6 @@
 <p><img src="6_git_rebase_done.png" alt="" /></p>
 
 <p>A clean commit history that is ready to merge!</p>
-
 
 
 

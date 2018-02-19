@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/broken-toolchain/" />
 
@@ -121,8 +121,6 @@
     <section class="post-content">
 
 
-
-
 <p>Dependency managers, IDEs, continuous integration, automated tests - all these tools are created to supercharge a developer team&rsquo;s productivity. While modern development tools are amazing in many ways, they unfortunately also add maintenance burden to a project.</p>
 
 <p>Ask me about migrating our Bitrise &amp; fastlane CI workflows to Xcode 8.</p>
@@ -137,11 +135,13 @@
 
 <p>I also have a somewhat special relationship to tools. I remember how, as a student, complicated tooling almost deterred me from a career in software development - &ldquo;If I can&rsquo;t even get a J2EE app configured and running, I probably shouldn&rsquo;t be a software developer&rdquo;. This post is some form of self-therapy&hellip;</p>
 
-<h2 id="migrating-to-xcode-8:f38631c06dc52d51e25323771c266097">Migrating to Xcode 8</h2>
+<p></p>
+
+<h2 id="migrating-to-xcode-8">Migrating to Xcode 8</h2>
 
 <p>This is a somewhat chronological sequence of various issues I encountered when updating our CI server to work (again) with Xcode 8.</p>
 
-<h4 id="1-broken-code-signing:f38631c06dc52d51e25323771c266097">1. Broken Code Signing</h4>
+<h4 id="1-broken-code-signing">1. Broken Code Signing</h4>
 
 <p>Xcode 8 set out to fix one of the major tool annoyances that developers encounter: code signing. The &ldquo;Fix issue&rdquo; button has been removed and automatic code signing has been overhauled. You can enable it with a simple checkbox (which will trigger Xcode to generate provisioning profiles automatically):</p>
 
@@ -163,7 +163,7 @@
 
 <p><strong>Takeaway 1:</strong> It would be great if Apple would have documented if/how automatic signing should be used with <code>xcodebuild</code>. But admittedly our use case for changing bundle identifiers dynamically is a little unconventional (we could just have separate targets).</p>
 
-<h4 id="2-ruby-issues:f38631c06dc52d51e25323771c266097">2. Ruby Issues</h4>
+<h4 id="2-ruby-issues">2. Ruby Issues</h4>
 
 <p>At this point I was investigating our <code>buid_deploy_latest</code> lane, which runs whenever we merge to <code>dev</code>. It creates a build, ships it to HockeyApp, runs the test suite and reports code coverage to codecov.</p>
 
@@ -201,7 +201,7 @@ I&rsquo;m tapping a little in the dark if this version mismatch is actually the 
 
 <p><strong>Takeaway 2:</strong> Read xcodebuild&rsquo;s error messages exactly and believe them even though they can be misleading sometimes. Probably should also pin the ruby version used locally and on CI using <code>RVM</code> or <code>chruby</code> to avoid such mismatches in future (though this would increase the time for spinning up a new machine on Bitrise). I will also need to investigate further why this issue started ocurring after switching to the Xcode 8 toolchain. So far I&rsquo;m assuming the Bitrise image was updated as part of the Xcode update and installed a newer version of ruby.</p>
 
-<h4 id="3-xcode-test-manager-timeouts:f38631c06dc52d51e25323771c266097">3. Xcode Test Manager Timeouts</h4>
+<h4 id="3-xcode-test-manager-timeouts">3. Xcode Test Manager Timeouts</h4>
 
 <p>This one is still a complete mystery to me. At this point I can run all lanes on fastlane locally. I can run <code>xcodebuild test</code> on Bitrise. However, running tests via fastlane on Bitrise is still failing. The failure only occurs in this combination. I&rsquo;ve opened tickets with both tools - I&rsquo;m aware that likely no one will feel responsible for fixing this since both tools work in isolation. But maybe someone else finds these issues useful? (<a href="https://github.com/bitrise-io/bitrise.io/issues/66">Bitrise</a>, <a href="https://github.com/fastlane/fastlane/issues/6111">fastlane</a>)</p>
 
@@ -217,14 +217,14 @@ I&rsquo;m tapping a little in the dark if this version mismatch is actually the 
 
 <p><strong>Takeaway 3:</strong> Interop between various tools is the worst. If you encounter issues that only occur when you combine multiple tools, it is very hard to narrow down the root cause. In this case it seems like an <code>xcodebuild</code> bug. Why is it only happening when using fastlane on Bitrise? I don&rsquo;t know (yet?).</p>
 
-<h4 id="4-github-request-timeouts-hockeyapp-deploy-failure:f38631c06dc52d51e25323771c266097">4. GitHub Request Timeouts &amp;  HockeyApp Deploy Failure</h4>
+<h4 id="4-github-request-timeouts-hockeyapp-deploy-failure">4. GitHub Request Timeouts &amp;  HockeyApp Deploy Failure</h4>
 
 <p>Various builds would fail due to GitHub request timeouts that caused CocoaPods to fail. Sometimes uploads from Bitrise to HockeyApp would fail as well. Nothing to learn here, just want to demonstrate the amount of pain I went through:</p>
 
 <p><img src="hockey-deploy-failed.png" alt="" />
 <img src="github_timeout.png" alt="" /></p>
 
-<h2 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>I should probably accept that our tools are complex and fragile and that a significant portion of my job responsibility is simply to keep things running as various tools change over time.</p>
 
@@ -246,7 +246,6 @@ I&rsquo;m tapping a little in the dark if this version mismatch is actually the 
 
 <p><img src="last_two.png" alt="" />
 <img src="last_one.png" alt="" /></p>
-
 
 
 

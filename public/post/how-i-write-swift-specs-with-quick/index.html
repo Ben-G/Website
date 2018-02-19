@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/" />
 
@@ -121,9 +121,9 @@
     <section class="post-content">
 
 
-
-
 <p>I&rsquo;ve recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of <code>it</code> blocks. This <a href="https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69">seems to be common among many code bases that use Quick/Nimble</a>.</p>
+
+<p></p>
 
 <p>I felt that I could gain more readability by focusing on testing expectations within in <code>it</code> blocks and driving the test code outside.</p>
 
@@ -179,7 +179,7 @@ context(&quot;when #download is called multiple times with the same URL&quot;) {
 <li>Having the code that drives the test in <code>beforeEach</code> might look a little awkward at first, as most testing frameworks use these hooks to set up a shared test environment; not to drive the test code.</li>
 </ul>
 
-<h2 id="future-improvements:f38631c06dc52d51e25323771c266097">Future Improvements?</h2>
+<h2 id="future-improvements">Future Improvements?</h2>
 
 <p>In future it might be nice to be able to place the test driving code directly in the <code>context</code> block. Something along these lines:</p>
 
@@ -197,7 +197,6 @@ context(&quot;when #download is called multiple times with the same URL&quot;) {
 <p>This would mitigate the two drawbacks of my current approach and improve the readability of the specs a little more.</p>
 
 <p><strong>For now I&rsquo;m happy with the <code>beforeEach</code> approach.</strong> How do you write your Swift test suites?</p>
-
 
 
 

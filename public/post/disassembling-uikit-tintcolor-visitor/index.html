@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/" />
 
@@ -121,11 +121,9 @@
     <section class="post-content">
 
 
-
-
 <p></p>
 
-<h4 id="investigating-the-cause-of-quadratic-time-complexity-when-adding-subviews-in-uikit:f38631c06dc52d51e25323771c266097">Investigating the Cause of Quadratic Time Complexity When Adding Subviews in UIKit</h4>
+<h4 id="investigating-the-cause-of-quadratic-time-complexity-when-adding-subviews-in-uikit">Investigating the Cause of Quadratic Time Complexity When Adding Subviews in UIKit</h4>
 
 <p><del>Yesterday</del> Two weeks ago we identified a performance regression in the PlanGrid app, when entering a view that dynamically adds a large amount of subviews.</p>
 
@@ -134,20 +132,20 @@
 <p><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">My discovery for the day is iOS has an O(n^2) cost to add a subview so never have too many subviews on a view or performance goes to shit</p>&mdash; Rupert H (@rpy) <a href="https://twitter.com/rpy/status/729550705137090560">May 9, 2016</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
 
+<p></p>
+
 <p>For this blog post I wanted to isolate this issue from our code base. I was able to reproduce the issue with this minimal example inside of a blank <code>UIViewController</code>:</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">override</span> <span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">viewDidAppear</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">animated</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Bool</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #204a87; font-weight: bold">super</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">viewDidAppear</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">animated</span><span style="color: #000000; font-weight: bold">)</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">override</span> <span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">viewDidAppear</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">animated</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Bool</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">super</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">viewDidAppear</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">animated</span><span style="color:#000;font-weight:bold">)</span>
 
-        <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">view</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">tintColor</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">blueColor</span><span style="color: #000000; font-weight: bold">()</span>
+        <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">view</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">tintColor</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">blueColor</span><span style="color:#000;font-weight:bold">()</span>
 
-        <span style="color: #204a87; font-weight: bold">for</span> <span style="color: #000000">i</span> <span style="color: #204a87; font-weight: bold">in</span> <span style="color: #0000cf; font-weight: bold">1.</span><span style="color: #000000; font-weight: bold">.&lt;</span><span style="color: #0000cf; font-weight: bold">10000</span> <span style="color: #000000; font-weight: bold">{</span>
-            <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">view</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #3465a4">UIView</span><span style="color: #000000; font-weight: bold">()</span>
-            <span style="color: #204a87; font-weight: bold">self</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">view</span><span style="color: #000000; font-weight: bold">.</span><span style="color: #000000">addSubview</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">view</span><span style="color: #000000; font-weight: bold">)</span>
-        <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-
+        <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">i</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#0000cf;font-weight:bold">1.</span><span style="color:#000;font-weight:bold">.&lt;</span><span style="color:#0000cf;font-weight:bold">10000</span> <span style="color:#000;font-weight:bold">{</span>
+            <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">view</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">UIView</span><span style="color:#000;font-weight:bold">()</span>
+            <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">view</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">addSubview</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">view</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>The above example is obviously extreme, but it reveals an interesting performance issue: when setting a <code>tintColor</code> on a parent view, and not setting an explicit color on child views the performance of <code>addSubview</code> reduces itself drastically with a large amount of added subviews.</p>
 
@@ -160,7 +158,7 @@
 
 <p>The same affect can be accomplished by specifying the <code>tintColor</code> on each view we&rsquo;re adding, which stops the expensive <code>_UITintColorVisitor</code> from stopping by too often.</p>
 
-<h2 id="digging-into-uikit:f38631c06dc52d51e25323771c266097">Digging into UIKit</h2>
+<h2 id="digging-into-uikit">Digging into UIKit</h2>
 
 <p>Finding a workaround for this issue is only half of the fun. Let&rsquo;s try to find out what is causing these poor performance characteristics in the first place. We can start by taking a closer look at the time profiler output:</p>
 
@@ -168,7 +166,7 @@
 
 <p>We can see that the app doesn&rsquo;t spend too much time in <code>[_UITintColor _visitView]</code> itself. The majority of the time is consumed by <code>objc_msgSend</code> which indicates that this method is causing many, many method invocations or the method itself is being called extremely frequently. Further, we&rsquo;re spending a lot of time in <code>[NSArray containsObject:]</code> which either means that the array is being searched through too often in the first place, or that a data structure that is more efficient for lookups should be used instead of an array (e.g. a dictionary or a set).</p>
 
-<h3 id="breakpoints-in-framework-functions:f38631c06dc52d51e25323771c266097">Breakpoints in Framework Functions</h3>
+<h3 id="breakpoints-in-framework-functions">Breakpoints in Framework Functions</h3>
 
 <p>We can start by setting a breakpoint within the <code>[_UITintColor _visitView]</code> method; that will give us an idea of how often that method is called.</p>
 
@@ -183,11 +181,11 @@
 
 <p>Checking how often this method is called, I quickly identified that the amount of calls grows with the amount of subviews we have added. As a next step I wanted to see which views exactly are being visited. For that we need to dive into a little bit of assembly code.</p>
 
-<h3 id="inspecting-the-assembly-code:f38631c06dc52d51e25323771c266097">Inspecting the Assembly Code</h3>
+<h3 id="inspecting-the-assembly-code">Inspecting the Assembly Code</h3>
 
 <p>When stepping into the breakpoint in <code>-[_UITintColorVisitor _visitView:]</code> you are greeted with a cryptic wall of assembly code. I started out with very barebones knowledge of understanding/investigating complex assembly code, but this bug forced me to learn some tricks that hopefully are useful to you as well!</p>
 
-<h4 id="running-the-example-app-on-32-bit-mode:f38631c06dc52d51e25323771c266097">Running the Example App on 32-Bit Mode</h4>
+<h4 id="running-the-example-app-on-32-bit-mode">Running the Example App on 32-Bit Mode</h4>
 
 <p><strong>Update:</strong> <em>I have gotten feedback from multiple readers, that Hopper works just as well in 64-Bit mode, and actually makes accessing arguments easier. For my next disassembly adventure I will try 64 instead of 32-Bit.</em></p>
 
@@ -195,7 +193,7 @@
 
 <p>With this setup in place, we can now inspect which views are visited from within our breakpoint in <code>-[_UITintColorVisitor _visitView:]</code>. Looking at the method signature we can see that this method takes on argument: the view that is being visited. That&rsquo;s the information that we would like to inspect further. In addition to that explicit argument every method call in Objective-C receives <code>self</code> as the first and the <code>selector</code> as the second implicit argument.</p>
 
-<h4 id="printing-function-arguments-in-assembly:f38631c06dc52d51e25323771c266097">Printing Function Arguments in Assembly</h4>
+<h4 id="printing-function-arguments-in-assembly">Printing Function Arguments in Assembly</h4>
 
 <p>By using <a href="https://www.clarkcox.com/blog/2009/02/04/inspecting-obj-c-parameters-in-gdb/">this handy reference</a> we can look up where these arguments are stored when a method is called (the reference is old and refers <code>gdb</code> instead of <code>lldb</code>, but the info is still up to date.). The order of these arguments is part of what we call a &ldquo;calling convention&rdquo;. It states that on a i386 architecture function arguments are passed as follows:</p>
 
@@ -236,7 +234,7 @@
 
 <p>Why exactly is that happening? I have not yet been able to track it down definitely, but I have a bunch more clues that I&rsquo;d like to share.</p>
 
-<h4 id="let-the-guesswork-begin:f38631c06dc52d51e25323771c266097">Let the Guesswork begin</h4>
+<h4 id="let-the-guesswork-begin">Let the Guesswork begin</h4>
 
 <p>Since we want to know why the <code>_UITintColorVisitor</code> is called so frequently, it makes sense to start by investigating the backtrace. We can do this with the <code>bt</code> lldb command that we can invoke while halted in a breakpoint:</p>
 
@@ -264,7 +262,7 @@
 
 <p>At this point it was not obvious to me why all views were being caused to be visited; at the very end of the next section I might have a likely answer to that question&hellip;</p>
 
-<h4 id="digging-deeper:f38631c06dc52d51e25323771c266097">Digging Deeper</h4>
+<h4 id="digging-deeper">Digging Deeper</h4>
 
 <p>Since I hit a dead end in identifying why all subviews in the view hierarchy were constantly being revisited, I decided to investigate another interesting aspect about this problem that profiler had revealed.</p>
 
@@ -283,7 +281,8 @@
 <ul>
 <li>One <code>_UITintColorVisitor</code> instance is used to visit all views (at least in this simple example with only one view hierarchy)</li>
 <li>The <code>_UITintColorVisitor</code> has a few properties that are persisted between the different invocations of <code>visitView:</code>. Here&rsquo;s an overview of all properties found in Hopper:
-<img src="tint-color-visitor-properties.png" alt="" /></li>
+<img src="tint-color-visitor-properties.png" alt="" />
+<br /></li>
 </ul>
 
 <p>From stepping through the assembly code and investigating different registries I could identify that in the above pseudo code <code>eax</code> refers to the <code>_originalVisitedView</code> and <code>edi</code> refers to the view that is currently being visited.</p>
@@ -358,7 +357,7 @@ The code seems to switch over the <code>_reasons</code> property of the <code>[_
 
 <p>If the currently visited view is not a child view of the original visited view, we don&rsquo;t pass a second argument to this block; which is equivalent to passing <code>nil</code>. This means that <code>ebx</code> will be <code>nil</code>, which in turn means we will never call <code>[ebx _setAncestorDefinesTintColor:eax];</code>.</p>
 
-<h1 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h1>
+<h1 id="conclusion">Conclusion</h1>
 
 <p>When I started out diving into this issue I was almost entirely clueless about how to interpret complex disassembled code - now I&rsquo;m still mostly clueless. However, I learned a few very handy tricks along the way:</p>
 
@@ -388,7 +387,6 @@ The code seems to switch over the <code>_reasons</code> property of the <code>[_
 <li><a href="http://objectivistc.tumblr.com/post/40854305239/stack-trace-dumping-regular-expression-based">Breakpoint Commands in lldb</a></li>
 <li>Another post on calling conventions in Objective-C by Jeff Hui, recommended by<a href="https://twitter.com/rpy">@rpy</a>: <a href="https://www.jeffhui.net/2014/03-reverse-engineering-objective-c.html">Reverse Engineering Objective-C</a></li>
 </ul>
-
 
 
 

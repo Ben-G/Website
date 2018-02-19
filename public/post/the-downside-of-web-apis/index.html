@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/the-downside-of-web-apis/" />
 
@@ -121,21 +121,21 @@
     <section class="post-content">
 
 
-
-
 <p>Web APIs have done a lot for the world of technology. Services that have formerly been isolated islands can now be connected through a few simple HTTP Requests. Posting to Facebook on every GitHub commit? Printing a Postcard as soon as a new Photo is uploaded to a Dropbox folder? Basically anything is possible through Web Services.</p>
+
+<p></p>
 
 <p>Another great aspect of Web Services is that all the implementation details of these powerful platforms are hidden behind a well documented HTTP Interface allowing Developers to build products that integrate with multiple services in the matter of hours - without establishing old-school SQL Connections and writing complicated Database Queries.</p>
 
-<h2 id="now-what-are-the-downsides-then:f38631c06dc52d51e25323771c266097">Now what are the downsides then?</h2>
+<h2 id="now-what-are-the-downsides-then">Now what are the downsides then?</h2>
 
 <p>Simple is good. But simple also means less flexibility and less power. Accessing information through Web APIs can often be very inefficient. Many Web APIs embrace patterns that can lead to poor performance of a Web Application.</p>
 
-<h2 id="example-query-count-commits-per-contributor-on-github-repository:f38631c06dc52d51e25323771c266097">Example Query: Count Commits per Contributor on GitHub Repository</h2>
+<h2 id="example-query-count-commits-per-contributor-on-github-repository">Example Query: Count Commits per Contributor on GitHub Repository</h2>
 
 <p>Let&rsquo;s assume we want to build an Application that allows users to log in with their GitHub account. Once the user is logged in, the application shall count all commits of that user from all of the repositories he/she owns.</p>
 
-<h3 id="database-request-solution-old-fashioned:f38631c06dc52d51e25323771c266097">Database Request Solution (Old Fashioned)</h3>
+<h3 id="database-request-solution-old-fashioned">Database Request Solution (Old Fashioned)</h3>
 
 <p>This part of the Blog post is entirely fictional. It only serves the purpose of showing what a DB request could look like. Assuming GitHub would run on a Relational Database and would allow developers to access the DB directly, a request could look somewhat like that:</p>
 
@@ -149,7 +149,7 @@
 <li>We can define which information we are interested in. In this case we just want the <em>count</em> of commits and don&rsquo;t want to select any additional information.</li>
 </ul>
 
-<h3 id="web-api-solution:f38631c06dc52d51e25323771c266097">Web API Solution</h3>
+<h3 id="web-api-solution">Web API Solution</h3>
 
 <p><em>Note: The GitHub Web API provides a Statistics API that makes it easier to access the commit count per contributor. However it only provides information for the past year. For our application we want the information over the entire lifetime.</em></p>
 
@@ -178,7 +178,7 @@
 
 <p>The largest of the above problems is that we need to create an individual request for each repository. That problem is called the <a href="http://www.infoq.com/articles/N-Plus-1">&ldquo;N+1 problem&rdquo;</a>. 1 Request is needed to retrieve a list of items. Than we need another request for each entry (N) in that list.</p>
 
-<h3 id="alternatives:f38631c06dc52d51e25323771c266097">Alternatives?</h3>
+<h3 id="alternatives">Alternatives?</h3>
 
 <p>Obviously, for Security reasons, no Platform will allow API clients to write entirely custom DB queries. The viable alternative is exposing a little bit more of the DB layer to the Web API; Resulting in more complexity but also more power. Examples:</p>
 
@@ -212,7 +212,6 @@
 <ul>
 <li><a href="http://redotheweb.com/2012/08/09/how-to-design-rest-apis-for-mobile.html">http://redotheweb.com/2012/08/09/how-to-design-rest-apis-for-mobile.html</a></li>
 </ul>
-
 
 
 

@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/seamless-serialization-objectivec/" />
 
@@ -121,9 +121,9 @@
     <section class="post-content">
 
 
-
-
 <p>Recently I worked on a tutorial that required me to serialize a large amount of objects. This is a common use case in many games - if the user quits the game and reopens it you want to restore the entire game state.</p>
+
+<p></p>
 
 <p><img src="7U79T.png" alt="image" /></p>
 
@@ -133,15 +133,15 @@
 
 <p><a href="https://github.com/nicklockwood/AutoCoding">Autocoding</a> to the rescue!</p>
 
-<h1 id="autocoding:f38631c06dc52d51e25323771c266097">Autocoding</h1>
+<h1 id="autocoding">Autocoding</h1>
 
 <p><a href="https://github.com/nicklockwood/AutoCoding">Autocoding</a> is a great little utility that makes serialization in Objective-C a breeze. It is a lightweight framework that adds a category to <code>NSObject</code>.</p>
 
-<h2 id="installation:f38631c06dc52d51e25323771c266097">Installation</h2>
+<h2 id="installation">Installation</h2>
 
 <p>Simply add <em>Autocoding.m</em> and <em>Autocoding.h</em> to your project.</p>
 
-<h2 id="example-usage:f38631c06dc52d51e25323771c266097">Example Usage</h2>
+<h2 id="example-usage">Example Usage</h2>
 
 <p>AutoCoding&rsquo;s category adds a very convenient <code>writeToFile:</code> method to <code>NSObject</code>. Once you added Autocoding to your project you can call it on basically any object (there are a few exceptions stated in detail on the GitHub page). Example of writing an object to disk:</p>
 
@@ -156,7 +156,6 @@
 <p>There are a lot of additional options, for example for excluding properties from being serialized, but for most applications it will stay this simple! An incredible improvement over writing hundreds of lines.</p>
 
 <p><strong>Never write hundreds of lines of serialization code again!</strong></p>
-
 
 
 

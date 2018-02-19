@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/" />
 
@@ -121,55 +121,51 @@
     <section class="post-content">
 
 
-
-
 <p>At some point, when learning how to use Swift&rsquo;s type system, it is important to understand that Swift (like many other languages) has two different forms of type checking: static and dynamic. Today I want to briefly discuss the difference between them and why headaches might arise when we try to combine them.</p>
+
+<p></p>
 
 <p>Static type checking occurs at compile time and dynamic type checking happens at run time. Each of these two stages come with a different, partially incompatible, toolset.</p>
 
-<h2 id="compile-time-type-checking:f38631c06dc52d51e25323771c266097">Compile Time Type Checking</h2>
+<h2 id="compile-time-type-checking">Compile Time Type Checking</h2>
 
 <p>Compile time type checking (or static type checking) operates on the Swift source code. The Swift compiler looks at explicitly stated and inferred types and ensures correctness of our type constraints.</p>
 
 <p>Here&rsquo;s a trivial example of static type checking:
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">text</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">String</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #4e9a06">&quot;&quot;</span>
-<span style="color: #8f5902; font-style: italic">// Compile Error: Cannot convert value of </span>
-<span style="color: #8f5902; font-style: italic">// type &#39;String&#39; to specified type &#39;Int&#39;</span>
-<span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">number</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Int</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">text</span>
-</pre></div>
-</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">text</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">String</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;&#34;</span>
+<span style="color:#8f5902;font-style:italic">// Compile Error: Cannot convert value of </span>
+<span style="color:#8f5902;font-style:italic">// type &#39;String&#39; to specified type &#39;Int&#39;</span>
+<span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">number</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Int</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">text</span></code></pre></div></p>
 
 <p>Based on the source code the type checker can decide that <code>text</code> is not of type <code>Int</code> - therefore it will raise a compile error.</p>
 
 <p>Swift&rsquo;s static type checker can do a lot more powerful things, e.g. verifying generic constraints:</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">protocol</span> <span style="color: #000000">HasName</span> <span style="color: #000000; font-weight: bold">{}</span>
-<span style="color: #204a87; font-weight: bold">protocol</span> <span style="color: #000000">HumanType</span> <span style="color: #000000; font-weight: bold">{}</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">protocol</span> <span style="color:#000">HasName</span> <span style="color:#000;font-weight:bold">{}</span>
+<span style="color:#204a87;font-weight:bold">protocol</span> <span style="color:#000">HumanType</span> <span style="color:#000;font-weight:bold">{}</span>
 
-<span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">User</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">HasName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">HumanType</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">Visitor</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">HasName</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">HumanType</span> <span style="color: #000000; font-weight: bold">{</span> <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #204a87; font-weight: bold">struct</span> <span style="color: #000000">Car</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">HasName</span> <span style="color: #000000; font-weight: bold">{}</span>
+<span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000">User</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">HasName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">HumanType</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000">Visitor</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">HasName</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">HumanType</span> <span style="color:#000;font-weight:bold">{</span> <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#204a87;font-weight:bold">struct</span> <span style="color:#000">Car</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">HasName</span> <span style="color:#000;font-weight:bold">{}</span>
 
-<span style="color: #8f5902; font-style: italic">// Require a type that is both human and provides a name</span>
-<span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">printHumanName</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">T</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87; font-weight: bold">protocol</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">HumanType</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">HasName</span><span style="color: #000000; font-weight: bold">&gt;</span><span style="color: #ce5c00; font-weight: bold">&gt;</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">thing</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">T</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #8f5902; font-style: italic">// ...</span>
-<span style="color: #000000; font-weight: bold">}</span>
+<span style="color:#8f5902;font-style:italic">// Require a type that is both human and provides a name</span>
+<span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">printHumanName</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">protocol</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">HumanType</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">HasName</span><span style="color:#ce5c00;font-weight:bold">&gt;&gt;</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">thing</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">T</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">// ...</span>
+<span style="color:#000;font-weight:bold">}</span>
 
-<span style="color: #8f5902; font-style: italic">// Compiles fine:</span>
-<span style="color: #000000">printHumanName</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">User</span><span style="color: #000000; font-weight: bold">())</span>
-<span style="color: #8f5902; font-style: italic">// Compiles fine:</span>
-<span style="color: #000000">printHumanName</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Visitor</span><span style="color: #000000; font-weight: bold">())</span>
-<span style="color: #8f5902; font-style: italic">// Compile Error: cannot invoke &#39;printHumanName&#39; with an </span>
-<span style="color: #8f5902; font-style: italic">// argument list of type &#39;(Car)&#39;</span>
-<span style="color: #000000">printHumanName</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">Car</span><span style="color: #000000; font-weight: bold">())</span>
-</pre></div>
-
+<span style="color:#8f5902;font-style:italic">// Compiles fine:</span>
+<span style="color:#000">printHumanName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">User</span><span style="color:#000;font-weight:bold">())</span>
+<span style="color:#8f5902;font-style:italic">// Compiles fine:</span>
+<span style="color:#000">printHumanName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Visitor</span><span style="color:#000;font-weight:bold">())</span>
+<span style="color:#8f5902;font-style:italic">// Compile Error: cannot invoke &#39;printHumanName&#39; with an </span>
+<span style="color:#8f5902;font-style:italic">// argument list of type &#39;(Car)&#39;</span>
+<span style="color:#000">printHumanName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">Car</span><span style="color:#000;font-weight:bold">())</span></code></pre></div>
 
 <p>In this example, again, all of the type checking occurs at compile time, solely based on the source code. The swift compiler can verify which function calls provide arguments that match the generic constraints of the <code>printHumanName</code> function; and for ones that don&rsquo;t it can emit a compile error.</p>
 
 <p>Since Swift&rsquo;s static type system offers these powerful tools we try to verify as much as possible at compile time. However, in same cases run time type verification is necessary.</p>
 
-<h2 id="run-time-type-checking:f38631c06dc52d51e25323771c266097">Run Time Type Checking</h2>
+<h2 id="run-time-type-checking">Run Time Type Checking</h2>
 
 <p>In some unfortunate cases relying on static type checking is not possible. The most common example is reading data from an outside resource (network, database, etc.). In such cases the data and thus the type information is not part of the source code, therefore we cannot prove to the static type checker that our data has a specific type (since the static type checker can only operate on type information it can extract from our source code).</p>
 
@@ -181,35 +177,31 @@
 
 <p>In many scenarios dynamic type checking enables us to integrate types that are unknown at compile time with our statically checked Swift code:</p>
 
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">takesHuman</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">human</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">HumanType</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{}</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">takesHuman</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">human</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">HumanType</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{}</span>
 
-<span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">unknownData</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Any</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">User</span><span style="color: #000000; font-weight: bold">()</span>
+<span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">unknownData</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Any</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">User</span><span style="color:#000;font-weight:bold">()</span>
 
-<span style="color: #204a87; font-weight: bold">if</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">unknownData</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">unknownData</span> <span style="color: #204a87; font-weight: bold">as</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000">HumanType</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #000000">takesHuman</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">unknownData</span><span style="color: #000000; font-weight: bold">)</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">unknownData</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">unknownData</span> <span style="color:#204a87;font-weight:bold">as</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000">HumanType</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">takesHuman</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">unknownData</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>All we need to do in order to call the function with <code>unknownData</code> is to cast it to the argument type of the function.</p>
 
 <p>However, if we try to use this approach to call a function that defines arguments as generic constraints, we run into issues&hellip;</p>
 
-<h2 id="combining-dynamic-and-static-type-checking:f38631c06dc52d51e25323771c266097">Combining Dynamic and Static Type Checking</h2>
+<h2 id="combining-dynamic-and-static-type-checking">Combining Dynamic and Static Type Checking</h2>
 
 <p>Continuing the earlier <code>printHumanName</code> example, let&rsquo;s assume we have received data from a network request, and we need to call the <code>printHumanName</code> method - if the dynamically detected type allows us to do that.</p>
 
 <p>We know that our type needs to conform to two different protocols in order to be eligible as argument for the <code>printHumanName</code> function. So let&rsquo;s check that requirement dynamically:</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">var</span> <span style="color: #000000">unknownData</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Any</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">User</span><span style="color: #000000; font-weight: bold">()</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">unknownData</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Any</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">User</span><span style="color:#000;font-weight:bold">()</span>
 
-<span style="color: #204a87; font-weight: bold">if</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">unknownData</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">unknownData</span> <span style="color: #204a87; font-weight: bold">as</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #204a87; font-weight: bold">protocol</span><span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">HumanType</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">HasName</span><span style="color: #000000; font-weight: bold">&gt;</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #8f5902; font-style: italic">// Compile Error: cannot invoke &#39;printHumanName&#39; </span>
-    <span style="color: #8f5902; font-style: italic">// with an argument list of type &#39;(protocol&lt;HasName, HumanType&gt;)&#39;</span>
-    <span style="color: #000000">printHumanName</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">unknownData</span><span style="color: #000000; font-weight: bold">)</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-</p>
+<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">unknownData</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">unknownData</span> <span style="color:#204a87;font-weight:bold">as</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#204a87;font-weight:bold">protocol</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">HumanType</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">HasName</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">// Compile Error: cannot invoke &#39;printHumanName&#39; </span>
+    <span style="color:#8f5902;font-style:italic">// with an argument list of type &#39;(protocol&lt;HasName, HumanType&gt;)&#39;</span>
+    <span style="color:#000">printHumanName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">unknownData</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>The dynamic type check in the above example actually works correctly. The body of the <code>if let</code> block is only executed for types that conform to our two expected protocols. However, we cannot convey this to the compiler. The compiler expects a <em>concrete</em> type (one that has a fully specified type at compile time) that conforms to <code>HumanType</code> and <code>HasName</code>. All we can offer is a dynamically verified type.</p>
 
@@ -217,7 +209,7 @@
 
 <p>For now, we need a workaround.</p>
 
-<h3 id="workarounds:f38631c06dc52d51e25323771c266097">Workarounds</h3>
+<h3 id="workarounds">Workarounds</h3>
 
 <p>In the past I&rsquo;ve used one of these two approaches:</p>
 
@@ -228,31 +220,27 @@
 
 <p>The concrete type solution would look something like this:</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">if</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">user</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">unknownData</span> <span style="color: #204a87; font-weight: bold">as</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000">User</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #000000">printHumanName</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">user</span><span style="color: #000000; font-weight: bold">)</span>
-<span style="color: #000000; font-weight: bold">}</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #204a87; font-weight: bold">if</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">visitor</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">unknownData</span> <span style="color: #204a87; font-weight: bold">as</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000">Visitor</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #000000">printHumanName</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">visitor</span><span style="color: #000000; font-weight: bold">)</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">user</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">unknownData</span> <span style="color:#204a87;font-weight:bold">as</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000">User</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">printHumanName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">user</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">visitor</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">unknownData</span> <span style="color:#204a87;font-weight:bold">as</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000">Visitor</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#000">printHumanName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">visitor</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>Not beautiful; but it might the best possible solution in some cases.</p>
 
 <p>A solution that involves providing a second implementation of <code>printHumanName</code> might look like this (though there are many other possible solutions):</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">func</span> <span style="color: #000000">_printHumanName</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">thing</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #204a87">Any</span><span style="color: #000000; font-weight: bold">)</span> <span style="color: #000000; font-weight: bold">{</span>
-    <span style="color: #204a87; font-weight: bold">if</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000">hasName</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">thing</span> <span style="color: #204a87; font-weight: bold">as</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000">HasName</span> <span style="color: #204a87; font-weight: bold">where</span> <span style="color: #000000">thing</span> <span style="color: #204a87; font-weight: bold">is</span> <span style="color: #000000">HumanType</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #8f5902; font-style: italic">// Put implementation code here</span>
-        <span style="color: #8f5902; font-style: italic">// Or call a third function that is shared between</span>
-        <span style="color: #8f5902; font-style: italic">// both implementations of `printHumanName`</span>
-    <span style="color: #000000; font-weight: bold">}</span> <span style="color: #204a87; font-weight: bold">else</span> <span style="color: #000000; font-weight: bold">{</span>
-        <span style="color: #3465a4">fatalError</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #4e9a06">&quot;Provided Incorrect Type&quot;</span><span style="color: #000000; font-weight: bold">)</span>
-    <span style="color: #000000; font-weight: bold">}</span>
-<span style="color: #000000; font-weight: bold">}</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">_printHumanName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">thing</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87">Any</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">hasName</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">thing</span> <span style="color:#204a87;font-weight:bold">as</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000">HasName</span> <span style="color:#204a87;font-weight:bold">where</span> <span style="color:#000">thing</span> <span style="color:#204a87;font-weight:bold">is</span> <span style="color:#000">HumanType</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#8f5902;font-style:italic">// Put implementation code here</span>
+        <span style="color:#8f5902;font-style:italic">// Or call a third function that is shared between</span>
+        <span style="color:#8f5902;font-style:italic">// both implementations of `printHumanName`</span>
+    <span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
+        <span style="color:#3465a4">fatalError</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Provided Incorrect Type&#34;</span><span style="color:#000;font-weight:bold">)</span>
+    <span style="color:#000;font-weight:bold">}</span>
+<span style="color:#000;font-weight:bold">}</span>
 
-<span style="color: #000000">_printHumanName</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">unknownData</span><span style="color: #000000; font-weight: bold">)</span>
-</pre></div>
-</p>
+<span style="color:#000">_printHumanName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">unknownData</span><span style="color:#000;font-weight:bold">)</span></code></pre></div>
 
 <p>In this second solution we have substituted the compile time constraints for a run time check. We cast the <code>Any</code> type to <code>HasName</code>, that allows us to access the relevant information for printing a name, and we include an <code>is</code> check to verify that the type is one that conforms to <code>HumanType</code>. We have established a dynamic type check that is equivalent to our generic constraint.</p>
 
@@ -260,7 +248,7 @@
 
 <p>The solution of the &ldquo;type erased&rdquo; function that accept an <code>Any</code> argument isn&rsquo;t really nice either; but in practice I have used similar approaches in cases where other code guarantees that the function will be called with the correct type, but there wasn&rsquo;t a way of expressing that within Swift&rsquo;s type system.</p>
 
-<h2 id="conclusion:f38631c06dc52d51e25323771c266097">Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 
 <p>The examples above are extremely simplified, but I hope they demonstrate the issues that can arise from differences in compile time and run time type checking. The key takeaways are:</p>
 
@@ -272,11 +260,9 @@
 
 <p>Is there potential for adding support for this to Swift? I think we would need the ability to dynamically create &amp; use a constrained metatype. One could imagine a syntax that looks somewhat like this:</p>
 
-<p><div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #204a87; font-weight: bold">if</span> <span style="color: #204a87; font-weight: bold">let</span> <span style="color: #000000; font-weight: bold">&lt;</span><span style="color: #000000">T</span><span style="color: #000000; font-weight: bold">:</span> <span style="color: #000000">HumanType</span><span style="color: #000000; font-weight: bold">,</span> <span style="color: #000000">HasName</span><span style="color: #000000; font-weight: bold">&gt;</span> <span style="color: #000000">value</span> <span style="color: #000000; font-weight: bold">=</span> <span style="color: #000000">unknownData</span> <span style="color: #204a87; font-weight: bold">as</span><span style="color: #000000; font-weight: bold">?</span> <span style="color: #000000">T</span> <span style="color: #000000; font-weight: bold">{</span>
-	<span style="color: #000000">printHumanName</span><span style="color: #000000; font-weight: bold">(</span><span style="color: #000000">value</span><span style="color: #000000; font-weight: bold">)</span>
-<span style="color: #000000; font-weight: bold">}</span>
-</pre></div>
-</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000;font-weight:bold">&lt;</span><span style="color:#000">T</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">HumanType</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">HasName</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">value</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">unknownData</span> <span style="color:#204a87;font-weight:bold">as</span><span style="color:#000;font-weight:bold">?</span> <span style="color:#000">T</span> <span style="color:#000;font-weight:bold">{</span>
+	<span style="color:#000">printHumanName</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">value</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>I know too little about the Swift compiler to know if this is feasible at all. I would assume that the relative cost of implementing this is huge, compared to the benefits it would provide to a very small part of the average Swift codebase.</p>
 
@@ -301,7 +287,6 @@
 
 <p><blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/xenadu02">@xenadu02</a> <a href="https://twitter.com/benjaminencz">@benjaminencz</a> Everything in the static type system is in the runtime too. Making it all available&#39;s a &quot;simple matter of design&quot;</p>&mdash; Joe Groff (@jckarter) <a href="https://twitter.com/jckarter/status/720661475405094913">April 14, 2016</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
-
 
 
 

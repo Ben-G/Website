@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/" />
 
@@ -121,12 +121,12 @@
     <section class="post-content">
 
 
-
-
 <p>A couple of months ago I was faced with an issue that was fairly hard to debug:</p>
 
 <p><blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">Hackathons are a great place to see noteworthy issues. Yesterday&#39;s highlight: endless recursion in Storyboard <a href="https://twitter.com/LAHacks">@LAHacks</a></p>&mdash; Benjamin Encz (@benjaminencz) <a href="https://twitter.com/benjaminencz/status/584757451469127680">April 5, 2015</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
+
+<p></p>
 
 <p>What I found out, after about 30 minutes of debugging, was the following:</p>
 
@@ -136,7 +136,7 @@
 
 <p>This however wasn&rsquo;t immediately obvious to me since the symptom was an exception within the <code>cellForRowAtIndexPath:</code> method.</p>
 
-<h2 id="fixed-in-ios-9:f38631c06dc52d51e25323771c266097">Fixed in iOS 9</h2>
+<h2 id="fixed-in-ios-9">Fixed in iOS 9</h2>
 
 <p>Today I wanted to see if it is possible to reproduce the issue with Xcode 7 Beta 3.</p>
 
@@ -150,7 +150,6 @@
 <p>This fix will likely save some headaches!</p>
 
 <p>It also serves as a good real world example of <a href="https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm">detecting cycles in directed graphs</a>.</p>
-
 
 
 

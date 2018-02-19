@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.36.1" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/profiling-multicore-performance-instruments/" />
 
@@ -121,9 +121,9 @@
     <section class="post-content">
 
 
-
-
 <p><strong>Short version:</strong> When profiling code that should run on multiple cores in parallel, CPU utilization of multiple cores isn&rsquo;t a good indicator as a single thread might utilize multiple cores at (almost) the same time.</p>
+
+<p></p>
 
 <hr />
 
@@ -131,7 +131,7 @@
 
 <p>Our team just completed a large data migration in which we could significantly improve performance by running code in parallel on multiple cores. On the way I learnt a few interesting details about Instruments and ARM processors that felt worth sharing.</p>
 
-<h2 id="switch-core-switch:f38631c06dc52d51e25323771c266097">Switch Core, Switch</h2>
+<h2 id="switch-core-switch">Switch Core, Switch</h2>
 
 <p>When I started profiling the code with the Time Profiler instrument I noticed that a single thread was using almost 100% of CPU time. This indicated that the task was CPU bound and potentially could be sped up if I could parallelize some parts of the required work.</p>
 
@@ -165,7 +165,7 @@
 
 <p><img src="system_trace_example.png" alt="" /></p>
 
-<h2 id="more-interrupts-more-core-bouncing:f38631c06dc52d51e25323771c266097">More Interrupts, More Core Bouncing</h2>
+<h2 id="more-interrupts-more-core-bouncing">More Interrupts, More Core Bouncing</h2>
 
 <p>Since the migration code in the PlanGrid app was not entirely CPU bound, but was also interacting with our local DB we would see a lot more interrupts and as a result a lot more core switches:</p>
 
@@ -179,7 +179,7 @@
 
 <p>Apparently SMP is standard on all modern chips.</p>
 
-<h2 id="profiling-parallel-execution-the-right-way:f38631c06dc52d51e25323771c266097">Profiling Parallel Execution The Right Way</h2>
+<h2 id="profiling-parallel-execution-the-right-way">Profiling Parallel Execution The Right Way</h2>
 
 <p><strong>As shown above, core utilization isn&rsquo;t a great way to measure whether or not your code is running efficiently accross multiple cores.</strong></p>
 
@@ -204,7 +204,6 @@
 <hr />
 
 <p>Also, did you know that the <a href="https://en.wikipedia.org/wiki/Apple_A8X">A8X processor</a> of the iPad Air 2 has three cores? I didn&rsquo;t until I found out through profiling!</p>
-
 
 
 
