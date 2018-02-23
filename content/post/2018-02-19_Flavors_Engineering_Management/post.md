@@ -22,7 +22,7 @@ Some engineering managers might fall into multiple of these buckets at the same 
 
 All flavors of engineering managers also have a lot in common: they are responsible for recruiting, helping their team advance their career, provide context to their team about what is going on in the larger organization, etc. However, the flavor has a big impact on what the engineering manager will focus on.
 
-### The Teach Lead Engineering Manager
+### The Tech Lead Engineering Manager
 
 The tech lead engineering manager typically leads a small to mid-sized team of ~3-8 engineers who are working within the same technology stack. They have strong technical experience in their relevant field. They stay involved in many major technical decisions and often spend a significant amount of their time coding (up to ~50%).
 
@@ -34,7 +34,7 @@ In my experience this setup makes it easier for the engineering manager to hire.
 
 This type of engineering manager will often be directly involved in mentoring team members.
 
-One of the biggest risks is micromanagement because the manager still works as a contributor on the team. Another risk lies in the combination of technical and people leadership in a single role. In most cases the teach lead engineering manager should try to turn someone on their team into a technical leader (without people responsibility), such that the team depends less on a single person.
+One of the biggest risks is micromanagement because the manager still works as a contributor on the team. Another risk lies in the combination of technical and people leadership in a single role. In most cases the tech lead engineering manager should try to turn someone on their team into a technical leader (without people responsibility), such that the team depends less on a single person.
 
 When evaluating team members and creating career plans, the engineering manager can largely rely on their own technical expertise. However, they definitely should include feedback from peers on the team as well as from product managers, designers, etc. from the cross-functional feature team the engineer is working on.
 
