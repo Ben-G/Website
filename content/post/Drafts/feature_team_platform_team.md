@@ -1,0 +1,2 @@
+- Projects scheduled onto platform teams via agency model tend to balloon in scope
+  - Once I have engineers; might as well get a ton of stuff done!
