@@ -64,3 +64,8 @@ My main issue though is that many teams invest too much time in process in the f
 I wanted to keep this post short. Specific prescriptions about how to run an engineering team can fill entire books. The goal of this post is to remind engineers, engineering managers and organizations about what really matters and to encourage them to debug their engineering performance by looking at these important requirements for a successful team.
 
 Where process can help addressing these requirements it should be implemented. But the focus should lie on hiring a great team, building momentum, enabling collaboration and engaging and motivating each team member - process won't get that important job done.
+
+---
+
+P.S.: Here's a somewhat related and great post from the HubSpot blog: [Why our engineering leaders focus on product over process](https://medium.com/hubspot-product/why-our-engineering-leaders-focus-on-product-over-process-26224aa4b36b).
+
