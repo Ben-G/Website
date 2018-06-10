@@ -31,7 +31,7 @@ This is not a complete list, but it highlights the aspects that have been the mo
 - Capabilities:
   - Engineers need to have an understanding of the technology that is used to build the product and need to have an interest in the type of problems the team needs to solve
   - Engineers need to be able to evaluate the technical effort of multiple prioritized initiatives such that they can optimize the cost/benefit ratio and define milestones
-  - Engineers need to understand the system they are working in well enough to identify areas that require maintenance and reduction of technical depth in order to not reduce future velocity
+  - Engineers need to understand the system they are working in well enough to identify areas that require maintenance and reduction of technical debt in order to not reduce future velocity
   - Engineers on the team need to be able to collaborate and communicate well with each other
 - How work is done:
   - The team needs to understands the customer's desires and therefore be able prioritize initiatives (typically with the help of a product manager)
@@ -57,7 +57,7 @@ It might. But it can only address a small subset of the requirements for a great
 
 I frequently see teams implement a formal Scrum process, but combining it with multi-month long projects and a waterfall approach. This leads to a lot of overhead for sprint planning, estimation and retros but doesn't provide the momentum of an iterative development approach and typically does not lead to a predictable schedule, since even the best engineers are bad at estimating huge projects. This process also rarely leaves room for creativity, as teams are churning through predefined stories and tasks from sprint to sprint.
 
-My main issue though is that many teams invest too much time in process in the first place while neglecting improving recruiting, a focus on metrics and other key aspects mentioned above.
+My main issue though is not the implementation of a specific process. It is that many teams put too much emphasis on process in the first place, while neglecting more important areas of building a great team.
 
 ### Conclusion
 
