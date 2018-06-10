@@ -6,10 +6,23 @@
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 Feb 2018 13:00:00 -0800</lastBuildDate>
+    <lastBuildDate>Sat, 09 Jun 2018 13:00:00 -0800</lastBuildDate>
     
 	<atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Engineering Process Is Overvalued</title>
+      <link>http://blog.benjamin-encz.de/post/engineering-process-is-overvalued/</link>
+      <pubDate>Sat, 09 Jun 2018 13:00:00 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/engineering-process-is-overvalued/</guid>
+      <description>&lt;p&gt;Many engineers and managers focus too much on process and overlook much more important aspects of a successful engineering team.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s a quick reminder about what really matters and what engineering managers should spend their time and energy on.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Flavors of Engineering Management</title>
