@@ -13,6 +13,12 @@ Run following instructions:
 3. Go visit: http://localhost:9292/
 
 
+## Rendering New Pages
+
+1. `brew install hugo` (only on first run)
+2. [Install themes](https://gohugo.io/themes/installing-and-using-themes/) (only on first run)
+3. `./scripts/render.sh`
+
 
 ## Deploying
 

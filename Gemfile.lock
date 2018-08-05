@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     git-version-bump (0.15.1)
+    parslet (1.8.2)
     rack (1.6.4)
     rack-contrib (1.4.0)
       git-version-bump (~> 0.15)
@@ -9,6 +10,8 @@ GEM
     rack-rewrite (1.5.1)
     rack-slashenforce (0.0.3)
       rack
+    toml (0.2.0)
+      parslet (~> 1.8.0)
 
 PLATFORMS
   ruby
@@ -18,6 +21,7 @@ DEPENDENCIES
   rack-contrib
   rack-rewrite (~> 1.5.0)
   rack-slashenforce
+  toml
 
 BUNDLED WITH
-   1.14.6
+   1.16.3
