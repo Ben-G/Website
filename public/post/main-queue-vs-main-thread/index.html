@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.36.1" />
+    <meta name="generator" content="Hugo 0.46" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/" />
 
@@ -184,7 +184,7 @@ Typically we have some sort of check to determine whether our code is already ex
 
 <p>We need to use the <code>dispatch_queue_set_specific</code> function in order to associate a key-value pair with the main queue; later we can use <code>dispatch_queue_get_specific</code> to check for the presence of key &amp; value. Here&rsquo;s the updated image function example:</p>
 
-<p><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">private</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">mainQueueKey</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87">UnsafeMutablePointer</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#204a87">Void</span><span style="color:#ce5c00;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">alloc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">private</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">mainQueueKey</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87">UnsafeMutablePointer</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#204a87">Void</span><span style="color:#ce5c00;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">alloc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
 <span style="color:#204a87;font-weight:bold">private</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">mainQueueValue</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87">UnsafeMutablePointer</span><span style="color:#000;font-weight:bold">&lt;</span><span style="color:#204a87">Void</span><span style="color:#ce5c00;font-weight:bold">&gt;</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">alloc</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
 
 <span style="color:#8f5902;font-style:italic">// Associate a key-value pair with the main queue</span>
@@ -214,7 +214,7 @@ Typically we have some sort of check to determine whether our code is already ex
     <span style="color:#000;font-weight:bold">}</span>
 
     <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">image</span>
-<span style="color:#000;font-weight:bold">}</span></code></pre></div></p>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>Both, key and value are simple <code>Void</code> pointers - we only need to use them for an equality check.</p>
 
