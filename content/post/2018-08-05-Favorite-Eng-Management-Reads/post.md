@@ -1,6 +1,6 @@
 +++
 date = "2018-08-05T13:00:00-08:00"
-draft = true
+draft = false
 title = "My Five Favorite Books for Engineering Leaders"
 slug = "five-favorite-books-for-engineering-leaders"
 disqus_url = "http://blog.benjamin-encz.de/post/five-favorite-books-for-engineering-leaders"
@@ -70,14 +70,14 @@ In general this book is a good summary of modern leadership best practices, with
 
 
 
-## 5. High Output Management
+## 5. Powerful: Building a Culture of Freedom and Responsibility
 
-**Author:** Andy Grove (former CEO of Intel)
+**Author:** Patty McCord (former Chief Talent Officer at Netflix)
 
-**Focus:** General management best practices
+**Focus:** Creating a high performance culture
 
-![](high_output_management_cover.jpg)
+![](powerful_cover.jpg)
 
-This classic is dated (published in 1983) and focuses on general management, not engineering management. However, it is still a great overview of how a manager can maximize their impact on the organization: focusing on high leverage activities, managing through goal setting, training & hiring, gathering & distributing information, etc.
+After finishing the first draft of this post I had "High Output Management", a management classic by Andy Grove, Intel's former CEO, on this list. That I decided to replace it with "Powerful" is probably both a sign of my personally preferred management style and the fact that best management practices have changed quite a bit from 1983, when Andy's book was published. I honestly think both are worth a read, but if I have to pick between a book focused on management techniques and a book focused on creating a high performance culture, I'm going with the latter.
 
-Most of the tactical advice in the book stood the test of time. Well worth a read, especially due to the high information density.
+This short and easy to read book describes Netflix's unconventional culture in more detail. While you certainly don't want to copy another organizations culture directly, many of the ideas outlined in the book should likely be adopted by more organizations. Not unsimilar to the culture Dalio created at Bridgewater, Netflix favors open debate of ideas and radical transparency. They also have a strong focus on freedom and responsibility. Patty does a great job of demonstrating, with examples, which positive impact Netflix's culture had on their organization.
