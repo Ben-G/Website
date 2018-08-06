@@ -6,10 +6,21 @@
     <description>Recent content in Posts on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 09 Jun 2018 13:00:00 -0800</lastBuildDate>
+    <lastBuildDate>Sun, 05 Aug 2018 13:00:00 -0800</lastBuildDate>
     
 	<atom:link href="http://blog.benjamin-encz.de/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>My Five Favorite Books for Engineering Leaders</title>
+      <link>http://blog.benjamin-encz.de/post/five-favorite-books-for-engineering-leaders/</link>
+      <pubDate>Sun, 05 Aug 2018 13:00:00 -0800</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/post/five-favorite-books-for-engineering-leaders/</guid>
+      <description>&lt;p&gt;I recently got asked a lot about book recommendations for engineering leaders. Here are the five books that I&amp;rsquo;ve found most helpful so far.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Engineering Process Is Overvalued</title>

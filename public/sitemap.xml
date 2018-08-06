@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://blog.benjamin-encz.de/post/five-favorite-books-for-engineering-leaders/</loc>
+    <lastmod>2018-08-05T13:00:00-08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://blog.benjamin-encz.de/post/engineering-process-is-overvalued/</loc>
     <lastmod>2018-06-09T13:00:00-08:00</lastmod>
   </url>
@@ -228,7 +233,7 @@
   
   <url>
     <loc>http://blog.benjamin-encz.de/post/</loc>
-    <lastmod>2018-06-09T13:00:00-08:00</lastmod>
+    <lastmod>2018-08-05T13:00:00-08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -239,7 +244,7 @@
   
   <url>
     <loc>http://blog.benjamin-encz.de/</loc>
-    <lastmod>2018-06-09T13:00:00-08:00</lastmod>
+    <lastmod>2018-08-05T13:00:00-08:00</lastmod>
     <priority>0</priority>
   </url>
   

@@ -1,3 +1,9 @@
+#### 2018/8/5
+
+- Create script to create new posts more seamlessly
+  - Should create folder with date & title
+  - Should generate preamble for post automatically
+
 #### 2017/3/5
 
 - Working on serving images from GitHub. Workflow should enable to add images to repo and have them served automatically in a way that markdown renders well on GitHub and on the website.
