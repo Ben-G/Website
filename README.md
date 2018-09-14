@@ -33,3 +33,6 @@ Currently there are two heroku environments:
   - Git: `ssh://git@heroku.com/benji-blog-staging.git`
   - Url: https://benji-blog-staging.herokuapp.com/
 
+## Troubleshooting
+
+- Reminder to self, to update `themes` folder when updating versions of hugo 

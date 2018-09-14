@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.46" />
+    <meta name="generator" content="Hugo 0.48" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/bridging-swift-types-to-objective-c/" />
 
@@ -244,9 +244,9 @@ will depend on your use case.</p>
 
 <p>Now this type can be used from Objective-C:</p>
 
-<p><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-objc" data-lang="objc"><span style="color:#000">ShoppingCart</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">cart</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[[</span><span style="color:#000">ShoppingCart</span> <span style="color:#000">alloc</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#f57900">initWithItems</span><span style="color:#000;font-weight:bold">:</span><span style="color:#000">@[</span><span style="color:#4e9a06">@&#34;TV&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">@&#34;Book&#34;</span><span style="color:#000">]</span><span style="color:#000;font-weight:bold">];</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-objc" data-lang="objc"><span style="color:#000">ShoppingCart</span> <span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000">cart</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[[</span><span style="color:#000">ShoppingCart</span> <span style="color:#000">alloc</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#f57900">initWithItems</span><span style="color:#000;font-weight:bold">:</span><span style="color:#000">@[</span><span style="color:#4e9a06">@&#34;TV&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">@&#34;Book&#34;</span><span style="color:#000">]</span><span style="color:#000;font-weight:bold">];</span>
 <span style="color:#000">cart</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">items</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">@[</span><span style="color:#4e9a06">@&#34;TV&#34;</span><span style="color:#000">]</span><span style="color:#000;font-weight:bold">;</span>
-<span style="color:#000;font-weight:bold">[</span><span style="color:#000">cart</span> <span style="color:#f57900">setCheckoutOptionToPayPalWithEmail</span><span style="color:#000;font-weight:bold">:</span><span style="color:#4e9a06">@&#34;test@test.com&#34;</span><span style="color:#000;font-weight:bold">];</span></code></pre></div></p>
+<span style="color:#000;font-weight:bold">[</span><span style="color:#000">cart</span> <span style="color:#f57900">setCheckoutOptionToPayPalWithEmail</span><span style="color:#000;font-weight:bold">:</span><span style="color:#4e9a06">@&#34;test@test.com&#34;</span><span style="color:#000;font-weight:bold">];</span></code></pre></div>
 
 <p>We can now pass this instance to Swift code and the receiver can use the
 underlying Swift type, stored within the bridged type, with all of its rich language features.</p>

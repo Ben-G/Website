@@ -47,7 +47,7 @@
       
       
     
-    <meta name="generator" content="Hugo 0.46" />
+    <meta name="generator" content="Hugo 0.48" />
 
     <link rel="canonical" href="http://blog.benjamin-encz.de/post/simple-undo-redo-swift/" />
 
@@ -220,7 +220,7 @@
 
 <p>Now that we keep track of all changes, we can implement the undo/redo feature.</p>
 
-<p><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">undo</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">func</span> <span style="color:#000">undo</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#000;font-weight:bold">{</span>
     <span style="color:#204a87;font-weight:bold">guard</span> <span style="color:#204a87;font-weight:bold">let</span> <span style="color:#000">undoRedoStep</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">undoStack</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">popLast</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
         <span style="color:#204a87;font-weight:bold">return</span>
     <span style="color:#000;font-weight:bold">}</span>
@@ -238,7 +238,7 @@
     <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">perform</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">undoRedoStep</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">undoRedoStep</span><span style="color:#000;font-weight:bold">)</span>
     
     <span style="color:#204a87;font-weight:bold">self</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">undoStack</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">undoRedoStep</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">flip</span><span style="color:#000;font-weight:bold">())</span>
-<span style="color:#000;font-weight:bold">}</span></code></pre></div></p>
+<span style="color:#000;font-weight:bold">}</span></code></pre></div>
 
 <p>The code here is very simple. We fetch the latest undo/redo action from the stack. We perform the change recorded in that step in a separate method that is shared between undo and redo. Then we append the inverted version of the change to the opposite stack (e.g. an undo action is flipped and placed on the redo stack).</p>
 
@@ -279,14 +279,14 @@
 
 <p>The Store API now allows us to modify annotations and undo changes:</p>
 
-<p><div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">annotation</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">Annotation</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">color</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">red</span><span style="color:#000;font-weight:bold">)</span>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#204a87;font-weight:bold">var</span> <span style="color:#000">annotation</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000">Annotation</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">color</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">red</span><span style="color:#000;font-weight:bold">)</span>
 <span style="color:#000">store</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">save</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">annotation</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">annotation</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic">// annotation is red</span>
 
 <span style="color:#000">annotation</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">color</span> <span style="color:#000;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">.</span><span style="color:#000">blue</span>
 <span style="color:#000">store</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">save</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">annotation</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">annotation</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic">// annotation is blue</span>
 
 <span style="color:#000">store</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">undo</span><span style="color:#000;font-weight:bold">()</span>
-<span style="color:#3465a4">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">store</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">annotations</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic">// prints one annotation in &#34;red&#34;</span></code></pre></div></p>
+<span style="color:#3465a4">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">store</span><span style="color:#000;font-weight:bold">.</span><span style="color:#000">annotations</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic">// prints one annotation in &#34;red&#34;</span></code></pre></div>
 
 <h2 id="conclusion">Conclusion</h2>
 

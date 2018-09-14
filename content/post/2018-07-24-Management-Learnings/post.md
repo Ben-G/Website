@@ -35,4 +35,5 @@ Here are the high-level learnings from the last year:
 - There's way too little software to help with the challenges of scaling companies; that's probably why most large tech companies have internal tools teams
 - You're likely underinvesting in onboarding (onboarding folks into culture can be hard)
 - Transparency and openess + personal relationships are the best way to fight the rumor mill that starts grinding in growing orgs
-
+- You should have **lots** of 1-1 conversations. Especially when taking on new teams or areas or when you have skip-reports. Opening up these communication channels & bulding trust is super important
+- Strongly encourage folks to give direct feedback, rather than indirect, it creates a much better culture
