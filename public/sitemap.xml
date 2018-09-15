@@ -3,247 +3,251 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/five-favorite-books-for-engineering-leaders/</loc>
+    <loc>http://localhost:9292/post/five-favorite-books-for-engineering-leaders/</loc>
     <lastmod>2018-08-05T13:00:00-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/engineering-process-is-overvalued/</loc>
+    <loc>http://localhost:9292/post/engineering-process-is-overvalued/</loc>
     <lastmod>2018-06-09T13:00:00-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/flavors-of-engineering-management/</loc>
+    <loc>http://localhost:9292/post/flavors-of-engineering-management/</loc>
     <lastmod>2018-02-19T13:00:00-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/sqlite-one-to-many-json1-extension/</loc>
+    <loc>http://localhost:9292/post/sqlite-one-to-many-json1-extension/</loc>
     <lastmod>2017-10-23T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/quick-thoughts-prototyping-software/</loc>
+    <loc>http://localhost:9292/post/quick-thoughts-prototyping-software/</loc>
     <lastmod>2017-07-31T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/another-small-uikit-debugging-adventure/</loc>
+    <loc>http://localhost:9292/post/another-small-uikit-debugging-adventure/</loc>
     <lastmod>2017-06-16T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/simple-undo-redo-swift/</loc>
+    <loc>http://localhost:9292/post/simple-undo-redo-swift/</loc>
     <lastmod>2017-05-11T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/safely-migrating-millions-of-database-records-across-thousands-of-devices/</loc>
+    <loc>http://localhost:9292/post/safely-migrating-millions-of-database-records-across-thousands-of-devices/</loc>
     <lastmod>2017-03-20T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/profiling-multicore-performance-instruments/</loc>
+    <loc>http://localhost:9292/post/profiling-multicore-performance-instruments/</loc>
     <lastmod>2017-03-05T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/bridging-swift-types-to-objective-c/</loc>
+    <loc>http://localhost:9292/post/bridging-swift-types-to-objective-c/</loc>
     <lastmod>2017-02-14T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/why-i-dont-believe-in-ubers-success/</loc>
+    <loc>http://localhost:9292/post/why-i-dont-believe-in-ubers-success/</loc>
     <lastmod>2017-01-19T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/understanding-data-race-detection-by-implementing-in-swift/</loc>
+    <loc>http://localhost:9292/post/understanding-data-race-detection-by-implementing-in-swift/</loc>
     <lastmod>2016-11-18T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/apple-is-not-doomed-quite-yet/</loc>
+    <loc>http://localhost:9292/post/apple-is-not-doomed-quite-yet/</loc>
     <lastmod>2016-10-31T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/declarative-api-design-in-swift/</loc>
+    <loc>http://localhost:9292/post/declarative-api-design-in-swift/</loc>
     <lastmod>2016-10-03T10:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/broken-toolchain/</loc>
+    <loc>http://localhost:9292/post/broken-toolchain/</loc>
     <lastmod>2016-09-15T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/bridging-existentials-generics-swift-2/</loc>
+    <loc>http://localhost:9292/post/bridging-existentials-generics-swift-2/</loc>
     <lastmod>2016-07-21T10:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/real-world-flux-ios/</loc>
+    <loc>http://localhost:9292/post/real-world-flux-ios/</loc>
     <lastmod>2016-07-10T10:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</loc>
+    <loc>http://localhost:9292/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</loc>
     <lastmod>2016-06-14T10:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</loc>
+    <loc>http://localhost:9292/post/main-queue-vs-main-thread/</loc>
     <lastmod>2016-06-05T10:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</loc>
+    <loc>http://localhost:9292/post/disassembling-uikit-tintcolor-visitor/</loc>
     <lastmod>2016-05-10T12:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</loc>
+    <loc>http://localhost:9292/post/decoding-heterogeneous-collections-in-swift/</loc>
     <lastmod>2016-05-03T10:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</loc>
+    <loc>http://localhost:9292/post/compile-time-vs-runtime-type-checking-swift/</loc>
     <lastmod>2016-04-13T21:09:24-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</loc>
+    <loc>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</loc>
     <lastmod>2016-03-24T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</loc>
+    <loc>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</loc>
     <lastmod>2016-02-25T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</loc>
+    <loc>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</loc>
     <lastmod>2016-02-24T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/about/</loc>
+    <loc>http://localhost:9292/about/</loc>
     <lastmod>2016-02-15T22:51:22-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/projects/</loc>
+    <loc>http://localhost:9292/projects/</loc>
     <lastmod>2016-02-15T22:51:22-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/speaking/</loc>
+    <loc>http://localhost:9292/speaking/</loc>
     <lastmod>2016-02-15T22:51:22-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/writing/</loc>
+    <loc>http://localhost:9292/writing/</loc>
     <lastmod>2016-02-15T22:51:22-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/introducing-reswift/</loc>
+    <loc>http://localhost:9292/post/introducing-reswift/</loc>
     <lastmod>2016-01-20T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</loc>
+    <loc>http://localhost:9292/post/convenient-error-handling-in-swift/</loc>
     <lastmod>2015-11-18T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</loc>
+    <loc>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</loc>
     <lastmod>2015-09-12T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</loc>
+    <loc>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</loc>
     <lastmod>2015-07-23T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</loc>
+    <loc>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</loc>
     <lastmod>2015-07-09T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</loc>
+    <loc>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</loc>
     <lastmod>2015-05-30T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</loc>
+    <loc>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</loc>
     <lastmod>2015-02-19T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</loc>
+    <loc>http://localhost:9292/post/i-didnt-know-that-is-the-best-way-to-learn/</loc>
     <lastmod>2015-02-05T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/switching-ios-devices-and-the-keychain/</loc>
+    <loc>http://localhost:9292/post/switching-ios-devices-and-the-keychain/</loc>
     <lastmod>2014-12-14T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/using-ssh-with-multiple-accounts/</loc>
+    <loc>http://localhost:9292/post/using-ssh-with-multiple-accounts/</loc>
     <lastmod>2014-11-18T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/the-downside-of-web-apis/</loc>
+    <loc>http://localhost:9292/post/the-downside-of-web-apis/</loc>
     <lastmod>2014-08-10T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/arithmetic-expressions-in-swift/</loc>
+    <loc>http://localhost:9292/post/arithmetic-expressions-in-swift/</loc>
     <lastmod>2014-06-03T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/objective-c-backing-ivars-subclasses/</loc>
+    <loc>http://localhost:9292/post/objective-c-backing-ivars-subclasses/</loc>
     <lastmod>2014-05-28T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/seamless-serialization-objectivec/</loc>
+    <loc>http://localhost:9292/post/seamless-serialization-objectivec/</loc>
     <lastmod>2014-04-02T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/when-you-cant-avoid-email/</loc>
+    <loc>http://localhost:9292/post/when-you-cant-avoid-email/</loc>
     <lastmod>2014-03-04T22:24:54-08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/</loc>
+    <loc>http://localhost:9292/portfolio/</loc>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/categories/</loc>
+    <loc>http://localhost:9292/post/</loc>
+  </url>
+  
+  <url>
+    <loc>http://localhost:9292/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/post/</loc>
+    <loc>http://localhost:9292/post/</loc>
     <lastmod>2018-08-05T13:00:00-08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/tags/</loc>
+    <loc>http://localhost:9292/tags/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://blog.benjamin-encz.de/</loc>
+    <loc>http://localhost:9292/</loc>
     <lastmod>2018-08-05T13:00:00-08:00</lastmod>
     <priority>0</priority>
   </url>
