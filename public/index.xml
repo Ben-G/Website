@@ -580,5 +580,16 @@ The sections are:
       <description> Projects scheduled onto platform teams via agency model tend to balloon in scope  Once I have engineers; might as well get a ton of stuff done!   </description>
     </item>
     
+    <item>
+      <title></title>
+      <link>http://blog.benjamin-encz.de/values/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.benjamin-encz.de/values/</guid>
+      <description>Personal Values Some of these are not fully fleshed out, I still want to share them as they give a useful view into what I care about.
+1. Ownership
+Within your realm of capability I can trust you to own your work. This entails clearly stating commitments, proactively communicating surprises, being able to understand the context of the work and autonomously making sensible decisions (escalating decisions that mean a larger deviation from committed work).</description>
+    </item>
+    
   </channel>
 </rss>
