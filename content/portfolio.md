@@ -19,7 +19,7 @@ This is a ton of text. Absolutely no need to read it all. Happy to discuss in pe
 
 - Lead feature and platform engineering teams, across **Backend, Web & Mobile, up to a size of 25 team members**.
 - **Hired 14 engineers**, most of them senior, many through network and outreach. Reshaped a lot of the recruiting process for my teams and for PlanGrid as a whole. As part of my hiring effort I built **one of the strongest iOS engineering teams in the SF Bay Area**, which is widely recognized in the iOS community.
-- Built a strong personal brand ([open source](https://github.com/Ben-G), [talks](http://blog.benjamin-encz.de/speaking/), etc.) that drove a lot of my recruiting efforts
+- Built a strong personal brand ([open source](https://github.com/Ben-G), [talks](http://blog.benjamin-encz.de/speaking/), etc.) that drove a lot of my recruiting efforts.
 - **Shaped PlanGrid's engineering culture** through a series of initiatives (open source contributions, tech talks, 20% time for working on platform improvements, redefinition of career ladder & compensation bands).
 - Contributed to PlanGrid's long term **product strategy**.
 - Drove **reorganization of engineering into feature teams & platform teams** that can deliver on product strategy.
@@ -34,9 +34,7 @@ I'm good at thinking in systems and like to use that skill to analyze how a prod
 
 I am an open book. I believe in transparency and [radical candor](https://www.amazon.com/Radical-Candor-Kim-Scott/dp/B01KTIEFEE/ref=sr_1_1?ie=UTF8&qid=1537034596&sr=8-1&keywords=radical+candor) and I work best with teams and peers that share that belief. I set a high bar for myself and for others and I love when I receive feedback on how I can improve. One of my strongest values is to always follow through on my commitments; I hate dropping balls and very rarely do so.
 
-I love writing as a tool to shape my thoughts, share them with others and foster discussions - this page is an evidence of that.
-
-I am inpatient, which can be an issue at times. I'm working on that, and my one year old daughter is helping in the process.
+I love writing as a tool to shape my thoughts, share them with others and foster discussions - [my blog](http://blog.benjamin-encz.de/) is an evidence of that.
 
 Lastly, I care a lot about the personal relationships I build with people. I'm still in touch with almost everyone I worked with closely in the past.
 
