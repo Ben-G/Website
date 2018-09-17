@@ -42,15 +42,15 @@ Lastly, I care a lot about the personal relationships I build with people. I'm s
 
 #### What I care about in my work
 
-- Building great products & teams
+- **Building great products & teams**
   - I consider myself very technical, I have a fair amount of successful [open source projects](https://github.com/Ben-G) and [talks](http://blog.benjamin-encz.de/speaking/), and I love staying up to date on what is happening in software engineering (one of my favorite current reads is [Designing-Data Intensive Applications](https://www.amazon.com/s/?ie=UTF8&keywords=designing+data+intensive+applications&tag=googhydr-20&index=aps&hvadid=229105010548&hvpos=1t1&hvnetw=g&hvrand=12703251881550352481&hvpone=&hvptwo=&hvqmt=e&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9032076&hvtargid=kwd-297835422134&ref=pd_sl_1k8d3v58rz_e_p38)). That said, I have the most fun when I work with teams that use software engineering to build great products (developer tools are very interesting products as well!). One of the most visual examples is a hack-week project I worked on with a small team that uses ARKit on iOS to build [an indoor location tracking system for tracking issues on construction sites](https://www.youtube.com/watch?v=dzf-DSlQDRY&feature=youtu.be).
   - While I love building products as an individual contributor, I've learned how much more I can move by building great teams that build great products.
   - In my ideal role I split time between recruiting, mentoring and building a great team culture - and solving interesting product & engineering challenges as a team
   - In a slight twist on the famous quote by Peter Drucker, I believe that *"Culture eats process for breakfast"*. I err on the side of "as much process as necessary, not more". 
-- Strong alignment with my, team, manager and peer group
+- **Strong alignment with my, team, manager and peer group**
   - I've learned that a shared set of values among me and my peers is essential for working together effectively. I've listed what I care about under *Personal Values*.
-- Autonomy and room for creativity while being held accountable for outcomes
-- Having a measurable impact on the business
+- **Autonomy and room for creativity while being held accountable for outcomes**
+- **Having a measurable impact on the business**
 
 #### Personal values [WIP]
 
