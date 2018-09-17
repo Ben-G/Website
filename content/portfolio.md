@@ -2,6 +2,8 @@
 
 The goal of this page is to go beyond a resume and hopefully provide useful context on my past experience and on what I'm looking for in a new role.
 
+For my work history, check out [LinkedIn](https://www.linkedin.com/in/benjaminencz/). For open source contributions, [GitHub](http://github.com/Ben-G/).
+
 The sections are:
 
 - **Highlights and numbers**
@@ -34,7 +36,7 @@ I am an open book. I believe in transparency and [radical candor](https://www.am
 
 I love writing as a tool to shape my thoughts, share them with others and foster discussions - this page is an evidence of that.
 
-I am inpatient, which can be an issue at times. I'm working on that, and my one year old daughter is helping in the process 😅
+I am inpatient, which can be an issue at times. I'm working on that, and my one year old daughter is helping in the process.
 
 Lastly, I care a lot about the personal relationships I build with people. I'm still in touch with almost everyone I worked with closely in the past.
 
