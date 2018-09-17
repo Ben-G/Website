@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>[Thinking inside a large box];</title>
-    <link>http://localhost:9292/</link>
+    <link>http://blog.benjamin-encz.de/</link>
     <description>Recent content on [Thinking inside a large box];</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 05 Aug 2018 13:00:00 -0800</lastBuildDate>
     
-	<atom:link href="http://localhost:9292/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://blog.benjamin-encz.de/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>My Five Favorite Books for Engineering Leaders</title>
-      <link>http://localhost:9292/post/five-favorite-books-for-engineering-leaders/</link>
+      <link>http://blog.benjamin-encz.de/post/five-favorite-books-for-engineering-leaders/</link>
       <pubDate>Sun, 05 Aug 2018 13:00:00 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/five-favorite-books-for-engineering-leaders/</guid>
+      <guid>http://blog.benjamin-encz.de/post/five-favorite-books-for-engineering-leaders/</guid>
       <description>&lt;p&gt;I recently got asked a lot about book recommendations for engineering leaders. Here are the five books that I&amp;rsquo;ve found most helpful so far.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -24,10 +24,10 @@
     
     <item>
       <title>Engineering Process Is Overvalued</title>
-      <link>http://localhost:9292/post/engineering-process-is-overvalued/</link>
+      <link>http://blog.benjamin-encz.de/post/engineering-process-is-overvalued/</link>
       <pubDate>Sat, 09 Jun 2018 13:00:00 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/engineering-process-is-overvalued/</guid>
+      <guid>http://blog.benjamin-encz.de/post/engineering-process-is-overvalued/</guid>
       <description>&lt;p&gt;Many engineers and managers focus too much on process and overlook much more important aspects of a successful engineering team.&lt;/p&gt;
 
 &lt;p&gt;Here&amp;rsquo;s a quick reminder about what really matters and what engineering managers should spend their time and energy on.&lt;/p&gt;
@@ -37,10 +37,10 @@
     
     <item>
       <title>Flavors of Engineering Management</title>
-      <link>http://localhost:9292/post/flavors-of-engineering-management/</link>
+      <link>http://blog.benjamin-encz.de/post/flavors-of-engineering-management/</link>
       <pubDate>Mon, 19 Feb 2018 13:00:00 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/flavors-of-engineering-management/</guid>
+      <guid>http://blog.benjamin-encz.de/post/flavors-of-engineering-management/</guid>
       <description>&lt;p&gt;What is like to be an engineering manager vs. an individual contributor? Should engineering managers code? What do engineering managers actually do? The correct, yet unhelpful answer is: &amp;ldquo;it depends&amp;rdquo;.&lt;/p&gt;
 
 &lt;p&gt;The (software) engineering management role comes in many flavors. This means that the day-to-day work can be vastly different. If you&amp;rsquo;re trying to learn from engineering manager peers or are considering getting into engineering management, these differences are important to understand.&lt;/p&gt;
@@ -50,10 +50,10 @@
     
     <item>
       <title>Modeling one-to-many in SQlite using the JSON1 extension</title>
-      <link>http://localhost:9292/post/sqlite-one-to-many-json1-extension/</link>
+      <link>http://blog.benjamin-encz.de/post/sqlite-one-to-many-json1-extension/</link>
       <pubDate>Mon, 23 Oct 2017 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/sqlite-one-to-many-json1-extension/</guid>
+      <guid>http://blog.benjamin-encz.de/post/sqlite-one-to-many-json1-extension/</guid>
       <description>&lt;p&gt;I&amp;rsquo;m currently reading a great book on &lt;a href=&#34;http://dataintensive.net/&#34;&gt;designing data intensive applications&lt;/a&gt;. In the earlier chapters of the book the author (one of the main contributors to Apache Kafka) discusses the history of database models and tradeoffs between document, relational and graph databases.&lt;/p&gt;
 
 &lt;p&gt;He touches on interesting trend: Some of the most popular database systems such as PostgreSQL and SQlite now offer APIs to store and query JSON documents, making them multi-paradigm and bringing a lot of the benefits of document based database systems to traditionally relational ones.&lt;/p&gt;
@@ -65,10 +65,10 @@
     
     <item>
       <title>Quick Thoughts on Prototyping Software</title>
-      <link>http://localhost:9292/post/quick-thoughts-prototyping-software/</link>
+      <link>http://blog.benjamin-encz.de/post/quick-thoughts-prototyping-software/</link>
       <pubDate>Mon, 31 Jul 2017 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/quick-thoughts-prototyping-software/</guid>
+      <guid>http://blog.benjamin-encz.de/post/quick-thoughts-prototyping-software/</guid>
       <description>&lt;p&gt;It&amp;rsquo;s almost the end of July and I&amp;rsquo;ve tried to keep up a schedule of blogging at least once a month. So I decided to pull a topic from the long pile of potential blog posts I&amp;rsquo;ve accumulated: &lt;strong&gt;prototyping&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;This posts focuses on using prototypes to validate technical ideas, not on creating prototypes for user testing.&lt;/p&gt;
@@ -78,10 +78,10 @@
     
     <item>
       <title>Another Small UIKit Debugging Adventure</title>
-      <link>http://localhost:9292/post/another-small-uikit-debugging-adventure/</link>
+      <link>http://blog.benjamin-encz.de/post/another-small-uikit-debugging-adventure/</link>
       <pubDate>Fri, 16 Jun 2017 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/another-small-uikit-debugging-adventure/</guid>
+      <guid>http://blog.benjamin-encz.de/post/another-small-uikit-debugging-adventure/</guid>
       <description>&lt;p&gt;Working with closed source APIs sometimes requires us to use advanced debugging techniques to track down issues that cannot be explained by our application code alone.&lt;/p&gt;
 
 &lt;p&gt;This week I had an interesting debugging session in which I learned more about the behavior of apps with multiple &lt;code&gt;UIWindows&lt;/code&gt;. These kind of posts are mostly useful for me as an attempt to retain some knowledge. But I hope this story is entertaining and useful to you too!&lt;/p&gt;
@@ -91,10 +91,10 @@
     
     <item>
       <title>A Simple Undo/Redo Implementation in Swift</title>
-      <link>http://localhost:9292/post/simple-undo-redo-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/simple-undo-redo-swift/</link>
       <pubDate>Thu, 11 May 2017 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/simple-undo-redo-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/simple-undo-redo-swift/</guid>
       <description>&lt;p&gt;&lt;code&gt;NSUndoManager&lt;/code&gt; is a powerful API, but it is geared towards Objective-C code and relies on runtime features. This post demonstrates a simpler alternative that is better suitable for idiomatic Swift code.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -102,10 +102,10 @@
     
     <item>
       <title>Safely migrating millions of database records across thousands of devices</title>
-      <link>http://localhost:9292/post/safely-migrating-millions-of-database-records-across-thousands-of-devices/</link>
+      <link>http://blog.benjamin-encz.de/post/safely-migrating-millions-of-database-records-across-thousands-of-devices/</link>
       <pubDate>Mon, 20 Mar 2017 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/safely-migrating-millions-of-database-records-across-thousands-of-devices/</guid>
+      <guid>http://blog.benjamin-encz.de/post/safely-migrating-millions-of-database-records-across-thousands-of-devices/</guid>
       <description>&lt;p&gt;&lt;em&gt;This is a cross post of a piece that original appeared on &lt;a href=&#34;https://medium.com/plangrid-technology/safely-migrating-millions-of-database-records-across-thousands-of-devices-f9ea98f941dc&#34;&gt;the PlanGrid R&amp;amp;D blog&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -113,10 +113,10 @@
     
     <item>
       <title>Surprises in Profiling Multi-Core Performance with Instruments</title>
-      <link>http://localhost:9292/post/profiling-multicore-performance-instruments/</link>
+      <link>http://blog.benjamin-encz.de/post/profiling-multicore-performance-instruments/</link>
       <pubDate>Sun, 05 Mar 2017 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/profiling-multicore-performance-instruments/</guid>
+      <guid>http://blog.benjamin-encz.de/post/profiling-multicore-performance-instruments/</guid>
       <description>&lt;p&gt;&lt;strong&gt;Short version:&lt;/strong&gt; When profiling code that should run on multiple cores in parallel, CPU utilization of multiple cores isn&amp;rsquo;t a good indicator as a single thread might utilize multiple cores at (almost) the same time.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -124,10 +124,10 @@
     
     <item>
       <title>Bridging Swift Types to Objective-C</title>
-      <link>http://localhost:9292/post/bridging-swift-types-to-objective-c/</link>
+      <link>http://blog.benjamin-encz.de/post/bridging-swift-types-to-objective-c/</link>
       <pubDate>Tue, 14 Feb 2017 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/bridging-swift-types-to-objective-c/</guid>
+      <guid>http://blog.benjamin-encz.de/post/bridging-swift-types-to-objective-c/</guid>
       <description>&lt;p&gt;At PlanGrid we started adopting Swift prior to the 1.0 release. Despite the tooling problems you&amp;rsquo;re probably familiar with, we&amp;rsquo;re still excited Swift users and have written almost all new code since the summer of 2014 in Swift. We are doing that within a large legacy codebase so more than 50% of our application code is still in Objective-C. As in many projects Swift and Objective-C need to co-exist.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -135,10 +135,10 @@
     
     <item>
       <title>Why I don&#39;t Believe in Uber&#39;s Success</title>
-      <link>http://localhost:9292/post/why-i-dont-believe-in-ubers-success/</link>
+      <link>http://blog.benjamin-encz.de/post/why-i-dont-believe-in-ubers-success/</link>
       <pubDate>Thu, 19 Jan 2017 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/why-i-dont-believe-in-ubers-success/</guid>
+      <guid>http://blog.benjamin-encz.de/post/why-i-dont-believe-in-ubers-success/</guid>
       <description>&lt;p&gt;I wanted to write this blog post for well over half a year. &lt;strong&gt;I don&amp;rsquo;t believe Uber will be a successful business&lt;/strong&gt;. I&amp;rsquo;ve been making my points in individual conversations over and over again - with this post I&amp;rsquo;m creating a writeup of my arguments that I can share in future.&lt;/p&gt;
 
 &lt;p&gt;Since I&amp;rsquo;ve had a lot of discussions about Uber in person, it makes the most sense to write this piece in the platonic dialogue form.&lt;/p&gt;
@@ -148,10 +148,10 @@
     
     <item>
       <title>Understanding Data Race Detection by Implementing it in Swift</title>
-      <link>http://localhost:9292/post/understanding-data-race-detection-by-implementing-in-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/understanding-data-race-detection-by-implementing-in-swift/</link>
       <pubDate>Fri, 18 Nov 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/understanding-data-race-detection-by-implementing-in-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/understanding-data-race-detection-by-implementing-in-swift/</guid>
       <description>TL;DR: In order to learn more about how Thread Sanitizer&amp;rsquo;s data race detection works I&amp;rsquo;ve implemented a very simple version in Swift. You can find it on GitHub.
 We all know concurrency is hard. It&amp;rsquo;s easy to make mistakes when attempting to synchronize access to shared resources and the resulting issues are often extremely hard to reproduce and debug.
 So I was very excited when I learned about data race detection in LLVM&amp;rsquo;s Thread Sanitizer in this year&amp;rsquo;s WWDC Session 412.</description>
@@ -159,20 +159,20 @@ So I was very excited when I learned about data race detection in LLVM&amp;rsquo
     
     <item>
       <title>Apple Isn&#39;t Doomed Quite Yet</title>
-      <link>http://localhost:9292/post/apple-is-not-doomed-quite-yet/</link>
+      <link>http://blog.benjamin-encz.de/post/apple-is-not-doomed-quite-yet/</link>
       <pubDate>Mon, 31 Oct 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/apple-is-not-doomed-quite-yet/</guid>
+      <guid>http://blog.benjamin-encz.de/post/apple-is-not-doomed-quite-yet/</guid>
       <description>The outcry in the Apple community after the latest Apple event has been huge. For many of its loyal customers it seems that the last bit of the remaining magic of the Jobs era has vanished.
 I personally have only been following Apple more or less closely since 2012. From this position I feel like I&amp;rsquo;m able to view the state of Apple from a mainstream consumer&amp;rsquo;s angle. From that vantage point it seems like Apple has made mistakes, but it is not doomed quite yet.</description>
     </item>
     
     <item>
       <title>Declarative API Design in Swift</title>
-      <link>http://localhost:9292/post/declarative-api-design-in-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/declarative-api-design-in-swift/</link>
       <pubDate>Mon, 03 Oct 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/declarative-api-design-in-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/declarative-api-design-in-swift/</guid>
       <description>&lt;p&gt;In my first real job as an iOS developer I built an XML parser and a simple layout engine - both had in common that they had a declarative interface. The parsers was driven by a &lt;code&gt;.plist&lt;/code&gt; file that mapped XML elements to Objective-C classes. The layout engine allowed you to describe layouts in an HTML-like language (this was before AutoLayout &amp;amp; CollectionViews existed).&lt;/p&gt;
 
 &lt;p&gt;Though neither of these libraries were even close to perfect, they showed me four main advantages of declarative code:&lt;/p&gt;
@@ -182,10 +182,10 @@ I personally have only been following Apple more or less closely since 2012. Fro
     
     <item>
       <title>Broken Toolchain Post Mortem</title>
-      <link>http://localhost:9292/post/broken-toolchain/</link>
+      <link>http://blog.benjamin-encz.de/post/broken-toolchain/</link>
       <pubDate>Thu, 15 Sep 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/broken-toolchain/</guid>
+      <guid>http://blog.benjamin-encz.de/post/broken-toolchain/</guid>
       <description>&lt;p&gt;Dependency managers, IDEs, continuous integration, automated tests - all these tools are created to supercharge a developer team&amp;rsquo;s productivity. While modern development tools are amazing in many ways, they unfortunately also add maintenance burden to a project.&lt;/p&gt;
 
 &lt;p&gt;Ask me about migrating our Bitrise &amp;amp; fastlane CI workflows to Xcode 8.&lt;/p&gt;
@@ -205,10 +205,10 @@ I personally have only been following Apple more or less closely since 2012. Fro
     
     <item>
       <title>Bridging Existentials &amp; Generics in Swift 2</title>
-      <link>http://localhost:9292/post/bridging-existentials-generics-swift-2/</link>
+      <link>http://blog.benjamin-encz.de/post/bridging-existentials-generics-swift-2/</link>
       <pubDate>Thu, 21 Jul 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/bridging-existentials-generics-swift-2/</guid>
+      <guid>http://blog.benjamin-encz.de/post/bridging-existentials-generics-swift-2/</guid>
       <description>&lt;p&gt;We are back to another episode of discussing generics, protocols with associated types and some type system limitations in Swift 2. This time we will dive into an interesting workaround that the infamous &lt;a href=&#34;https://twitter.com/jckarter&#34;&gt;jckarter&lt;/a&gt; has taught me. We will also discuss how this workaround might become unnecessary through enhanced existential support in future Swift versions. But what are existentials anyway?&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -216,10 +216,10 @@ I personally have only been following Apple more or less closely since 2012. Fro
     
     <item>
       <title>Real World Flux Architecture on iOS</title>
-      <link>http://localhost:9292/post/real-world-flux-ios/</link>
+      <link>http://blog.benjamin-encz.de/post/real-world-flux-ios/</link>
       <pubDate>Sun, 10 Jul 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/real-world-flux-ios/</guid>
+      <guid>http://blog.benjamin-encz.de/post/real-world-flux-ios/</guid>
       <description>&lt;p&gt;About half a year ago we started adopting the Flux architecture in the PlanGrid iOS app. This post will discuss our motivation for transitioning from traditional MVC to Flux and will share the experience we have gathered so far.&lt;/p&gt;
 
 &lt;p&gt;I&amp;rsquo;m attempting to describe large parts of our Flux implementation by discussing code that is in production today. If you&amp;rsquo;re only interested in the high level conclusion you can skip the middle part of this post.&lt;/p&gt;
@@ -229,10 +229,10 @@ I personally have only been following Apple more or less closely since 2012. Fro
     
     <item>
       <title>WWDC 2016 5 Minute Update: Opening Up iOS, Xcode Extensions, Apple Filesystem, Swift Playgrounds on iPad</title>
-      <link>http://localhost:9292/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</link>
+      <link>http://blog.benjamin-encz.de/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</link>
       <pubDate>Tue, 14 Jun 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</guid>
+      <guid>http://blog.benjamin-encz.de/post/wwdc-2016-open-ios-xcode-extensions-apple-file-system/</guid>
       <description>&lt;p&gt;A very brief summary of changes &amp;amp; impressions from WWDC 2016 Day One.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -240,10 +240,10 @@ I personally have only been following Apple more or less closely since 2012. Fro
     
     <item>
       <title>GCD&#39;s Main Queue vs. Main Thread</title>
-      <link>http://localhost:9292/post/main-queue-vs-main-thread/</link>
+      <link>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</link>
       <pubDate>Sun, 05 Jun 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/main-queue-vs-main-thread/</guid>
+      <guid>http://blog.benjamin-encz.de/post/main-queue-vs-main-thread/</guid>
       <description>&lt;p&gt;The correct way to ensure that code runs on the main thread / main queue is a recurring issue that causes some confusion among Cocoa developers.
 The topic came up again this week as part of an issue with ReactiveCocoa and MapKit:&lt;/p&gt;
 
@@ -255,10 +255,10 @@ The topic came up again this week as part of an issue with ReactiveCocoa and Map
     
     <item>
       <title>Beware the UIKit Visitors!</title>
-      <link>http://localhost:9292/post/disassembling-uikit-tintcolor-visitor/</link>
+      <link>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</link>
       <pubDate>Tue, 10 May 2016 12:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/disassembling-uikit-tintcolor-visitor/</guid>
+      <guid>http://blog.benjamin-encz.de/post/disassembling-uikit-tintcolor-visitor/</guid>
       <description>&lt;p&gt;&lt;/p&gt;
 
 &lt;h4 id=&#34;investigating-the-cause-of-quadratic-time-complexity-when-adding-subviews-in-uikit&#34;&gt;Investigating the Cause of Quadratic Time Complexity When Adding Subviews in UIKit&lt;/h4&gt;
@@ -275,10 +275,10 @@ The topic came up again this week as part of an issue with ReactiveCocoa and Map
     
     <item>
       <title>Decoding Heterogeneous Collections in Swift</title>
-      <link>http://localhost:9292/post/decoding-heterogeneous-collections-in-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</link>
       <pubDate>Tue, 03 May 2016 10:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/decoding-heterogeneous-collections-in-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/decoding-heterogeneous-collections-in-swift/</guid>
       <description>&lt;p&gt;The problem of decoding Swift types from an outside data source, such as JSON, has been mostly solved. Since Swift&amp;rsquo;s release we&amp;rsquo;ve seen more than a dozen popular JSON mapping libraries pop up.&lt;/p&gt;
 
 &lt;p&gt;However, most of the libraries I&amp;rsquo;ve seen so far deal with decoding individual types, not entire collections of heterogeneous types.&lt;/p&gt;
@@ -288,10 +288,10 @@ The topic came up again this week as part of an issue with ReactiveCocoa and Map
     
     <item>
       <title>Compile Time vs. Run Time Type Checking in Swift</title>
-      <link>http://localhost:9292/post/compile-time-vs-runtime-type-checking-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</link>
       <pubDate>Wed, 13 Apr 2016 21:09:24 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/compile-time-vs-runtime-type-checking-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/compile-time-vs-runtime-type-checking-swift/</guid>
       <description>&lt;p&gt;At some point, when learning how to use Swift&amp;rsquo;s type system, it is important to understand that Swift (like many other languages) has two different forms of type checking: static and dynamic. Today I want to briefly discuss the difference between them and why headaches might arise when we try to combine them.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -299,10 +299,10 @@ The topic came up again this week as part of an issue with ReactiveCocoa and Map
     
     <item>
       <title>Squashing Commits With Git Rebase: A Very Quick Guide</title>
-      <link>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</link>
+      <link>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</link>
       <pubDate>Thu, 24 Mar 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/squashing-commits-with-git-rebase-guide/</guid>
+      <guid>http://blog.benjamin-encz.de/post/squashing-commits-with-git-rebase-guide/</guid>
       <description>&lt;p&gt;Git&amp;rsquo;s interactive rebase is extremely useful for keeping a somewhat clear commit history. Here&amp;rsquo;s a very brief guide on how to squash multiple commits into a single one.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -310,10 +310,10 @@ The topic came up again this week as part of an issue with ReactiveCocoa and Map
     
     <item>
       <title>Validated: A Swift μ-Library for Somewhat Dependent Types</title>
-      <link>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
+      <link>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</link>
       <pubDate>Thu, 25 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
+      <guid>http://blog.benjamin-encz.de/post/validated-a-swift-m-library-for-somewhat-dependent-types/</guid>
       <description>&lt;p&gt;Today I built &amp;amp; published a μ-library that makes it easier to leverage Swift&amp;rsquo;s type checking system for program verification: &lt;a href=&#34;https://github.com/Ben-G/Validated&#34;&gt;Validated&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -321,10 +321,10 @@ The topic came up again this week as part of an issue with ReactiveCocoa and Map
     
     <item>
       <title>How I Write Swift Specs With Quick</title>
-      <link>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</link>
+      <link>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</link>
       <pubDate>Wed, 24 Feb 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/how-i-write-swift-specs-with-quick/</guid>
+      <guid>http://blog.benjamin-encz.de/post/how-i-write-swift-specs-with-quick/</guid>
       <description>&lt;p&gt;I&amp;rsquo;ve recently tweaked the way I write Quick specs. I came to realize that I was placing a majority of my testing code inside of &lt;code&gt;it&lt;/code&gt; blocks. This &lt;a href=&#34;https://github.com/ReactiveCocoa/ReactiveCocoa/blob/7877f99bdfb4be1c82c4804082e99c35d0a93a91/ReactiveCocoaTests/Swift/DisposableSpec.swift#L53-L69&#34;&gt;seems to be common among many code bases that use Quick/Nimble&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -332,10 +332,10 @@ The topic came up again this week as part of an issue with ReactiveCocoa and Map
     
     <item>
       <title>About</title>
-      <link>http://localhost:9292/about/</link>
+      <link>http://blog.benjamin-encz.de/about/</link>
       <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
       
-      <guid>http://localhost:9292/about/</guid>
+      <guid>http://blog.benjamin-encz.de/about/</guid>
       <description>Hey there! My name is Benjamin Encz and I currently live in San Francisco. I moved here from Germany in 2013.
 Currently I spend most of my time writing software, with a strong focus on iOS development. I&amp;rsquo;m working for PlanGrid where we are building software that makes the construction industry more efficient.
 In the past I&amp;rsquo;ve been focused on building enterprise software &amp;amp; teaching software development. I&amp;rsquo;ve also worked for a year as a project manager and spent a decent amount of time with 2D and 3D graphics programming.</description>
@@ -343,38 +343,38 @@ In the past I&amp;rsquo;ve been focused on building enterprise software &amp;amp
     
     <item>
       <title>Projects</title>
-      <link>http://localhost:9292/projects/</link>
+      <link>http://blog.benjamin-encz.de/projects/</link>
       <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
       
-      <guid>http://localhost:9292/projects/</guid>
+      <guid>http://blog.benjamin-encz.de/projects/</guid>
       <description>I&amp;rsquo;ve worked on quite a few things in the last couple of years&amp;hellip;</description>
     </item>
     
     <item>
       <title>Speaking</title>
-      <link>http://localhost:9292/speaking/</link>
+      <link>http://blog.benjamin-encz.de/speaking/</link>
       <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
       
-      <guid>http://localhost:9292/speaking/</guid>
+      <guid>http://blog.benjamin-encz.de/speaking/</guid>
       <description> I enjoy sharing things I&amp;rsquo;ve learned and spreading ideas. Here are the talks I&amp;rsquo;ve given in the past &amp;amp; the upcoming ones I&amp;rsquo;ve got scheduled.
 Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on iOS  Swift Aveiro, Aveiro June 2017 GitHub Repo  The Art of Stealing  MCE, Warsaw May 2017 Slides Recording  Flux &amp;amp; Redux on Mobile  Craft Conference, Budapest April 2017 Slides Recording  2016 The Unreasonable Effectiveness Of Declarative Code  Swift Summit, San Francisco November 2016 Slides Recording  Leveraging Swift&amp;rsquo;s Type System  iOS Conf SG, Singapore October 2016 Slides Recording  Leveraging Swift&amp;rsquo;s Type System  360iDev 2016, Denver August 2016 Slides  Turning UIKit Inside Out  AltConf 2016, San Francisco June 2016 Slides Recording  Turning UIKit Inside Out  iOSCon 2016, London May 2016 Slides Recording  2015 Unidirectional Data Flow in Swift  Swift Language User Group @Realm, San Francisco December 2015 Slides Recording  Safer Swift Code With Value Types II  360iDev, Denver August 2015 Slides Recording  Safer Swift Code With Value Types  AltConf, San Francisco June 2015 Slides Recording  Functional Reactive Programming on iOS  NSMeetup, San Francisco April 2015 Slides Recording  </description>
     </item>
     
     <item>
       <title>Writing</title>
-      <link>http://localhost:9292/writing/</link>
+      <link>http://blog.benjamin-encz.de/writing/</link>
       <pubDate>Mon, 15 Feb 2016 22:51:22 -0800</pubDate>
       
-      <guid>http://localhost:9292/writing/</guid>
+      <guid>http://blog.benjamin-encz.de/writing/</guid>
       <description>I&amp;rsquo;ve spend a fair amount of my time on different writing projects.</description>
     </item>
     
     <item>
       <title>Introducing ReSwift</title>
-      <link>http://localhost:9292/post/introducing-reswift/</link>
+      <link>http://blog.benjamin-encz.de/post/introducing-reswift/</link>
       <pubDate>Wed, 20 Jan 2016 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/introducing-reswift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/introducing-reswift/</guid>
       <description>&lt;p&gt;For the last two months I have been actively working on Swift Flow with the goal of bringing the ideas of the Flux and Redux libraries to Swift developers.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -382,10 +382,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>Convenient Error Handling in Swift</title>
-      <link>http://localhost:9292/post/convenient-error-handling-in-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</link>
       <pubDate>Wed, 18 Nov 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/convenient-error-handling-in-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/convenient-error-handling-in-swift/</guid>
       <description>&lt;p&gt;Swift 2 introduced an error handling mechanism that includes &lt;a href=&#34;link to my post&#34;&gt;backwards compatibility with Objective-C&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;This is great news, the new mechanism is a lot stricter.&lt;/strong&gt; Long gone are the days in which one could ignore errors by lavishly throwing &lt;code&gt;nil&lt;/code&gt; at methods that expect a pointer to an &lt;code&gt;NSError&lt;/code&gt; variable.&lt;/p&gt;
@@ -395,10 +395,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>A Flux Inspired Architecture for iOS</title>
-      <link>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</link>
+      <link>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</link>
       <pubDate>Sat, 12 Sep 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/a-flux-inspired-architecture-for-ios/</guid>
+      <guid>http://blog.benjamin-encz.de/post/a-flux-inspired-architecture-for-ios/</guid>
       <description>&lt;p&gt;This year I spoke at 360iDev about &amp;ldquo;Safer Swift Code with Value Types&amp;rdquo;. The goal of the talk was to explore an architecture that uses immutable value types for the model layer.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -406,10 +406,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>Swift Error Handling and Objective-C Interop in Depth</title>
-      <link>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
+      <link>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</link>
       <pubDate>Thu, 23 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
+      <guid>http://blog.benjamin-encz.de/post/swift-error-handling-and-objective-c-interop-in-depth/</guid>
       <description>&lt;p&gt;For the impatient reader:&lt;/p&gt;
 
 &lt;h1 id=&#34;tl-dr&#34;&gt;TL;DR&lt;/h1&gt;
@@ -427,10 +427,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>iOS 9 Detects Cycles in Layout Trees</title>
-      <link>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</link>
+      <link>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</link>
       <pubDate>Thu, 09 Jul 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/ios-9-detects-cycles-in-layout-trees/</guid>
+      <guid>http://blog.benjamin-encz.de/post/ios-9-detects-cycles-in-layout-trees/</guid>
       <description>&lt;p&gt;A couple of months ago I was faced with an issue that was fairly hard to debug:&lt;/p&gt;
 
 &lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Hackathons are a great place to see noteworthy issues. Yesterday&amp;#39;s highlight: endless recursion in Storyboard &lt;a href=&#34;https://twitter.com/LAHacks&#34;&gt;@LAHacks&lt;/a&gt;&lt;/p&gt;&amp;mdash; Benjamin Encz (@benjaminencz) &lt;a href=&#34;https://twitter.com/benjaminencz/status/584757451469127680&#34;&gt;April 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
@@ -441,10 +441,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>Talk: Introduction to FRP on iOS</title>
-      <link>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</link>
+      <link>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</link>
       <pubDate>Sat, 30 May 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/talk-introduction-to-frp-on-ios/</guid>
+      <guid>http://blog.benjamin-encz.de/post/talk-introduction-to-frp-on-ios/</guid>
       <description>&lt;p&gt;Back in April I gave a talk at &lt;a href=&#34;http://www.meetup.com/nsmeetup/events/220950179/&#34;&gt;NSMeetup in San Francisco&lt;/a&gt; on Functional Reactive Programming on iOS.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -452,10 +452,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>Breaking Swift with NSObject and Generics</title>
-      <link>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</link>
+      <link>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</link>
       <pubDate>Thu, 19 Feb 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/breaking-the-swift-compiler-with-generics/</guid>
+      <guid>http://blog.benjamin-encz.de/post/breaking-the-swift-compiler-with-generics/</guid>
       <description>&lt;p&gt;Today, while trying to implement a generic data source in Swift, I ran into my first Swift compiler segmentation fault, yay (looking at &lt;a href=&#34;http://openradar.appspot.com/search?query=segmentation+fault+swift&#34;&gt;Open Radar&lt;/a&gt; there seem to be many out there)!&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -463,10 +463,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>&#34;I didn&#39;t know that&#34; is the best way to learn</title>
-      <link>http://localhost:9292/post/i-didnt-know-that-is-the-best-way-to-learn/</link>
+      <link>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</link>
       <pubDate>Thu, 05 Feb 2015 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/i-didnt-know-that-is-the-best-way-to-learn/</guid>
+      <guid>http://blog.benjamin-encz.de/post/i-didnt-know-that-is-the-best-way-to-learn/</guid>
       <description>&lt;p&gt;This is no original thought. Nevertheless I&amp;rsquo;ve been thinking about it often enough to make it worth spending a few minutes framing it in my own words.&lt;/p&gt;
 
 &lt;p&gt;I&amp;rsquo;m currently working as a Software Engineer. According to Wikipedia that makes me a &lt;a href=&#34;http://en.wikipedia.org/wiki/Knowledge_worker&#34;&gt;Knowledge Worker&lt;/a&gt;.&lt;/p&gt;
@@ -476,10 +476,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>Switching iOS devices and the Keychain</title>
-      <link>http://localhost:9292/post/switching-ios-devices-and-the-keychain/</link>
+      <link>http://blog.benjamin-encz.de/post/switching-ios-devices-and-the-keychain/</link>
       <pubDate>Sun, 14 Dec 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/switching-ios-devices-and-the-keychain/</guid>
+      <guid>http://blog.benjamin-encz.de/post/switching-ios-devices-and-the-keychain/</guid>
       <description>&lt;p&gt;Unfortunately some of my &lt;a href=&#34;http://www.movieloggr.com/&#34;&gt;MovieLoggr&lt;/a&gt; users ran into the following issue: After switching to a new phone and restoring it from a Backup MovieLoggr would behave unexpectetly (and in some cases crash) because the App could no longer access the user&amp;rsquo;s password and unfortunately did not handle this gracefully.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -487,10 +487,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>Using SSH for private and work account on a Mac</title>
-      <link>http://localhost:9292/post/using-ssh-with-multiple-accounts/</link>
+      <link>http://blog.benjamin-encz.de/post/using-ssh-with-multiple-accounts/</link>
       <pubDate>Tue, 18 Nov 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/using-ssh-with-multiple-accounts/</guid>
+      <guid>http://blog.benjamin-encz.de/post/using-ssh-with-multiple-accounts/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;Disclaimer: I&amp;rsquo;m not a huge fan of configuring software; I&amp;rsquo;m primarily writing this to remember it for the future.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -502,10 +502,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>The downside of Web APIs</title>
-      <link>http://localhost:9292/post/the-downside-of-web-apis/</link>
+      <link>http://blog.benjamin-encz.de/post/the-downside-of-web-apis/</link>
       <pubDate>Sun, 10 Aug 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/the-downside-of-web-apis/</guid>
+      <guid>http://blog.benjamin-encz.de/post/the-downside-of-web-apis/</guid>
       <description>&lt;p&gt;Web APIs have done a lot for the world of technology. Services that have formerly been isolated islands can now be connected through a few simple HTTP Requests. Posting to Facebook on every GitHub commit? Printing a Postcard as soon as a new Photo is uploaded to a Dropbox folder? Basically anything is possible through Web Services.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -513,10 +513,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>Arithmetic Expressions in Swift</title>
-      <link>http://localhost:9292/post/arithmetic-expressions-in-swift/</link>
+      <link>http://blog.benjamin-encz.de/post/arithmetic-expressions-in-swift/</link>
       <pubDate>Tue, 03 Jun 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/arithmetic-expressions-in-swift/</guid>
+      <guid>http://blog.benjamin-encz.de/post/arithmetic-expressions-in-swift/</guid>
       <description>&lt;p&gt;While I still cannot fully understand how the release of a new programming language didn&amp;rsquo;t leak before WWDC, most of us got surprised by the announcement of Apple&amp;rsquo;s new Programming Language &lt;strong&gt;Swift&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;Like most iOS Developers I immediately took a look at the new language. Most language details seem fairly straightforward - however, arithmetic expressions were the first small pitfall for me.&lt;/p&gt;
@@ -526,10 +526,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>Objective-C: Accessing backing iVars of properties in subclasses</title>
-      <link>http://localhost:9292/post/objective-c-backing-ivars-subclasses/</link>
+      <link>http://blog.benjamin-encz.de/post/objective-c-backing-ivars-subclasses/</link>
       <pubDate>Wed, 28 May 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/objective-c-backing-ivars-subclasses/</guid>
+      <guid>http://blog.benjamin-encz.de/post/objective-c-backing-ivars-subclasses/</guid>
       <description>&lt;p&gt;Most Objective-C developers have a fairly good understanding of properties and instance variables and how these two work together.&lt;/p&gt;
 
 &lt;p&gt;Today I want to discuss an interesting case that will force you to understand the details of the relationship between instance variables and properties. In case you already know these details, this remains an interesting example of how complicated Objective-C can be every once in a while.&lt;/p&gt;
@@ -539,10 +539,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>Automatic serialization in Objective-C</title>
-      <link>http://localhost:9292/post/seamless-serialization-objectivec/</link>
+      <link>http://blog.benjamin-encz.de/post/seamless-serialization-objectivec/</link>
       <pubDate>Wed, 02 Apr 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/seamless-serialization-objectivec/</guid>
+      <guid>http://blog.benjamin-encz.de/post/seamless-serialization-objectivec/</guid>
       <description>&lt;p&gt;Recently I worked on a tutorial that required me to serialize a large amount of objects. This is a common use case in many games - if the user quits the game and reopens it you want to restore the entire game state.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -550,10 +550,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title>When You Can&#39;t Avoid Email</title>
-      <link>http://localhost:9292/post/when-you-cant-avoid-email/</link>
+      <link>http://blog.benjamin-encz.de/post/when-you-cant-avoid-email/</link>
       <pubDate>Tue, 04 Mar 2014 22:24:54 -0800</pubDate>
       
-      <guid>http://localhost:9292/post/when-you-cant-avoid-email/</guid>
+      <guid>http://blog.benjamin-encz.de/post/when-you-cant-avoid-email/</guid>
       <description>&lt;p&gt;Don&amp;rsquo;t get me wrong, Email is a great tool and an evergreen in everyone&amp;rsquo;s communication stack. I use it, among many other things, to stay in touch with friends, receive food delivery confirmations and to consume newsletters. Emails are an essential part my everyday life.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -561,10 +561,10 @@ Upcoming  On a speaking break 🙂  2017 Workshop: Unidirectional Data Flow on i
     
     <item>
       <title></title>
-      <link>http://localhost:9292/portfolio/</link>
+      <link>http://blog.benjamin-encz.de/portfolio/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:9292/portfolio/</guid>
+      <guid>http://blog.benjamin-encz.de/portfolio/</guid>
       <description>What I did in the past &amp;amp; what I&amp;rsquo;m looking for next The goal of this page is to go beyond a resume and hopefully provide useful context on my past experience and on what I&amp;rsquo;m looking for in a new role.
 The sections are:
  Highlights and numbers How I see myself What I care about in my work Personal values [WIP]  This is a ton of text.</description>
@@ -572,10 +572,10 @@ The sections are:
     
     <item>
       <title></title>
-      <link>http://localhost:9292/post/</link>
+      <link>http://blog.benjamin-encz.de/post/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://localhost:9292/post/</guid>
+      <guid>http://blog.benjamin-encz.de/post/</guid>
       <description> Projects scheduled onto platform teams via agency model tend to balloon in scope  Once I have engineers; might as well get a ton of stuff done!   </description>
     </item>
     
