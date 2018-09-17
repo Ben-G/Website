@@ -52,7 +52,7 @@ Lastly, I care a lot about the personal relationships I build with people. I'm s
 
 #### Personal values
 
-You can find a list of my [personal values here](blog.benjamin-encz.de/values).
+You can find a list of my personal values [here](/values).
 
 ----
 
